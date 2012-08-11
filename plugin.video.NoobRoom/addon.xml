@@ -18,9 +18,4 @@
     <description>Watch NoobRoom Videos</description>
     <platform>all</platform>
   </extension>
-  	<extension point="xbmc.addon.repository" name="dk-xbmc-repaddon Add-on Repository">
-		<info compressed="false">http://dk-xbmc-repaddon-rep.googlecode.com/svn/trunk/addons.xml</info>
-		<checksum>http://dk-xbmc-repaddon-rep.googlecode.com/svn/trunk/addons.xml.md5</checksum>
-		<datadir zip="false">http://dk-xbmc-repaddon-rep.googlecode.com/svn/trunk/</datadir>
-	</extension>
 </addon>
