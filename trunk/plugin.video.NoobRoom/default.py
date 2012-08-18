@@ -114,7 +114,7 @@ def BuildXMl():
 	
 def Episodes(name,videoId):
     try:
-          addLink(name+"-Server 1","http://31.204.153.69/index.php?file="+videoId+"&start=0",3,"")
+          addLink(name+"-Server 1","http://23.29.118.154/index.php?file="+videoId+"&start=0",3,"")
           addLink(name+"-Server 2","http://85.17.26.234/index.php?file="+videoId+"&start=0",3,"")
           addLink(name+"-Server 3","http://176.31.225.22/~bashthed/index.php?file="+videoId+"&start=0",3,"")
           addLink(name+"-Server 4","http://5.9.245.67/index.php?file="+videoId+"&start=0",3,"")
