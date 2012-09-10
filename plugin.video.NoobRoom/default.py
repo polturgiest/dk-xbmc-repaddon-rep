@@ -105,7 +105,7 @@ def BuildXMl():
     mydoc=Document()
     mlist = mydoc.createElement("movielist")
     mydoc.appendChild(mlist)
-    match=re.compile("<br>(.+?) - <a href='"+nooblink+"/(.+?)'>(.+?)</a>").findall(link)
+    match=re.compile("<br>(.+?) - <a href='(.+?)'>(.+?)</a>").findall(link)
     for i in range(len(match)):
         (vyear,mNumber,mName)=match[i]
         ParseXML(vyear,mNumber.replace('?',''),urllib.quote_plus(mName).replace('+',' '), mydoc,mlist)
@@ -114,10 +114,13 @@ def BuildXMl():
 	
 def Episodes(name,videoId):
     try:
+          match=re.compile("/(.+?)").findall(videoId)
+          if len(match)>=0:
+                videoId=match[0]
           addLink(name+"-Server 1","http://23.29.118.154/index.php?file="+videoId+"&start=0",3,"")
-          addLink(name+"-Server 2","http://85.17.26.234/index.php?file="+videoId+"&start=0",3,"")
-          addLink(name+"-Server 3","http://176.31.225.22/~bashthed/index.php?file="+videoId+"&start=0",3,"")
-          addLink(name+"-Server 4","http://5.9.245.67/index.php?file="+videoId+"&start=0",3,"")
+          addLink(name+"-Server 2","http://178.159.0.82/index.php?file="+videoId+"&start=0",3,"")
+          addLink(name+"-Server 3","http://74.121.182.151/~bashthed/index.php?file="+videoId+"&start=0",3,"")
+          addLink(name+"-Server 4","http://96.47.226.90/index.php?file="+videoId+"&start=0",3,"")
           addLink(name+"-Server 5","http://5.39.55.246/index.php?file="+videoId+"&start=0",3,"")
     except: pass	
 
