@@ -1,2 +1,4 @@
 1.0
 - Intial release
+1.0.2 updated Ip address for movies
+1.0.3 updated for the change in url format in movielist

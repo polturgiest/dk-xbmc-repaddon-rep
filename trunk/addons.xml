@@ -144,7 +144,7 @@
 
 <addon
   id="plugin.video.NoobRoom"
-  version="1.0.2"
+  version="1.0.3"
   name="NoobRoom"
   provider-name="Dknight">
   <requires>
