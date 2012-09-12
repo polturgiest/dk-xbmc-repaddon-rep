@@ -2,3 +2,4 @@
 - Intial release
 1.0.2 updated Ip address for movies
 1.0.3 updated for the change in url format in movielist
+1.0.4 fix a regular expression mistake in the last update

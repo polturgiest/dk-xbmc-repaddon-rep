@@ -114,7 +114,7 @@ def BuildXMl():
 	
 def Episodes(name,videoId):
     try:
-          match=re.compile("/(.+?)").findall(videoId)
+          match=re.compile("\/(.+?)&sp").findall(videoId+"&sp")
           if len(match)>=0:
                 videoId=match[0]
           addLink(name+"-Server 1","http://23.29.118.154/index.php?file="+videoId+"&start=0",3,"")
