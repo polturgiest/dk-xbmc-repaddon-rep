@@ -673,7 +673,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence",  "(.+?)"').findall(link)
+                sequence=re.compile('"sequence":"(.+?)"').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)

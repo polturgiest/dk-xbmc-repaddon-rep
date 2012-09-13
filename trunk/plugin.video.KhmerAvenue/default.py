@@ -18,7 +18,7 @@ def INDEX(url):
     try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<a class="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)"> <img [^>]*src="(.+?)"').findall(newlink)
+        match=re.compile('<aclass="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)"> <imgsrc="(.+?)"').findall(newlink)
         for vcontent in match:
             (vurl,vname, vimage)=vcontent
             addDir(vname.encode("utf-8"),vurl,5,vimage)
@@ -39,13 +39,13 @@ def SEARCH():
 def SearchResults(url):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<a class="widget-title" href="(.+?)"><img src="(.+?)" alt="(.+?)"').findall(newlink)
+        match=re.compile('<aclass="widget-title" href="(.+?)"><imgsrc="(.+?)" alt="(.+?)"').findall(newlink)
         if(len(match) >= 1):
                 for vLink,vpic,vLinkName in match:
                     addDir(vLinkName,vLink,5,vpic)
         match=re.compile('<strong>&raquo;</strong>').findall(link)
         if(len(match) >= 1):
-            startlen=re.compile("<strong class='on'>(.+?)</strong>").findall(newlink)
+            startlen=re.compile("<strongclass='on'>(.+?)</strong>").findall(newlink)
             url=url.replace("/page/"+startlen[0]+"/","/page/"+ str(int(startlen[0])+1)+"/")
             addDir("Next >>",url,6,"")			
 			
@@ -54,7 +54,8 @@ def Episodes(url,name):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
         addLink(name.encode("utf-8"),url,3,'')
-        match=re.compile('<a href="(.+?)"><span class="part">(.+?)</span></a>').findall(link)
+        match=re.compile('<divclass="episodebox">(.+?)</div>').findall(newlink)
+        match=re.compile('<ahref="(.+?)"><spanclass="part">(.+?)</span></a>').findall(match[0])
         if(len(match) >= 1):
                 for mcontent in match:
                     vLink, vLinkName=mcontent
@@ -92,6 +93,8 @@ def loadVideos(url,name):
            newlink = ''.join(link.splitlines()).replace('\t','')
 
            match=re.compile("'file':'(.+?)',").findall(newlink)
+           if(len(match) == 0):
+                   match=re.compile('<iframeframeborder="0" [^>]*src="(.+?)">').findall(newlink)
            newlink=match[0]
            #xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
            if (newlink.find("dailymotion") > -1):
@@ -103,7 +106,7 @@ def loadVideos(url,name):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence",  "(.+?)"').findall(link)
+                sequence=re.compile('"sequence":"(.+?)"').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
