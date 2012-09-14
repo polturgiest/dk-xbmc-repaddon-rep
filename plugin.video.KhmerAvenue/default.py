@@ -22,7 +22,7 @@ def INDEX(url):
         for vcontent in match:
             (vurl,vname, vimage)=vcontent
             addDir(vname.encode("utf-8"),vurl,5,vimage)
-        match5=re.compile('<span class="i_next fr" ><a href="(.+?)">Next</a></span>').findall(newlink)
+        match5=re.compile('<spanclass="i_next fr" ><ahref="(.+?)">Next</a></span>').findall(newlink)
         if(len(match5)):
                 addDir("Next >>",match5[0],2,"")
     except: pass
