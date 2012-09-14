@@ -18,7 +18,8 @@ def INDEX(url):
     try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<aclass="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)"> <imgsrc="(.+?)"').findall(newlink)
+        match=re.compile('<divid="content" class="clearfix">(.+?)<divid="sidebar">').findall(newlink)
+        match=re.compile('<aclass="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)"> <imgsrc="(.+?)"').findall(match[0])
         for vcontent in match:
             (vurl,vname, vimage)=vcontent
             addDir(vname.encode("utf-8"),vurl,5,vimage)
