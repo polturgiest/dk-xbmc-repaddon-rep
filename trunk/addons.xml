@@ -61,7 +61,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.2"
+  version="1.0.3"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
