@@ -121,7 +121,7 @@ def Episodes(name,videoId):
           addLink(name+"-Server 2","http://178.159.0.82/index.php?file="+videoId+"&start=0",3,"")
           addLink(name+"-Server 3","http://74.121.182.151/~bashthed/index.php?file="+videoId+"&start=0",3,"")
           addLink(name+"-Server 4","http://96.47.226.90/index.php?file="+videoId+"&start=0",3,"")
-          addLink(name+"-Server 5","http://5.39.55.246/index.php?file="+videoId+"&start=0",3,"")
+          addLink(name+"-Server 5","http://64.79.100.121/index.php?file="+videoId+"&start=0",3,"")
     except: pass	
 
 
