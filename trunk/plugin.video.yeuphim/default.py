@@ -9,7 +9,7 @@ import base64
 
 
 def HOME():
-        addDir('Search','http://www.khmeravenue.com/',4,'http://www.khmeravenue.com/wp-contents/uploads/logo.jpg')
+        addDir('Search','http://www.khmeravenue.com/',4,'http://yeuphim.net/images/logo.png')
         addDir('Japanese Series','http://yeuphim.net/movie-list.php?cat=78',2,'http://img.yeuphim.net/movie/thumb1/507147552_913437197.jpg')
         addDir('Korean Series','http://yeuphim.net/movie-list.php?cat=15',2,'http://img.yeuphim.net/movie/thumb1/307768252_968871912.jpg')
         addDir('Chinese Series','http://yeuphim.net/movie-list.php?cat=48',2,'http://img.yeuphim.net/movie/thumb1/209454570_431578655.jpg')
