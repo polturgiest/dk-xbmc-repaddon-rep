@@ -260,7 +260,7 @@ def loadPlaylist(newlink,name):
         except: pass
 		
 def loadVideos(newlink,name):
-        #try:
+        try:
            if (newlink.find("video4khmer.com") > -1):
                 linkcontent = GetContent(url)
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
@@ -284,7 +284,7 @@ def loadVideos(newlink,name):
                     playVideo('youtube',lastmatch)
                 else:
                     playVideo('video4khmer',urllib2.unquote(newlink).decode("utf8"))
-        #except: pass
+        except: pass
 		
 def extractFlashVars(data):
         flashvars = {}
