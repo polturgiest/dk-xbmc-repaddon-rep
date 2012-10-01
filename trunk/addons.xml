@@ -21,7 +21,7 @@
 
 <addon id="plugin.video.dramacrazy"
        name="Drama Crazy"
-       version="1.1.10"
+       version="1.1.11"
        provider-name="AJ">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -165,7 +165,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.0"
+  version="1.0.1"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
