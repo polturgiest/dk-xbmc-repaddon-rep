@@ -481,7 +481,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 link=urllib.unquote(response.read())
                 response.close()
                 link = ''.join(link.splitlines()).replace('\'','"')
-                videoUrl = re.compile('"file","(.+?)"\);').findall(link)[0]
+                videoUrl = re.compile('playlist\:\[\{url: "(.+?)"').findall(link)[0]
                 imgUrl = ''
                 print 'gamedorm:' + videoUrl +' :end '
                 if(isRequestForURL):
@@ -512,7 +512,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 #playlist = re.compile('playlist:\[(.+?)\]').findall(link)[0]
                 print 'hellow'
                 #playItems = re.compile('url: "(.+?)"').findall(playlist)
-                videoUrl = re.compile('"file": "(.+?)"').findall(link)[0]
+                videoUrl = re.compile('playlist\:\[\{url: "(.+?)"').findall(link)[0]
                 print videoUrl
                 
                 if(isRequestForURL): 
