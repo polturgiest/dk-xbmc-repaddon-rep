@@ -129,8 +129,8 @@ def Episodes(url,name):
                     else:
                             addLink(vname.encode('utf-8'),vurl,3,vimg)
                             videolist=videolist+vurl+";#"
-                    if(counter%vidPerGroup==0 or counter==len(linkmatch)):
-                            addLink("-------Play the 5 videos above--------",videolist,8,vimg)
+                    if((counter%vidPerGroup==0 or counter==len(linkmatch)) and (len(videolist.split(';#'))-1) > 1):
+                            addLink("-------Play the "+ str(len(videolist.split(';#'))-1)+" videos above--------",videolist,8,vimg)
                             videolist =""
                             
         match5=re.compile('<div class="pagination">(.+?)</div></div>').findall(newlink)
@@ -192,7 +192,7 @@ def PLAYLIST_VIDEOLINKS(url,name):
         print "linksurl" + str(url)
         pDialog = xbmcgui.DialogProgress()
         ret = pDialog.create('Loading playlist...')
-        totalLinks = len(links)
+        totalLinks = len(links)-1
         loadedLinks = 0
         remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
         pDialog.update(0,'Please wait for the process to retrieve video link.',remaining_display)

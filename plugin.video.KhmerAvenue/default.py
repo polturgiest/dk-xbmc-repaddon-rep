@@ -51,18 +51,26 @@ def SearchResults(url):
             addDir("Next >>",url,6,"")			
 			
 def Episodes(url,name):
-    try:
+    #try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
         addLink(name.encode("utf-8"),url,3,'')
         match=re.compile('<divclass="episodebox">(.+?)</div>').findall(newlink)
         match=re.compile('<ahref="(.+?)"><spanclass="part">(.+?)</span></a>').findall(match[0])
+        counter = 1
+        videolist =url+";#"
+        vidPerGroup = 5
         if(len(match) >= 1):
                 for mcontent in match:
                     vLink, vLinkName=mcontent
+                    counter += 1
                     addLink(vLinkName.encode("utf-8"),vLink,3,'')
+                    videolist=videolist+vLink+";#"
+                    if(counter%vidPerGroup==0 or counter==len(match)+1):
+                            addLink("-------Play the "+ str(len(videolist.split(';#'))-1)+" videos above--------",videolist,8,"")
+                            videolist =""
 
-    except: pass	
+    #except: pass	
 
 
 def GetContent(url):
@@ -75,19 +83,127 @@ def GetContent(url):
        d.ok(url,"Can't Connect to site",'Try again in a moment')
 
 def playVideo(videoType,videoId):
-    url = ""
-    print videoType + '=' + videoId
+    url = videoId
     if (videoType == "youtube"):
         url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
-        xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
     elif (videoType == "vimeo"):
         url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
         url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
-    else:
+
+    xbmcPlayer = xbmc.Player()
+    xbmcPlayer.play(url)
+
+def PLAYLIST_VIDEOLINKS(url,name):
+        ok=True
+        playList = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playList.clear()
+        #time.sleep(2)
+        links = url.split(';#')
+        print "linksurl" + str(url)
+        pDialog = xbmcgui.DialogProgress()
+        ret = pDialog.create('Loading playlist...')
+        totalLinks = len(links)-1
+        loadedLinks = 0
+        remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
+        pDialog.update(0,'Please wait for the process to retrieve video link.',remaining_display)
+        
+        for videoLink in links:
+                loadPlaylist(videoLink,name)
+                loadedLinks = loadedLinks 
+                percent = (loadedLinks * 100)/totalLinks
+                #print percent
+                remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
+                pDialog.update(percent,'Please wait for the process to retrieve video link.',remaining_display)
+                if (pDialog.iscanceled()):
+                        return False   
         xbmcPlayer = xbmc.Player()
-        xbmcPlayer.play(videoId)
-	
+        xbmcPlayer.play(playList)
+        if not xbmcPlayer.isPlayingVideo():
+                d = xbmcgui.Dialog()
+                d.ok('videourl: ' + str(playList), 'One or more of the playlist items','Check links individually.')
+        return ok
+
+def CreateList(videoType,videoId):
+    url1 = ""
+    if (videoType == "youtube"):
+        url1 = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+    elif (videoType == "vimeo"):
+        url1 = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
+    elif (videoType == "tudou"):
+        url1 = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
+    else:
+        url1=videoId
+    print "addingplay" + url1
+    if(len(videoId) >0):
+        liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.add(url=url1, listitem=liz)
+        
+def loadPlaylist(newlink,name):
+        #try:
+           if (newlink.find("khmeravenue.com") > -1):
+                link=GetContent(newlink)
+                newlink = ''.join(link.splitlines()).replace('\t','')
+
+                match=re.compile("'file':'(.+?)',").findall(newlink)
+                if(len(match) == 0):
+                   match=re.compile('<iframeframeborder="0" [^>]*src="(.+?)">').findall(newlink)
+                newlink=match[0]
+
+           if (newlink.find("dailymotion") > -1):
+                newlink=newlink+"&"
+                match=re.compile('http://www.dailymotion.com\/embed\/video\/(.+?)&').findall(newlink)
+                print newlink
+                if(len(match) == 0):
+                        match = re.compile('http://www.dailymotion.com/swf/(.+?)&').findall(newlink)
+                link = 'http://www.dailymotion.com/video/'+str(match[0])
+                print link
+                req = urllib2.Request(link)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
+                #print 'in dailymontion:' + str(newseqeunce)
+                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
+                if(len(imgSrc[0]) == 0):
+                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
+                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
+                CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+           elif (newlink.find("video.google.com") > -1):
+                match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
+                glink=""
+                if(len(match) > 0):
+                        glink = GetContent("http://www.flashvideodownloader.org/download.php?u=http://video.google.com/videoplay?docid="+match[0])
+                else:
+                        match=re.compile('http://video.google.com/googleplayer.swf.+?docId=(.+?)&dk').findall(newlink)
+                        if(len(match) > 0):
+                                glink = GetContent("http://www.flashvideodownloader.org/download.php?u=http://video.google.com/videoplay?docid="+match[0])
+                gcontent=re.compile('<div class="mod_download"><a href="(.+?)" title="Click to Download">').findall(glink)
+                if(len(gcontent) > 0):
+                        CreateList('google',gcontent[0])
+           elif (newlink.find("4shared") > -1):
+                d = xbmcgui.Dialog()
+                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
+           else:
+                if (newlink.find("linksend.net") > -1):
+                     d = xbmcgui.Dialog()
+                     d.ok('Not Implemented','Sorry videos on linksend.net does not work','Site seem to not exist')		
+                newlink1 = urllib2.unquote(newlink).decode("utf8")+'&dk;'
+                print 'NEW url = '+ newlink1
+                match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink1)
+                if(len(match) == 0):
+                    match=re.compile('http://www.youtube.com/watch\?v=(.+?)&dk;').findall(newlink1)
+                if(len(match) > 0):
+                    lastmatch = match[0][len(match[0])-1].replace('v/','')
+                    CreateList("youtube",lastmatch)
+                else:
+                    CreateList("other",urllib2.unquote(newlink).decode("utf8"))
+        #except: pass
+		
 def loadVideos(url,name):
         try:
            link=GetContent(url)
@@ -225,6 +341,7 @@ elif mode==5:
        Episodes(url,name)
 elif mode==6:
        SearchResults(url)
-
+elif mode==8:
+       PLAYLIST_VIDEOLINKS(url,name)
 	   
 xbmcplugin.endOfDirectory(int(sysarg))
