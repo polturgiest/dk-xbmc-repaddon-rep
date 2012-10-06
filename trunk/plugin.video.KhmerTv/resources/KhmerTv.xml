@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<channels>
+  <channel>
+    <name>Khmer channels</name>
+    <info>Khmer channels from khiptv</info>
+    <item>
+      <title>Sea TV</title>
+      <link>http://e-magic.info:44412/sea_Pub</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+    <item>
+      <title>TVK</title>
+      <link>http://e-magic.info:44412/tvk_Pub</link>
+      <thumbnail>http://khiptv.com/images_tv/TVK.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Bayon</title>
+      <link>http://e-magic.info:44412/Bayon_Pub</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/bayon-tv.png</thumbnail>
+    </item>
+    <item>
+      <title>TV5</title>
+      <link>http://e-magic.info:44412/tv5_Pub</link>
+      <thumbnail>http://khiptv.com/images_tv/TV5.png</thumbnail>
+    </item>
+    <item>
+      <title>bayon_NEWS</title>
+      <link>http://e-magic.info:44412/bayon_NEWS</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
+    </item>
+    <item>
+      <title>TV9</title>
+      <link>http://e-magic.info:44412/tv9_Pub</link>
+      <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
+    </item>
+    <item>
+      <title>Apsara</title>
+      <link>http://e-magic.info:44412/Apsara_Pub</link>
+      <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
+    </item>
+    <item>
+      <title>KGN_HK</title>
+      <link>http://e-magic.info:44412/KGN_HK</link>
+      <thumbnail>http://khiptv.com/images_tv/KGNCAN.png</thumbnail>
+    </item>
+    <item>
+      <title>ABC_TV</title>
+      <link>http://e-magic.info:44412/ABC_TV</link>
+      <thumbnail>http://khiptv.com/images_tv/ABC.png</thumbnail>
+    </item>
+    <item>
+      <title>NAT_TV</title>
+      <link>http://e-magic.info:44412/NAT_TV</link>
+      <thumbnail>http://khiptv.com/images_tv/nat.png</thumbnail>
+    </item>
+    <item>
+      <title>MeKong_TV</title>
+      <link>http://e-magic.info:44412/MeKong_TV</link>
+      <thumbnail>http://khiptv.com/images_TV/MK.png</thumbnail>
+    </item>
+    <item>
+      <title>Good_Idea</title>
+      <link>http://e-magic.info:44412/Good_Idea</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/goodidea.png</thumbnail>
+    </item>
+    <item>
+      <title>knn_TV</title>
+      <link>http://e-magic.info:44412/knn_TV</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>nlakorn</title>
+      <link>http://e-magic.info:44412/nlakorn</link>
+      <thumbnail>http://khiptv.com/images_TV/lakorn.jpg</thumbnail>
+    </item>
+  </channel>
+  <channel>
+    <name>Khmer Radios</name>
+    <info>Khmer Radios from khiptv</info>
+    <item>
+      <title>Khmer FM107 Radio</title>
+      <link>http://KhipTV.org:44412/RC_FM107</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+    <item>
+      <title>Bayon Radio</title>
+      <link>http://KhipTV.org:44412/RC_FM95</link>
+      <thumbnail>http://khiptv.com/images_tv/TVK.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Phnom Penh Radio FM103</title>
+      <link>http://KhipTV.org:44412/RCFM103</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/bayon-tv.png</thumbnail>
+    </item>
+    <item>
+      <title>ABC Cambodia Radio</title>
+      <link>http://KhipTV.org:44412/RC_FM1075</link>
+      <thumbnail>http://khiptv.com/images_tv/TV5.png</thumbnail>
+    </item>
+    <item>
+      <title>DAP Radio - FM93.75</title>
+      <link>http://KhipTV.org:44412/dap</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
+    </item>
+    <item>
+      <title>Sovann Phum Radio - FM104</title>
+      <link>http://KhipTV.org:44412/RC_FM104</link>
+      <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
+    </item>
+    <item>
+      <title>Sovann Angkor FM106 - Battambong</title>
+      <link>http://KhipTV.org:44412/KEO</link>
+      <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
+    </item>
+    <item>
+      <title>Apsara Radio FM 97 MHz</title>
+      <link>http://KhipTV.org:44412/RCFM97</link>
+      <thumbnail>http://khiptv.com/images_tv/KGNCAN.png</thumbnail>
+    </item>
+    <item>
+      <title>Nokorwat Radio FM101 MHz</title>
+      <link>http://KhipTV.org:44412/psp</link>
+      <thumbnail>http://khiptv.com/images_tv/ABC.png</thumbnail>
+    </item>
+    <item>
+      <title>KMAT Radio FM90MHz</title>
+      <link>http://KhipTV.org:44412/KMAT</link>
+      <thumbnail>http://khiptv.com/images_tv/nat.png</thumbnail>
+    </item>
+    <item>
+      <title>National Radio FM96</title>
+      <link>http://KhipTV.org:44412/RCFM96</link>
+      <thumbnail>http://khiptv.com/images_TV/MK.png</thumbnail>
+    </item>
+    <item>
+      <title>Women 's Radio FM102</title>
+      <link>http://KhipTV.org:44412/RCFM102</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/goodidea.png</thumbnail>
+    </item>
+    <item>
+      <title>Ta Prohm Radio FM90.5</title>
+      <link>http://KhipTV.org:44412/taprohm</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>STARFM Radio</title>
+      <link>
+      http://110.74.223.162:88/broadwave.mp3?src=2&amp;rate=1&amp;ref=</link>
+      <thumbnail>http://khiptv.com/images_TV/lakorn.jpg</thumbnail>
+    </item>
+    <item>
+      <title>Mean Chey FM99 MHz Radio</title>
+      <link>http://KhipTV.org:44412/MCH</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>VOY FM 105.25MHz</title>
+      <link>http://KhipTV.org:44412/fm105.3</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Kolyanmet FM88.5</title>
+      <link>http://KhipTV.org:44412/KEOV</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Voice of Dombang Kronhoung FM 100MHz</title>
+      <link>http://KhipTV.org:44412/Dombang</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>UFM 106.5MHz BMC</title>
+      <link>http://KhipTV.org:44412/ufmradio</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Our Radio - FM106.75 Mhz</title>
+      <link>http://KhipTV.org:44412/our-radio</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Beehive FM105</title>
+      <link>http://KhipTV.org:44412/BFM105</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Mongkul Sovann - FM93.5 - Battambong</title>
+      <link>http://KhipTV.org:44412/FM 93.5 MHz</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Mongkul Sovann - FM105.5 - Champong Soum</title>
+      <link>http://KhipTV.org:44412/FM 105.5 MHzA</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Sangke Radio - FM104.5 MHz - Battambong</title>
+      <link>http://KhipTV.org:44412/Sangke Radio FM104.5MHz</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Ta Prohm Radio FM90.5</title>
+      <link>http://KhipTV.org:44412/taprohm</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Ratanakiri Radio FM 97.5</title>
+      <link>http://KhipTV.org:44412/ratanakiri</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Mongkulsovann FM 91.75 MHz Banteay Meanchey</title>
+      <link>http://KhipTV.org:44412/FM 91.75 Mhz</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+    <item>
+      <title>Siem Reap Radio</title>
+      <link>http://KhipTV.org:44412/SIEM RAEP</link>
+      <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
+    </item>
+  </channel>
+  <channels></channels>
+</channels>
