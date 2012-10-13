@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.animecrazy"
        name="Anime Crazy"
-       version="1.0.12"
+       version="1.0.13"
        provider-name="AJ">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -45,7 +45,7 @@
 
 <addon id="plugin.video.dramacrazy"
        name="Drama Crazy"
-       version="1.1.11"
+       version="1.1.12"
        provider-name="AJ">
   <requires>
     <import addon="xbmc.python" version="1.0"/>

@@ -2,6 +2,7 @@ import urllib,urllib2,re,sys,xbmcplugin,xbmcgui,httplib
 import cookielib,os,string,cookielib,StringIO
 import os,time,base64,logging
 import xbmcaddon
+import urlresolver
 from datetime import datetime
 try:
     import json
@@ -243,7 +244,7 @@ def addVideoInfo_Image(url, name):
                 response.close()
                 link = ''.join(link.splitlines()).replace('\t','')
 
-                imgUrl=re.compile('<img src="(.+?)" width="150px" alt="(.+?)Image" />').findall(link)[0][0]
+                imgUrl=re.compile('<div class="image floatLeft"><img src="(.+?)" width="150px" alt="(.+?)Image" />').findall(link)[0][0]
                 match=re.compile('<div class="text floatLeft">(.+?)</div>').findall(link)
                 videoName=re.compile('<h1>(.+?)</h1>').findall(match[0])
                 ranks=re.compile('<span class="position">(.+?)</span><br /><span class="totalNr">of (.+?)</span>').findall(match[0])
@@ -464,6 +465,30 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 print 'NEW url = '+url
         except: pass
 
+        #Resolveurl
+        try:
+                sources = []
+                #try:
+                label=name
+                hosted_media = urlresolver.HostedMediaFile(url=url.replace('&AJ;',""), title=label)
+                sources.append(hosted_media)
+                #except:
+                print 'Error while trying to resolve %s' % url
+                source = urlresolver.choose_source(sources)
+                print "source info=" + str(source)
+                if source:
+                        videoUrl = source.resolve()
+                if(isRequestForURL):
+                        if(isRequestForPlaylist):
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
+                                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                                playlist.add(url=videoUrl, listitem=liz)
+                        else:
+                                return videoUrl
+                else:
+                        addLink ('[B]PLAY VIDEO[/B]',videoUrl,"")
+        except: pass 
+		
         #SAPO
         try:
                 if not re.search('videos.sapo.pt', url):
