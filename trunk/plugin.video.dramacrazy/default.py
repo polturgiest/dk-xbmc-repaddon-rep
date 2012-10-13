@@ -2,6 +2,7 @@ import urllib,urllib2,re,sys,xbmcplugin,xbmcgui
 import cookielib,os,string,cookielib,StringIO,gzip
 import os,time,base64,logging
 import xbmcaddon
+import urlresolver
 from datetime import datetime
 try:
     import json
