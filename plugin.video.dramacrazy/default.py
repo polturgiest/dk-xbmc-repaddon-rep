@@ -451,30 +451,6 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 print 'NEW url = '+url
         except: pass
 		
-        #Resolveurl
-        try:
-                sources = []
-                #try:
-                label=name
-                hosted_media = urlresolver.HostedMediaFile(url=url.replace('&AJ;',""), title=label)
-                sources.append(hosted_media)
-                #except:
-                print 'Error while trying to resolve %s' % url
-                source = urlresolver.choose_source(sources)
-                print "source info=" + str(source)
-                if source:
-                        videoUrl = source.resolve()
-                if(isRequestForURL):
-                        if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
-                                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-                                playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
-                else:
-                        addLink ('[B]PLAY VIDEO[/B]',videoUrl,"")
-        except: pass 
-		
         #SAPO
         try:
                 if not re.search('videos.sapo.pt', url):
@@ -1074,8 +1050,30 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 else:
                         addLink ('PLAY High Quality Video',link,'')
         except: pass
-
-
+		
+        #Resolveurl
+        try:
+                sources = []
+                #try:
+                label=name
+                hosted_media = urlresolver.HostedMediaFile(url=url.replace('&AJ;',""), title=label)
+                sources.append(hosted_media)
+                #except:
+                print 'Error while trying to resolve %s' % url
+                source = urlresolver.choose_source(sources)
+                print "source info=" + str(source)
+                if source:
+                        videoUrl = source.resolve()
+                if(isRequestForURL):
+                        if(isRequestForPlaylist):
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
+                                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                                playlist.add(url=videoUrl, listitem=liz)
+                        else:
+                                return videoUrl
+                else:
+                        addLink ('[B]PLAY VIDEO[/B]',videoUrl,"")
+        except: pass 
 
 
 ####################################################################################################################
