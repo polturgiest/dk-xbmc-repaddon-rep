@@ -464,30 +464,6 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 print 'in dramacrzy check'
                 print 'NEW url = '+url
         except: pass
-
-        #Resolveurl
-        try:
-                sources = []
-                #try:
-                label=name
-                hosted_media = urlresolver.HostedMediaFile(url=url.replace('&AJ;',""), title=label)
-                sources.append(hosted_media)
-                #except:
-                print 'Error while trying to resolve %s' % url
-                source = urlresolver.choose_source(sources)
-                print "source info=" + str(source)
-                if source:
-                        videoUrl = source.resolve()
-                if(isRequestForURL):
-                        if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
-                                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-                                playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
-                else:
-                        addLink ('[B]PLAY VIDEO[/B]',videoUrl,"")
-        except: pass 
 		
         #SAPO
         try:
@@ -497,7 +473,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 newlink='http://videos.sapo.pt/playhtml?file=' + match[0]
                 req = urllib2.Request(newlink)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-                #print videoUrl
+                print 'in SAPO'
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
@@ -1096,7 +1072,30 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 else:
                         addLink ('PLAY High Quality Video',link,'')
         except: pass
-
+		
+        #Resolveurl
+        try:
+                sources = []
+                #try:
+                label=name
+                hosted_media = urlresolver.HostedMediaFile(url=url.replace('&AJ;',""), title=label)
+                sources.append(hosted_media)
+                #except:
+                print 'Error while trying to resolve %s' % url
+                source = urlresolver.choose_source(sources)
+                print "source info=" + str(source)
+                if source:
+                        videoUrl = source.resolve()
+                if(isRequestForURL):
+                        if(isRequestForPlaylist):
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
+                                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                                playlist.add(url=videoUrl, listitem=liz)
+                        else:
+                                return videoUrl
+                else:
+                        addLink ('[B]PLAY VIDEO[/B]',videoUrl,"")
+        except: pass 
 
 
 
