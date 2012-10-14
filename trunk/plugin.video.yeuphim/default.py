@@ -6,10 +6,13 @@ from t0mm0.common.net import Net
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import base64
+import xbmc
 
-
+def __init__(self):
+    self.playlist=sys.modules["__main__"].playlist
 def HOME():
         addDir('Search','http://www.khmeravenue.com/',4,'http://yeuphim.net/images/logo.png')
+        addDir('Hong Kong Series','http://www.thegioiphim.eu/',9,'http://www.thegioiphim.eu/images/logo.png')
         addDir('Japanese Series','http://yeuphim.net/movie-list.php?cat=78',2,'http://img.yeuphim.net/movie/thumb1/507147552_913437197.jpg')
         addDir('Korean Series','http://yeuphim.net/movie-list.php?cat=15',2,'http://img.yeuphim.net/movie/thumb1/307768252_968871912.jpg')
         addDir('Chinese Series','http://yeuphim.net/movie-list.php?cat=48',2,'http://img.yeuphim.net/movie/thumb1/209454570_431578655.jpg')
@@ -47,7 +50,26 @@ def INDEX(url):
             (vurl,vname)=vpage
             addDir("page: " + vname.encode("utf-8"),vurl,2,"")
     except: pass
-			
+
+def INDEXes(url):
+    try:
+        link = GetContent(url)
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        match=re.compile('<div class="list-movie-image"><a href="(.+?)" title="(.+?)"><img class="img" src="(.+?)"').findall(newlink)
+        for vcontent in match:
+            (vurl,vname,vimage)=vcontent
+            addDir(vname.encode("utf-8"),"http://www.thegioiphim.eu/"+vurl,8,vimage)
+        listalpha = re.compile('<div class="grid_8 omega" style=(.+?)<!-- end search -->').findall(newlink)
+        alphabet=re.compile('<strong><a href="(.+?)">(.+?)</a></strong>').findall(listalpha[0])
+        for alpage in alphabet:
+            (vurl,vname)=alpage
+            addDir(vname.encode("utf-8"),"http://www.thegioiphim.eu/"+vurl,9,"")
+        pagenum = re.compile('<!-- page -->(.+?)<!-- end page -->').findall(newlink)
+        num = re.compile('<span class="pagenum"><a href="(.+?)">(.+?)</a></span>').findall(pagenum[0])
+        for alpagenum in num:
+            (vurl,vname)=alpagenum
+            addDir(vname.encode("utf-8"),vurl,9,"")
+    except: pass
 def SEARCH():
     try:
         keyb = xbmc.Keyboard('', 'Enter search text')
@@ -55,10 +77,10 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://yeuphim.net/movie-list.php?str='+ searchText 
+        url = 'http://yeuphim.net/movie-list.php?str='+ searchText
         INDEX(url)
     except: pass
-        
+
 def SearchResults(url):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
@@ -70,20 +92,46 @@ def SearchResults(url):
         if(len(match) >= 1):
             startlen=re.compile("<strongclass='on'>(.+?)</strong>").findall(newlink)
             url=url.replace("/page/"+startlen[0]+"/","/page/"+ str(int(startlen[0])+1)+"/")
-            addDir("Next >>",url,6,"")			
-			
+            addDir("Next >>",url,6,"")
+
 def Mirrors(url,name):
-    #try:
+    try:
+        if(CheckRedirect(url)):
+                MirrorsThe(name,url)
+        else:
+                link = GetContent(url)
+                newlink = ''.join(link.splitlines()).replace('\t','')
+                match=re.compile('<b>Episode list </b>(.+?)</table>').findall(newlink)
+                mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">(.+?)</div>').findall(match[0])
+                if(len(mirrors) >= 1):
+                        for vLinkName in mirrors:
+                            addDir(vLinkName.encode("utf-8"),url,5,'')
+
+    except: pass
+	
+def MirrorsThe(name,url):
+    link = GetContent(url)
+    newlink = ''.join(link.splitlines()).replace('\t','')
+    match=re.compile('>Phim Hong Kong<(.+?)</table>').findall(newlink)
+    mirrors=re.compile('<div style="margin-top:10px; margin-bottom:5px">(.+?)</div>').findall(match[0])
+    if(len(mirrors) >= 1):
+        for vLinkName in mirrors:
+            addDir(vLinkName.encode("utf-8"),url,10,'')
+def Episodes2(url,name):
+    try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<b>Episode list </b>(.+?)</table>').findall(newlink)
-        mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">(.+?)</div>').findall(match[0])
-        if(len(mirrors) >= 1):
-                for vLinkName in mirrors:
-                    addDir(vLinkName.encode("utf-8"),url,5,'')
+        match=re.compile('>Phim Hong Kong<(.+?)</table>').findall(newlink)
+        mirrors=re.compile('<div style="margin-top:10px; margin-bottom:5px">'+ name +'(.+?)<!-- mirror').findall(match[0])
+        match1=re.compile('<a href="(.+?)"><strong class="moviered">(.+?)</strong></a>').findall(mirrors[0])
+        if(len(match1) >= 1):
+                for mcontent in match1:
+                    vLink, vLinkName=mcontent
+                    addLink("part - "+ vLinkName.strip().encode("utf-8"),homeLink+vLink,3,'',name)
 
-    #except: pass
-                    
+    except: pass
+
+
 def Episodes(url,name):
     try:
         link = GetContent(url)
@@ -96,7 +144,7 @@ def Episodes(url,name):
                     vLink, vLinkName=mcontent
                     addLink("part - "+ vLinkName.strip().encode("utf-8"),homeLink+vLink,3,'',name)
 
-    except: pass	
+    except: pass
 
 def Geturl(strToken):
         for i in range(20):
@@ -106,16 +154,24 @@ def Geturl(strToken):
                         return strToken
                 if strToken.find("http") != -1:
                         return strToken
-			
+def CheckRedirect(url):
+    try:
+       net = Net()
+       second_response = net.http_GET(url)
+       return (second_response.get_url().find("www.thegioiphim.eu") > 0)
+    except:
+       d = xbmcgui.Dialog()
+       d.ok(url,"Can't Connect to site",'Try again in a moment')
+	   
 def GetContent(url):
     try:
        net = Net()
        second_response = net.http_GET(url)
        return second_response.content
-    except:	
+    except:
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
-       
+
 def PostContent(url):
         try:
                 net = Net()
@@ -130,13 +186,13 @@ def PostContent(url):
                 headers['Host']='yeuphim.net'
                 headers['Accept-Language']='en-us,en;q=0.5'
                 headers['Pragma']='no-cache'
-                formdata={}                      
+                formdata={}
                 second_response = net.http_POST(url,formdata,headers=headers,compression=False)
                 return second_response.content
-        except: 
+        except:
                 d = xbmcgui.Dialog()
                 d.ok('Time out',"Can't Connect to site",'Try again in a moment')
-		
+
 def playVideo(videoType,videoId):
     url = ""
     print videoType + '=' + videoId
@@ -146,11 +202,11 @@ def playVideo(videoType,videoId):
     elif (videoType == "vimeo"):
         url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
-        url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
+        url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId
     else:
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
-	
+
 def loadVideos(url,name):
         try:
            link=PostContent(url)
@@ -202,11 +258,11 @@ def loadVideos(url,name):
                         playVideo('google',gcontent[0])
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
-                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
+                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')
            else:
                 if (newlink.find("linksend.net") > -1):
                      d = xbmcgui.Dialog()
-                     d.ok('Not Implemented','Sorry videos on linksend.net does not work','Site seem to not exist')		
+                     d.ok('Not Implemented','Sorry videos on linksend.net does not work','Site seem to not exist')
                 newlink1 = urllib2.unquote(newlink).decode("utf8")+'&dk;'
                 print 'NEW url = '+ newlink1
                 match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink1)
@@ -218,7 +274,7 @@ def loadVideos(url,name):
                 else:
                     playVideo('yeuphim.net',urllib2.unquote(newlink).decode("utf8"))
         except: pass
-     	
+
 def addLink(name,url,mode,iconimage,mirrorname):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&mirrorname="+urllib.quote_plus(mirrorname)
         ok=True
@@ -228,7 +284,7 @@ def addLink(name,url,mode,iconimage,mirrorname):
         liz.addContextMenuItems(contextMenuItems, replaceItems=True)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
         return ok
-		
+
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
@@ -236,7 +292,7 @@ def addNext(formvar,url,mode,iconimage):
         liz.setInfo( type="Video", infoLabels={ "Title": 'Next >' } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
-		
+
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
@@ -260,8 +316,8 @@ def get_params():
                         splitparams=pairsofparams[i].split('=')
                         if (len(splitparams))==2:
                                 param[splitparams[0]]=splitparams[1]
-                                
-        return param    
+
+        return param
 
 
 
@@ -286,9 +342,10 @@ except:
 try:
         mirrorname=urllib.unquote_plus(params["mirrorname"])
 except:
-        pass		
-		
-sysarg=str(sys.argv[1]) 
+        pass
+
+sysarg=str(sys.argv[1])
+print "mode is:" + str(mode)
 if mode==None or url==None or len(url)<1:
 
         HOME()
@@ -305,6 +362,11 @@ elif mode==6:
        SearchResults(url)
 elif mode==7:
        Mirrors(url,name)
+elif mode==8:
+        MirrorsThe(name,url)
+elif mode==9:
+       INDEXes(url)
+elif mode==10:
+       Episodes2(url,name)
 
-	   
 xbmcplugin.endOfDirectory(int(sysarg))
