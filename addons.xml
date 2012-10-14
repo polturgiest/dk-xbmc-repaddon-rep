@@ -231,7 +231,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.0"
+  version="1.0.1"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>
