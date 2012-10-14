@@ -393,7 +393,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
         link = ''.join(link.splitlines()).replace('\t','').replace('\'','"')
         streamingPlayer = re.compile('document.write\(unescape\("(.+?)"\)\);').findall(link)
         #print streamingPlayer
-        print url
+
         if(len(streamingPlayer) == 0):
         
                 episodeContent = re.compile('<div class="episodeContent">(.+?)</div>').findall(link)[0]
@@ -451,7 +451,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 print 'in dramacrzy check'
                 print 'NEW url = '+url
         except: pass
-		
+
         #SAPO
         try:
                 if not re.search('videos.sapo.pt', url):
@@ -468,8 +468,14 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 match1=re.compile('showEmbedHTML\("swfplayer", (.+?), "(.+?)"\);').findall(link)
                 for time,token in match1:
                         videoUrl = match[0]+"?player=EXTERNO&time="+time+"&token="+token;
-                print videoUrl
-                return videoUrl
+                if(isRequestForURL):
+                        if(isRequestForPlaylist):
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
+                                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                                playlist.add(url=videoUrl, listitem=liz)
+                        return videoUrl
+                else:
+                        addLink ('[B]PLAY VIDEO[/B]',videoUrl,imgUrl)
         except: pass 
         
         #Gamedorm
@@ -487,11 +493,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 print 'gamedorm:' + videoUrl +' :end '
                 if(isRequestForURL):
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage=imgUrl)
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]',videoUrl,imgUrl)
         except: pass
@@ -518,12 +523,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 
                 if(isRequestForURL): 
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage='')
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                print videoUrl
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]',videoUrl,'')
 
@@ -534,11 +537,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 videoUrl = re.compile('play\?file\=(.+?)&AJ;').findall(url)[0]
                 if(isRequestForURL): 
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage='')
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]',videoUrl,'')
         except: pass
@@ -550,11 +552,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 imgUrl = ''
                 if(isRequestForURL):
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem(name, thumbnailImage=imgUrl)
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]: '+name,videoUrl,imgUrl)
                 
@@ -590,11 +591,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 
                 if(isRequestForURL): 
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem(videoTitle, thumbnailImage=imgUrl)
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]: '+videoTitle,videoUrl,imgUrl)
                 
@@ -615,11 +615,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 videoTitle = name
                 if(isRequestForURL): 
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem(videoTitle, thumbnailImage=imgUrl)
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]: '+videoTitle,videoUrl,imgUrl)
                 
@@ -691,11 +690,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                         else:
                                 videoUrl = dm_high[0]
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem('EPISODE', thumbnailImage=imgSrc[0])
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         if(len(dm_low) > 0):
                                 addLink ('PLAY Standard Quality ',dm_low[0],imgSrc[0])
@@ -800,11 +798,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 videoTitle = name
                 if(isRequestForURL):
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem(videoTitle, thumbnailImage=imgUrl)
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]: '+videoTitle,videoUrl,imgUrl)
         except: pass
@@ -934,11 +931,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 videoTitle = name
                 if(isRequestForURL):
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem(videoTitle, thumbnailImage=imgUrl)
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]: '+videoTitle,videoUrl,imgUrl)
         except: pass
@@ -1020,11 +1016,10 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 videoTitle = name
                 if(isRequestForURL):
                         if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem(videoTitle, thumbnailImage=imgUrl)
+                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                                 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                                 playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
+                        return videoUrl
                 else:
                         addLink ('[B]PLAY VIDEO[/B]: '+videoTitle,videoUrl,imgUrl)
         except: pass
@@ -1051,7 +1046,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 else:
                         addLink ('PLAY High Quality Video',link,'')
         except: pass
-		
+
         #Resolveurl
         try:
                 sources = []
@@ -1065,16 +1060,19 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
                 print "source info=" + str(source)
                 if source:
                         videoUrl = source.resolve()
-                if(isRequestForURL):
-                        if(isRequestForPlaylist):
-                                liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
-                                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-                                playlist.add(url=videoUrl, listitem=liz)
-                        else:
-                                return videoUrl
                 else:
-                        addLink ('[B]PLAY VIDEO[/B]',videoUrl,"")
-        except: pass 
+                        videoUrl =""
+        
+                if(videoUrl != ""):
+                        if(isRequestForURL):
+                                if(isRequestForPlaylist):
+                                        liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
+                                        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                                        playlist.add(url=videoUrl, listitem=liz)
+                                return videoUrl
+                        else:
+                                addLink ('[B]PLAY VIDEO[/B]',videoUrl,"")
+        except: pass
 
 
 ####################################################################################################################
