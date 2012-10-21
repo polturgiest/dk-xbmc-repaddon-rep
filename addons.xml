@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.animecrazy"
        name="Anime Crazy"
-       version="1.0.14"
+       version="1.0.15"
        provider-name="AJ">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
