@@ -435,7 +435,7 @@ def loadVideos(url,name,isRequestForURL,isRequestForPlaylist):
         url =  videoUrl[0] + '&AJ;'
         
         print 'VIDEO LINK = '+url
-        
+        imgUrl=""
         #ANIMECRAZY
         try:
                 match=re.compile('http://www.animecrazy.net/(.+?)&AJ;').findall(url)[0]
