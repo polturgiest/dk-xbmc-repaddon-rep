@@ -96,7 +96,7 @@ def __retrieveAndCreateMovieItem__(movieTag):
 
 def displayMovies(request_obj, response_obj):
     url = request_obj.get_data()['movieCategoryUrl']
-
+    print "indisplay" + url
     if request_obj.get_data().has_key('page'):
         url_parts = url.split('?')
         
@@ -113,7 +113,9 @@ def displayMovies(request_obj, response_obj):
 
     contentDiv = BeautifulSoup.SoupStrainer('div', {'id':'content'})
     soup = HttpClient().getBeautifulSoup(url=url, parseOnlyThese=contentDiv)
+
     movieTags = soup.findChildren('div', {'class':'post'})
+    print "intags" + str(movieTags)
     if len(movieTags) == 0:
         movieTags = soup.findChildren('div', {'class':'videopost'})
     for movieTag in movieTags:
@@ -121,34 +123,35 @@ def displayMovies(request_obj, response_obj):
         response_obj.addListItem(item)
     
     response_obj.set_xbmc_content_type('movies')
+    try:
+        pagesInfoTag = soup.findChild('div', {'class':'navigation'})
+
+        current_page = int(pagesInfoTag.find('span', {'class':'page current'}).getText())
+        #print current_page
+        pages = pagesInfoTag.findChildren('a', {'class':'page'})
+        #print pages
+        last_page = int(pages[len(pages) - 1].getText())
     
-    pagesInfoTag = soup.findChild('div', {'class':'navigation'})
-    #print pagesInfoTag
-    current_page = int(pagesInfoTag.find('span', {'class':'page current'}).getText())
-    #print current_page
-    pages = pagesInfoTag.findChildren('a', {'class':'page'})
-    #print pages
-    last_page = int(pages[len(pages) - 1].getText())
-    
-    if current_page < last_page:
-        for page in range(current_page + 1, last_page + 1):
-            createItem = False
-            if page == last_page:
-                pageName = AddonUtils.getBoldString('              ->              Last Page #' + str(page))
-                createItem = True
-            elif page <= current_page + 4:
-                pageName = AddonUtils.getBoldString('              ->              Page #' + str(page))
-                createItem = True
-            if createItem:
-                item = ListItem()
-                item.add_request_data('movieCategoryUrl', request_obj.get_data()['movieCategoryUrl'])
-                item.add_request_data('page', str(page))
+        if current_page < last_page:
+            for page in range(current_page + 1, last_page + 1):
+                createItem = False
+                if page == last_page:
+                    pageName = AddonUtils.getBoldString('              ->              Last Page #' + str(page))
+                    createItem = True
+                elif page <= current_page + 4:
+                    pageName = AddonUtils.getBoldString('              ->              Page #' + str(page))
+                    createItem = True
+                if createItem:
+                    item = ListItem()
+                    item.add_request_data('movieCategoryUrl', request_obj.get_data()['movieCategoryUrl'])
+                    item.add_request_data('page', str(page))
                 
                     
-                item.set_next_action_name('Movies_List_Next_Page')
-                xbmcListItem = xbmcgui.ListItem(label=pageName)
-                item.set_xbmc_list_item_obj(xbmcListItem)
-                response_obj.addListItem(item)
+                    item.set_next_action_name('Movies_List_Next_Page')
+                    xbmcListItem = xbmcgui.ListItem(label=pageName)
+                    item.set_xbmc_list_item_obj(xbmcListItem)
+                    response_obj.addListItem(item)
+    except: pass
             
     
     
