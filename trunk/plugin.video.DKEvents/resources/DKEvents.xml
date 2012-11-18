@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<channels>
+  <channel>
+    <name>Special Events</name>
+    <info>events</info>
+    <item>
+      <title>Event1</title>
+      <link>rtmp://81.17.24.146:1735/vod/bliner30_5x3kqpt</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+  </channel>
+  
+  <channels></channels>
+</channels>
