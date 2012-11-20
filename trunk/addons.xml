@@ -242,7 +242,7 @@
 
 <addon
   id="plugin.video.NoobRoom"
-  version="1.0.7"
+  version="1.0.8"
   name="NoobRoom"
   provider-name="Dknight">
   <requires>
