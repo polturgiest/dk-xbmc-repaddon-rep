@@ -117,10 +117,10 @@ def Episodes(name,videoId):
           match=re.compile("\/(.+?)&sp").findall(videoId+"&sp")
           if len(match)>=0:
                 videoId=match[0]
-          addLink(name+"-Server 1","http://178.159.0.84/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
-          addLink(name+"-Server 2","http://96.44.147.139/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
-          addLink(name+"-Server 3","http://74.121.182.151/~bashthed/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
-          addLink(name+"-Server 4","http://96.47.226.90/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
+          addLink(name+"-Server 1","http://96.44.147.138/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
+          addLink(name+"-Server 2","http://178.159.0.84/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
+          addLink(name+"-Server 3","http://96.44.147.139/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
+          addLink(name+"-Server 4","http://74.121.182.151/~bashthed/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
           addLink(name+"-Server 5","http://64.79.100.121/index.php?file="+videoId+"&start=0&hd=0&auth=0&type=flv",3,"")
     except: pass	
 
