@@ -83,27 +83,6 @@
   </extension>
 </addon>
 
-<addon
-  id="plugin.video.video4Khmer"
-  version="1.0.3"
-  name="video4Khmer"
-  provider-name="Dknight">
-  <requires>
-        <import addon="xbmc.python" version="2.0"/>
-		<import addon="script.module.simplejson" />
-		<import addon="script.module.t0mm0.common" version="1.1.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-            library="default.py">
-        <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>video4Khmer</summary>
-    <description>Watch video4Khmer Videos</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
 <addon id="plugin.video.filipinotv3" name="Filipino On Demand v3"
 	version="1.0.0" provider-name="AJ updated by dknight">
 	<requires>
@@ -263,7 +242,7 @@
 
 <addon
   id="plugin.video.NoobRoom"
-  version="1.0.6"
+  version="1.0.7"
   name="NoobRoom"
   provider-name="Dknight">
   <requires>
