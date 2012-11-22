@@ -117,7 +117,7 @@
 
 <addon
   id="plugin.video.KhmerAccess"
-  version="1.0.1"
+  version="1.0.2"
   name="KhmerAccess"
   provider-name="Dknight">
   <requires>
@@ -159,7 +159,7 @@
 
 <addon
   id="plugin.video.KhmerFever"
-  version="1.0.1"
+  version="1.0.2"
   name="KhmerFever"
   provider-name="Dknight">
   <requires>
@@ -180,7 +180,7 @@
 
 <addon
   id="plugin.video.KhmerPortal"
-  version="1.0.1"
+  version="1.0.2"
   name="KhmerPortal"
   provider-name="Dknight">
   <requires>

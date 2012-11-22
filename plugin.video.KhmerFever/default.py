@@ -7,10 +7,7 @@ from t0mm0.common.net import Net
 
 strdomain ='khmerfever.com'
 def HOME():
-        addDir('Chinese','http://khmerfever.com/video-category/chinese-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Korean Drama','http://khmerfever.com/video-category/korean-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Thai Lakorn','http://khmerfever.com/video-category/thai-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category13.jpg')
-        addDir('Search','http://khmerfever.com/',4,'')
+        addLink('Khmerfever no longer exist Use KhmerPortal addon','',3,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         
 def SEARCH(url):
         keyb = xbmc.Keyboard('', 'Enter search text')

@@ -8,16 +8,7 @@ import xbmcaddon,xbmcplugin,xbmcgui
 
 strdomain ='www.khmeraccess.com'
 def HOME():
-        addDir('Chinese Series','http://www.khmeraccess.com/video/videolist/videonew.html?cid=1',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Series volume 2','http://www.khmeraccess.com/video/videolist/videonew.html?cid=110',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Thai Lakorn','http://www.khmeraccess.com/video/videolist/videonew.html?cid=13',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category13.jpg')
-        addDir('Korean Movies','http://www.khmeraccess.com/video/videolist/videonew.html?cid=98',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Korean Drama','http://www.khmeraccess.com/video/videolist/videonew.html?cid=4',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Japanese Movies','http://www.khmeraccess.com/video/videolist/videonew.html?cid=99',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category13.jpg')
-        addDir('Chinese Movies','http://www.khmeraccess.com/video/videolist/videonew.html?cid=6',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Other','http://www.khmeraccess.com/video/videolist/videonew.html?cid=120',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('NEW Drama','http://www.khmeraccess.com/video/videolist/videonew.html?cid=23',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category13.jpg')
-        addDir('Search','/videos/categories',4,'')
+        addLink('Khmeraccess no longer exist Use KhmerPortal addon','',3,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         
 def SEARCH(url):
         keyb = xbmc.Keyboard('', 'Enter search text')
@@ -313,5 +304,6 @@ elif mode==9:
        INDEX_New(PostContent(formvar,url),url)
 elif mode==10:
        INDEX_Old(PostContent(formvar,url),url)
-	   
+elif mode==11:
+       xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
 xbmcplugin.endOfDirectory(int(sysarg))
