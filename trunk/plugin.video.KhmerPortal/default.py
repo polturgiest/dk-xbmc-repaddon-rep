@@ -5,17 +5,12 @@ import os,time,base64,logging
 import xbmcaddon,xbmcplugin,xbmcgui
 #from t0mm0.common.net import Net
 
-strdomain ='www.khmerportal.com'
+strdomain ='khmerportal.com'
 def HOME():
-        addDir('Videos about Cambodia','/videos/viewcategory/38/cambodia',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category38.jpg')
-        addDir('Chinese','/videos/viewcategory/29/chinese',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Japanese Drama','/videos/viewcategory/25/japanese-drama',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category25.jpg')
-        addDir('Korean Drama','/videos/viewcategory/21/korean-drama',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Cars & Vehicles','/videos/viewcategory/1/cars-a-vehicles',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category1.jpg')
-        addDir('Khmer Cooking','/videos/viewcategory/15/khmer-cooking',2,'http://img.youtube.com/vi/p-LmXztN3d8/default.jpg')
-        addDir('Khmer Entertainment','/videos/viewcategory/12/khmer-entertainment',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category12.jpg')
-        addDir('Khmer Surin','/videos/viewcategory/40/khmer-surin',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category40.jpg')
-        addDir('Thai Lakorn','/videos/viewcategory/13/thai-lakorn',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category13.jpg')
+        addDir('Chinese','/category/chinese/chinese-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Korean Drama','/category/korean/korean-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        addDir('Khmer Entertainment','/category/khmer-other-videos/khmer-other-videos-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category12.jpg')
+        addDir('Thai Lakorn','/category/thai/thai-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category13.jpg')
         addDir('Search','/videos/categories',4,'')
         
 def SEARCH(url):
@@ -24,31 +19,44 @@ def SEARCH(url):
         searchText = ''
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = '/videos/displayresults/0?pattern=' + searchText + '&rpp=0&sort=0&ep=&ex='
+        url = '/?s=' + searchText
         INDEX(url)
         
 def INDEX(url):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div class="listThumbnail" >(.+?)</div>').findall(newlink)
+        match=re.compile('<div class="nag cf">(.+?)<!-- end .loop-content -->').findall(newlink)
         if(len(match) >= 1):
                 for mcontent in match:
-                    quickLinks=re.compile('<a href="(.+?)" ><span class="hasTip" title="(.+?)"><img src="(.+?)"').findall(mcontent)
-                    for vLink, vLinkName,vLinkPic in quickLinks:
-                        addLink(vLinkName,vLink,3,vLinkPic)
-        match=re.compile('<div class="page-inactive"><a href="(.+?)" title="Next">').findall(link)
+                    quickLinks=re.compile('<a class="clip-link" data-id="(.+?)" title="(.+?)" href="(.+?)"><span class="clip"><img src="(.+?)" alt="(.+?)" />').findall(mcontent)
+                    for vtmp1,vLinkName,vLink,vLinkPic,vtmp2 in quickLinks:
+                        addDir(vLinkName.encode('string_escape'),vLink,5,vLinkPic)
+        match=re.compile("<a (.+?) class=\"next\">&raquo;</a>").findall(link)
         if(len(match) >= 1):
-            print 'matches' +str(match[0])
-            nexurl= match[0]
-            addDir('Next>',nexurl,2,'')
-                        
+                match=re.compile("href='(.+?)'").findall(match[0])
+                nexurl= match[0]
+                addDir('Next>',nexurl,2,'')
+				
+def Episodes(url,name):
+    try:
+        link = GetContent(url)
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        match=re.compile("<ul class='related_post'>(.+?)</ul></div>").findall(newlink)
+        if(len(match) >= 1):
+                linkmatch=re.compile("<li><a href='(.+?)' title='(.+?)'>(.+?)</a></li>").findall(match[0])
+                for vpic in linkmatch:
+                        (vurl,vname,vtmp3)=vpic
+                        addLink(vname.encode('string_escape'),vurl,3,"")
+                addLink(name.encode('string_escape'),url,3,"")
+    except: pass
+	
 def GetCookie():
      response = ClientCookie.urlopen("http://www.khmerportal.com/")
      print response
 
 def GetContent(url):
     conn = httplib.HTTPConnection(host=strdomain,timeout=30)
-    req = url
+    req = url.replace('http://'+strdomain,'')
     try:
         conn.request('GET',req)
     except:
@@ -58,34 +66,34 @@ def GetContent(url):
     return content
 
 def playVideo(videoType,videoId):
-    url = ""
+    url = videoId
     if (videoType == "youtube"):
-        url = 'plugin://plugin.video.youtube?path=/root&action=play_video&videoid=' + videoId.replace('?','')
-        xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
+        url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
     elif (videoType == "vimeo"):
         url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
         url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
-    elif (videoType == "khmerportal"):
-        xbmcPlayer = xbmc.Player()
-        xbmcPlayer.play(videoId)
+    xbmcPlayer = xbmc.Player()
+    xbmcPlayer.play(url)
 	
 def loadVideos(url,name):
         xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
         link=GetContent(url)
         link = ''.join(link.splitlines()).replace('\t','').replace('\'','"')
-        
-        #khmerportal
         try:
-                newlink = re.compile('allowfullscreen="true" flashvars="file=(.+?)&amp;linktarget=_blank').findall(link)
-                newlink1 = urllib2.unquote(newlink[0]).decode("utf8")+'&dk;'
-                print 'NEW url = '+ newlink1 
-                match=re.compile('http://www.youtube.com/watch\?v=(.+?)&dk;').findall(newlink1)
-                print match
-                if(len(match) > 0):
-                    playVideo('youtube',match[0])
+                newlink = re.compile('"setMedia", {(.+?):"(.+?)"').findall(link)
+                if(len(newlink) > 0):
+                        (vtmp1,vlink)=newlink[0]
                 else:
-                    playVideo('khmerportal',urllib2.unquote(newlink[0]).decode("utf8"))
+                        newlink = re.compile('<iframe [^>]*src="(.+?)" frameborder="0" allowfullscreen>').findall(link)
+                        vlink=newlink[0]
+                print vlink
+                match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(vlink)
+                if(len(match) > 0):
+                        lastmatch = match[0][len(match[0])-1].replace('v/','')
+                        playVideo('youtube',lastmatch)
+                else:
+                        playVideo('khmerportal',urllib2.unquote(vlink).decode("utf8"))
         except: pass
         
 def OtherContent():
@@ -163,7 +171,9 @@ elif mode==3:
         loadVideos(url,name)
 elif mode==4:
         SEARCH(url) 
-        
+elif mode==5:
+        print "in episode"
+        Episodes(url,name)       
 elif mode==8:
         PAGES(url)
 
