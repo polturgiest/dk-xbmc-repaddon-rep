@@ -7,7 +7,8 @@ __addon__ = xbmcaddon.Addon(id=__addonid__)
 
 CATEGORY_LIST = {'Updates':{'url':'http://feeds.feedburner.com/twsugoideas?format=xml', 'mode':'6'}, 
                  'Variety Shows':{'url':'http://sugoideas.com/variety-shows/', 'mode':'1'}, 
-                 'Drama Series':{'url':'http://sugoideas.com/', 'mode':'5'}}
+                 'Drama Series':{'url':'http://sugoideas.com/', 'mode':'5'}, 
+                 'Search':{'url':'http://sugoideas.com/', 'mode':'9'}}
 
 class Program :
     def __init__(self, link, titleAlt, imgTitle, img, title, hosts, releaseDate):
@@ -20,7 +21,16 @@ class Program :
         self.releaseDate = releaseDate                        
 
     def toString(self):
-        return 'Title : ' + self.title + ', Link : ' + self.link      
+        return 'Title : ' + self.title + ', Link : ' + self.link   
+
+def SEARCH():
+        keyb = xbmc.Keyboard('', 'Enter search text')
+        keyb.doModal()
+        #searchText = '01'
+        if (keyb.isConfirmed()):
+                searchText = urllib.quote_plus(keyb.getText())
+        url = 'http://sugoideas.com/search/'+ searchText
+        dramaList(url)
 
 class Episode :
     def __init__(self, title, link):
@@ -350,3 +360,5 @@ elif mode == '7':
     dramaList(url)
 elif mode == '8':
     PLAYLIST_VIDEOLINKS(url,name)
+elif mode == '9':
+    SEARCH()
