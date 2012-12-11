@@ -45,7 +45,8 @@ def HOME():
     addDir('Adult +18 ', 'http://www.mydootv.com/products_list_wide.php?uri=/Others/Eighteen-Plus&menuType=programmes&groupID=209&value2=&viewType=&page=1&groupName=%3Cstrong%3E18+(Under%20Admitted)%3C/strong%3E%20%E0%AB%E7%A1%AB%D5%E8%E1%B5%E8%E4%C1%E8%E2%BB%EA&numRows=&limit=25',2,'')
     addDir('Coming soon ', 'http://www.mydootv.com/products_list_wide.php?uri=/Coming-Soon&menuType=programmes&groupID=156&value2=&viewType=&page=1&groupName=%3Cstrong%3EComing%20Soon%20!%3C/strong%3E%20%E0%C3%E7%C7%E6%B9%D5%E9&numRows=&limit=25',2,'')
 
-	
+  
+        
 def SEARCH(url):
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
@@ -155,8 +156,8 @@ def playVideo(videoType,videoId):
 def addLink(name,url,mode,iconimage,serverurl):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode('tis-620'))+"&serverurl="+urllib.quote_plus(serverurl)
         ok=True
-        liz=xbmcgui.ListItem(name.encode('tis-620'), iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name.encode('tis-620') } )
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
         contextMenuItems = []
         liz.addContextMenuItems(contextMenuItems, replaceItems=True)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
@@ -165,8 +166,8 @@ def addLink(name,url,mode,iconimage,serverurl):
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode('tis-620'))
         ok=True
-        liz=xbmcgui.ListItem(name.encode('tis-620'), iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name.encode('tis-620') } )
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 

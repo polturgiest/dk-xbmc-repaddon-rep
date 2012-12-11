@@ -242,7 +242,7 @@
 
 <addon
   id="plugin.video.MyDooTv"
-  version="0.9.1"
+  version="0.9.2"
   name="MyDooTv"
   provider-name="Dknight">
   <requires>
