@@ -1,2 +1,4 @@
 0.9 
 - Intial release
+
+0.9.1 - added another server region
