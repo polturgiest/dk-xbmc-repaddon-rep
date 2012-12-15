@@ -109,6 +109,7 @@ def ChooseServerReg(pid):
         addDir("Older Server 1",pid,9,"")
         addDir("Older Servers 2",pid,10,"")
         addDir("Older Servers 3",pid,11,"")
+        addDir("Older Servers 4",pid,12,"")
 		
 def GetServerList(CountryFile,pid):
         listcontent = GetContent(CountryFile)
@@ -239,6 +240,8 @@ elif mode==10:
         GetServerList("/sorted_01_0110.txt",url)
 elif mode==11:
         GetServerList("/sorted_02_0112.txt",url)
+elif mode==12:
+        GetServerList("/sorted_01_0711.txt",url)
 elif mode > 100:
        Episodes(url,str(mode))
 xbmcplugin.endOfDirectory(int(sysarg))
