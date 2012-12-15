@@ -197,13 +197,17 @@ def getVidQuality(url,name):
   vidurl = "http://www.viki.com/player/medias/"+mediaid+"/info.json?rtmp=false"
   data = json.load(urllib2.urlopen(vidurl))['streams']
   langcode=checkLanguage(mediaid)
-  suburl= "http://www.viki.com/subtitles/media_resource/" + subid + "/" + langcode + ".json"
+  suburl= "http://www.viki.com/subtitles/media/" + mediaid + "/" + langcode + ".json"
   for i, item in enumerate(data):
           addLink(item['quality'],item['uri'],3,"")
   try:
           json2srt(suburl, name)
   except:
-          f = open(filename, 'w');f.write("");f.close()
+          try:
+                suburl= "http://www.viki.com/subtitles/media_resource/" + subid + "/" + langcode + ".json"
+                json2srt(suburl, name)
+          except:  
+                f = open(filename, 'w');f.write("");f.close()
                  
 
 def playVideo(suburl,videoId):
