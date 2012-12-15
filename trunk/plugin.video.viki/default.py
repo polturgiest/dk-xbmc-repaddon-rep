@@ -112,7 +112,7 @@ def getVidPage(url,name):
                 navlist=re.compile('<a[^>]* href="(.+?)">(.+?)</a>').findall(pagelist[0])
                 for purl,pname in navlist:
                     if(pname.find("About Us") != 0):
-                          addDir("page " + pname.decode("utf-8"),purl,7,"")
+                          addDir("page " + pname.decode("utf-8"),strdomain+purl,7,"")
 
 def getLanguages(url, ltype):
         link = GetContent("http://www.viki.com/tv/recent")
