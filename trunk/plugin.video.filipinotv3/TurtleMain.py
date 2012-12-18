@@ -9,7 +9,7 @@ import TurtlePlugin
 
 if __name__ == '__main__':
     
-    __addon_id__ = 'plugin.video.filipinotv'
+    __addon_id__ = 'plugin.video.filipinotv3'
     __is_type_service__ = False
     
     if __is_type_service__:
