@@ -3,6 +3,36 @@
   <channel>
     <name>Khmer channels</name>
     <info>Khmer channels from khiptv</info>
+	 <item>
+      <title>Movie 10</title>
+      <link>http://e-magic.info:44412/Movie10</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+	<item>
+      <title>Movie 17</title>
+      <link>http://e-magic.info:44412/Movies17</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+	<item>
+      <title>Movie 9</title>
+      <link>http://e-magic.info:44412/Movie9</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+	<item>
+      <title>Kok</title>
+      <link>http://e-magic.info:44412/Movie9</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+	<item>
+      <title>Karaoke</title>
+      <link>mms://72.52.104.19/ok</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
     <item>
       <title>Sea TV</title>
       <link>http://e-magic.info:44412/sea_Pub</link>
@@ -28,6 +58,12 @@
     <item>
       <title>bayon_NEWS</title>
       <link>http://e-magic.info:44412/bayon_NEWS</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
+    </item>
+	<item>
+       <title>bayon Replay</title>
+      <link>http://e-magic.info:44412/Bayon_RE</link>
       <thumbnail>
       http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
     </item>
@@ -74,7 +110,12 @@
     </item>
     <item>
       <title>nlakorn</title>
-      <link>http://e-magic.info:44412/nlakorn</link>
+      <link>http://184.105.192.5:44412/nlakorn</link>
+      <thumbnail>http://khiptv.com/images_TV/lakorn.jpg</thumbnail>
+    </item>
+	    <item>
+      <title>MK TV</title>
+      <link>mms://72.52.104.25/mktv</link>
       <thumbnail>http://khiptv.com/images_TV/lakorn.jpg</thumbnail>
     </item>
   </channel>
