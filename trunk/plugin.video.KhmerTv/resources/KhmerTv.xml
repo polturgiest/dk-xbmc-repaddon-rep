@@ -3,6 +3,12 @@
   <channel>
     <name>Khmer channels</name>
     <info>Khmer channels from khiptv</info>
+	<item>
+      <title>KhipTV</title>
+      <link>http://e-magic.info:44412/KhipTV</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
 	 <item>
       <title>Movie 10</title>
       <link>http://e-magic.info:44412/Movie10</link>
