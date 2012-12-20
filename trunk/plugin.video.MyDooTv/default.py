@@ -10,6 +10,7 @@ strdomain ='www.mydootv.com'
 strServerUrl=""
 def HOME():
     addDir('Search','/videos/categories',4,'')
+    addDir('Live Tv','/videos/categories',13,'')
     addDir('Cartoons ', 'http://www.mydootv.com/products_list_wide.php?uri=/Cartoon&menuType=programmes&groupID=90&value2=&viewType=&page=1&groupName=%3Cstrong%3ECartoon%3C/strong%3E%20%A1%D2%C3%EC%B5%D9%B9&numRows=&limit=25',2,'')
     addDir('all thai drama ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama&menuType=programmes&groupID=38,10,193,194,200,206,210,212&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
     addDir('---thai on air ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama/On-Air&menuType=programmes&groupID=10&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
@@ -46,7 +47,24 @@ def HOME():
     addDir('Coming soon ', 'http://www.mydootv.com/products_list_wide.php?uri=/Coming-Soon&menuType=programmes&groupID=156&value2=&viewType=&page=1&groupName=%3Cstrong%3EComing%20Soon%20!%3C/strong%3E%20%E0%C3%E7%C7%E6%B9%D5%E9&numRows=&limit=25',2,'')
 
   
-        
+def ShowLiveTV():
+    addLink('TV 3 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_BqIe5vheSOYsU_Rgj_dumA_640_360_700 live=true',14,'','')
+    addLink('TV 3 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive3/mp4:uklive3stream9 live=true',14,'','')
+    addLink('TV 5','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_4MUCJ_wvTKgnOaeQdGMOk0_640_360_696 live=true',14,'','')
+    addLink('TV 7 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_-fecoVNRTNInw9Ge70vyDg_640_360_696 live=true',14,'','')
+    addLink('TV 7 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive7/mp4:uklive7stream9 live=true',14,'','')
+    addLink('TV 9 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_2SNwp7ygQ8cnXqsglDXw48_640_360_696 live=true',14,'','')
+    addLink('NBT','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_QUnlGGb8QO8qh1WNiDeRAM_640_360_696 live=true',14,'','')
+    addLink('TPBS','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_ia0CJ_OsTBojUFwN7pC4cs_640_360_696 live=true',14,'','')
+    addLink('FAN TV','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_nccY09eETbcmPo69h1b898_640_360_696 live=true',14,'','')
+    addLink('Green Channel','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38__Scd02cLT7UgTueLpbeerY_640_360_696 live=true',14,'','')
+    addLink('Acts Channel','rtmpte://llnwvps348.fc.llnwd.net:80/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_08W_urLlRWAsogFHrCzJsw_640_360_696 live=true',14,'','')
+    addLink('Bang Channel','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_ysf1M8xySnYonbbVTtF0oY_640_360_696 live=true',14,'','')
+    addLink('Keera Channel','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_ghJ73vaoSgAhHoGi7IZ_uk_640_360_696 live=true',14,'','')
+    addLink('Nation Channel','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_UIpYjsh1QPAqASF_Lxww3I_640_360_696 live=true',14,'','')
+    addLink('Miracle Channels','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_hc9F6XfTTvcpokzyz8SUUY_640_360_696 live=true',14,'','')
+    addLink('WorkPoint TV','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_xG6WbUtkRSQjQzHjY05rqw_640_360_696 live=true',14,'','')
+	
 def SEARCH(url):
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
@@ -242,6 +260,11 @@ elif mode==11:
         GetServerList("/sorted_02_0112.txt",url)
 elif mode==12:
         GetServerList("/sorted_01_0711.txt",url)
+elif mode==13:
+        ShowLiveTV()
+elif mode==14:
+        playVideo("direct",url)
+
 elif mode > 100:
        Episodes(url,str(mode))
 xbmcplugin.endOfDirectory(int(sysarg))
