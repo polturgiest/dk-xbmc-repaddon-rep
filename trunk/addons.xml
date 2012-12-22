@@ -304,7 +304,7 @@
 
 <addon
   id="plugin.video.phim47"
-  version="1.0.0"
+  version="1.0.1"
   name="phim47"
   provider-name="Dknight">
   <requires>

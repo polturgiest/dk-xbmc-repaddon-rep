@@ -111,8 +111,8 @@ def decodeurl(encodedurl):
 def getVidPage(url,name):
   contentlink = GetContent(url)
   contentlink = ''.join(contentlink.splitlines()).replace('\'','"')
-  mlink=re.compile('<a onclick="this.style.behavior="url\(#default#homepage\)"; this.setHomePage\("http://phim47.com"\);"  href="(.+?)" ><img src="http://phim47.com/skin/movie/style/images/watch_now.png"  width="(.+?)" height="(.+?)">').findall(contentlink)
-  return mlink[0][0]
+  mlink=re.compile('<a  id="clicktoepisode" href=(.+?) >').findall(contentlink)
+  return mlink[0]
 
 
 def Episodes(url,name):
