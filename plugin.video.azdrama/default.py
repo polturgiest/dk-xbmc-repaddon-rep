@@ -155,8 +155,12 @@ def loadVideos(url,name):
                          addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
                          qctr=qctr+1
            else:
-                   d = xbmcgui.Dialog()
-                   d.ok('Not Implemented','Sorry this video site is ',' not implemented yet')
+                   match=re.compile('<li>VIP #1: <a href="(.+?)">').findall(newlink)
+                   if(len(match) > 0):
+                           loadVideos(match[0],name)
+                   else:  
+                           d = xbmcgui.Dialog()
+                           d.ok('Not Implemented','Sorry this video site is ',' not implemented yet')
 
 def addLink(name,url,mode,iconimage,mirrorname):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode('utf-8'))+"&mirrorname="+urllib.quote_plus(mirrorname)
