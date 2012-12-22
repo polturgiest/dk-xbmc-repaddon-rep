@@ -45,7 +45,7 @@
 
 <addon
   id="plugin.video.azdrama"
-  version="1.0.0"
+  version="1.0.1"
   name="azdrama.net"
   provider-name="Dknight">
   <requires>
