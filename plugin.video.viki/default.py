@@ -95,7 +95,7 @@ def UpdatedVideos(url,name):
 def getVidPage(url,name):
   link = GetContent(url)
   link = ''.join(link.splitlines()).replace('\'','"')
-  vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)</ol>').findall(link)
+  vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)<p class="sub-headline">').findall(link)
   if(len(vidcontainer) ==0):
           vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)</li>').findall(link)
   for mediaid,vcontent in vidcontainer:
