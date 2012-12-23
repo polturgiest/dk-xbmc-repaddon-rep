@@ -96,6 +96,8 @@ def getVidPage(url,name):
   link = GetContent(url)
   link = ''.join(link.splitlines()).replace('\'','"')
   vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)</ol>').findall(link)
+  if(len(vidcontainer) ==0):
+          vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)</li>').findall(link)
   for mediaid,vcontent in vidcontainer:
         vidlist=re.compile('<a href="(.+?)>        <img alt="(.+?)" class="thumb-design" src="(.+?)" />').findall(vcontent)
         vidlist2=re.compile('<h3><a href="(.+?)">(.+?)</a></h3>').findall(vcontent)
@@ -271,7 +273,6 @@ def playVideoPart(suburl,videoId,subfilepath):
                   json2srt(suburl, subfilepath)
         except:  
                   f = open(filename, 'w');f.write("");f.close()
-        print "playing|" + videoId
         vidurl=getVideoUrl(videoId,"")
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(vidurl)
