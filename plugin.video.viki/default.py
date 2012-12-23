@@ -105,7 +105,14 @@ def getVidPage(url,name):
         (vurl,vname)=vidlist2[0]
         vurl = vurl.split("/videos/")[0]
         sublinks=re.compile('data-path="/subtitles/media_resource/(.+?).json"').findall(vcontent)
-        subidlist='_'.join(sublinks)
+        if(len(sublinks)==0):
+                subidlist1 =  re.compile('/media_resource/thumbnail/(.+?)/(.+?)').findall(vimg)
+                if(len(subidlist1[0]) > 1):
+                     subidlist = subidlist1[0][0]
+                else:
+                     subidlist=mediaid
+        else:   
+                subidlist='_'.join(sublinks)
         addDir(vname,mediaid+"|"+subidlist,4,vimg)
   pagelist=re.compile('<div class="pagination">(.+?)</li>').findall(link)
   if(len(pagelist) > 0):
@@ -243,6 +250,7 @@ def getVidQuality(url,name):
   langcode="en" #checkLanguage(mediaid)
   if(data[0]['quality']!="solo"):
           suburl= "http://www.viki.com/subtitles/media/" + mediaid + "/" + langcode + ".json"
+          subid=subidlist[0]
           for i, item in enumerate(data):
                   addLink(item['quality'],item['uri'],3,"")
           try:
