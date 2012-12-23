@@ -6,6 +6,7 @@ from t0mm0.common.net import Net
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import json
+import urlresolver
 from xml.dom.minidom import Document
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.viki')
@@ -94,19 +95,16 @@ def UpdatedVideos(url,name):
 def getVidPage(url,name):
   link = GetContent(url)
   link = ''.join(link.splitlines()).replace('\'','"')
-  vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)</li>').findall(link)
+  vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)</ol>').findall(link)
   for mediaid,vcontent in vidcontainer:
         vidlist=re.compile('<a href="(.+?)>        <img alt="(.+?)" class="thumb-design" src="(.+?)" />').findall(vcontent)
         vidlist2=re.compile('<h3><a href="(.+?)">(.+?)</a></h3>').findall(vcontent)
         (vurl,vname,vimg)=vidlist[0]
-        subidlist =  re.compile('/media_resource/thumbnail/(.+?)/(.+?)').findall(vimg)
-        if(len(subidlist[0]) > 1):
-             subid = subidlist[0][0]
-        else:
-             subid=mediaid
         (vurl,vname)=vidlist2[0]
         vurl = vurl.split("/videos/")[0]
-        addDir(vname,mediaid+"_"+subid,4,vimg)
+        sublinks=re.compile('data-path="/subtitles/media_resource/(.+?).json"').findall(vcontent)
+        subidlist='_'.join(sublinks)
+        addDir(vname,mediaid+"|"+subidlist,4,vimg)
   pagelist=re.compile('<div class="pagination">(.+?)</li>').findall(link)
   if(len(pagelist) > 0):
                 navlist=re.compile('<a[^>]* href="(.+?)">(.+?)</a>').findall(pagelist[0])
@@ -165,6 +163,49 @@ def SEARCHChannel():
         searchurl="http://www.viki.com/search_channel?q=" + searchText
         SearchChannelresults(searchurl,searchText.lower())
 		
+def getVideoUrl(url,name):
+
+   data = json.load(urllib2.urlopen(url))['streams']
+   for i, item in enumerate(data):
+        if(item["type"].find("DAILYMOTION") > -1):
+                dailylink = item["uri"]+"&dk;"
+                match=re.compile('/swf/(.+?)&dk;').findall(dailylink)
+                if(len(match) == 0):
+                        match=re.compile('/video/(.+?)&dk;').findall(dailylink)
+                link = 'http://www.dailymotion.com/video/'+str(match[0])
+                linkcontent=GetContent(link)
+                sequence=re.compile('"sequence":"(.+?)"').findall(linkcontent)
+                newseqeunce = urllib.unquote(sequence[0]).replace('\\/','/')
+                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
+                if(len(imgSrc[0]) == 0):
+                        imgSrc=re.compile('/jpeg" href="(.+?)"').findall(linkcontent)
+                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
+                if(len(dm_high) == 0):
+                        vidlink = dm_low[0]
+                else:
+                        vidlink = dm_high[0]
+        elif(item["type"].find("GOOGLE") > -1):
+            vidcontent=GetContent(item["uri"])
+            vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
+            vidlink=vidmatch[0][0]
+        elif(item["type"].find("YOUTUBE") > -1):
+            vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(item["uri"])
+            vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
+            vidlink='plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid='+vidlink
+        else:
+            sources = []
+            label=name
+            hosted_media = urlresolver.HostedMediaFile(url=item["uri"], title=label)
+            sources.append(hosted_media)
+            source = urlresolver.choose_source(sources)
+            print "urlrsolving" + item["uri"]
+            if source:
+                vidlink = source.resolve()
+            else:
+                vidlink =""
+   return vidlink
+   
 def SearchVideoresults(url,searchtext):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
@@ -191,32 +232,61 @@ def SEARCHVideos():
         SearchVideoresults(searchurl,searchText.lower())
 		
 def getVidQuality(url,name):
-  idlist=url.split("_")
+  idlist=url.split("|")
   mediaid= idlist[0]
-  subid= idlist[1]
+  subidlist= idlist[1].split("_")
+  
   vidurl = "http://www.viki.com/player/medias/"+mediaid+"/info.json?rtmp=false"
   data = json.load(urllib2.urlopen(vidurl))['streams']
-  langcode=checkLanguage(mediaid)
-  suburl= "http://www.viki.com/subtitles/media/" + mediaid + "/" + langcode + ".json"
-  for i, item in enumerate(data):
-          addLink(item['quality'],item['uri'],3,"")
-  try:
-          json2srt(suburl, name)
-  except:
+  langcode="en" #checkLanguage(mediaid)
+  if(data[0]['quality']!="solo"):
+          suburl= "http://www.viki.com/subtitles/media/" + mediaid + "/" + langcode + ".json"
+          for i, item in enumerate(data):
+                  addLink(item['quality'],item['uri'],3,"")
           try:
-                suburl= "http://www.viki.com/subtitles/media_resource/" + subid + "/" + langcode + ".json"
-                json2srt(suburl, name)
-          except:  
-                f = open(filename, 'w');f.write("");f.close()
+                  json2srt(suburl, name)
+          except:
+                  try:
+                        suburl= "http://www.viki.com/subtitles/media_resource/" + subid + "/" + langcode + ".json"
+                        json2srt(suburl, name)
+                  except:  
+                        f = open(filename, 'w');f.write("");f.close()
+  else:
+          pctr=0
+          for subid in subidlist:
+                  pctr=pctr+1
+                  suburl= "http://www.viki.com/subtitles/media_resource/" + subid + "/" + langcode + ".json"
+                  vidurl="http://www.viki.com/player/media_resources/" + subid + "/info.json?rtmp=false"
+                  #directurl = getVideoUrl(vidurl,suburl)
+                  addLinkSub("part " + str(pctr),vidurl,15,"",suburl)
                  
 
 def playVideo(suburl,videoId):
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
         xbmcPlayer.setSubtitles(suburl) 
-	
+		
+def playVideoPart(suburl,videoId,subfilepath):
+        try:
+                  json2srt(suburl, subfilepath)
+        except:  
+                  f = open(filename, 'w');f.write("");f.close()
+        print "playing|" + videoId
+        vidurl=getVideoUrl(videoId,"")
+        xbmcPlayer = xbmc.Player()
+        xbmcPlayer.play(vidurl)
+        xbmcPlayer.setSubtitles(subfilepath)
 
-     	
+def addLinkSub(name,url,mode,iconimage,suburl):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&suburl="+urllib.quote_plus(suburl)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
+        contextMenuItems = []
+        liz.addContextMenuItems(contextMenuItems, replaceItems=True)
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
+        return ok
+    	
 def addLink(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
@@ -268,6 +338,7 @@ url=None
 name=None
 mode=None
 formvar=None
+subtitleurl=None
 try:
         url=urllib.unquote_plus(params["url"])
 except:
@@ -284,7 +355,11 @@ try:
         formvar=int(params["formvar"])
 except:
         pass		
-	
+try:
+        subtitleurl=urllib.unquote_plus(params["suburl"])
+except:
+        pass
+		
 sysarg=str(sys.argv[1]) 
 if mode==None or url==None or len(url)<1:
         HOME()
@@ -315,5 +390,8 @@ elif mode==13:
         SearchChannelresults(url)
 elif mode==14:
         SearchVideoresults(url)
+elif mode==15:
+        print "outside:" + subtitleurl
+        playVideoPart(subtitleurl,url,filename)
 
 xbmcplugin.endOfDirectory(int(sysarg))
