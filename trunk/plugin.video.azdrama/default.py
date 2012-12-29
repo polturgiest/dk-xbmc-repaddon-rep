@@ -77,15 +77,30 @@ def Mirrors(url,name):
                             addDir(vLinkName.encode("utf-8"),url,5,'')
 
     except: pass
-
-
+	
+def Parts(url,name):
+        link = GetContent(url)
+        link = ''.join(link.splitlines()).replace('\'','"')
+        partlist=re.compile('<li>VIP #1:(.+?)by:').findall(link)
+        partctr=0
+        if(len(partlist)>0):
+               partlink=re.compile('<a href="(.+?)">').findall(partlist[0])
+               if(len(partlink) > 1):
+                       for vlink in partlink:
+                              partctr=partctr+1
+                              addDir(name + " Part " + str(partctr),vlink,3,"")
+        return partctr
+		
+def CheckParts(url,name):
+	if(Parts(url,name) < 2):
+		loadVideos(url,name)
 def Episodes(url,name,newmode):
     #try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
         listcontent=re.compile('<ul class="listep">(.+?)</ul>').findall(newlink)
         if(newmode==5):
-                vidmode=3
+                vidmode=11
         else:
                 vidmode=9
         match=re.compile('<li><a href="(.+?)" title="(.+?)">').findall(listcontent[0])
@@ -254,5 +269,7 @@ elif mode==9:
        GetEpisodeFromVideo(url,name)
 elif mode==10:
        Episodes2(url,name)
+elif mode==11:
+       CheckParts(url,name)
 
 xbmcplugin.endOfDirectory(int(sysarg))
