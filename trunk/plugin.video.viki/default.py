@@ -247,7 +247,7 @@ def getVidQuality(url,name):
   
   vidurl = "http://www.viki.com/player/medias/"+mediaid+"/info.json?rtmp=false"
   data = json.load(urllib2.urlopen(vidurl))['streams']
-  langcode="en" #checkLanguage(mediaid)
+  langcode=checkLanguage(mediaid)
   if(data[0]['quality']!="solo"):
           suburl= "http://www.viki.com/subtitles/media/" + mediaid + "/" + langcode + ".json"
           subid=subidlist[0]
