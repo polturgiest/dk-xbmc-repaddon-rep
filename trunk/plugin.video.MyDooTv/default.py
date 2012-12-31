@@ -71,7 +71,7 @@ def SEARCH(url):
         searchText = ''
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = '/products_list_wide.php?uri=/advanced_search_result.php?search_in_description=1&menuType=search&groupID='+searchText+'&value2=&viewType=&page=1&groupName=&numRows=&limit=25'
+        url = '/products_list_wide.php?uri=/advanced_search_result.php?search_in_description=1&menuType=search&groupID='+urllib.quote_plus(searchText.encode('tis-620'))+'&value2=&viewType=&page=1&groupName=&numRows=&limit=25'
         INDEX(url,"1")
         
 def INDEX(url,name):
