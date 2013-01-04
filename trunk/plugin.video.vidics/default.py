@@ -176,9 +176,18 @@ def ParseVideoLink(url,name):
                 pcontent=postContent(redirlink,posdata,url)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
                 capchacon =re.compile('<b>Enter code below:</b>(.+?)</table>').findall(pcontent)[0]
-                capchalink=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(capchacon)[0]
-                solver = InputWindow(captcha=capchalink)
-                puzzle = solver.get()
+                capchalink=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(capchacon)
+                if(len(capchalink)==0):
+                         capchacon =re.compile('<b>Enter code below:</b>(.+?)</table>').findall(pcontent)
+                         capchar=re.compile('<span style="position:absolute;padding-left:(.+?);[^>]*>(.+?)</span>').findall(capchacon[0])
+                         capchar=sorted(capchar, key=lambda x: int(x[0].replace("px","")))
+                         capstring =""
+                         for tmp,aph in capchar:
+                                  capstring=capstring+chr(int(aph.replace("&#","").replace(";","")))
+                         puzzle=capstring
+                else:
+                         solver = InputWindow(captcha=capchalink[0])
+                         puzzle = solver.get()
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(pcontent)[0]
                 op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(pcontent)[0]
                 mfree = re.compile('<input type="hidden" name="method_free" value="(.+?)">').findall(pcontent)[0]
