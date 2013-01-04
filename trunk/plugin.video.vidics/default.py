@@ -81,13 +81,34 @@ def Mirrors(url,name):
          addLink(linkinfo[0][1],strdomain+linkinfo[0][0],3,"") 
 			
 def ParseVideoLink(url,name):
+        dialog = xbmcgui.DialogProgress()
+        dialog.create('Resolving', 'Resolving video Link...')       
+        dialog.update(0)
         (respon,cj) = CheckRedirect(url)
         link=respon.content
         tmpcontent=link
         redirlink = respon.get_url().lower()
         link = ''.join(link.splitlines()).replace('\'','"')
-        print redirlink + "|" + name
-        if (redirlink.find("nowvideo") > -1):
+        if (redirlink.find("youtube") > -1):
+                vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
+                vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
+                vidlink='plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid='+vidlink
+        elif (redirlink.find("video.google.com") > -1):
+                match=redirlink.split("docid=")
+                glink=""
+                newlink=redirlink+"&dk"
+                if(len(match) > 0):
+                        glink = GetContent("http://www.flashvideodownloader.org/download.php?u=http://video.google.com/videoplay?docid="+match[1].split("&")[0])
+                else:
+                        match=re.compile('http://video.google.com/googleplayer.swf.+?docId=(.+?)&dk').findall(newlink)
+                        if(len(match) > 0):
+                                glink = GetContent("http://www.flashvideodownloader.org/download.php?u=http://video.google.com/videoplay?docid="+match[0])
+                gcontent=re.compile('<div class="mod_download"><a href="(.+?)" title="Click to Download">').findall(glink)
+                if(len(gcontent) > 0):
+                        vidlink=gcontent[0]
+                else:
+                        vidlink=""
+        elif (redirlink.find("nowvideo") > -1):
                 fileid=re.compile('flashvars.file="(.+?)";').findall(link)[0]
                 codeid=re.compile('flashvars.cid="(.+?)";').findall(link)[0]
                 keycode=re.compile('flashvars.filekey="(.+?)";').findall(link)[0]
@@ -141,7 +162,11 @@ def ParseVideoLink(url,name):
                 packed = packed.replace("</script>","")
                 unpacked = unpackjs4(packed)  
                 unpacked = unpacked.replace("\\","")
-                vidlink = re.compile('src="(.+?)"').findall(unpacked)[0]
+                print unpacked
+                vidlink = re.compile('src="(.+?)"').findall(unpacked)
+                if(len(vidlink) == 0):
+                        vidlink = re.compile('"file","(.+?)"').findall(unpacked)
+                vidlink=vidlink[0]
         elif (redirlink.find("clicktovie") > -1):
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
@@ -169,9 +194,6 @@ def ParseVideoLink(url,name):
                 unpacked = unpacked.replace("\\","")
                 vidlink = re.compile('"file","(.+?)"').findall(unpacked)[0]
         elif (redirlink.find("vidbull") > -1):
-                dialog = xbmcgui.DialogProgress()
-                dialog.create('Resolving', 'Resolving vidbull Link...')       
-                dialog.update(0)
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
                 rand = re.compile('<input type="hidden" name="rand" value="(.+?)">').findall(link)[0]
@@ -237,9 +259,6 @@ def ParseVideoLink(url,name):
                 domainurl=domainurl.split("/i/")[0]
                 vidlink=domainurl+"/"+keycode[0][1]+"/v."+keycode[0][0]
         elif (redirlink.find("vreer") > -1):
-                dialog = xbmcgui.DialogProgress()
-                dialog.create('Resolving', 'Resolving vreer Link...')       
-                dialog.update(0)
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)" />').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" value="(.+?)" />').findall(link)[0]
                 fname = re.compile('<input type="hidden" name="fname" value="(.+?)" />').findall(link)[0]
@@ -302,9 +321,6 @@ def ParseVideoLink(url,name):
                 unpacked = unpacked.replace("\\","")
                 vidlink = re.compile('"file","(.+?)"').findall(unpacked)[0]
         elif (redirlink.find("nowdownloa") > -1):
-                dialog = xbmcgui.DialogProgress()
-                dialog.create('Resolving', 'Resolving nowdownloads Link...')       
-                dialog.update(0)
                 ddlpage = re.compile('<a class="btn btn-danger" href="(.+?)">Download your file !</a>').findall(link)[0]
                 mainurl = redirlink.split("/dl/")[0]
                 ddlpage= mainurl+ddlpage
@@ -318,9 +334,6 @@ def ParseVideoLink(url,name):
                 linkcontent =re.compile('Slow download</span>(.+?)</div>').findall(pcontent)[0]
                 vidlink = re.compile('<a href="(.+?)" class="btn btn-success">').findall(linkcontent)[0]
         elif (redirlink.find("youwatch") > -1):
-                dialog = xbmcgui.DialogProgress()
-                dialog.create('Resolving', 'Resolving youwatch Link...')       
-                dialog.update(0)
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
                 fname = re.compile('<input type="hidden" name="fname" value="(.+?)">').findall(link)[0]
@@ -382,8 +395,9 @@ def ParseVideoLink(url,name):
                         vidlink = source.resolve()
                 else:
                         vidlink =""
+		dialog.close()
         return vidlink
-
+               
 def ListAZ(catname,mode):
         for character in AZ_DIRECTORIES:
                 addDir(character,"http://www.vidics.ch/"+catname+"/Genre-Any/Letter-"+character+"/ByPopularity/1.htm",mode,"")
