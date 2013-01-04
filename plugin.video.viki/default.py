@@ -215,7 +215,7 @@ def getVideoUrl(url,name):
                 vidlink =""
    return vidlink
    
-def SearchVideoresults(url,searchtext):
+def SearchVideoresults(url,searchtext=""):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
         vidcontainer=re.compile('<li id="media-result">(.+?)</li>').findall(link)
