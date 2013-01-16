@@ -140,6 +140,7 @@ def A_Z_LIST(url):
         addDir('Q','http://www.dramacrazy.net/alpha-q/',41,'')
         addDir('R','http://www.dramacrazy.net/alpha-r/',41,'')
         addDir('S','http://www.dramacrazy.net/alpha-s/',41,'')
+        addDir('T','http://www.dramacrazy.net/alpha-t/',41,'')
         addDir('Q','http://www.dramacrazy.net/alpha-q/',41,'')
         addDir('U','http://www.dramacrazy.net/alpha-u/',41,'')
         addDir('V','http://www.dramacrazy.net/alpha-v/',41,'')
@@ -233,6 +234,7 @@ def Video_List_And_Pagination(url):
 
 
 def addVideoInfo_Image(url):
+    try:
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
         response = urllib2.urlopen(req)
@@ -247,7 +249,7 @@ def addVideoInfo_Image(url):
         videoTitle = videoName[0] + ' (Rank: ' + ranks[0][0] + ' of ' + ranks[0][1] +')'
         videoEpisodesUrl = url[0:len(url)-1] + '-episode-list/'
         addDir(videoTitle,videoEpisodesUrl,9,imgUrl)
-
+    except: pass
 
 def EPISODES_OR_MOVIE(url):
         req = urllib2.Request(url)
