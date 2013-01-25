@@ -162,12 +162,15 @@ def loadVideos(url,name):
            match=re.compile('<div id="player" align="center"><iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
            if(len(match) > 0):
                    framecontent = GetContent(match[0])
-                   qualityval = ["240","360p(MP4)","360p(FLV)","480p","720p"]
+                   qualityval = ["240","360p(MP4)","360p(FLV)","480p","720p","HTML5"]
                    qctr=0
                    embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
                    for vname in embedlink:
+                         print "vname|" + str(vname)
                          vlink=re.compile('file=(.+?)\&').findall(vname)
-                         addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
+                         print "vlink|" + str(vlink)
+                         if(len(vlink) > 0):
+                             addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
                          qctr=qctr+1
            else:
                    match=re.compile('<li>VIP #1: <a href="(.+?)">').findall(newlink)
