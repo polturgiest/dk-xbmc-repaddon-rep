@@ -546,10 +546,11 @@ def INDEXList(url,modenum,curmode):
             vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(moveieinfo)[0]
             urlcontent =re.compile('<h3>(.+?)</h3>').findall(moveieinfo)[0]
             titleurl=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(urlcontent)
-            vurl=titleurl[0][0]
-            vtitle=titleurl[0][1]
-            sumcontent=re.compile('</h3>(.+?)<span>').findall(moveieinfo)[0]
-            vsummary=re.compile('<div ?[^>]*>(.+?)</div>').findall(sumcontent)
+            if(len(titleurl)>0):
+                  vurl=titleurl[0][0]
+                  vtitle=titleurl[0][1]
+                  sumcontent=re.compile('</h3>(.+?)<span>').findall(moveieinfo)[0]
+                  vsummary=re.compile('<div ?[^>]*>(.+?)</div>').findall(sumcontent)
             if(len(vsummary)>0):
                  vpot=vsummary[0]
 
