@@ -142,6 +142,7 @@ def A_Z_LIST(url):
         addDir('Q','http://www.animecrazy.net/alpha-q/',41,'')
         addDir('R','http://www.animecrazy.net/alpha-r/',41,'')
         addDir('S','http://www.animecrazy.net/alpha-s/',41,'')
+        addDir('T','http://www.animecrazy.net/alpha-t/',41,'')
         addDir('Q','http://www.animecrazy.net/alpha-q/',41,'')
         addDir('U','http://www.animecrazy.net/alpha-u/',41,'')
         addDir('V','http://www.animecrazy.net/alpha-v/',41,'')
