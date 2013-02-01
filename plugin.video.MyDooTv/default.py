@@ -14,6 +14,7 @@ def HOME():
     addDir('Cartoons ', 'http://www.mydootv.com/products_list_wide.php?uri=/Cartoon&menuType=programmes&groupID=90&value2=&viewType=&page=1&groupName=%3Cstrong%3ECartoon%3C/strong%3E%20%A1%D2%C3%EC%B5%D9%B9&numRows=&limit=25',2,'')
     addDir('all thai drama ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama&menuType=programmes&groupID=38,10,193,194,200,206,210,212&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
     addDir('---thai on air ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama/On-Air&menuType=programmes&groupID=10&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
+    addDir('---thai drama 2013 ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama/2013&menuType=programmes&groupID=215&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
     addDir('---thai drama 2012 ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama/2012&menuType=programmes&groupID=212&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
     addDir('---thai drama 2011 ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama/2011&menuType=programmes&groupID=210&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
     addDir('---thai drama 2010 ', 'http://www.mydootv.com/products_list_wide.php?uri=/Drama/Thai-Drama/2010&menuType=programmes&groupID=206&value2=&viewType=&page=1&groupName=&numRows=&limit=25',2,'')
@@ -93,7 +94,7 @@ def INDEX(url,name):
             if name != vname:
                     addDir(vname.encode("utf-8"),urlfull,2,"")
 				
-def Episodes(serverurl,pid):
+def Episodesold(serverurl,pid):
     #try:
         link = GetContent("/products_list_option.php?pID="+pid+"&selectTab=first#first")
         link=''.join(link.splitlines()).replace('\'','"')
@@ -102,6 +103,26 @@ def Episodes(serverurl,pid):
         for (chid,vname) in partlist:
                 cnt=cnt+1
                 addLink(vname.decode("tis-620"),pid+"_"+str(cnt),3,"",serverurl.decode("tis-620"))
+    #except: pass
+                
+def Episodes(serverurl,pid_part):
+    #try:
+        pid,partnum=pid_part.split("_")
+        filecontent = GetContent("/dynamic_ajax_chapterlist.php?first="+partnum+"&last=7&pid="+pid+"&cid=427565")
+        partlist=re.compile('<item>(.+?)</item>').findall(filecontent)
+        if(int(partnum) > 6):
+            cnt = int(partnum)-1
+        else:
+            cnt = 0
+        for vcontent in partlist:
+                cnt=cnt+1
+                imgurl =re.compile('<image>(.+?)</image>').findall(vcontent)[0]
+                #pid=re.compile('<id>(.+?)</id>').findall(vcontent)[0]
+                vname=re.compile('<name>(.+?)</name>').findall(vcontent)[0]
+                addLink(vname.decode("tis-620"),pid+"_"+str(cnt),3,imgurl,serverurl.decode("tis-620"))
+        if(len(partlist) > 0):
+            addDir("next >>",serverurl+"_" + str(cnt+1),pid,"")
+            
     #except: pass
 	
 def GetVideoFileName(pid_part,serverurl):
@@ -113,14 +134,18 @@ def GetVideoFileName(pid_part,serverurl):
         playVideo("direct",GenerateVideUrl(vidurl,serverurl))
 		
 def GenerateVideUrl(url,serverurl):
-        print "timeserver:" + serverurl+"/flowplayer/sectimestamp.php"
+    print "timeserver:" + serverurl+"/flowplayer/sectimestamp.php"
+    try:
         tempts=GetContent2(serverurl+"/flowplayer/sectimestamp.php").strip()
         tempkey="dootv-secret"
         m = hashlib.md5()
         m.update((((tempkey + "/") + url) + tempts))
         urlcode= serverurl+"/streaming/"+m.hexdigest() + "/" + tempts+"/"+url
         return urlcode
-		
+    except:
+        d = xbmcgui.Dialog()
+        d.ok('NO VIDEO FOUND', "Can't Play video",'Try a different Server Region')
+
 def ChooseServerReg(pid):
         addDir("UK Servers",pid,7,"")
         addDir("US Servers",pid,8,"")
@@ -137,7 +162,7 @@ def GetServerList(CountryFile,pid):
         cnt = 0
         for servername in servelist:
                 cnt=cnt+1
-                addDir("Server " + str(cnt),"http://"+servername.split(":")[0],pid,"")
+                addDir("Server " + str(cnt),"http://"+servername.split(":")[0]+"_1",pid,"")
 		
 
 def GetContent(url):
@@ -266,5 +291,6 @@ elif mode==14:
         playVideo("direct",url)
 
 elif mode > 100:
-       Episodes(url,str(mode))
+       serverurl,partnum=url.split("_")
+       Episodes(serverurl,str(mode)+ "_" + partnum)
 xbmcplugin.endOfDirectory(int(sysarg))

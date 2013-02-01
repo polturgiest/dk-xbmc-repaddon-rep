@@ -266,7 +266,7 @@
 
 <addon
   id="plugin.video.MyDooTv"
-  version="1.0.1"
+  version="1.0.2"
   name="MyDooTv"
   provider-name="Dknight">
   <requires>
