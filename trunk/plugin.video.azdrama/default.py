@@ -166,9 +166,7 @@ def loadVideos(url,name):
                    qctr=0
                    embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
                    for vname in embedlink:
-                         print "vname|" + str(vname)
                          vlink=re.compile('file=(.+?)\&').findall(vname)
-                         print "vlink|" + str(vlink)
                          if(len(vlink) > 0):
                              addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
                          qctr=qctr+1
