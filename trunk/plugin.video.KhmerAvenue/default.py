@@ -55,7 +55,8 @@ def Episodes(url,name):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
         addLink(name.encode("utf-8"),url,3,'')
-        match=re.compile('<divclass="episodebox">(.+?)</div>').findall(newlink)
+        match=re.compile('<divclass="episodebox">(.+?)<divid="comments" class="clearfix">').findall(newlink)
+        print match
         match=re.compile('<ahref="(.+?)"><spanclass="part">(.+?)</span></a>').findall(match[0])
         counter = 1
         videolist =url+";#"

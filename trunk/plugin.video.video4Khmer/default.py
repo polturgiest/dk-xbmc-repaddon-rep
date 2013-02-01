@@ -11,11 +11,12 @@ import cgi
 
 def HOME():
         addDir('Search','http://www.video4khmer.com/',4,'http://www.video4khmer.com/templates/3column/images/header/logo.png')
-        addDir('Thai Lakorns','http://www.video4khmer.com/browse-thai-lakhorn-dubbed-khmer-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Movies','http://www.video4khmer.com/browse-thai-movies-dubbed-khmer-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Videos','http://www.video4khmer.com/browse-korean-drama-dubbed-khmer-online-free-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Chinese Drama','http://www.video4khmer.com/browse-chinese-drama-dubbed-khmer-online-free-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Chinese Movies','http://www.video4khmer.com/browse-chinese-movies-dubbed-khmer-online-free-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Thai Lakorns','http://www.video4khmer.com/browse-khmer-movie-thai-lakorn-drama-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Thai Movies','http://www.video4khmer.com/browse-khmer-thai-movie-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Videos','http://www.video4khmer.com/browse-khmer-movie-korean-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Korean Movies','http://www.video4khmer.com/browse-khmer-korean-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Chinese Drama','http://www.video4khmer.com/browse-khmer-movie-chinese-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Chinese Movies','http://www.video4khmer.com/browse-khmer-chinese-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
         addDir('Khmer Videos','http://www.video4khmer.com/browse-khmer-drama-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Khmer Movies','http://www.video4khmer.com/browse-khmer-movies-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Khmer Comedy','http://www.video4khmer.com/browse-khmer-comedy-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
