@@ -139,7 +139,7 @@ def Episodes(url,name):
         match=re.compile('<b>Episode list </b>(.+?)</table>').findall(newlink)
         mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">'+ name +'(.+?)<div style="margin: 10px 0px 5px 0px">').findall(match[0])
         if(len(mirrors) == 0):
-            mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">'+ name +'(.+?)</td></tr>').findall(match[0])
+            mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">'+ name +'(.+?)<!-- Mirror').findall(match[0])
         match1=re.compile('<a href="(.+?)"><strong class="moviered">(.+?)</strong></a>').findall(mirrors[0])
         if(len(match1) >= 1):
                 for mcontent in match1:
