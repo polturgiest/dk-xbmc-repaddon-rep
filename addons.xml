@@ -370,7 +370,7 @@
 
 <addon
   id="plugin.video.vidics"
-  version="0.9.2"
+  version="0.9.3"
   name="Vidics"
   provider-name="Dknight">
   <requires>

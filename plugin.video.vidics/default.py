@@ -394,6 +394,9 @@ def ParseVideoLink(url,name):
         elif (redirlink.find("180upload") > -1):
                 vidlink=resolve_180upload(redirlink,tmpcontent)
         else:
+                if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
+                        redir = redirlink.split("/file/")
+                        redirlink = redir[0] +"/file/" + redir[1].upper()
                 sources = []
                 label=name
                 hosted_media = urlresolver.HostedMediaFile(url=redirlink, title=label)
