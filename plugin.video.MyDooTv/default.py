@@ -49,12 +49,15 @@ def HOME():
 
   
 def ShowLiveTV():
-    addLink('TV 3 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_BqIe5vheSOYsU_Rgj_dumA_640_360_700 live=true',14,'','')
-    addLink('TV 3 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive3/mp4:uklive3stream9 live=true',14,'','')
-    addLink('TV 5','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_4MUCJ_wvTKgnOaeQdGMOk0_640_360_696 live=true',14,'','')
+    addLink('TV 3 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_BqIe5vheSOYsU_Rgj_dumA_640_360_696 live=true',14,'','')
+    addLink('Sabaidee2 tv','rtmp://202.142.207.150/live/livesabaidee2 swfUrl=http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv swfVfy=true live=true http:http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv',14,'','')
+    addLink('Sabaidee tv','rtmp://203.146.170.102:1935/live/livestream3 swfUrl=http://www.r-siam.com/player.swf/ swfVfy=true live=true',14,'','')
+    addLink('Oho','rtmp://flash.login.in.th/ohochannel/ohochannel swfUrl=http://www.tv-tube.tv/players/jwflashplayer/player-5.9-licensed.swf swfVfy=true live=true pageUrl=http://www.tv-tube.tv/tvchannels/watch/3300/oho-channel',14,'','')
+    addLink('MTV5','rtmp://203.146.170.102:1935/live/livestream2 swfUrl=http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf/[[DYNAMIC]]/1 swfVfy=true live=true pageUrl=http://mvtv.co.th/wp/tv.php?channel=mv5',14,'','')
+    addLink('TV 5','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_4MUCJ_wvTKgnOaeQdGMOk0_640_360_700 live=true',14,'','')
     addLink('TV 7 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_-fecoVNRTNInw9Ge70vyDg_640_360_696 live=true',14,'','')
     addLink('TV 7 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive7/mp4:uklive7stream9 live=true',14,'','')
-    addLink('TV 9 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_2SNwp7ygQ8cnXqsglDXw48_640_360_696 live=true',14,'','')
+    addLink('TV 9 US Server','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_2SNwp7ygQ8cnXqsglDXw48_640_360_700 live=true',14,'','')
     addLink('NBT','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_QUnlGGb8QO8qh1WNiDeRAM_640_360_696 live=true',14,'','')
     addLink('TPBS','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_ia0CJ_OsTBojUFwN7pC4cs_640_360_696 live=true',14,'','')
     addLink('FAN TV','rtmp://llnwvps348.fc.llnwd.net:1935/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_nccY09eETbcmPo69h1b898_640_360_696 live=true',14,'','')
