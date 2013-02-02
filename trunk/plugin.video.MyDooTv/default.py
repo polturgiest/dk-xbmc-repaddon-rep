@@ -108,33 +108,35 @@ def Episodesold(serverurl,pid):
                 addLink(vname.decode("tis-620"),pid+"_"+str(cnt),3,"",serverurl.decode("tis-620"))
     #except: pass
                 
-def Episodes(serverurl,pid_part):
+def Episodes(region,pid):
     #try:
-        pid,partnum=pid_part.split("_")
-        filecontent = GetContent("/dynamic_ajax_chapterlist.php?first="+partnum+"&last=7&pid="+pid+"&cid=427565")
-        partlist=re.compile('<item>(.+?)</item>').findall(filecontent)
-        if(int(partnum) > 6):
-            cnt = int(partnum)-1
-        else:
-            cnt = 0
-        for vcontent in partlist:
-                cnt=cnt+1
-                imgurl =re.compile('<image>(.+?)</image>').findall(vcontent)[0]
-                #pid=re.compile('<id>(.+?)</id>').findall(vcontent)[0]
-                vname=re.compile('<name>(.+?)</name>').findall(vcontent)[0]
-                addLink(vname.decode("tis-620"),pid+"_"+str(cnt),3,imgurl,serverurl.decode("tis-620"))
-        if(len(partlist) > 0):
-            addDir("next >>",serverurl+"_" + str(cnt+1),pid,"")
+        filecontent = GetContent("/player_flash_for_free.php?chapters_id=&products_id="+pid+"&ctLB="+region+"&is_hd=1&startVideo=false")
+        nowhtsp= ''.join(filecontent.splitlines()).replace('\'','"')
+        partcontent=re.compile('<select onchange=(.+?)</select>').findall(nowhtsp)
+
+        partlist=re.compile('<option value=(.+?)><span style="(.+?)">(.+?)</span></option>').findall(partcontent[0])
+
+        for (chapid,vtmp,vname) in partlist:
+                chapid=chapid.split(" ")[0]
+                addDir(vname.decode("tis-620"),chapid+"_"+region,3,"")
+
             
     #except: pass
-	
-def GetVideoFileName(pid_part,serverurl):
-        pid,partnum=pid_part.split("_")
-        filecontent = GetContent("/dynamic_ajax_chapterlist.php?first="+partnum+"&last=7&pid="+pid+"&cid=427565")
-        mirmatch=re.compile('<image>(.+?)</image>').findall(filecontent)
-        imgurl = mirmatch[0]
-        vidurl = imgurl.replace("http://cdn1.dootvimage.com/images/chapters/","").split(".")[0] + ".mp4"
-        playVideo("direct",GenerateVideUrl(vidurl,serverurl))
+                
+def GetVideoFileName(chapterid,region):
+        filecontent = GetContent("/player_flash_for_free.php?chapters_id="+chapterid+"&products_id=&ctLB="+region+"&is_hd=1&startVideo=false")
+        nowhtsp= ''.join(filecontent.splitlines()).replace('\'','"')
+        servname=re.compile('var serverName = "(.+?)"').findall(nowhtsp)[0]
+        serurl="http://"+servname+".dootvserver.com"
+        filenames=re.compile('if \(isHD == 0\) {        filepath = "(.+?)";    } else {        filepath = "(.+?)";        }').findall(nowhtsp)
+        try:
+            vidurl = filenames[0][0]
+            addLink("Standard Quality",GenerateVideUrl(vidurl,serurl),14,"",serurl)
+        except: pass
+        try:
+            vidurl = filenames[0][1]
+            addLink("HD Quality",GenerateVideUrl(vidurl,serurl),14,"",serurl)
+        except: pass
 		
 def GenerateVideUrl(url,serverurl):
     print "timeserver:" + serverurl+"/flowplayer/sectimestamp.php"
@@ -150,12 +152,8 @@ def GenerateVideUrl(url,serverurl):
         d.ok('NO VIDEO FOUND', "Can't Play video",'Try a different Server Region')
 
 def ChooseServerReg(pid):
-        addDir("UK Servers",pid,7,"")
-        addDir("US Servers",pid,8,"")
-        addDir("Older Server 1",pid,9,"")
-        addDir("Older Servers 2",pid,10,"")
-        addDir("Older Servers 3",pid,11,"")
-        addDir("Older Servers 4",pid,12,"")
+        addDir("UK Servers","UK",pid,"")
+        addDir("US Servers","US",pid,"")
 		
 def GetServerList(CountryFile,pid):
         listcontent = GetContent(CountryFile)
@@ -270,8 +268,8 @@ elif mode==2:
         #d.ok('mode 2',str(url),' ingore errors lol')
         INDEX(url,name)
 elif mode==3:
-        GetVideoFileName(url,serverurl)
-        #loadVideos(url,name,serverurl)
+        chid,strRegion=url.split("_")
+        GetVideoFileName(chid,strRegion)
 elif mode==4:
         SEARCH(url)     
 elif mode==6:
@@ -294,6 +292,6 @@ elif mode==14:
         playVideo("direct",url)
 
 elif mode > 100:
-       serverurl,partnum=url.split("_")
-       Episodes(serverurl,str(mode)+ "_" + partnum)
+       Episodes(url,str(mode))
+	   
 xbmcplugin.endOfDirectory(int(sysarg))
