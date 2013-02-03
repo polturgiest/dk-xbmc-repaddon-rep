@@ -5,8 +5,11 @@ import os,time,base64,logging
 from t0mm0.common.net import Net
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
-
-
+import json
+import CommonFunctions
+common = CommonFunctions
+common.plugin = "plugin.video.KhmerAvenue"
+strDomain ='http://www.khmeravenue.com/'
 def HOME():
         addDir('Search','http://www.khmeravenue.com/',4,'http://www.khmeravenue.com/wp-contents/uploads/logo.jpg')
         addDir('Khmer Videos','http://www.khmeravenue.com/khmer/videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
@@ -48,8 +51,82 @@ def SearchResults(url):
         if(len(match) >= 1):
             startlen=re.compile("<strongclass='on'>(.+?)</strong>").findall(newlink)
             url=url.replace("/page/"+startlen[0]+"/","/page/"+ str(int(startlen[0])+1)+"/")
-            addDir("Next >>",url,6,"")			
-			
+            addDir("Next >>",url,6,"")
+            
+def scrapeVideoInfo(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strDomain})
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find('{config:{'):]
+            html = html[:html.find('}}},') + 3]
+            html = html.replace("{config:{", '{"config":{') + "}"
+            print repr(html)
+            collection = json.loads(html)
+        return collection
+
+def getVideoInfo(videoid):
+        common.log("")
+
+
+        collection = scrapeVideoInfo(videoid)
+
+        video = {}
+        if collection.has_key("config"):
+            video['videoid'] = videoid
+            title = collection["config"]["video"]["title"]
+            if len(title) == 0:
+                title = "No Title"
+            title = common.replaceHTMLCodes(title)
+            video['Title'] = title
+            video['Duration'] = collection["config"]["video"]["duration"]
+            video['thumbnail'] = collection["config"]["video"]["thumbnail"]
+            video['Studio'] = collection["config"]["video"]["owner"]["name"]
+            video['request_signature'] = collection["config"]["request"]["signature"]
+            video['request_signature_expires'] = collection["config"]["request"]["timestamp"]
+
+            isHD = collection["config"]["video"]["hd"]
+            if str(isHD) == "1":
+                video['isHD'] = "1"
+
+
+        if len(video) == 0:
+            common.log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
+            video = {}
+            video["apierror"] = ""
+            return (video, 303)
+
+        common.log("Done")
+        return (video, 200)
+
+def getVimeoVideourl(videoid):
+        common.log("")
+        
+        (video, status) = getVideoInfo(videoid)
+
+
+        urlstream="http://player.vimeo.com/play_redirect?clip_id=%s&sig=%s&time=%s&quality=%s&codecs=H264,VP8,VP6&type=moogaloop_local&embed_location="
+        get = video.get
+        if not video:
+            # we need a scrape the homepage fallback when the api doesn't want to give us the URL
+            common.log("getVideoObject failed because of missing video from getVideoInfo")
+            return ""
+
+        quality = "sd"
+        
+        if ('apierror' not in video):
+            video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
+            print video_url
+            result = common.fetchPage({"link": video_url, "no-content": "true"})
+            print repr(result)
+            video['video_url'] = result["new_url"]
+
+            common.log("Done")
+            return video['video_url'] 
+        else:
+            common.log("Got apierror: " + video['apierror'])
+            return ""
+        
 def Episodes(url,name):
     #try:
         link = GetContent(url)
@@ -150,6 +227,8 @@ def loadPlaylist(newlink,name):
                 match=re.compile("'file':'(.+?)',").findall(newlink)
                 if(len(match) == 0):
                    match=re.compile('<iframeframeborder="0" [^>]*src="(.+?)">').findall(newlink)
+                   if(len(match)==0):
+                           match=re.compile('<iframesrc="(.+?)" [^>]*').findall(newlink)
                 newlink=match[0]
 
            if (newlink.find("dailymotion") > -1):
@@ -186,6 +265,11 @@ def loadPlaylist(newlink,name):
                 gcontent=re.compile('<div class="mod_download"><a href="(.+?)" title="Click to Download">').findall(glink)
                 if(len(gcontent) > 0):
                         CreateList('google',gcontent[0])
+           elif (newlink.find("vimeo") > -1):
+                print "newlink|" + newlink
+                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                vidurl=getVimeoVideourl(idmatch[0])
+                CreateList("other",vidurl)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
@@ -206,13 +290,16 @@ def loadPlaylist(newlink,name):
         #except: pass
 		
 def loadVideos(url,name):
-        try:
+        #try:
            link=GetContent(url)
            newlink = ''.join(link.splitlines()).replace('\t','')
 
            match=re.compile("'file':'(.+?)',").findall(newlink)
+           print newlink
            if(len(match) == 0):
                    match=re.compile('<iframeframeborder="0" [^>]*src="(.+?)">').findall(newlink)
+                   if(len(match)==0):
+                           match=re.compile('<iframesrc="(.+?)" [^>]*').findall(newlink)
            newlink=match[0]
            #xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
            if (newlink.find("dailymotion") > -1):
@@ -233,6 +320,13 @@ def loadVideos(url,name):
                 dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+           elif (newlink.find("vimeo") > -1):
+                #
+                print "newlink|" + newlink
+                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                print idmatch
+                vidurl=getVimeoVideourl(idmatch[0])
+                playVideo('khmeravenue',vidurl)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
@@ -252,7 +346,7 @@ def loadVideos(url,name):
                     playVideo('youtube',lastmatch)
                 else:
                     playVideo('moviekhmer',urllib2.unquote(newlink).decode("utf8"))
-        except: pass
+        #except: pass
      	
 def addLink(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
