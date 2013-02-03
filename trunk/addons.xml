@@ -349,7 +349,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.4"
+  version="1.0.5"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>

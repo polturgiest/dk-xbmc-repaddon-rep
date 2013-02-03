@@ -8,6 +8,10 @@ import xbmcaddon,xbmcplugin,xbmcgui
 try: import simplejson as json
 except ImportError: import json
 import cgi
+import CommonFunctions
+common = CommonFunctions
+common.plugin = "plugin.video.video4khmer"
+strDomain ='http://www.video4khmer.com/'
 
 def HOME():
         addDir('Search','http://www.video4khmer.com/',4,'http://www.video4khmer.com/templates/3column/images/header/logo.png')
@@ -109,6 +113,80 @@ def Episodes_old(url,name):
                             addLink(name + " " + str(counter),"http://www.youtube.com/watch?v="+youtubeid[0],3,vpic)
     #except: pass
 	
+def scrapeVideoInfo(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strDomain})
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find('{config:{'):]
+            html = html[:html.find('}}},') + 3]
+            html = html.replace("{config:{", '{"config":{') + "}"
+            print repr(html)
+            collection = json.loads(html)
+        return collection
+
+def getVideoInfo(videoid):
+        common.log("")
+
+
+        collection = scrapeVideoInfo(videoid)
+
+        video = {}
+        if collection.has_key("config"):
+            video['videoid'] = videoid
+            title = collection["config"]["video"]["title"]
+            if len(title) == 0:
+                title = "No Title"
+            title = common.replaceHTMLCodes(title)
+            video['Title'] = title
+            video['Duration'] = collection["config"]["video"]["duration"]
+            video['thumbnail'] = collection["config"]["video"]["thumbnail"]
+            video['Studio'] = collection["config"]["video"]["owner"]["name"]
+            video['request_signature'] = collection["config"]["request"]["signature"]
+            video['request_signature_expires'] = collection["config"]["request"]["timestamp"]
+
+            isHD = collection["config"]["video"]["hd"]
+            if str(isHD) == "1":
+                video['isHD'] = "1"
+
+
+        if len(video) == 0:
+            common.log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
+            video = {}
+            video["apierror"] = ""
+            return (video, 303)
+
+        common.log("Done")
+        return (video, 200)
+
+def getVimeoVideourl(videoid):
+        common.log("")
+        
+        (video, status) = getVideoInfo(videoid)
+
+
+        urlstream="http://player.vimeo.com/play_redirect?clip_id=%s&sig=%s&time=%s&quality=%s&codecs=H264,VP8,VP6&type=moogaloop_local&embed_location="
+        get = video.get
+        if not video:
+            # we need a scrape the homepage fallback when the api doesn't want to give us the URL
+            common.log("getVideoObject failed because of missing video from getVideoInfo")
+            return ""
+
+        quality = "sd"
+        
+        if ('apierror' not in video):
+            video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
+            print video_url
+            result = common.fetchPage({"link": video_url, "no-content": "true"})
+            print repr(result)
+            video['video_url'] = result["new_url"]
+
+            common.log("Done")
+            return video['video_url'] 
+        else:
+            common.log("Got apierror: " + video['apierror'])
+            return ""
+			
 def Episodes(url,name):
     try:
         link = GetContent(url)
@@ -178,7 +256,7 @@ def playVideo(videoType,videoId):
     if (videoType == "youtube"):
         url = getYoutube(videoId)
     elif (videoType == "vimeo"):
-        url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
+        url = getVimeoVideourl(videoId)
     elif (videoType == "tudou"):
         url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
     xbmcPlayer = xbmc.Player()
@@ -219,7 +297,7 @@ def CreateList(videoType,videoLink):
     if (videoType == "youtube"):
         url1 = getYoutube(videoLink)
     elif (videoType == "vimeo"):
-        url1 = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
+        url1 = getVimeoVideourl(videoId)
     elif (videoType == "tudou"):
         url1 = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
     else:
@@ -273,6 +351,11 @@ def loadPlaylist(newlink,name):
                 gcontent=re.compile('<div class="mod_download"><a href="(.+?)" title="Click to Download">').findall(glink)
                 if(len(gcontent) > 0):
                         CreateList('google',gcontent[0])
+           elif (newlink.find("vimeo") > -1):
+                print "newlink|" + newlink
+                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                if(len(idmatch) > 0):
+                        CreateList('vimeo',idmatch[0])
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
@@ -334,6 +417,11 @@ def loadVideos(newlink,name):
                 gcontent=re.compile('<div class="mod_download"><a href="(.+?)" title="Click to Download">').findall(glink)
                 if(len(gcontent) > 0):
                         playVideo('google',gcontent[0])
+           elif (newlink.find("vimeo") > -1):
+                print "newlink|" + newlink
+                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                if(len(idmatch) > 0):
+                        playVideo('vimeo',idmatch[0])
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
