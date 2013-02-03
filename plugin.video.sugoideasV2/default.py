@@ -137,7 +137,7 @@ def getPrograms(html):
 
 def getDramas(html):
     programs = []
-    match = re.compile('<divclass="postsearch"><divclass="upcomingad"><spanclass="complete">[^<]*</span><ahref="([^"]+)"><imgalt="([^"]+)"title="([^"]+)"src="([^"]+)"style="padding:3px;"height="170"width="250"border="0"/></a><br/><strong>Title:</strong>([^<]+)<br/><strong>Cast:</strong><spanclass="searchOne">([^<]+)</span><br/><strong>ReleaseDate:</strong>([^<]+)</div></div>').findall(html)
+    match = re.compile('<divclass="postsearch"><divclass="upcomingad"><spanclass="complete">[^<]*</span><ahref="([^"]+)"><imgalt="([^"]+)"title="([^"]+)"src="([^"]+)"style="padding:3px;"height="170"width="250"border="0"/></a><br/><strong>Title:</strong>([^<]+)<br/><strong>Cast:</strong><spanclass="searchOne">([^<]+)</span><br/><strong>ReleaseDate:</strong>([^<]+)</div>').findall(html)
     index = 0;    
     while index < len(match):   
         prog = Program(match[index][0], match[index][1], match[index][2], match[index][3], match[index][4], match[index][5], match[index][6])    
