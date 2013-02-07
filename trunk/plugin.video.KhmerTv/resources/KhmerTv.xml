@@ -4,6 +4,11 @@
     <name>Khmer channels</name>
     <info>Khmer channels from khiptv</info>
 	<item>
+      <title>CTN</title>
+      <link>http://globecast.ml.llnwd.net/globecast/_definst_/stream4.stream/playlist.m3u8?wowzasessionid=82281634 live=true</link>
+      <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
+    </item>
+	<item>
       <title>KhipTV</title>
       <link>http://e-magic.info:44412/KhipTV</link>
       <thumbnail>
