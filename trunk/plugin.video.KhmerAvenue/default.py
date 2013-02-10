@@ -12,23 +12,24 @@ common.plugin = "plugin.video.KhmerAvenue"
 strDomain ='http://www.khmeravenue.com/'
 def HOME():
         addDir('Search','http://www.khmeravenue.com/',4,'http://www.khmeravenue.com/wp-contents/uploads/logo.jpg')
-        addDir('Khmer Videos','http://www.khmeravenue.com/khmer/videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Lakorns','http://www.khmeravenue.com/thai/videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Videos','http://www.khmeravenue.com/korean/videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Chinese Videos','http://www.khmeravenue.com/chinese/videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-
+        addDir('Khmer Videos','http://www.khmeravenue.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Thai Lakorns','http://www.khmeravenue.com/albumcategory/thai-lakorn/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Videos','http://www.khmeravenue.com/albumcategory/korean-clips/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Chinese Videos','http://www.khmeravenue.com/albumcategory/chinese-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Bollywood Videos','http://www.khmeravenue.com/albumcategory/bollywood/',2,'http://www.khmeravenue.com/wp-content/uploads/2013/01/santosima.jpg')
+        addDir('Philippines Videos','http://www.khmeravenue.com/albumcategory/philippines-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
     try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<divid="content" class="clearfix">(.+?)<divid="sidebar">').findall(newlink)
-        match=re.compile('<aclass="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)"> <imgsrc="(.+?)"').findall(match[0])
+        match=re.compile('<div id="content" class="clearfix">(.+?)<div id="sidebar">').findall(newlink)
+        match=re.compile('<a class="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)">             <img src="(.+?)"').findall(match[0])
         for vcontent in match:
             (vurl,vname, vimage)=vcontent
             addDir(vname.encode("utf-8"),vurl,5,vimage)
-        match5=re.compile('<spanclass="i_next fr" ><ahref="(.+?)">Next</a></span>').findall(newlink)
+        match5=re.compile("</a><a href='([^>]+)' class='nextpostslink'>([^>]+)</a></div>").findall(newlink)
         if(len(match5)):
-                addDir("Next >>",match5[0],2,"")
+                addDir("Next >>",match5[0][0],2,"")
     except: pass
 			
 def SEARCH():
@@ -43,14 +44,13 @@ def SEARCH():
 def SearchResults(url):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<aclass="widget-title" href="(.+?)"><imgsrc="(.+?)" alt="(.+?)"').findall(newlink)
+        match=re.compile('<a class="widget-title" href="(.+?)"><img src="(.+?)" alt="(.+?)"').findall(newlink)
         if(len(match) >= 1):
                 for vLink,vpic,vLinkName in match:
                     addDir(vLinkName,vLink,5,vpic)
-        match=re.compile('<strong>&raquo;</strong>').findall(link)
+        match=re.compile("<a href='([^>]+)' class='nextpostslink'>([^>]+)</a>").findall(link)
         if(len(match) >= 1):
-            startlen=re.compile("<strongclass='on'>(.+?)</strong>").findall(newlink)
-            url=url.replace("/page/"+startlen[0]+"/","/page/"+ str(int(startlen[0])+1)+"/")
+            url=match[0][0]
             addDir("Next >>",url,6,"")
             
 def scrapeVideoInfo(videoid):
@@ -132,9 +132,9 @@ def Episodes(url,name):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
         addLink(name.encode("utf-8"),url,3,'')
-        match=re.compile('<divclass="episodebox">(.+?)<divid="comments" class="clearfix">').findall(newlink)
+        match=re.compile('<div class="episodebox">(.+?)<div id="comments" class="clearfix">').findall(newlink)
         print match
-        match=re.compile('<ahref="(.+?)"><spanclass="part">(.+?)</span></a>').findall(match[0])
+        match=re.compile('<a href="(.+?)"><span class="part">(.+?)</span></a>').findall(match[0])
         counter = 1
         videolist =url+";#"
         vidPerGroup = 5
@@ -224,21 +224,19 @@ def loadPlaylist(newlink,name):
                 link=GetContent(newlink)
                 newlink = ''.join(link.splitlines()).replace('\t','')
 
-                match=re.compile("'file':'(.+?)',").findall(newlink)
+                match=re.compile("'file': '(.+?)',").findall(newlink)
                 if(len(match) == 0):
-                   match=re.compile('<iframeframeborder="0" [^>]*src="(.+?)">').findall(newlink)
+                   match=re.compile('<iframe frameborder="0" [^>]*src="(.+?)">').findall(newlink)
                    if(len(match)==0):
-                           match=re.compile('<iframesrc="(.+?)" [^>]*').findall(newlink)
+                           match=re.compile('<iframe src="(.+?)" [^>]*').findall(newlink)
                 newlink=match[0]
 
            if (newlink.find("dailymotion") > -1):
                 newlink=newlink+"&"
                 match=re.compile('http://www.dailymotion.com\/embed\/video\/(.+?)&').findall(newlink)
-                print newlink
                 if(len(match) == 0):
                         match = re.compile('http://www.dailymotion.com/swf/(.+?)&').findall(newlink)
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
-                print link
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
                 response = urllib2.urlopen(req)
@@ -294,12 +292,12 @@ def loadVideos(url,name):
            link=GetContent(url)
            newlink = ''.join(link.splitlines()).replace('\t','')
 
-           match=re.compile("'file':'(.+?)',").findall(newlink)
+           match=re.compile("'file': '(.+?)',").findall(newlink)
            print newlink
            if(len(match) == 0):
-                   match=re.compile('<iframeframeborder="0" [^>]*src="(.+?)">').findall(newlink)
+                   match=re.compile('<iframe frameborder="0" [^>]*src="(.+?)">').findall(newlink)
                    if(len(match)==0):
-                           match=re.compile('<iframesrc="(.+?)" [^>]*').findall(newlink)
+                           match=re.compile('<iframe src="(.+?)" [^>]*').findall(newlink)
            newlink=match[0]
            #xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
            if (newlink.find("dailymotion") > -1):
