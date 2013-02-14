@@ -201,7 +201,7 @@
 
 <addon
   id="plugin.video.KhmerPortal"
-  version="1.0.3"
+  version="1.0.4"
   name="KhmerPortal"
   provider-name="Dknight">
   <requires>

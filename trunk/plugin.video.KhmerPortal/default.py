@@ -9,7 +9,9 @@ import urlresolver
 try: import simplejson as json
 except ImportError: import json
 import cgi
-
+import CommonFunctions
+common = CommonFunctions
+common.plugin = "plugin.video.khmerportal"
 strdomain ='khmerportal.com'
 def HOME():
         addDir('Chinese','/category/chinese/chinese-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
@@ -42,6 +44,80 @@ def INDEX(url):
                 nexurl= match[0]
                 addDir('Next>',nexurl,2,'')
 				
+def scrapeVideoInfo(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": "http://khmerportal.com"})
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find('{config:{'):]
+            html = html[:html.find('}}},') + 3]
+            html = html.replace("{config:{", '{"config":{') + "}"
+
+            collection = json.loads(html)
+        return collection
+
+def getVideoInfo(videoid):
+        common.log("")
+
+
+        collection = scrapeVideoInfo(videoid)
+
+        video = {}
+        if collection.has_key("config"):
+            video['videoid'] = videoid
+            title = collection["config"]["video"]["title"]
+            if len(title) == 0:
+                title = "No Title"
+            title = common.replaceHTMLCodes(title)
+            video['Title'] = title
+            video['Duration'] = collection["config"]["video"]["duration"]
+            video['thumbnail'] = collection["config"]["video"]["thumbnail"]
+            video['Studio'] = collection["config"]["video"]["owner"]["name"]
+            video['request_signature'] = collection["config"]["request"]["signature"]
+            video['request_signature_expires'] = collection["config"]["request"]["timestamp"]
+
+            isHD = collection["config"]["video"]["hd"]
+            if str(isHD) == "1":
+                video['isHD'] = "1"
+
+
+        if len(video) == 0:
+            common.log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
+            video = {}
+            video["apierror"] = ""
+            return (video, 303)
+
+        common.log("Done")
+        return (video, 200)
+
+def getVimeoVideourl(videoid):
+        common.log("")
+        
+        (video, status) = getVideoInfo(videoid)
+
+
+        urlstream="http://player.vimeo.com/play_redirect?clip_id=%s&sig=%s&time=%s&quality=%s&codecs=H264,VP8,VP6&type=moogaloop_local&embed_location="
+        get = video.get
+        if not video:
+            # we need a scrape the homepage fallback when the api doesn't want to give us the URL
+            common.log("getVideoObject failed because of missing video from getVideoInfo")
+            return ""
+
+        quality = "sd"
+        
+        if ('apierror' not in video):
+            video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
+            print video_url
+            result = common.fetchPage({"link": video_url, "no-content": "true"})
+            print repr(result)
+            video['video_url'] = result["new_url"]
+
+            common.log("Done")
+            return video['video_url'] 
+        else:
+            common.log("Got apierror: " + video['apierror'])
+            return ""
+			
 def Episodes(url,name):
     try:
         link = GetContent(url)
@@ -72,15 +148,19 @@ def GetContent(url):
 
 def playVideo(videoType,videoId):
     url = videoId
+    print "videourl is" + url
     if (videoType == "youtube"):
         try:
                 url = getYoutube(videoId)
         except:
                 url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+    #elif (videoType == "vimeo"):
+    #    url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "vimeo"):
-        url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
+        url = getVimeoVideourl(videoId)
     elif (videoType == "tudou"):
-        url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
+        url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId
+
     xbmcPlayer = xbmc.Player()
     xbmcPlayer.play(url)
 	
@@ -99,6 +179,11 @@ def loadVideos(url,name):
                 if(len(match) > 0):
                         lastmatch = match[0][len(match[0])-1].replace('v/','')
                         playVideo('youtube',lastmatch)
+                elif (vlink.find("vimeo") > -1):
+                        print "newlink|" + vlink
+                        idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(vlink)
+                        if(len(idmatch) > 0):
+                             playVideo('vimeo',idmatch[0])
                 else:
                         sources = []
                         label=name
@@ -123,27 +208,31 @@ def OtherContent():
 def extractFlashVars(data):
         flashvars = {}
         found = False
-
         for line in data.split("\n"):
-            if line.strip().startswith("var swf = \""):
+            if line.strip().startswith("yt.playerConfig = "):
                 found = True
-                p1 = line.find("=")
-                p2 = line.rfind(";")
+                print line
+                p1 = line.find('"url_encoded_fmt_stream_map":')
+                p2 = line.rfind('};')
                 if p1 <= 0 or p2 <= 0:
                     continue
                 data = line[p1 + 1:p2]
+                print "databefore" + data
+                p2 = data.find('",')
+                data = data[1:p2]
+                data = data.split(":")[1].strip().replace('"','').replace("\u0026","&")
+                print "newdata"+data
                 break
-
         if found:
-            data = json.loads(data)
-            data = data[data.find("flashvars"):]
-            data = data[data.find("\""):]
-            data = data[:1 + data[1:].find("\"")]
+            #data = json.loads(data)
+            #print "loadjson"+data
+            #data = data[data.find("flashvars"):]
+            #data = data[data.find("\""):]
+            #data = data[:1 + data[1:].find("\"")]
 
-            for k, v in cgi.parse_qs(data).items():
-                flashvars[k] = v[0]
-
-        return flashvars  
+            #flashvars[u"url_encoded_fmt_stream_map"]=urllib.quote_plus("sig=5F5DCF6D8710C32BAB3BF7716F817A96129BD004.9ED642709E32DEC5070F225A2BF30BED8989C2BB&itag=43&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26ratebypass%3Dyes%26itag%3D43%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26source%3Dyoutube%26expire%3D1360836986%26sparams%3Dcp%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire&type=video%2Fwebm%3B+codecs%3D%22vp8.0%2C+vorbis%22&quality=medium&fallback_host=tc.v7.cache1.c.youtube.com,sig=C1FB08FE99ACA2BFAE0D3EF67B30D1F0ED990A38.9D2480603ECACC8263BD9EACE86FDB065BCBE5A1&itag=34&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D34%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2Fx-flv&quality=medium&fallback_host=tc.v3.cache4.c.youtube.com,sig=0A0393E3D42E3ECA061F3631DAE92E1A86562237.C4A42977A7BCB3697391501A87AF6DEE26C35906&itag=18&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26ratebypass%3Dyes%26itag%3D18%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26source%3Dyoutube%26expire%3D1360836986%26sparams%3Dcp%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire&type=video%2Fmp4%3B+codecs%3D%22avc1.42001E%2C+mp4a.40.2%22&quality=medium&fallback_host=tc.v24.cache7.c.youtube.com,sig=17D8079585E194851B1827C484A960DA22AD51C9.02F0E6DAF8CC9EA320E477549CAC62B1788964D2&itag=5&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D5%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2Fx-flv&quality=small&fallback_host=tc.v2.cache1.c.youtube.com,sig=39AE834781AA29AC4DC4AF7DB5EE23943C427D93.1A0E0F0393E5FC7A7089552E8BB90C15D9F9AC13&itag=36&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D36%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2F3gpp%3B+codecs%3D%22mp4v.20.3%2C+mp4a.40.2%22&quality=small&fallback_host=tc.v13.cache7.c.youtube.com,sig=A79C1538EB3E4B4D2DAD1420BD8188D7B0ED9CB5.6D0EC72728EAE97ED7A5642666FA00F02FF685FD&itag=17&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D17%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2F3gpp%3B+codecs%3D%22mp4v.20.3%2C+mp4a.40.2%22&quality=small&fallback_host=tc.v21.cache4.c.youtube.com")
+            flashvars[u"url_encoded_fmt_stream_map"]=data
+        return flashvars   
 		
 def selectVideoQuality(links):
         link = links.get
