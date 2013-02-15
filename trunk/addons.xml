@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.animecrazy"
        name="Anime Crazy"
-       version="1.0.16"
+       version="1.0.17"
        provider-name="AJ">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -87,7 +87,7 @@
 
 <addon id="plugin.video.dramacrazy"
        name="Drama Crazy"
-       version="1.1.14"
+       version="1.1.15"
        provider-name="AJ">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -159,7 +159,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.8"
+  version="1.0.9"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -244,7 +244,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.3"
+  version="1.0.4"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
@@ -349,7 +349,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.6"
+  version="1.0.7"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
@@ -392,7 +392,7 @@
 
 <addon
   id="plugin.video.viki"
-  version="1.0.1"
+  version="1.0.2"
   name="Viki"
   provider-name="Dknight">
   <requires>
@@ -414,7 +414,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.3"
+  version="1.0.4"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>

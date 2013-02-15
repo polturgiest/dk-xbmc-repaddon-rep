@@ -188,7 +188,7 @@ def getVideoUrl(url,name):
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
                         imgSrc=re.compile('/jpeg" href="(.+?)"').findall(linkcontent)
-                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 if(len(dm_high) == 0):
                         vidlink = dm_low[0]

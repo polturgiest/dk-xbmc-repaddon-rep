@@ -257,33 +257,15 @@ def OtherContent():
     response = net.http_GET('http://khmerportal.com/videos')
     print response       
 def extractFlashVars(data):
-        flashvars = {}
-        found = False
-        for line in data.split("\n"):
-            if line.strip().startswith("yt.playerConfig = "):
-                found = True
-                print line
-                p1 = line.find('"url_encoded_fmt_stream_map":')
-                p2 = line.rfind('};')
-                if p1 <= 0 or p2 <= 0:
-                    continue
-                data = line[p1 + 1:p2]
-                print "databefore" + data
-                p2 = data.find('",')
-                data = data[1:p2]
-                data = data.split(":")[1].strip().replace('"','').replace("\u0026","&")
-                print "newdata"+data
-                break
-        if found:
-            #data = json.loads(data)
-            #print "loadjson"+data
-            #data = data[data.find("flashvars"):]
-            #data = data[data.find("\""):]
-            #data = data[:1 + data[1:].find("\"")]
-
-            #flashvars[u"url_encoded_fmt_stream_map"]=urllib.quote_plus("sig=5F5DCF6D8710C32BAB3BF7716F817A96129BD004.9ED642709E32DEC5070F225A2BF30BED8989C2BB&itag=43&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26ratebypass%3Dyes%26itag%3D43%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26source%3Dyoutube%26expire%3D1360836986%26sparams%3Dcp%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire&type=video%2Fwebm%3B+codecs%3D%22vp8.0%2C+vorbis%22&quality=medium&fallback_host=tc.v7.cache1.c.youtube.com,sig=C1FB08FE99ACA2BFAE0D3EF67B30D1F0ED990A38.9D2480603ECACC8263BD9EACE86FDB065BCBE5A1&itag=34&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D34%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2Fx-flv&quality=medium&fallback_host=tc.v3.cache4.c.youtube.com,sig=0A0393E3D42E3ECA061F3631DAE92E1A86562237.C4A42977A7BCB3697391501A87AF6DEE26C35906&itag=18&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26ratebypass%3Dyes%26itag%3D18%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26source%3Dyoutube%26expire%3D1360836986%26sparams%3Dcp%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire&type=video%2Fmp4%3B+codecs%3D%22avc1.42001E%2C+mp4a.40.2%22&quality=medium&fallback_host=tc.v24.cache7.c.youtube.com,sig=17D8079585E194851B1827C484A960DA22AD51C9.02F0E6DAF8CC9EA320E477549CAC62B1788964D2&itag=5&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D5%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2Fx-flv&quality=small&fallback_host=tc.v2.cache1.c.youtube.com,sig=39AE834781AA29AC4DC4AF7DB5EE23943C427D93.1A0E0F0393E5FC7A7089552E8BB90C15D9F9AC13&itag=36&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D36%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2F3gpp%3B+codecs%3D%22mp4v.20.3%2C+mp4a.40.2%22&quality=small&fallback_host=tc.v13.cache7.c.youtube.com,sig=A79C1538EB3E4B4D2DAD1420BD8188D7B0ED9CB5.6D0EC72728EAE97ED7A5642666FA00F02FF685FD&itag=17&url=http%3A%2F%2Fr9---sn-i3b7sn7d.c.youtube.com%2Fvideoplayback%3Fmt%3D1360813931%26itag%3D17%26sver%3D3%26fexp%3D902904%252C901803%252C914036%252C911928%252C920704%252C912806%252C902000%252C922403%252C922405%252C929901%252C913605%252C925006%252C908529%252C920201%252C911116%252C926403%252C910221%252C901451%252C919114%26ms%3Dau%26upn%3DjibP6ZvjXl4%26factor%3D1.25%26key%3Dyt1%26id%3D1d9229a6ccfa63e4%26mv%3Dm%26newshard%3Dyes%26ipbits%3D8%26ip%3D111.67.106.161%26burst%3D40%26algorithm%3Dthrottle-factor%26source%3Dyoutube%26expire%3D1360836986%26cp%3DU0hVRVhOVF9NUENONV9QSFhKOlpqbmZMTXRYMHVP%26sparams%3Dalgorithm%252Cburst%252Ccp%252Cfactor%252Cid%252Cip%252Cipbits%252Citag%252Csource%252Cupn%252Cexpire&type=video%2F3gpp%3B+codecs%3D%22mp4v.20.3%2C+mp4a.40.2%22&quality=small&fallback_host=tc.v21.cache4.c.youtube.com")
-            flashvars[u"url_encoded_fmt_stream_map"]=data
-        return flashvars     
+    flashvars = {}
+    found = False
+    pattern = "yt.playerConfig\s*=\s*({.*});"
+    match = re.search(pattern, data)
+    if match is None:
+        return flashvars
+    playerconfig =  json.loads(match.group(1))
+    flashvars =  playerconfig['args']
+    return flashvars    
 		
 def selectVideoQuality(links):
         link = links.get
