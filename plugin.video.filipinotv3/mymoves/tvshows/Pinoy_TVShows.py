@@ -12,6 +12,7 @@ from common.HttpUtils import HttpClient
 import re
 from moves import SnapVideo
 from snapvideo import YouTube
+from t0mm0.common.net import Net
 
 def displayTVShowsMenu(request_obj, response_obj):
     # GMA
@@ -54,30 +55,39 @@ def displayTVShowsMenu(request_obj, response_obj):
     item.set_xbmc_list_item_obj(xbmcListItem)
     response_obj.addListItem(item)
 
+def GetContent(url):
+
+       net = Net()
+       second_response = net.http_GET(url)
+       return second_response.content
 
 def displayTVShowEpisodes(request_obj, response_obj):
     url = request_obj.get_data()['tvChannelUrl']
+    contentDiv = GetContent(url)
+    newcontent = ''.join(contentDiv.encode("utf-8").splitlines()).replace('\t','')
     contentDiv = BeautifulSoup.SoupStrainer('div', {'id':'content'})
     soup = HttpClient().getBeautifulSoup(url=url, parseOnlyThese=contentDiv)
-    videoBoxes = soup.findChildren('div', {'id':'videobox'})
+    videoBoxes =re.compile("<div id='videobox'>(.+?)</h3><div style='clear: both;'>").findall(newcontent)
     for videoBox in videoBoxes:
-        imgTag = videoBox.findChild('img')
-        imageUrl = str(imgTag['src'])
-        metaTag = videoBox.findChild('div', {'class':'meta'})
-        aTag = metaTag.findChild('a')
-        episodeName = aTag.getText()
-        episodeUrl = str(aTag['href'])
-        
-        item = ListItem()
-        item.add_request_data('episodeName', episodeName)
-        item.add_request_data('episodeUrl', episodeUrl)
-        item.set_next_action_name('Show_Episode_VLinks')
-        xbmcListItem = xbmcgui.ListItem(label=episodeName, iconImage=imageUrl, thumbnailImage=imageUrl)
-        item.set_xbmc_list_item_obj(xbmcListItem)
-        response_obj.addListItem(item)
-        
+        #imgTag = videoBox.findChild('img')
+        imageUrl = re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(str(videoBox))[0]
+        match=re.compile('createSummaryThumb\("(.+?)","(.+?)","(.+?)",').findall(str(videoBox))
+        if(len(match)>0):
+            episodeName = match[0][1]
+            episodeUrl = str(match[0][2])
+            
+            item = ListItem()
+            item.add_request_data('episodeName', episodeName)
+            item.add_request_data('episodeUrl', episodeUrl)
+            item.set_next_action_name('Show_Episode_VLinks')
+            xbmcListItem = xbmcgui.ListItem(label=episodeName, iconImage=imageUrl, thumbnailImage=imageUrl)
+            item.set_xbmc_list_item_obj(xbmcListItem)
+            response_obj.addListItem(item)
     pageTag = soup.findChild('div', {'class':'postnav'})
-    olderPageTag = pageTag.findChild('a', {'class':'blog-pager-older-link'})
+    if(pageTag !=None):
+        olderPageTag = pageTag.findChild('a', {'class':'blog-pager-older-link'})
+    else:
+        olderPageTag = None
     if olderPageTag is not None:
         item = ListItem()
         item.add_request_data('tvChannelUrl', str(olderPageTag['href']))
@@ -150,6 +160,7 @@ def retrieveVideoLinks(request_obj, response_obj):
                         video_link = {}
                         video_link['videoTitle'] = 'Source #' + str(video_source_id) + ' | ' + 'Part #' + str(video_part_index)
                         video_link['videoLink'] = videoUrl
+                        print "myvidlink"+videoUrl
                         video_hosting_info = SnapVideo.findVideoHostingInfo(video_link['videoLink'])
                         video_link['videoSourceImg'] = video_hosting_info.get_video_hosting_image()
                         
@@ -179,6 +190,7 @@ def retrieveVideoLinks(request_obj, response_obj):
                     video_link = {}
                     video_link['videoTitle'] = 'Source #' + str(video_source_id) + ' | ' + 'Part #' + str(video_part_index)
                     video_link['videoLink'] = videoUrl
+                    print "myvidlink"+videoUrl
                     video_hosting_info = SnapVideo.findVideoHostingInfo(video_link['videoLink'])
                     video_link['videoSourceImg'] = video_hosting_info.get_video_hosting_image()
                     

@@ -15,6 +15,9 @@ import urllib
 from moves import SnapVideo
 from moves import PreProcessor
 import xbmcgui, xbmcplugin, xbmc #@UnresolvedImport
+try: import simplejson as json
+except ImportError: import json
+import cgi
 
 def displayMoviesMenu(request_obj, response_obj):
     # ALL Movies
@@ -336,7 +339,8 @@ def ParseYoutube(url):
                         match=re.compile('http://www.youtube.com/v/(.+?)&fs=1&AJ;').findall(url1)
                 if(len(match) > 0):
                     lastmatch = match[0][len(match[0])-1].replace('v/','')  
-                return 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + lastmatch
+                #return 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + lastmatch
+                return getYoutube(lastmatch)
 def loadVideos(url,name,request_obj, response_obj):
 
         #YOUTUBE
@@ -355,7 +359,145 @@ def loadVideos(url,name,request_obj, response_obj):
                 SnapVideo.addVideoInfo(request_obj, response_obj)
         except: pass
 
+def extractFlashVars(data):
+    flashvars = {}
+    found = False
+    pattern = "yt.playerConfig\s*=\s*({.*});"
+    match = re.search(pattern, data)
+    if match is None:
+        return flashvars
+    playerconfig =  json.loads(match.group(1))
+    flashvars =  playerconfig['args']
+    return flashvars    
 		
+def selectVideoQuality(links):
+        link = links.get
+        video_url = ""
+        fmt_value = {
+                5: "240p h263 flv container",
+                18: "360p h264 mp4 container | 270 for rtmpe?",
+                22: "720p h264 mp4 container",
+                26: "???",
+                33: "???",
+                34: "360p h264 flv container",
+                35: "480p h264 flv container",
+                37: "1080p h264 mp4 container",
+                38: "720p vp8 webm container",
+                43: "360p h264 flv container",
+                44: "480p vp8 webm container",
+                45: "720p vp8 webm container",
+                46: "520p vp8 webm stereo",
+                59: "480 for rtmpe",
+                78: "seems to be around 400 for rtmpe",
+                82: "360p h264 stereo",
+                83: "240p h264 stereo",
+                84: "720p h264 stereo",
+                85: "520p h264 stereo",
+                100: "360p vp8 webm stereo",
+                101: "480p vp8 webm stereo",
+                102: "720p vp8 webm stereo",
+                120: "hd720",
+                121: "hd1080"
+        }
+        hd_quality = 1
+
+        # SD videos are default, but we go for the highest res
+        #print video_url
+        if (link(35)):
+            video_url = link(35)
+        elif (link(59)):
+            video_url = link(59)
+        elif link(44):
+            video_url = link(44)
+        elif (link(78)):
+            video_url = link(78)
+        elif (link(34)):
+            video_url = link(34)
+        elif (link(43)):
+            video_url = link(43)
+        elif (link(26)):
+            video_url = link(26)
+        elif (link(18)):
+            video_url = link(18)
+        elif (link(33)):
+            video_url = link(33)
+        elif (link(5)):
+            video_url = link(5)
+
+        if hd_quality > 1:  # <-- 720p
+            if (link(22)):
+                video_url = link(22)
+            elif (link(45)):
+                video_url = link(45)
+            elif link(120):
+                video_url = link(120)
+        if hd_quality > 2:
+            if (link(37)):
+                video_url = link(37)
+            elif link(121):
+                video_url = link(121)
+
+        if link(38) and False:
+            video_url = link(38)
+        for fmt_key in links.iterkeys():
+
+            if link(int(fmt_key)):
+                    text = repr(fmt_key) + " - "
+                    if fmt_key in fmt_value:
+                        text += fmt_value[fmt_key]
+                    else:
+                        text += "Unknown"
+
+                    if (link(int(fmt_key)) == video_url):
+                        text += "*"
+            else:
+                    print "- Missing fmt_value: " + repr(fmt_key)
+
+        video_url += " | " + 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+
+
+        return video_url
+
+def getYoutube(videoid):
+
+                code = videoid
+                linkImage = 'http://i.ytimg.com/vi/'+code+'/default.jpg'
+                req = urllib2.Request('http://www.youtube.com/watch?v='+code+'&fmt=18')
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                
+                if len(re.compile('shortlink" href="http://youtu.be/(.+?)"').findall(link)) == 0:
+                        if len(re.compile('\'VIDEO_ID\': "(.+?)"').findall(link)) == 0:
+                                req = urllib2.Request('http://www.youtube.com/get_video_info?video_id='+code+'&asv=3&el=detailpage&hl=en_US')
+                                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                                response = urllib2.urlopen(req)
+                                link=response.read()
+                                response.close()
+                
+                flashvars = extractFlashVars(link)
+
+                links = {}
+
+                for url_desc in flashvars[u"url_encoded_fmt_stream_map"].split(u","):
+                        url_desc_map = cgi.parse_qs(url_desc)
+                        if not (url_desc_map.has_key(u"url") or url_desc_map.has_key(u"stream")):
+                                continue
+
+                        key = int(url_desc_map[u"itag"][0])
+                        url = u""
+                        if url_desc_map.has_key(u"url"):
+                                url = urllib.unquote(url_desc_map[u"url"][0])
+                        elif url_desc_map.has_key(u"stream"):
+                                url = urllib.unquote(url_desc_map[u"stream"][0])
+
+                        if url_desc_map.has_key(u"sig"):
+                                url = url + u"&signature=" + url_desc_map[u"sig"][0]
+                        links[key] = url
+                highResoVid=selectVideoQuality(links)
+                return highResoVid 
+				
 def __preparePlayListItem__(video_source_id, video_source_img, video_playlist_items):
     item = ListItem()
     item.add_request_data('videoPlayListItems', video_playlist_items)
