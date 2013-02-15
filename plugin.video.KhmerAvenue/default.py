@@ -248,7 +248,7 @@ def loadPlaylist(newlink,name):
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
                 	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
            elif (newlink.find("video.google.com") > -1):
@@ -290,7 +290,7 @@ def loadPlaylist(newlink,name):
 def loadVideos(url,name):
         #try:
            link=GetContent(url)
-           newlink = ''.join(link.splitlines()).replace('\t','')
+           newlink = ''.join(link.encode("utf-8").splitlines()).replace('\t','')
 
            match=re.compile("'file': '(.+?)',").findall(newlink)
            print newlink
