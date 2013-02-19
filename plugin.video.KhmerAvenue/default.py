@@ -5,7 +5,9 @@ import os,time,base64,logging
 from t0mm0.common.net import Net
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
-import json
+try: import simplejson as json
+except ImportError: import json
+import cgi
 import CommonFunctions
 common = CommonFunctions
 common.plugin = "plugin.video.KhmerAvenue"
@@ -13,10 +15,10 @@ strDomain ='http://www.khmeravenue.com/'
 def HOME():
         addDir('Search','http://www.khmeravenue.com/',4,'http://www.khmeravenue.com/wp-contents/uploads/logo.jpg')
         addDir('Khmer Videos','http://www.khmeravenue.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Lakorns','http://www.khmeravenue.com/albumcategory/thai-lakorn/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Videos','http://www.khmeravenue.com/albumcategory/korean-clips/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Thai Lakorns','http://www.khmeravenue.com/albumcategory/thai-videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Videos','http://www.khmeravenue.com/albumcategory/korean-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
         addDir('Chinese Videos','http://www.khmeravenue.com/albumcategory/chinese-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Bollywood Videos','http://www.khmeravenue.com/albumcategory/bollywood/',2,'http://www.khmeravenue.com/wp-content/uploads/2013/01/santosima.jpg')
+        addDir('Bollywood Videos','http://www.khmeravenue.com/albumcategory/bollywood-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2013/01/santosima.jpg')
         addDir('Philippines Videos','http://www.khmeravenue.com/albumcategory/philippines-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
     try:
@@ -163,7 +165,10 @@ def GetContent(url):
 def playVideo(videoType,videoId):
     url = videoId
     if (videoType == "youtube"):
-        url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+        try:
+                url = getYoutube(videoId)
+        except:
+                url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
     elif (videoType == "vimeo"):
         url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
@@ -205,7 +210,10 @@ def PLAYLIST_VIDEOLINKS(url,name):
 def CreateList(videoType,videoId):
     url1 = ""
     if (videoType == "youtube"):
-        url1 = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+        try:
+                url = getYoutube(videoId)
+        except:
+                url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
     elif (videoType == "vimeo"):
         url1 = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
@@ -293,7 +301,6 @@ def loadVideos(url,name):
            newlink = ''.join(link.encode("utf-8").splitlines()).replace('\t','')
 
            match=re.compile("'file': '(.+?)',").findall(newlink)
-           print newlink
            if(len(match) == 0):
                    match=re.compile('<iframe frameborder="0" [^>]*src="(.+?)">').findall(newlink)
                    if(len(match)==0):
@@ -345,7 +352,145 @@ def loadVideos(url,name):
                 else:
                     playVideo('moviekhmer',urllib2.unquote(newlink).decode("utf8"))
         #except: pass
-     	
+		
+def extractFlashVars(data):
+    flashvars = {}
+    found = False
+    pattern = "yt.playerConfig\s*=\s*({.*});"
+    match = re.search(pattern, data)
+    if match is None:
+        return flashvars
+    playerconfig =  json.loads(match.group(1))
+    flashvars =  playerconfig['args']
+    return flashvars    
+		
+def selectVideoQuality(links):
+        link = links.get
+        video_url = ""
+        fmt_value = {
+                5: "240p h263 flv container",
+                18: "360p h264 mp4 container | 270 for rtmpe?",
+                22: "720p h264 mp4 container",
+                26: "???",
+                33: "???",
+                34: "360p h264 flv container",
+                35: "480p h264 flv container",
+                37: "1080p h264 mp4 container",
+                38: "720p vp8 webm container",
+                43: "360p h264 flv container",
+                44: "480p vp8 webm container",
+                45: "720p vp8 webm container",
+                46: "520p vp8 webm stereo",
+                59: "480 for rtmpe",
+                78: "seems to be around 400 for rtmpe",
+                82: "360p h264 stereo",
+                83: "240p h264 stereo",
+                84: "720p h264 stereo",
+                85: "520p h264 stereo",
+                100: "360p vp8 webm stereo",
+                101: "480p vp8 webm stereo",
+                102: "720p vp8 webm stereo",
+                120: "hd720",
+                121: "hd1080"
+        }
+        hd_quality = 1
+
+        # SD videos are default, but we go for the highest res
+        #print video_url
+        if (link(35)):
+            video_url = link(35)
+        elif (link(59)):
+            video_url = link(59)
+        elif link(44):
+            video_url = link(44)
+        elif (link(78)):
+            video_url = link(78)
+        elif (link(34)):
+            video_url = link(34)
+        elif (link(43)):
+            video_url = link(43)
+        elif (link(26)):
+            video_url = link(26)
+        elif (link(18)):
+            video_url = link(18)
+        elif (link(33)):
+            video_url = link(33)
+        elif (link(5)):
+            video_url = link(5)
+
+        if hd_quality > 1:  # <-- 720p
+            if (link(22)):
+                video_url = link(22)
+            elif (link(45)):
+                video_url = link(45)
+            elif link(120):
+                video_url = link(120)
+        if hd_quality > 2:
+            if (link(37)):
+                video_url = link(37)
+            elif link(121):
+                video_url = link(121)
+
+        if link(38) and False:
+            video_url = link(38)
+        for fmt_key in links.iterkeys():
+
+            if link(int(fmt_key)):
+                    text = repr(fmt_key) + " - "
+                    if fmt_key in fmt_value:
+                        text += fmt_value[fmt_key]
+                    else:
+                        text += "Unknown"
+
+                    if (link(int(fmt_key)) == video_url):
+                        text += "*"
+            else:
+                    print "- Missing fmt_value: " + repr(fmt_key)
+
+        video_url += " | " + 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+
+
+        return video_url
+
+def getYoutube(videoid):
+
+                code = videoid
+                linkImage = 'http://i.ytimg.com/vi/'+code+'/default.jpg'
+                req = urllib2.Request('http://www.youtube.com/watch?v='+code+'&fmt=18')
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                
+                if len(re.compile('shortlink" href="http://youtu.be/(.+?)"').findall(link)) == 0:
+                        if len(re.compile('\'VIDEO_ID\': "(.+?)"').findall(link)) == 0:
+                                req = urllib2.Request('http://www.youtube.com/get_video_info?video_id='+code+'&asv=3&el=detailpage&hl=en_US')
+                                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                                response = urllib2.urlopen(req)
+                                link=response.read()
+                                response.close()
+                
+                flashvars = extractFlashVars(link)
+
+                links = {}
+
+                for url_desc in flashvars[u"url_encoded_fmt_stream_map"].split(u","):
+                        url_desc_map = cgi.parse_qs(url_desc)
+                        if not (url_desc_map.has_key(u"url") or url_desc_map.has_key(u"stream")):
+                                continue
+
+                        key = int(url_desc_map[u"itag"][0])
+                        url = u""
+                        if url_desc_map.has_key(u"url"):
+                                url = urllib.unquote(url_desc_map[u"url"][0])
+                        elif url_desc_map.has_key(u"stream"):
+                                url = urllib.unquote(url_desc_map[u"stream"][0])
+
+                        if url_desc_map.has_key(u"sig"):
+                                url = url + u"&signature=" + url_desc_map[u"sig"][0]
+                        links[key] = url
+                highResoVid=selectVideoQuality(links)
+                return highResoVid   
 def addLink(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
