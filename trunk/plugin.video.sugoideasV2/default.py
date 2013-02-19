@@ -409,7 +409,7 @@ def episodeList(url):
 def playVideo(videoType,videoId):
     url = videoId
     if (videoType == "youtube"):
-        url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+        url = getYoutube(videoId.replace('?',''))
     elif (videoType == "vimeo"):
         url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
