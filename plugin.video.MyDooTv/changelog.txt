@@ -5,3 +5,4 @@
 1.0.0 added 16 live stream channels
 1.0.1 fixed error caused by the change in episode list
 1.0.3 fixed live tv links and added 4 more
+1.0.5 fixed broken live tv links
