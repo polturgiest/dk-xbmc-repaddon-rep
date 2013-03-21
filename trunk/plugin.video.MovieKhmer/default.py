@@ -257,14 +257,19 @@ def OtherContent():
     response = net.http_GET('http://khmerportal.com/videos')
     print response       
 def extractFlashVars(data):
-    flashvars = {}
-    found = False
-    pattern = "yt.playerConfig\s*=\s*({.*});"
-    match = re.search(pattern, data)
-    if match is None:
-        return flashvars
-    playerconfig =  json.loads(match.group(1))
-    flashvars =  playerconfig['args']
+    for line in data.split("\n"):
+            index = line.find("ytplayer.config =")
+            if index != -1:
+                found = True
+                p1 = line.find("=", (index-3))
+                p2 = line.rfind(";")
+                if p1 <= 0 or p2 <= 0:
+                        continue
+                data = line[p1 + 1:p2]
+                break
+    if found:
+            data = json.loads(data)
+            flashvars = data["args"]
     return flashvars    
 		
 def selectVideoQuality(links):
