@@ -159,7 +159,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.10"
+  version="1.0.11"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -201,7 +201,7 @@
 
 <addon
   id="plugin.video.KhmerPortal"
-  version="1.0.4"
+  version="1.0.5"
   name="KhmerPortal"
   provider-name="Dknight">
   <requires>
@@ -244,7 +244,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.4"
+  version="1.0.5"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
@@ -329,7 +329,7 @@
 
 <addon
   id="plugin.video.sugoideasV2"
-  version="1.0.3"
+  version="1.0.4"
   name="sugoideasV2"
   provider-name="Created by YangSun revised by Dknight">
   <requires>
@@ -349,7 +349,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.7"
+  version="1.0.8"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
@@ -414,7 +414,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.4"
+  version="1.0.5"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>
