@@ -3,13 +3,18 @@ import urllib,urllib2,re,sys
 import cookielib,os,string,cookielib,StringIO,gzip
 import os,time,base64,logging
 from t0mm0.common.net import Net
+from t0mm0.common.addon import Addon
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 from xml.dom.minidom import Document
 
-__settings__ = xbmcaddon.Addon(id='plugin.video.NoobRoom')
+addon_id="plugin.video.NoobRoom"
+__settings__ = xbmcaddon.Addon(id=addon_id)
+addon = Addon(addon_id)
+datapath = addon.get_profile()
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'noobroom.xml'))
+tvfilename = xbmc.translatePath(os.path.join(home, 'resources', 'tvshow.xml'))
 def GetContent(url):
     try:
        net = Net()
@@ -30,7 +35,7 @@ nooblink=GetNoobLink()
 def GetVideoLink(url):
     link = GetContent(url)
     match=re.compile('"streamer": "(.+?)",').findall(link)
-    print match
+
     return match[0]
 	
 noobvideolink=GetVideoLink(nooblink)
@@ -38,6 +43,7 @@ noobvideolink=GetVideoLink(nooblink)
 def HOME():
         addDir('Search','search',5,'')
         addDir('Movies A-Z','Movies',2,'')
+        addDir('TV Shows','TV',9,'')
         addDir('Last 25 Added','Latest',8,'')
         addLink('Refresh Movie list','Refresh',7,'')
 
@@ -86,7 +92,7 @@ def Last25():
     match=re.compile('<movie name="(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
     for i in range(25):
         (mName,mNumber,vyear)=match[i]
-        addDir(mName,mNumber,6,"")
+        addLink(mName,mNumber,6,"")
 		
 def SearchXml(SearchText):
     if os.path.isfile(filename)==False:
@@ -100,7 +106,7 @@ def SearchXml(SearchText):
         match=re.compile('<movie name="' + SearchText + '(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
     for i in range(len(match)):
         (mName,mNumber,vyear)=match[i]
-        addDir(SearchText+mName,mNumber,6,"")
+        addLink(SearchText+mName,mNumber,6,"")
 		
 def ParseXML(year,url,name, doc, mlist):
     movie= doc.createElement("movie")
@@ -115,7 +121,7 @@ def BuildXMl():
     mydoc=Document()
     mlist = mydoc.createElement("movielist")
     mydoc.appendChild(mlist)
-    match=re.compile("<br>(.+?) - <a style=\"text-decoration:underline;color:#fff;font-family: verdana,geneva,sans-serif;\" href='(.+?)'>(.+?)</a>").findall(link)
+    match=re.compile('<br>(.+?)- <a class=\'tippable\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(link)
     for i in range(len(match)):
         (vyear,mNumber,mName)=match[i]
         ParseXML(vyear,mNumber.replace('?',''),urllib.quote_plus(mName).replace('+',' '), mydoc,mlist)
@@ -127,15 +133,28 @@ def Episodes(name,videoId):
           match=re.compile("\/(.+?)&sp").findall(videoId+"&sp")
           if len(match)>=0:
                 videoId=match[0]
-          addLink(name+"-Default Server",noobvideolink+"&start=0&file="+videoId+'|Referer="'+nooblink+'/player.swf'+'"',3,"")
-          addLink(name+"-Server 1","http://178.159.0.134/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
-          addLink(name+"-Server 2","http://178.159.0.59/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
-          addLink(name+"-Server 4","http://178.159.0.10/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
-          addLink(name+"-Server 5","http://178.159.0.8/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
-    except: pass	
+          playVideo("noobroom",noobvideolink+"&start=0&file="+videoId+'|Referer="'+nooblink+'/player.swf'+'"')
+          #addLink(name+"-Default Server",noobvideolink+"&start=0&file="+videoId+'|Referer="'+nooblink+'/player.swf'+'"',3,"")
+          #addLink(name+"-Server 1","http://178.159.0.134/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
+          #addLink(name+"-Server 2","http://178.159.0.59/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
+          #addLink(name+"-Server 4","http://178.159.0.10/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
+          #addLink(name+"-Server 5","http://178.159.0.8/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
+    except: pass
 
 
-
+def ListTVSeries():
+    link = GetContent(nooblink +"/series.php")
+    link = ''.join(link.splitlines()).replace('\'','"')
+    match=re.compile('<table><tr><td><a href="(.+?)"><img style="border:0" src="(.+?)"></a>').findall(link)
+    matchname=re.compile('<b><a style="color:#fff" href="(.+?)">(.+?)</a></b>').findall(link)
+    for i in range(len(match)):
+            addDir(matchname[i][1],nooblink+match[i][0],10,nooblink+"/"+match[i][1])
+def ListEpisodes(url):
+    link = GetContent(url)
+    link = ''.join(link.splitlines()).replace('\'','"')
+    match=re.compile('<br><b>(.+?)<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(link)
+    for i in range(len(match)):
+            addLink(match[i][0]+match[i][2],nooblink+match[i][2],3,"")
 
 def playVideo(videoType,videoId):
     url = ""
@@ -238,5 +257,9 @@ elif mode==6:
 elif mode==7:
        BuildXMl()
 elif mode==8:
-       Last25()   
+       Last25()  
+elif mode==9:
+       ListTVSeries()
+elif mode==10:
+       ListEpisodes(url)
 xbmcplugin.endOfDirectory(int(sysarg))
