@@ -55,9 +55,9 @@ homeLink="http://phim47.com/"
 def INDEX(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        match=re.compile('<div id="content_show">(.+?)<div class="pagination">').findall(link)
-        vidlist = re.compile('<a href="(.+?)"  onmouseover="(.+?)" onmouseout="(.+?)" alt="(.+?)" ><img class="showend" src="(.+?)" [^>]*').findall(match[0])
-        for vurl,vtmp1,vtmp2,vname,vimg in vidlist:
+        match=re.compile('<div id="list">(.+?)<div class="pagination">').findall(link)
+        vidlist = re.compile('<li><div class="zitemList"><a [^>]*href="(.+?)" title="(.+?)" [^>]*><img class="showend" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*></a></div>').findall(match[0])
+        for vurl,vname,vimg in vidlist:
             addDir(vname.encode("utf-8"),vurl.encode("utf-8"),7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         navmatch=re.compile('[^>]* href="(.+?)" >(.+?)</a>').findall(pagelist[0])
@@ -80,10 +80,10 @@ def Mirrors(url,name):
   mirrorlink =getVidPage(url,name)
   link = GetContent(mirrorlink)
   link=''.join(link.splitlines()).replace('\'','"')
-  mirmatch=re.compile('<div id="list_episodes">(.+?)<div id="fb-root">').findall(link)
+  mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
   servlist =re.compile('<div class="name left namew">(.+?)&nbsp;&nbsp;&nbsp;').findall(mirmatch[0])
   for vname in servlist:
-         addDir(vname.encode("utf-8"),mirrorlink.encode("utf-8"),5,"")
+         addDir(vname.encode("utf-8"),mirrorlink.encode("utf-8"),5,"")  
 
 			
 def decodeurl(encodedurl):
@@ -111,24 +111,24 @@ def decodeurl(encodedurl):
 def getVidPage(url,name):
   contentlink = GetContent(url)
   contentlink = ''.join(contentlink.splitlines()).replace('\'','"')
-  mlink=re.compile('<a  id="clicktoepisode" href=(.+?) >').findall(contentlink)
-  return mlink[0]
+  mlink=re.compile('<a id="clicktoepisode" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(contentlink)
+  return mlink[0].replace("title=","")
 
 
 def Episodes(url,name):
-    try:
+    #try:
         link = GetContent(url)
         link=''.join(link.splitlines()).replace('\'','"')
-        mirmatch=re.compile('<div id="list_episodes">(.+?)<div id="fb-root">').findall(link)
+        mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
         servlist =re.compile('<div class="name left namew">'+name+'&nbsp;&nbsp;&nbsp;(.+?)<div class="clear_td">').findall(mirmatch[0])
         epilist =re.compile('<a  href=(.+?) >(.+?)</a>').findall(servlist[0])
         curmatch =re.compile('<a class="current" >(.+?)</a>').findall(servlist[0])
         if(len(curmatch)>0):
-              addLink("part - "+ curmatch[0].strip().encode("utf-8"),url.encode("utf-8"),3,'',name.encode("utf-8"))
+              addLink("part - "+ curmatch[0].strip().encode("utf-8"),"".join(i for i in url if ord(i)<128),3,'',name.encode("utf-8"))
         for vlink,vLinkName in epilist:
-              addLink("part - "+ vLinkName.strip().encode("utf-8"),vlink.encode("utf-8"),3,'',name.encode("utf-8"))
+              addLink("part - "+ vLinkName.strip().encode("utf-8"),"".join(i for i in vlink if ord(i)<128),3,'',name.encode("utf-8"))
 
-    except: pass
+    #except: pass
 
 def Geturl(strToken):
         for i in range(20):
@@ -142,7 +142,10 @@ def Geturl(strToken):
 def GetContent(url):
     try:
        net = Net()
-       second_response = net.http_GET(url)
+       try:
+            second_response = net.http_GET(url)
+       except:
+            second_response = net.http_GET(url.encode("utf-8"))
        return second_response.content
     except:
        d = xbmcgui.Dialog()
@@ -163,7 +166,7 @@ def PostContent(url):
                 headers['Accept-Language']='en-us,en;q=0.5'
                 headers['Pragma']='no-cache'
                 formdata={}
-                second_response = net.http_POST(url,formdata,headers=headers,compression=False)
+                second_response = net.http_POST(url.encode("utf-8"),formdata,headers=headers,compression=False)
                 return second_response.content
         except:
                 d = xbmcgui.Dialog()
