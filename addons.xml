@@ -393,7 +393,7 @@
 
 <addon
   id="plugin.video.vidics"
-  version="0.9.3"
+  version="0.9.4"
   name="Vidics"
   provider-name="Dknight">
   <requires>
