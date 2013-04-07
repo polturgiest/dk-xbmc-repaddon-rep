@@ -19,6 +19,7 @@ def HOME():
         #addDir('Pinoy Box Office','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         #addDir('Cinema One','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         addDir('Sports & Others','http://www.pinoy-ako.info/movies/sports-a-other-videos.html',5,'')
+        addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
         addDir('ABS-CBN Shows','http://www.pinoy-ako.info/tv-show-replay/abs-cbn-2-tv-shows.html',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('ABS-CBN Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11672:watch-old-abscbn-2-kapamilya-tv-shows',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('GMA 7 Shows','http://www.pinoy-ako.info/tv-show-replay/gma-7-tv-shows.html',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
@@ -27,6 +28,16 @@ def HOME():
         addDir('TV5 Old Shows','http://www.pinoy-ako.info/tv-show-replay/94-tv-guide/59771-watch-old-tv5-kapatid-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         addDir('TV Specials','http://www.pinoy-ako.info/tv-show-replay/tv-specials.html',5,'http://img857.imageshack.us/img857/8424/tvspecials.jpg')
 
+def AllTV(url):
+        link = GetContent(url)
+        link=link.encode("UTF-8")
+        link = ''.join(link.splitlines()).replace('\t','')
+        vidcontent=re.compile('<div id="content">(.+?)<div class="clr"></div>').findall(link)
+        movielist=re.compile('<li>(.+?)</li>').findall(vidcontent[0])
+        for moviecontent in movielist:
+            vurlc=re.compile('<a href="(.+?)" class="category">(.+?)</a>').findall(moviecontent)
+            (vurl,vname)=vurlc[0]
+            addDir(vname,strdomain+vurl,5,"")
 def INDEX(url):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
@@ -866,4 +877,6 @@ elif mode==8:
        SEARCH()
 elif mode==9:
        SearchResults(url)
+elif mode==10:
+       AllTV(url)
 xbmcplugin.endOfDirectory(int(sysarg))
