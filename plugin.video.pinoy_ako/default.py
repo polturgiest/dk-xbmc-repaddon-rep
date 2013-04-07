@@ -12,6 +12,7 @@ import urlresolver
 
 strdomain ='http://www.pinoy-ako.info'
 def HOME():
+        addDir('Search','http://www.pinoy-ako.info',8,'')
         addDir('Latest Videos','http://www.pinoy-ako.info',7,'')
         addDir('Pinoy Movies','http://www.pinoy-ako.info/movies/pinoy-movies-uploaded.html',6,'')
         addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
@@ -49,17 +50,30 @@ def INDEX2(url):
             if(len(vurlc) > 0):
                     (vurl,vname)=vurlc[0]
                     addDir(vname,strdomain+vurl,4,vimg)	
+def SEARCH():
+        keyb = xbmc.Keyboard('', 'Enter search text')
+        keyb.doModal()
+        #searchText = '01'
+        if (keyb.isConfirmed()):
+                searchText = urllib.quote_plus(keyb.getText())
+        url = 'http://www.pinoy-ako.info/component/search/?searchword='+ searchText +'&ordering=newest&searchphrase=all&limit=20'
+        SearchResults(url)
+		
 def SearchResults(url):
         link = GetContent(url)
-        newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<h2 class="title"><a href="(.+?)" rel="bookmark" title="">(.+?)</a></h2>').findall(newlink)
-        if(len(match) >= 1):
-                for vLink, vLinkName in match:
-                    addDir(vLinkName,vLink,5,'')
-        match=re.compile('<a class="next page-numbers" href="(.+?)">').findall(link)
-        if(len(match) >= 1):
-            nexurl= match[0]
-            addDir('Next>',nexurl,6,'')			
+        link=link.encode("UTF-8")
+        link = ''.join(link.splitlines()).replace('\t','')
+        vidcontent=re.compile('<div id="content">(.+?)<div class="clr"></div>').findall(link)
+        movielist=re.compile('<fieldset>(.+?)</fieldset>').findall(vidcontent[0])
+        for moviecontent in movielist:
+            vurlc=re.compile('<a href="(.+?)">(.+?)</a>').findall(moviecontent)
+            (vurl,vname)=vurlc[0]
+            addDir(vname,strdomain+vurl,4,"")	
+        pagin=re.compile('<ul class="pagination">(.+?)</li></ul>').findall(vidcontent[0])
+        if(len(pagin) > 0):
+             pagelist=re.compile('<a href="(.+?)" title="(.+?)">').findall(pagin[0])
+             for (vlink,vname) in pagelist:
+                  addDir("page - " + vname,strdomain+vlink,9,"")
 
 def GetLatest(url):
         link = GetContent(url)
@@ -848,4 +862,8 @@ elif mode==6:
        INDEX2(url)
 elif mode==7:
        GetLatest(strdomain)
+elif mode==8:
+       SEARCH()
+elif mode==9:
+       SearchResults(url)
 xbmcplugin.endOfDirectory(int(sysarg))
