@@ -23,6 +23,7 @@ def HOME():
 def INDEX(url):
     #try:
         link = GetContent(url)
+        link =link.encode("UTF-8")
         newlink = ''.join(link.splitlines()).replace('\t','')
         listcontent=re.compile('<div class="content">(.+?)<div id="r">').findall(newlink)
         match=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*></a><h1 class="normal"><a href="(.+?)" title="(.+?)">(.+?)</a><span class="download">').findall(listcontent[0])
@@ -97,6 +98,7 @@ def CheckParts(url,name):
 def Episodes(url,name,newmode):
     #try:
         link = GetContent(url)
+        link =link.encode("UTF-8")
         newlink = ''.join(link.splitlines()).replace('\t','')
         listcontent=re.compile('<ul class="listep">(.+?)</ul>').findall(newlink)
         if(newmode==5):
