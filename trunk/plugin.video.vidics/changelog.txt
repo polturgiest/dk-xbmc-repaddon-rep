@@ -3,3 +3,4 @@
 
 0.9.2 - pushed fix of top show and new icon
 0.9.3 - fixed sockshare and putlocker link issue
+0.9.4 - Added TV schedule

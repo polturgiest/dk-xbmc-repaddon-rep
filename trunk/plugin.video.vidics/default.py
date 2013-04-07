@@ -7,7 +7,7 @@ import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import json
 import urlresolver
-import time
+import time,datetime
 from xml.dom.minidom import Document
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.vidics')
@@ -20,7 +20,7 @@ net = Net()
 class InputWindow(xbmcgui.WindowDialog):# Cheers to Bastardsmkr code already done in Putlocker PRO resolver.
     def __init__(self, *args, **kwargs):
         self.cptloc = kwargs.get('captcha')
-        self.img = xbmcgui.ControlImage(335,30,624,180,self.cptloc)
+        self.img = xbmcgui.ControlImage(335,20,624,180,self.cptloc)
         self.addControl(self.img)
         self.kbd = xbmc.Keyboard()
 
@@ -54,6 +54,7 @@ def HOME():
         addDir('TV Shows A-Z','Category-TvShows',17,'')
         addDir('Movies Genres','Category-Movies',18,'')
         addDir('TV Shows Genres','Category-TvShows',19,'')
+        addDir('4 Day TV Schedule','TV Schedule',20,'')
         addDir('Top Movies','http://www.vidics.ch/top/films.html',5,'')
         addDir('Top TV Shows','http://www.vidics.ch/top/tvshows.html',6,'')
         addDir('Movies/TV Show by Actor','http://www.vidics.ch/Category-People/Genre-Any/Letter-Any/ByPopularity/1.htm',12,'')
@@ -70,7 +71,34 @@ def CheckRedirect(url):
     except:
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
-	   
+
+def getSchedule(sched_date): 
+        url="http://www.vidics.ch/calendar/"+sched_date+ ".html"
+        print "selected_date|" + url
+        link = GetContent(url)
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        listcontent=re.compile('<div class="indexClanedarDay left" id="date_'+sched_date+'">(.+?)</div>').findall(newlink)
+        if(len(listcontent)>0):
+                latestepi=re.compile('<h3 class="CalTvshow" title="(.+?)">(.+?)</h3>').findall(listcontent[0])
+                for vtmp,vcontent in latestepi:
+                        (sUrl,stmp,sName)=re.compile('<a class="CalTVshowName pukeGreen" href="(.+?)" title="(.+?)">(.+?)</a>').findall(vcontent)[0]
+                        (eUrl,eName)=re.compile('<a class="CalTVshowEpisode blue" href="(.+?)">(.+?)</a>').findall(vcontent)[0]
+                        addDir(sName,sUrl,7,"")
+                        addDir("  --"+eName,eUrl,4,"")  
+def List4Days():
+        sched_date=str(datetime.date.today())
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir("Today's("+sched_date+") TV Schedule",sched_date,21,"episode")
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=1))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s("+sched_date+") TV Schedule",sched_date,21,"episode")
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=2))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s("+sched_date+") TV Schedule",sched_date,21,"episode")
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=3))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s("+sched_date+") TV Schedule",sched_date,21,"episode")
+		
 def Mirrors(url,name):
   link = GetContent(url)
   link=''.join(link.splitlines()).replace('\'','"')
@@ -149,7 +177,10 @@ def ParseVideoLink(url,name):
                 packed = packed.replace("</script>","")
                 unpacked = unpackjs4(packed)  
                 unpacked = unpacked.replace("\\","")
-                vidlink = re.compile('src="(.+?)"').findall(unpacked)[0]
+                vidsrc = re.compile('src="(.+?)"').findall(unpacked)
+                if(len(vidsrc) == 0):
+                         vidsrc=re.compile('"file","(.+?)"').findall(unpacked)
+                vidlink=vidsrc[0]
         elif (redirlink.find("donevideo") > -1):
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
                 op = re.compile('action=""><input type="hidden" name="op" value="(.+?)">').findall(link)[0]
@@ -175,8 +206,10 @@ def ParseVideoLink(url,name):
                 posdata=urllib.urlencode({"op":op,"usr_login":"","id":idkey,"fname":fname,"referer":url,"method_free":mfree})
                 pcontent=postContent(redirlink,posdata,url)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
-                capchacon =re.compile('<b>Enter code below:</b>(.+?)</table>').findall(pcontent)[0]
-                capchalink=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(capchacon)
+                capchacon =re.compile('another captcha</a>(.+?)</script>').findall(pcontent)[0]
+                capchalink=re.compile('<script type="text/javascript" src="(.+?)">').findall(capchacon)
+                strCodeInput="recaptcha_response_field"
+                respfield=""
                 if(len(capchalink)==0):
                          capchacon =re.compile('<b>Enter code below:</b>(.+?)</table>').findall(pcontent)
                          capchar=re.compile('<span style="position:absolute;padding-left:(.+?);[^>]*>(.+?)</span>').findall(capchacon[0])
@@ -185,8 +218,12 @@ def ParseVideoLink(url,name):
                          for tmp,aph in capchar:
                                   capstring=capstring+chr(int(aph.replace("&#","").replace(";","")))
                          puzzle=capstring
+                         strCodeInput="code"
                 else:
-                         solver = InputWindow(captcha=capchalink[0])
+                         imgcontent=GetContent(capchalink[0])
+                         respfield=re.compile("challenge : '(.+?)'").findall(imgcontent)[0]
+                         imgurl="http://www.google.com/recaptcha/api/image?c="+respfield
+                         solver = InputWindow(captcha=imgurl)
                          puzzle = solver.get()
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(pcontent)[0]
                 op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(pcontent)[0]
@@ -194,7 +231,7 @@ def ParseVideoLink(url,name):
                 rand = re.compile('<input type="hidden" name="rand" value="(.+?)">').findall(pcontent)[0]
                 ddirect = re.compile('<input type="hidden" name="down_direct" value="(.+?)">').findall(pcontent)[0]
                 #replace codevalue with capture screen
-                posdata=urllib.urlencode({"op":op,"id":idkey,"referer":url,"method_free":mfree,"rand":rand,"method_premium":"","code":puzzle,"down_direct":ddirect})
+                posdata=urllib.urlencode({"op":op,"id":idkey,"referer":url,"method_free":mfree,"rand":rand,"method_premium":"","recaptcha_challenge_field":respfield,strCodeInput:puzzle,"down_direct":ddirect})
                 pcontent=postContent(redirlink,posdata,url)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
                 packed = re.compile('<div id="player_code">(.+?)</div>').findall(pcontent)[0]
@@ -259,7 +296,7 @@ def ParseVideoLink(url,name):
                 vidlink=re.compile('file: "(.+?)",').findall(pcontent)[0]
         elif (redirlink.find("flashx.tv") > -1):
                 keycode=re.compile('/video/(.+?)/').findall(redirlink)[0]
-                xmlUrl = "http://play.flashx.tv/nuevo/player/cst.php?hash="+keycode
+                xmlUrl = "http://play.flashx.tv/nuevo/player/confenc.php?str="+keycode
                 vidcontent = postContent2(xmlUrl,None,url)
                 vidlink=re.compile('<file>(.+?)</file>').findall(vidcontent)[0]
         elif (redirlink.find("speedvid") > -1):
@@ -1454,4 +1491,8 @@ elif mode==18:
         GenreList(url,5)
 elif mode==19:
         GenreList(url,6)
+elif mode==20:
+        List4Days()
+elif mode==21:
+        getSchedule(url)
 xbmcplugin.endOfDirectory(int(sysarg))
