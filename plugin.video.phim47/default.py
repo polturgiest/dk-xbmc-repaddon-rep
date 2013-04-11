@@ -121,7 +121,7 @@ def Episodes(url,name):
         link=''.join(link.splitlines()).replace('\'','"')
         mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
         servlist =re.compile('<div class="name left namew">'+name+'&nbsp;&nbsp;&nbsp;(.+?)<div class="clear_td">').findall(mirmatch[0])
-        epilist =re.compile('<a  href=(.+?) >(.+?)</a>').findall(servlist[0])
+        epilist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(servlist[0])
         curmatch =re.compile('<a class="current" >(.+?)</a>').findall(servlist[0])
         if(len(curmatch)>0):
               addLink("part - "+ curmatch[0].strip().encode("utf-8"),"".join(i for i in url if ord(i)<128),3,'',name.encode("utf-8"))
@@ -187,7 +187,7 @@ def playVideo(videoType,videoId):
         xbmcPlayer.play(videoId)
 
 def loadVideos(url,name):
-    try:
+    #try:
         xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
         link=GetContent(url)
         link = ''.join(link.splitlines()).replace('\t','').replace('\'','"')
@@ -219,9 +219,9 @@ def loadVideos(url,name):
             else:
                 vidlink =""
             playVideo("direct",vidlink)
-    except:
-       d = xbmcgui.Dialog()
-       d.ok(url,"Can't play video",'Try another link')
+    #except:
+       #d = xbmcgui.Dialog()
+       #d.ok(url,"Can't play video",'Try another link')
 
 def addLink(name,url,mode,iconimage,mirrorname):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&mirrorname="+urllib.quote_plus(mirrorname)
