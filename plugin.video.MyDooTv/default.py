@@ -13,9 +13,9 @@ datapath = addon.get_profile()
 cookie_path = os.path.join(datapath, 'cookies')
 strdomain ='www.mydootv.com'
 strServerUrl=""
+settingfilename= os.path.join(cookie_path, "setting.txt")
 cookiefile= os.path.join(cookie_path, "cookiejar.lwp")
 cj=None
-
 def HOME():
 
     addDir('Search','/videos/categories',4,'')
@@ -112,7 +112,10 @@ def Episodesold(serverurl,pid):
                 
 def Episodes(pid):
         seriessrc="http://"+strdomain+"/assets/services/chapter_list_json.php?method=chapter_list&first=1&limit=350&pid="+pid
-        data = GetJSON(seriessrc,"","",cj)
+        try:
+                data = GetJSON(seriessrc,"","",cj)
+        except:
+                data = GetJSON(seriessrc,"","",AutoLogin(cj))
         imgsrc="http://cdn2.dootvimage.com/images/medium/"
         for product in data:
                 urlfull=str(product["chapters_id"])+"_"+str(product["products_id"])
@@ -170,7 +173,6 @@ def GetVideoUrl(pid,cid):
                 urlfull="http://"+product["hostname"]+".dootvserver.com"+product["uri_prefix"]
                 fullimg=imgsrc+product["products_image"]
                 addLink(product["chapters_alter_name"]+" SD",product["path"],14,fullimg,urlfull)
-                print "epiurl|" + product["path_hd"]
                 if product["path_hd"]!=None and product["path_hd"]!="":
                         addLink(product["chapters_alter_name"]+" HD",product["path_hd"],14,fullimg,urlfull) 
 						
@@ -190,7 +192,6 @@ def GetVideoFileName(chapterid,region):
         except: pass
 		
 def GenerateVideUrl(url,serverurl):
-    print "timeserver:" + serverurl+"/flowplayer/sectimestamp.php"
     try:
         tempts=GetContent2(serverurl+"/flowplayer/sectimestamp.php").strip()
         tempkey="dootv-secret"
@@ -256,6 +257,41 @@ def GetInput(strMessage,headtxt,ishidden):
         inputText = keyboard.getText()
     del keyboard
     return inputText
+
+def getSettings(name,isencrypted):
+    rtnvalue=None
+    if os.path.isfile(settingfilename)!=False:
+         f = open(settingfilename, "r")
+         text = f.read()
+         rtnvalue=re.compile('<'+name+'>(.+?)</'+name+'>', re.IGNORECASE).findall(text)
+         if(len(rtnvalue) >0):
+              rtnvalue=rtnvalue[0]
+         else:
+              rtnvalue=""
+         if(isencrypted==True):
+              rtnvalue=rtnvalue.decode('base-64')
+    return rtnvalue
+	
+def setSettings(username,password,isencrypted):
+    if(isencrypted==True):
+         username=username.encode('base-64')
+         password=password.encode('base-64')
+    vfilecontent="<username>"+username.strip()+"</username><password>"+password.strip()+"</password>"
+    f = open(settingfilename, 'w');f.write(vfilecontent);f.close()
+	
+def AutoLogin(cj):
+      if not os.path.exists(datapath): os.makedirs(datapath)
+      if not os.path.exists(cookie_path): os.makedirs(cookie_path)
+      if cj==None:
+           cj = cookielib.LWPCookieJar()
+      strUsername=getSettings('username',True)
+      strpwd=getSettings('password',True)
+      if strUsername != None and strUsername !="" and strpwd != None and strpwd !="":
+           (cj,respon)=postContent("http://"+strdomain+"/","EMail="+strUsername+"&Password="+strpwd+"&Rememberme=on","http://www.mydootv.com/",cj)
+           cj.save(cookiefile, ignore_discard=True)
+      cj.load(cookiefile,ignore_discard=True)
+      return cj
+
 def GetLoginCookie(cj,cookiefile):
       if not os.path.exists(datapath): os.makedirs(datapath)
       if not os.path.exists(cookie_path): os.makedirs(cookie_path)
@@ -265,6 +301,7 @@ def GetLoginCookie(cj,cookiefile):
       if strUsername != None and strUsername !="":
            strpwd=urllib.quote_plus(GetInput("Please enter your password","Password",True))
            (cj,respon)=postContent("http://"+strdomain+"/","EMail="+strUsername+"&Password="+strpwd+"&Rememberme=on","http://www.mydootv.com/",cj)
+           setSettings(strUsername,strpwd,True)
       cj.save(cookiefile, ignore_discard=True)
       cj=None
       cj = cookielib.LWPCookieJar()
@@ -273,13 +310,17 @@ def GetLoginCookie(cj,cookiefile):
       if (respon.find("player_content") == -1):
                 d = xbmcgui.Dialog()
                 d.ok("Incorrect Login","Login failed",'Try logging in again')
-if os.path.isfile(cookiefile)==False:
-          GetLoginCookie(cj,cookiefile)
+tmpUser=getSettings('username',False)
+tmpPwd=getSettings('password',False)
+if cj==None:
+      cj = cookielib.LWPCookieJar()
+if (tmpUser == None or tmpUser =="") and (tmpPwd == None or tmpPwd ==""):
+      if os.path.isfile(cookiefile)==False:
+                   GetLoginCookie(cj,cookiefile)
+elif (tmpUser != None and tmpUser !="") and (tmpPwd != None and tmpPwd !="") and os.path.isfile(cookiefile)==False:
+      AutoLogin(cj)
 
-else:
-          if cj==None:
-                 cj = cookielib.LWPCookieJar()
-          cj.load(cookiefile,ignore_discard=True)
+cj.load(cookiefile,ignore_discard=True)
                  #GetLoginCookie(cj,cookiefile)
 
 def addLink(name,url,mode,iconimage,serverurl):
@@ -375,7 +416,6 @@ elif mode==12:
 elif mode==13:
         ShowLiveTV()
 elif mode==14:
-        print serverurl + url
         playVideo(serverurl,url)
 
 	   
