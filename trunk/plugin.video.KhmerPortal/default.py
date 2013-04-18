@@ -19,7 +19,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "khmerportal"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.6" #<---- PLUGIN VERSION
+VERSION = "1.0.7" #<---- PLUGIN VERSION
 
 common = CommonFunctions
 common.plugin = "plugin.video.KhmerPortal"
@@ -409,7 +409,7 @@ def GA(group,name):
             from urllib import unquote, quote
             from os import environ
             from hashlib import sha1
-            VISITOR = ADDON.getSetting('visitor_ga')
+            VISITOR = ADDON.getSetting('ga_visitor')
             utm_gif_location = "http://www.google-analytics.com/__utm.gif"
             if not group=="None":
                     utm_track = utm_gif_location + "?" + \
@@ -496,7 +496,7 @@ def APP_LAUNCH():
         from os import environ
         from hashlib import sha1
         import platform
-        VISITOR = ADDON.getSetting('visitor_ga')
+        VISITOR = ADDON.getSetting('ga_visitor')
         for build, PLATFORM in match:
             if re.search('12',build[0:2],re.IGNORECASE): 
                 build="Frodo" 

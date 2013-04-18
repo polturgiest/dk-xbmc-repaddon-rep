@@ -223,7 +223,7 @@
 
 <addon
   id="plugin.video.KhmerPortal"
-  version="1.0.6"
+  version="1.0.7"
   name="KhmerPortal"
   provider-name="Dknight">
   <requires>
@@ -266,7 +266,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.6"
+  version="1.0.7"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
