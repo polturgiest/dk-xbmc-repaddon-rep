@@ -2,8 +2,8 @@
 <addons>
 <addon id="plugin.video.animecrazy"
        name="Anime Crazy"
-       version="1.0.17"
-       provider-name="AJ">
+       version="1.0.18"
+       provider-name="AJ Updated by Dknight">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
@@ -21,7 +21,7 @@
 
 <addon
   id="plugin.video.AsianHorror"
-  version="1.0.0"
+  version="1.0.1"
   name="AsianHorror"
   provider-name="Dknight">
   <requires>
@@ -45,7 +45,7 @@
 
 <addon
   id="plugin.video.azdrama"
-  version="1.0.5"
+  version="1.0.6"
   name="azdrama.net"
   provider-name="Dknight">
   <requires>
@@ -87,8 +87,8 @@
 
 <addon id="plugin.video.dramacrazy"
        name="Drama Crazy"
-       version="1.1.15"
-       provider-name="AJ">
+       version="1.1.16"
+       provider-name="AJ Updated by Dknight">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
@@ -138,7 +138,7 @@
 
 <addon
   id="plugin.video.kenh108"
-  version="1.0.0"
+  version="1.0.1"
   name="kenh108"
   provider-name="Dknight">
   <requires>
@@ -181,7 +181,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.11"
+  version="1.0.12"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -245,7 +245,7 @@
 
 <addon
   id="plugin.video.KhmerTv"
-  version="1.0.2"
+  version="1.0.3"
   name="KhmerTv"
   provider-name="Dknight">
   <requires>
@@ -288,7 +288,7 @@
 
 <addon
   id="plugin.video.MyDooTv"
-  version="1.1.1"
+  version="1.1.2"
   name="MyDooTv"
   provider-name="Dknight">
   <requires>
@@ -309,7 +309,7 @@
 
 <addon
   id="plugin.video.NoobRoom"
-  version="1.0.10"
+  version="1.0.11"
   name="NoobRoom"
   provider-name="Dknight">
   <requires>
@@ -330,7 +330,7 @@
 
 <addon
   id="plugin.video.phim47"
-  version="1.0.3"
+  version="1.0.4"
   name="phim47"
   provider-name="Dknight">
   <requires>
@@ -352,7 +352,7 @@
 
 <addon
   id="plugin.video.pinoy_ako"
-  version="1.0.1"
+  version="1.0.2"
   name="pinoy_ako"
   provider-name="Dknight">
   <requires>
@@ -374,7 +374,7 @@
 
 <addon
   id="plugin.video.sugoideasV2"
-  version="1.0.4"
+  version="1.0.5"
   name="sugoideasV2"
   provider-name="Created by YangSun revised by Dknight">
   <requires>
@@ -394,7 +394,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.8"
+  version="1.0.9"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
@@ -459,7 +459,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.5"
+  version="1.0.6"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>
