@@ -8,20 +8,38 @@ import xbmcaddon,xbmcplugin,xbmcgui
 import json
 import urlresolver
 from xml.dom.minidom import Document
+import datetime
 
-__settings__ = xbmcaddon.Addon(id='plugin.video.viki')
+ADDON=__settings__ = xbmcaddon.Addon(id='plugin.video.viki')
+
+if ADDON.getSetting('ga_visitor')=='':
+    from random import randint
+    ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
+    
+PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
+UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
+VERSION = "1.1.0" #<---- PLUGIN VERSION
+
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
 langfile = xbmc.translatePath(os.path.join(home, 'resources', 'lang.txt'))
 strdomain ="http://www.viki.com"
+
+
+
 def GetContent(url):
+    strresult=""
     try:
        net = Net()
        second_response = net.http_GET(url)
-       return second_response.content
-    except:	
-       d = xbmcgui.Dialog()
-       d.ok(url,"Can't Connect to site",'Try again in a moment')
+       strresult=second_response.content
+    except Exception, e:
+       print str(e)+" |" + url
+    return strresult
+
+def write2srt(url, fname):
+    subcontent=GetContent(url).encode("utf-8")
+    f = open(fname, 'w');f.write(subcontent);f.close()
 
 def json2srt(url, fname):
 
@@ -43,103 +61,122 @@ def json2srt(url, fname):
                  item['content'].encode('utf8')))
 
 def HOME():
-        addDir('Search channel','search',5,'')
+        #addDir('Search channel','search',5,'')
         addDir('Search Videos','search',12,'')
-        addDir('Genres','http://www.viki.com/explore',2,'')
-        addDir('Updated Tv shows','http://www.viki.com/tv/recent',8,'')
-        addDir('Updated Movies','http://www.viki.com/recent?utf8=%E2%9C%93&category=movies&country=&subtitle_language_code=',8,'')
-        addDir('Select Sub Language','http://www.viki.com/',9,'')
+        addDir('Genres','http://www.viki.com/genres',2,'')
+        addDir('Updated Tv shows','http://www.viki.com/tv/browse?sort=latest',8,'')
+        addDir('Updated Movies','http://www.viki.com/movies/browse?sort=latest',8,'')
+        addDir('Updated Music','http://www.viki.com/music/browse?sort=latest',8,'')
+        addDir('Select Sub Language','http://www.viki.com/tv',10,'')
 def LangOption():
-        addDir('Show Top Languages','Top',10,'')
         addDir('Show All Languages','All',10,'')
 		
 def ListGenres(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        vidlist=re.compile('<li class="genre-item">          <div class="thumb-container big-thumb">            <a href="(.+?)">              <img alt="(.+?)" class="thumb-design" src="(.+?)" /></a>').findall(link)
-        for vurl,vname,vimg in vidlist:
-            addDir(vname,strdomain+vurl,6,vimg)
+        vidlist=re.compile('<a href="(.+?)" class="thumbnail-medium thumbnail-genre (.+?)">\s*<h2 class="genre-title">(.+?)</h2>\s*</a>').findall(link)
+        for vurl,vimg,vname in vidlist:
+            addDir(vname.replace("&amp;","&"),strdomain+'/genres/'+vimg,6,"")
 			
 def SaveLang(langcode, name):
     f = open(langfile, 'w');f.write(langcode);f.close()   
     d = xbmcgui.Dialog()
     d.ok(name,"Language Saved",'')
     HOME()
+
 def Genre(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        vidlist=re.compile('<div class="vk-thumbnail medium"><a href="(.+?)"><img alt="(.+?)" src="(.+?)" />').findall(link)
-        for vurl,vname,vimg in vidlist:
-            vurl = vurl.split("/videos/")[0]
-            addDir(vname,strdomain+vurl+"/videos",7,vimg)
-        pagelist=re.compile('<div class="pagination">(.+?)</li>').findall(link)
+        vcontent =re.compile('<section class="section mbn">(.+?)</section>').findall(link) 
+        vidlist=re.compile('data-tooltip-src="/tooltips/(.+?)/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<img alt="(.+?)" height="130" src="(.+?)" width="230" />').findall(vcontent[0])
+        for vtype,vid,vurl,vname,vimg in vidlist:
+            if(vtype=="tv"):
+                    vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
+                    mode=7
+            else:
+                    vurlist=vurl.split("/")
+                    vid=vurlist[len(vurlist)-1].split("-")[0]
+                    vlink =vid
+                    mode=4
+            addDir(vname,vlink,mode,vimg)
+        pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
-                navlist=re.compile('<a[^>]* href="(.+?)">(.+?)</a>').findall(pagelist[0])
+                navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
                 for purl,pname in navlist:
-                    addDir("page " + pname.decode("utf-8"),strdomain+purl,6,"")
+                    addDir("page " + pname.replace("&rarr;",">").decode("utf-8"),strdomain+purl,6,"")
 
 def UpdatedVideos(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        vidlist=re.compile('<div class="thumb-container big-thumb">      <a href="(.+?)">        <img alt="(.+?)" class="thumb-design" src="(.+?)" />').findall(link)
-        for vurl,vname,vimg in vidlist:
-            vurl = vurl.split("/videos/")[0]
-            addDir(vname,strdomain+vurl+"/videos",7,vimg)
-        pagelist=re.compile('<div class="pagination">(.+?)</li>').findall(link)
+        vcontent=re.compile('<div class="tab-content">(.+?)<div class="pagination">').findall(link)
+        vidlist=re.compile('data-tooltip-src="/tooltips/(.+?)/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<img alt="(.+?)" height="107" src="(.+?)" width="190" />').findall(vcontent[0])
+        mode=7
+        for vtmp,vid,vurl,vname,vimg in vidlist:
+            if(vtmp=="movies"):
+                    vurlist=vurl.split("/")
+                    vid=vurlist[len(vurlist)-1].split("-")[0]
+                    vlink =vid
+                    mode=4
+            elif(vtmp=="videos"):
+                    vlink =strdomain+vurl
+                    mode=7
+            else:
+                    vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
+                    mode=7
+
+            addDir(vname,vlink,mode,vimg)
+        pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
-                navlist=re.compile('<a[^>]* href="(.+?)">(.+?)</a>').findall(pagelist[0])
+                navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
                 for purl,pname in navlist:
-                    print strdomain+purl
-                    addDir("page " + pname.decode("utf-8"),strdomain+purl,8,"") 
-					
-def getVidPage(url,name):
+                    addDir("page " + pname,strdomain+purl,8,"")
+
+def getContainerID(url):
+        link = GetContent(url)
+        link = ''.join(link.splitlines()).replace('\t','')
+        vidcontent=re.compile('data-subscribe="(.+?)"').findall(link)
+        return vidcontent[0]
+
+def getRelatedVID(url):
+        link = GetContent(url)
+        link = ''.join(link.splitlines()).replace('\t','')
+        vidcontent=re.compile('<li data-replace-with="(.+?)"').findall(link)
+        return urllib.unquote_plus(vidcontent[0])
+		
+def getVidPage(url,page):
+  if(url.find("related_videos") == -1):
+        vcontainerid=getContainerID(url)
+        url=strdomain+"/related_videos?container_id="+vcontainerid+"&page=1&type=music_videos"
   link = GetContent(url)
   link = ''.join(link.splitlines()).replace('\'','"')
-  vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)<p class="sub-headline">').findall(link)
-  if(len(vidcontainer) ==0):
-          vidcontainer=re.compile('<li class="clearfix" id="media_(.+?)">(.+?)</li>').findall(link)
-  for mediaid,vcontent in vidcontainer:
-        vidlist=re.compile('<a href="(.+?)>        <img alt="(.+?)" class="thumb-design" src="(.+?)" />').findall(vcontent)
-        vidlist2=re.compile('<h3><a href="(.+?)">(.+?)</a></h3>').findall(vcontent)
-        (vurl,vname,vimg)=vidlist[0]
-        (vurl,vname)=vidlist2[0]
+  vidcontainer=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+
+  for vid,vurl,vname,vimg in vidcontainer:
         vurl = vurl.split("/videos/")[0]
-        sublinks=re.compile('data-path="/subtitles/media_resource/(.+?).json"').findall(vcontent)
-        if(len(sublinks)==0):
-                subidlist1 =  re.compile('/media_resource/thumbnail/(.+?)/(.+?)').findall(vimg)
-                if(len(subidlist1[0]) > 1):
-                     subidlist = subidlist1[0][0]
-                else:
-                     subidlist=mediaid
-        else:   
-                subidlist='_'.join(sublinks)
-        addDir(vname,mediaid+"|"+subidlist,4,vimg)
-  pagelist=re.compile('<div class="pagination">(.+?)</li>').findall(link)
+        addDir(vname,vid,4,vimg)
+  pagelist=re.compile('<a class="btn btn-small btn-wide" href="#">Show more</a>').findall(link)
   if(len(pagelist) > 0):
-                navlist=re.compile('<a[^>]* href="(.+?)">(.+?)</a>').findall(pagelist[0])
-                for purl,pname in navlist:
-                    if(pname.find("About Us") != 0):
-                          addDir("page " + pname.decode("utf-8"),strdomain+purl,7,"")
+          pagenum=re.compile('&page=(.+?)&type=episodes').findall(url)
+          pagectr=int(pagenum[0])+1
+          addDir("page " + str(pagectr),url.replace("&page="+pagenum[0]+"&","&page="+str(pagectr)+"&"),7,"")
+
 
 def getLanguages(url, ltype):
-        link = GetContent("http://www.viki.com/tv/recent")
+        link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        if(ltype=="Top"):
-                match = re.compile('<optgroup label="Top Languages">(.+?)<optgroup label="All Languages">').findall(link)
-        else:
-                match = re.compile('<optgroup label="All Languages">(.+?)</select>').findall(link)
+        match = re.compile('<select id="language" name="language">(.+?)</select>').findall(link)
         if(len(match)>0):
                 langlist= re.compile('<option value="(.+?)">(.+?)</option>').findall(match[0])
                 for purl,pname in langlist:
                        addDir(pname,purl,11,"")
 					   
 def checkLanguage(mediaid):
-        data = json.load(urllib2.urlopen("http://www.viki.com/subtitles/media/"+mediaid+".json"))
+        data = GetVideoInfo(mediaid)
         f = open(langfile, "r")
         langs = f.read()
         langcnew=""
         try:
-               transpercent=data[langs]
+               transpercent=data["subtitle_completions"][langs]
                if(transpercent < 50):
                       langs="en"
                       xbmc.executebuiltin("Language is less then 50% finish,defaulting to english,5000)")
@@ -174,46 +211,51 @@ def SEARCHChannel():
 		
 def getVideoUrl(url,name):
 
-   data = json.load(urllib2.urlopen(url))['streams']
-   for i, item in enumerate(data):
-        if(item["type"].find("DAILYMOTION") > -1):
-                dailylink = item["uri"]+"&dk;"
-                match=re.compile('/swf/(.+?)&dk;').findall(dailylink)
+   #data = json.load(urllib2.urlopen(url))['streams']
+   #for i, item in enumerate(data):
+        if(url.find("dailymotion") > -1):
+                dailylink = url+"&dk;"
+                match=re.compile('www.dailymotion.pl/video/(.+?)-').findall(dailylink)
                 if(len(match) == 0):
                         match=re.compile('/video/(.+?)&dk;').findall(dailylink)
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
-                linkcontent=GetContent(link)
-                sequence=re.compile('"sequence":"(.+?)"').findall(linkcontent)
-                newseqeunce = urllib.unquote(sequence[0]).replace('\\/','/')
+                req = urllib2.Request(link)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
+                #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
-                        imgSrc=re.compile('/jpeg" href="(.+?)"').findall(linkcontent)
+                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 if(len(dm_high) == 0):
-                        vidlink = dm_low[0]
+                        vidlink = urllib2.unquote(dm_low[0]).decode("utf8")
                 else:
-                        vidlink = dm_high[0]
-        elif(item["type"].find("GOOGLE") > -1):
-            vidcontent=GetContent(item["uri"])
+                        vidlink = urllib2.unquote(dm_high[0]).decode("utf8")
+        elif(url.find("google") > -1):
+            vidcontent=GetContent(url)
             vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
             vidlink=vidmatch[0][0]
-        elif(item["type"].find("YOUTUBE") > -1):
-            vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(item["uri"])
+        elif(url.find("youtube") > -1):
+            vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(url)
             vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
             vidlink='plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid='+vidlink
         else:
             sources = []
             label=name
-            hosted_media = urlresolver.HostedMediaFile(url=item["uri"], title=label)
+            hosted_media = urlresolver.HostedMediaFile(url=url, title=label)
             sources.append(hosted_media)
             source = urlresolver.choose_source(sources)
-            print "urlrsolving" + item["uri"]
+            print "urlrsolving" + url
             if source:
                 vidlink = source.resolve()
             else:
                 vidlink =""
-   return vidlink
+        return vidlink
    
 def SearchVideoresults(url,searchtext=""):
         link = GetContent(url)
@@ -237,45 +279,240 @@ def SEARCHVideos():
         searchText = ''
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        searchurl="http://www.viki.com/search_media?q=" + searchText 
-        SearchVideoresults(searchurl,searchText.lower())
-		
-def getVidQuality(url,name):
-  idlist=url.split("|")
-  mediaid= idlist[0]
-  subidlist= idlist[1].split("_")
-  
-  vidurl = "http://www.viki.com/player/medias/"+mediaid+"/info.json?rtmp=false"
-  data = json.load(urllib2.urlopen(vidurl))['streams']
-  langcode=checkLanguage(mediaid)
-  if(data[0]['quality']!="solo"):
-          suburl= "http://www.viki.com/subtitles/media/" + mediaid + "/" + langcode + ".json"
-          subid=subidlist[0]
-          for i, item in enumerate(data):
-                  addLink(item['quality'],item['uri'],3,"")
-          try:
-                  json2srt(suburl, name)
-          except:
-                  try:
-                        suburl= "http://www.viki.com/subtitles/media_resource/" + subid + "/" + langcode + ".json"
-                        json2srt(suburl, name)
-                  except:  
-                        f = open(filename, 'w');f.write("");f.close()
-  else:
-          pctr=0
-          for subid in subidlist:
-                  pctr=pctr+1
-                  suburl= "http://www.viki.com/subtitles/media_resource/" + subid + "/" + langcode + ".json"
-                  vidurl="http://www.viki.com/player/media_resources/" + subid + "/info.json?rtmp=false"
-                  #directurl = getVideoUrl(vidurl,suburl)
-                  addLinkSub("part " + str(pctr),vidurl,15,"",suburl)
+        searchurl="http://www.viki.com/search?utf8=%E2%9C%93&q=" + searchText 
+        Genre(searchurl,searchText.lower())
+
+def GetVideoInfo(vidid):
+    infourl=sign_request(vidid,".json")
+    data = json.load(urllib2.urlopen(infourl))
+    return data
+    
+def expires():
+    '''return a UNIX style timestamp representing 5 minutes from now'''
+    return int(time.time()+1)
+
+def sign_request(vidid,vtype):
+    from hashlib import sha1
+    import hmac
+    import binascii
+
+    # If you dont have a token yet, the key should be only "CONSUMER_SECRET&"
+    key = "-$iJ}@p7!G@SyU/je1bEyWg}upLu-6V6-Lg9VD(]siH,r.,m-r|ulZ,U4LC/SeR)"
+    ts=str(expires())
+    # The Base String as specified here: 
+    rawtxt = "/v4/videos/"+vidid+vtype+"?app=65535a&t="+ts+"&site=www.viki.com" # as specified by oauth
+
+    hashed = hmac.new(key, rawtxt, sha1)
+    fullurl = "http://api.viki.io" + rawtxt+"&sig="+binascii.hexlify(hashed.digest())
+    # The signature
+    return fullurl
+	
+def getVidQuality(vidid,name,filename,checkvideo):
+  GA("Playing",name)
+  if(checkvideo):
+          pardata=GetVideoInfo(vidid)
+          partnum=len(pardata["parts"])
+          if(partnum>1):
+                for i in range(partnum):
+                     addDir(name +" part " + str(pardata["parts"][i]["part"]),pardata["parts"][i]["id"],15,"")
+                return ""
+  vidurl = sign_request(vidid,"/streams.json")
+  data = json.load(urllib2.urlopen(vidurl))
+  if(len(data) == 0):
+          vidurl = sign_request(vidid+"v","/streams")
+          data = json.load(urllib2.urlopen(vidurl))
+  langcode=checkLanguage(vidid)
+  strQual=""
+  strprot=""
+  try:
+          suburl=sign_request(vidid,"/subtitles/" + langcode + ".srt")
+          write2srt(suburl, filename) 
+  except:
+          suburl=sign_request(vidid,"/subtitles/en.srt")
+          write2srt(suburl, filename) 
+		  
+  for i, item in enumerate(data):
+          strQual=str(item)
+          mydata = data[item]
+          if(item!="external"):
+              for seas in mydata:
+                  strprot=str(seas)
+                  vlink=mydata[seas]["url"]
+                  if(strprot=="http"):
+                        addLink(strQual +"("+strprot+")",vlink,3,"")
+          else:
+              vlink=getVideoUrl(mydata["url"],name)
+              addLink("external Video",vlink,3,"")
                  
 
 def playVideo(suburl,videoId):
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
         xbmcPlayer.setSubtitles(suburl) 
+
 		
+def parseDate(dateString):
+    try:
+        return datetime.datetime.fromtimestamp(time.mktime(time.strptime(dateString.encode('utf-8', 'replace'), "%Y-%m-%d %H:%M:%S")))
+    except:
+        return datetime.datetime.today() - datetime.timedelta(days = 1) #force update
+
+
+def checkGA():
+
+    secsInHour = 60 * 60
+    threshold  = 2 * secsInHour
+
+    now   = datetime.datetime.today()
+    prev  = parseDate(ADDON.getSetting('ga_time'))
+    delta = now - prev
+    nDays = delta.days
+    nSecs = delta.seconds
+
+    doUpdate = (nDays > 0) or (nSecs > threshold)
+    if not doUpdate:
+        return
+
+    ADDON.setSetting('ga_time', str(now).split('.')[0])
+    APP_LAUNCH()    
+    
+                    
+def send_request_to_google_analytics(utm_url):
+    ua='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+    import urllib2
+    try:
+        req = urllib2.Request(utm_url, None,
+                                    {'User-Agent':ua}
+                                     )
+        response = urllib2.urlopen(req).read()
+    except:
+        print ("GA fail: %s" % utm_url)         
+    return response
+       
+def GA(group,name):
+        try:
+            try:
+                from hashlib import md5
+            except:
+                from md5 import md5
+            from random import randint
+            import time
+            from urllib import unquote, quote
+            from os import environ
+            from hashlib import sha1
+            VISITOR = ADDON.getSetting('ga_visitor')
+            utm_gif_location = "http://www.google-analytics.com/__utm.gif"
+            if not group=="None":
+                    utm_track = utm_gif_location + "?" + \
+                            "utmwv=" + VERSION + \
+                            "&utmn=" + str(randint(0, 0x7fffffff)) + \
+                            "&utmt=" + "event" + \
+                            "&utme="+ quote("5("+PATH+"*"+group+"*"+name+")")+\
+                            "&utmp=" + quote(PATH) + \
+                            "&utmac=" + UATRACK + \
+                            "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR,VISITOR,"2"])
+                    try:
+                        print "============================ POSTING TRACK EVENT ============================"
+                        send_request_to_google_analytics(utm_track)
+                    except:
+                        print "============================  CANNOT POST TRACK EVENT ============================" 
+            if name=="None":
+                    utm_url = utm_gif_location + "?" + \
+                            "utmwv=" + VERSION + \
+                            "&utmn=" + str(randint(0, 0x7fffffff)) + \
+                            "&utmp=" + quote(PATH) + \
+                            "&utmac=" + UATRACK + \
+                            "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR, VISITOR,"2"])
+            else:
+                if group=="None":
+                       utm_url = utm_gif_location + "?" + \
+                                "utmwv=" + VERSION + \
+                                "&utmn=" + str(randint(0, 0x7fffffff)) + \
+                                "&utmp=" + quote(PATH+"/"+name) + \
+                                "&utmac=" + UATRACK + \
+                                "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR, VISITOR,"2"])
+                else:
+                       utm_url = utm_gif_location + "?" + \
+                                "utmwv=" + VERSION + \
+                                "&utmn=" + str(randint(0, 0x7fffffff)) + \
+                                "&utmp=" + quote(PATH+"/"+group+"/"+name) + \
+                                "&utmac=" + UATRACK + \
+                                "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR, VISITOR,"2"])
+                                
+            print "============================ POSTING ANALYTICS ============================"
+            send_request_to_google_analytics(utm_url)
+            
+        except:
+            print "================  CANNOT POST TO ANALYTICS  ================" 
+            
+            
+def APP_LAUNCH():
+        versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
+        if versionNumber < 12:
+            if xbmc.getCondVisibility('system.platform.osx'):
+                if xbmc.getCondVisibility('system.platform.atv2'):
+                    log_path = '/var/mobile/Library/Preferences'
+                else:
+                    log_path = os.path.join(os.path.expanduser('~'), 'Library/Logs')
+            elif xbmc.getCondVisibility('system.platform.ios'):
+                log_path = '/var/mobile/Library/Preferences'
+            elif xbmc.getCondVisibility('system.platform.windows'):
+                log_path = xbmc.translatePath('special://home')
+                log = os.path.join(log_path, 'xbmc.log')
+                logfile = open(log, 'r').read()
+            elif xbmc.getCondVisibility('system.platform.linux'):
+                log_path = xbmc.translatePath('special://home/temp')
+            else:
+                log_path = xbmc.translatePath('special://logpath')
+            log = os.path.join(log_path, 'xbmc.log')
+            logfile = open(log, 'r').read()
+            match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
+        elif versionNumber > 11:
+            print '======================= more than ===================='
+            log_path = xbmc.translatePath('special://logpath')
+            log = os.path.join(log_path, 'xbmc.log')
+            logfile = open(log, 'r').read()
+            match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
+        else:
+            logfile='Starting XBMC (Unknown Git:.+?Platform: Unknown. Built.+?'
+            match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
+        print '==========================   '+PATH+' '+VERSION+'  =========================='
+        try:
+            from hashlib import md5
+        except:
+            from md5 import md5
+        from random import randint
+        import time
+        from urllib import unquote, quote
+        from os import environ
+        from hashlib import sha1
+        import platform
+        VISITOR = ADDON.getSetting('ga_visitor')
+        for build, PLATFORM in match:
+            if re.search('12',build[0:2],re.IGNORECASE): 
+                build="Frodo" 
+            if re.search('11',build[0:2],re.IGNORECASE): 
+                build="Eden" 
+            if re.search('13',build[0:2],re.IGNORECASE): 
+                build="Gotham" 
+            print build
+            print PLATFORM
+            utm_gif_location = "http://www.google-analytics.com/__utm.gif"
+            utm_track = utm_gif_location + "?" + \
+                    "utmwv=" + VERSION + \
+                    "&utmn=" + str(randint(0, 0x7fffffff)) + \
+                    "&utmt=" + "event" + \
+                    "&utme="+ quote("5(APP LAUNCH*"+build+"*"+PLATFORM+")")+\
+                    "&utmp=" + quote(PATH) + \
+                    "&utmac=" + UATRACK + \
+                    "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR,VISITOR,"2"])
+            try:
+                print "============================ POSTING APP LAUNCH TRACK EVENT ============================"
+                send_request_to_google_analytics(utm_track)
+            except:
+                print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
+checkGA()
+
 def playVideoPart(suburl,videoId,subfilepath):
         try:
                   json2srt(suburl, subfilepath)
@@ -371,26 +608,28 @@ except:
 		
 sysarg=str(sys.argv[1]) 
 if mode==None or url==None or len(url)<1:
+        GA("Home","Home")
         HOME()
-       
 elif mode==2:
         ListGenres(url,name) 
 elif mode==3:
         playVideo(filename,url)
 elif mode==4:
-        getVidQuality(url,filename) 
+        getVidQuality(url,name,filename,True) 
 elif mode==5:
         SEARCHChannel()
 elif mode==6:
+        GA("Genre",name)
         Genre(url,name)
 elif mode==7:
         getVidPage(url,name)
 elif mode==8:
+        GA("Recent_Videos",name)
         UpdatedVideos(url,name)
 elif mode==9:
         LangOption()
 elif mode==10:
-        getLanguages(name, url)
+        getLanguages(url,name)
 elif mode==11:
         SaveLang(url,name)
 elif mode==12:
@@ -400,7 +639,6 @@ elif mode==13:
 elif mode==14:
         SearchVideoresults(url)
 elif mode==15:
-        print "outside:" + subtitleurl
-        playVideoPart(subtitleurl,url,filename)
+        getVidQuality(url,name,filename,False) 
 
 xbmcplugin.endOfDirectory(int(sysarg))
