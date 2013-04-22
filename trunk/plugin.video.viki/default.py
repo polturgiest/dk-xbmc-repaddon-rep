@@ -63,6 +63,7 @@ def json2srt(url, fname):
 def HOME():
         #addDir('Search channel','search',5,'')
         addDir('Search Videos','search',12,'')
+        addDir('Find Video By Viki ID','search',16,'')
         addDir('Genres','http://www.viki.com/genres',2,'')
         addDir('Updated Tv shows','http://www.viki.com/tv/browse?sort=latest',8,'')
         addDir('Updated Movies','http://www.viki.com/movies/browse?sort=latest',8,'')
@@ -281,6 +282,14 @@ def SEARCHVideos():
                 searchText = urllib.quote_plus(keyb.getText())
         searchurl="http://www.viki.com/search?utf8=%E2%9C%93&q=" + searchText 
         Genre(searchurl,searchText.lower())
+
+def SEARCHByID():
+        keyb = xbmc.Keyboard('', 'Enter Viki Video ID')
+        keyb.doModal()
+        searchText = ''
+        if (keyb.isConfirmed()):
+                searchText = urllib.quote_plus(keyb.getText()) 
+        getVidQuality(searchText,"",filename,True) 
 
 def GetVideoInfo(vidid):
     infourl=sign_request(vidid,".json")
@@ -640,5 +649,7 @@ elif mode==14:
         SearchVideoresults(url)
 elif mode==15:
         getVidQuality(url,name,filename,False) 
+elif mode==16:
+        SEARCHByID() 
 
 xbmcplugin.endOfDirectory(int(sysarg))
