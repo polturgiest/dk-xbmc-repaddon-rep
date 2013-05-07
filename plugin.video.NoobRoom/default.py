@@ -17,7 +17,16 @@ datapath = addon.get_profile()
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'noobroom.xml'))
 tvfilename = xbmc.translatePath(os.path.join(home, 'resources', 'tvshow.xml'))
-
+cookie_path = os.path.join(datapath, 'cookies')
+cookiefile= os.path.join(cookie_path, "cookiejar.lwp")
+cj=None
+authcode=ADDON.getSetting('authcode')
+reg_list = ["15", "12", "13", "14"]
+location=reg_list[int(ADDON.getSetting('region'))]
+isHD = "1"
+if(ADDON.getSetting('use-hd')!='true'):
+    isHD="0"
+	
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
     ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
@@ -43,13 +52,18 @@ def GetNoobLink():
 
 nooblink=GetNoobLink()
 
-def GetVideoLink(url):
+def GetVideoLink(url,isHD):
     link = GetContent(url)
-    match=re.compile('"streamer": "(.+?)",').findall(link)
+    authstring=""
+    if(len(authcode) > 0):
+         authstring="&auth="+authcode
+    else:
+         isHD="0"
+    match=re.compile('"streamer": "(.+?)",').findall(link)[0].split("&")[0] +authstring+ "&loc="+location+"&hd="+isHD
 
-    return match[0]
+    return match
 	
-noobvideolink=GetVideoLink(nooblink)
+noobvideolink=GetVideoLink(nooblink,isHD)
 
 def HOME():
         addDir('Search','search',5,'')
@@ -57,6 +71,7 @@ def HOME():
         addDir('TV Shows','TV',9,'')
         addDir('Last 25 Added','Latest',8,'')
         addLink('Refresh Movie list','Refresh',7,'')
+        addLink('Login','Login',11,'')
 
 def INDEXAZ(url):
         addDir('A','A',4,'')
@@ -144,7 +159,7 @@ def Episodes(name,videoId):
           match=re.compile("\/(.+?)&sp").findall(videoId+"&sp")
           if len(match)>=0:
                 videoId=match[0]
-          playVideo("noobroom",noobvideolink+"&start=0&file="+videoId+'|Referer="'+nooblink+'/player.swf'+'"')
+          playVideo("noobroom",noobvideolink+"&tv=0"+"&start=0&file="+videoId+'|Referer="'+nooblink+'/player.swf'+'"')
           #addLink(name+"-Default Server",noobvideolink+"&start=0&file="+videoId+'|Referer="'+nooblink+'/player.swf'+'"',3,"")
           #addLink(name+"-Server 1","http://178.159.0.134/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
           #addLink(name+"-Server 2","http://178.159.0.59/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
@@ -152,7 +167,42 @@ def Episodes(name,videoId):
           #addLink(name+"-Server 5","http://178.159.0.8/index.php?file="+videoId+'&start=0&hd=0&auth=0&type=flv|Referer="'+nooblink+'/player.swf'+'"',3,"")
     except: pass
 
+def GetInput(strMessage,headtxt,ishidden):
+    keyboard = xbmc.Keyboard("",strMessage,ishidden)
+    keyboard.setHeading(headtxt) # optional
+    keyboard.doModal()
+    inputText=""
+    if (keyboard.isConfirmed()):
+        inputText = keyboard.getText()
+    del keyboard
+    return inputText
+	
+def GetLoginCookie(cj,cookiefile):
+      if not os.path.exists(datapath): os.makedirs(datapath)
+      if not os.path.exists(cookie_path): os.makedirs(cookie_path)
+      if cj==None:
+           cj = cookielib.LWPCookieJar()
+      strUsername=urllib.quote_plus(GetInput("Please enter your username","Username",False))
+      matchauth=None
+      if strUsername != None and strUsername !="":
+           strpwd=urllib.quote_plus(GetInput("Please enter your password","Password",True))
+           (cj,respon)=postContent(nooblink+"/login2.php","email="+strUsername+"&password="+strpwd+"&remember=on",nooblink+"/login.php",cj)
+           link = ''.join(respon.splitlines()).replace('\'','"')
+           match=re.compile('"streamer": "(.+?)",').findall(link)
+           loginsuc=match[0].split("&")[1]
+           matchauth=loginsuc.replace("auth=","")
+           #setSettings(strUsername,strpwd,True)
+      ADDON.setSetting('authcode',matchauth)
+      cj.save(cookiefile, ignore_discard=True)
+      cj=None
+      cj = cookielib.LWPCookieJar()
+      cj.load(cookiefile,ignore_discard=True)
 
+      if (loginsuc.find("auth=") == -1):
+                ADDON.setSetting('authcode',"")
+                d = xbmcgui.Dialog()
+                d.ok("Incorrect Login","Login failed",'Try logging in again')
+				
 def ListTVSeries():
     link = GetContent(nooblink +"/series.php")
     link = ''.join(link.splitlines()).replace('\'','"')
@@ -165,7 +215,7 @@ def ListEpisodes(url):
     link = ''.join(link.splitlines()).replace('\'','"')
     match=re.compile('<br><b>(.+?)<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(link)
     for i in range(len(match)):
-            addLink(match[i][0]+match[i][2],nooblink+match[i][2],3,"")
+            addLink(match[i][0]+match[i][2],noobvideolink.replace("&hd=1","&hd=0")+match[i][1].replace("/?","&file=")+'|Referer="'+nooblink+'/player.swf'+'"',3,"")
 
 def playVideo(videoType,videoId):
     url = ""
@@ -180,6 +230,29 @@ def playVideo(videoType,videoId):
     else:
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
+		
+def postContent(url,data,referr,cj):
+    if cj==None:
+        cj = cookielib.LWPCookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    #opener = urllib2.build_opener()
+    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                         ('Accept-Encoding','gzip, deflate'),
+                         ('Referer', referr),
+                         ('Content-Type', 'application/x-www-form-urlencoded'),
+                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+                         ('Connection','keep-alive'),
+                         ('Accept-Language','en-us,en;q=0.5'),
+                         ('Pragma','no-cache')]
+    usock=opener.open(url,data)
+    if usock.info().get('Content-Encoding') == 'gzip':
+           buf = StringIO.StringIO(usock.read())
+           f = gzip.GzipFile(fileobj=buf)
+           response= f.read()
+    else:
+           response= usock.read()
+    usock.close()
+    return (cj,response)
 	
 def parseDate(dateString):
     try:
@@ -435,4 +508,6 @@ elif mode==9:
        ListTVSeries()
 elif mode==10:
        ListEpisodes(url)
+elif mode==11:
+        GetLoginCookie(cj,cookiefile)
 xbmcplugin.endOfDirectory(int(sysarg))
