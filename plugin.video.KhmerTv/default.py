@@ -498,7 +498,7 @@ def addPlaylist(name,url,iconimage,fanart):
         ok=True
         pl=xbmc.PlayList(0)
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-        liz.setInfo("music", infoLabels={ "Title": name})
+        liz.setInfo("Video", infoLabels={ "Title": name})
         liz.setProperty('mimetype', 'audio/mpeg')
         liz.setProperty( "Fanart_Image", fanart )
         pl.add(url, liz)
