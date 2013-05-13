@@ -20,6 +20,253 @@ PATH = "KhmerTv"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.3" #<---- PLUGIN VERSION
 
+TAG_RE = re.compile(r'<[^>]+>')
+
+try:
+
+    DB_NAME = 	 ADDON.getSetting('db_name')
+    DB_USER = 	 ADDON.getSetting('db_user')
+    DB_PASS = 	 ADDON.getSetting('db_pass')
+    DB_ADDRESS = ADDON.getSetting('db_address')
+
+    if  ADDON.getSetting('use_remote_db')=='true' and DB_ADDRESS is not None and DB_USER is not None and DB_PASS is not None and DB_NAME is not None:
+        import mysql.connector as database
+        print 'Loading MySQL as DB engine'
+        DB = 'mysql'
+    else:
+        print'MySQL not enabled or not setup correctly'
+        raise ValueError('MySQL not enabled or not setup correctly')
+
+except:
+
+    try: 
+        from sqlite3 import dbapi2 as database
+        print 'Loading sqlite3 as DB engine'
+    except: 
+        from pysqlite2 import dbapi2 as database
+        addon.log('pysqlite2 as DB engine')
+    DB = 'sqlite'
+    db_dir = os.path.join(xbmc.translatePath("special://database"), 'khmermusic.db')
+
+def ListArtistType():
+    addDir("FEMALE SINGERS","http://www.muzik-online.net/search/label/Khmer%20New?&max-results=1",5,"")
+    addDir("MALE SINGERS","http://www.muzik-online.net/search/label/Khmer%20New?&max-results=1",5,"")
+
+def ListArtist(url,arttype):
+    sql = 'SELECT * FROM artist where art_type =? ORDER BY name'
+
+    if DB == 'mysql':
+        db = database.connect(DB_NAME, DB_USER, DB_PASS, DB_ADDRESS, buffered=True)
+        sql = sql.replace('?','%s')
+    else: db = database.connect( db_dir )
+    cur = db.cursor()
+
+    cur.execute(sql, (arttype,))
+    favs = cur.fetchall()
+    artist=""
+    totalartist = 0
+    addLink("Refresh Artist Database",url+"|"+arttype,8,"")
+    for row in favs:
+        totalartist=totalartist+1
+        artistname = row[0]
+
+        artisturl   = row[1].replace(" ","%20")
+
+        artistimg   = row[2]
+
+        addDir(artistname,artisturl,6,artistimg)
+
+
+    db.close()
+    if(totalartist==0):
+        artistlist=GetArtist(url,arttype)
+        for vurl,vimg,aname in artistlist:
+                        cursql=""
+                        addDir(TAG_RE.sub('', aname),vurl,6,vimg)
+def ListAlbum(url):
+    sql = 'SELECT distinct artist_url,album,img FROM songs where artist_url=? order by album'
+
+    if DB == 'mysql':
+        db = database.connect(DB_NAME, DB_USER, DB_PASS, DB_ADDRESS, buffered=True)
+        sql = sql.replace('?','%s')
+    else: db = database.connect( db_dir )
+    cur = db.cursor()
+
+    cur.execute(sql, (url,))
+    favs = cur.fetchall()
+    artist=""
+    totalalbum = 0
+    addLink("Refresh Album Database",url,9,"")
+    for row in favs:
+        totalalbum=totalalbum+1
+        arturl = row[0]
+        album   = row[1]
+        albumimg   = row[2]
+        addDir(album,arturl,7,albumimg)
+    db.close()
+    if(totalalbum==0):
+        (SongList,xmlpath)=GetSongs(url)
+        for albid,auth,alimg,alname,tracks in SongList:
+                addDir(TAG_RE.sub('', alname),url,7,xmlpath+alimg)
+
+def ListSongs(artist_url,album):
+
+    sql = 'SELECT artist_url,album, img, name,url FROM songs where artist_url=? and album =? ORDER BY name'
+
+    if DB == 'mysql':
+        db = database.connect(DB_NAME, DB_USER, DB_PASS, DB_ADDRESS, buffered=True)
+        sql = sql.replace('?','%s')
+    else: db = database.connect( db_dir )
+    cur = db.cursor()
+
+    cur.execute(sql, (artist_url,album))
+    favs = cur.fetchall()
+    artist=""
+    totalsong = 0
+    for row in favs:
+        totalsong=totalsong+1
+        arturl = row[0]
+        album=row[1]
+        songImg=row[2]
+        songname   = row[3]
+        songurl   = row[4].replace(" ","%20")
+        songitem(songname,songurl,songImg,album,artist, totalsong)
+
+
+    db.close()
+	
+def songitem(songname,songurl,songImg,album,artist, totalsong):
+        remfavstring = 'RunScript(plugin.video.1channel,%s,?mode=DeleteFav&section=%s&title=%s&year=%s&url=%s)' %(sys.argv[1],songImg,songname,"",songurl)
+        cm = []
+        cm.append(('Remove from Favorites', remfavstring))
+		
+        trackLabel = artist + " - " + album + " - " + songname
+        item = xbmcgui.ListItem(label = trackLabel, thumbnailImage=songImg, iconImage=songImg)
+        item.setPath(songurl)
+        item.setInfo( type="music", infoLabels={ "title": name, "album": album, "artist": artist} )
+        item.setProperty('mimetype', 'audio/mpeg')
+        item.setProperty("IsPlayable", "true")
+        item.setProperty('title', songname)
+        item.setProperty('album', album)
+        item.setProperty('artist', artist)
+        item.addContextMenuItems(cm, replaceItems=False)
+        u=sys.argv[0]+"?url="+urllib.quote_plus(songurl)+"&mode=3&name="+urllib.quote_plus(songname)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=songurl,listitem=item,isFolder=False, totalItems=totalsong)
+
+def initDatabase():
+
+    print 'Building Khmermusic Database'
+
+    if DB == 'mysql':
+
+        db = database.connect(DB_NAME, DB_USER, DB_PASS, DB_ADDRESS, buffered=True)
+
+        cur = db.cursor()
+
+        cur.execute('CREATE TABLE IF NOT EXISTS artist ( name TEXT,artist_url VARCHAR(255) UNIQUE,img VARCHAR(255) ,art_type VARCHAR(255),PRIMARY KEY (url))')
+
+        cur.execute('CREATE TABLE IF NOT EXISTS songs (artist_url VARCHAR(255), album TEXT,img VARCHAR(255) ,name TEXT, url VARCHAR(255) UNIQUE,PRIMARY KEY (url))')
+
+        cur.execute('CREATE TABLE IF NOT EXISTS playlist (playlist_id,url VARCHAR(255), name UNIQUE)')
+
+
+
+    else:
+
+        if not os.path.isdir(os.path.dirname(db_dir)):
+
+            os.makedirs(os.path.dirname(db_dir))
+
+        db = database.connect(db_dir)
+
+        db.execute('CREATE TABLE IF NOT EXISTS artist (name,artist_url PRIMARY KEY,img, art_type)')
+
+        db.execute('CREATE TABLE IF NOT EXISTS songs ( artist_url, album TEXT,img,name, url PRIMARY KEY)')
+
+        db.execute('CREATE TABLE IF NOT EXISTS playlist (playlist_id INTEGER PRIMARY KEY AUTOINCREMENT,song_id,url, name)')
+
+    db.commit()
+
+    db.close()
+
+def GetContent(url):
+    try:
+       net = Net()
+       second_response = net.http_GET(url)
+       return second_response.content
+    except:	
+       d = xbmcgui.Dialog()
+       d.ok(url,"Can't Connect to site",'Try again in a moment')
+
+def GetArtist(url,name):
+        dialog = xbmcgui.DialogProgress()
+        dialog.create('Refreshing Data', 'Refreshing Database...')       
+        dialog.update(0)
+        link = GetContent(url)
+        link = ''.join(link.splitlines()).replace('\'','"')
+        vidcontent=re.compile('<h2 class="title">'+name+'</h2>(.+?)</table>').findall(link)
+        artlist1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*><!-- End(.+?)-->').findall(vidcontent[0])
+        artlist2=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*></a><!-- End(.+?)-->').findall(vidcontent[0])
+        artlist = list(set(artlist1 + artlist2))
+        for vurl,vimg,aname in artlist:
+                        cursql=""
+                        cursql = "REPLACE INTO artist( name,artist_url,img,art_type) VALUES('%s','%s','%s','%s'); " %(TAG_RE.sub('', aname),vurl.replace("'",""),vimg,name)
+                        if DB == 'sqlite':
+                                cursql = 'INSERT OR ' + cursql.replace('%s','?')
+                        SaveData(cursql)
+        dialog.close()
+        return artlist
+						
+def GetSongs(url):
+        dialog = xbmcgui.DialogProgress()
+        dialog.create('Refreshing Data', 'Refreshing Database...')       
+        dialog.update(0)
+        link = GetContent(url)
+        link = link.encode("UTF-8")
+        link = ''.join(link.splitlines()).replace('\t','')
+        embsrc=re.compile('<embed [^>]*flashvars=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+        xmlsrc = embsrc[0].split("&amp;")
+        srchttp=""
+        srcfile=""
+        for parts in xmlsrc:
+                keypair = parts.split("=")
+                if keypair[0] =="pathToFiles":
+                        srchttp=keypair[1]
+                if keypair[0] =="contentXMLPath":
+                        srcfile=keypair[1]
+        full=srchttp+srcfile
+        xmllink = GetContent(full)
+        xmllink  = xmllink.decode("UTF-8").encode("UTF-8")
+        xmllink  = ''.join(xmllink.splitlines()).replace('\t','')
+        match=re.compile('<album id="(.+?)"><author>(.+?)</author><image>(.+?)</image><name [^>]*>(.+?)</name><tracks>(.+?)</tracks></album>', re.IGNORECASE).findall(xmllink)
+        for albid,auth,alimg,alname,tracks in match:
+                songs=re.compile('<item><song>(.+?)</song><title>(.+?)</title></item>', re.IGNORECASE).findall(tracks)
+                for songurl,songname in songs:
+                        cursql=""
+                        cursql = "REPLACE INTO songs(artist_url,album,img, name, url) VALUES('%s','%s','%s','%s','%s'); " %(url,TAG_RE.sub('', alname),srchttp+alimg,songname.replace("'",""),songurl.replace("'",""))
+                        if DB == 'sqlite':
+                                cursql = 'INSERT OR ' + cursql.replace('%s','?')
+                        SaveData(cursql)
+        dialog.close()
+        return (match,srchttp)
+				
+def SaveData(SQLStatement): #8888
+    if DB == 'mysql':
+        db = database.connect(DB_NAME, DB_USER, DB_PASS, DB_ADDRESS, buffered=True)
+    else:
+        db = database.connect( db_dir )
+    cursor = db.cursor()
+    #try: 
+        
+    #    builtin = 'XBMC.Notification(Save Favorite,Added to Favorites,2000)'
+    #    xbmc.executebuiltin(builtin)
+    #except database.IntegrityError: 
+    #    builtin = 'XBMC.Notification(Save Favorite,Item already in Favorites,2000)'
+    #    xbmc.executebuiltin(builtin)
+    cursor.execute(SQLStatement)
+    db.commit()
+    db.close()
+	
 def SearchXml(SearchText):
     if os.path.isfile(filename)==False:
         BuildXMl()
@@ -54,6 +301,7 @@ def GetXMLChannel():
         text = f.read()
         xmlcontent=xml.dom.minidom.parseString(text)
         items=xmlcontent.getElementsByTagName('channel')
+        addDir("Khmer Songs","",4,"")
         for channelitem in items:
                 vname=channelitem.getElementsByTagName('name')[0].childNodes[0].data.strip()
                 addDir(vname,"",2,"")
@@ -64,7 +312,11 @@ def playVideo(url):
     xbmcPlayer = xbmc.Player()
     xbmcPlayer.play(url)
 	
-
+if os.path.isfile(db_dir)==False:
+     initDatabase()
+#GetArtist("http://www.muzik-online.net/2012/10/mp3-playlist-preab-sovath.html",'MALE SINGERS')
+#GetSongs("http://www.muzik-online.net/2012/10/mp3-playlist-preab-sovath.html")
+	 
 def parseDate(dateString):
     try:
         return datetime.datetime.fromtimestamp(time.mktime(time.strptime(dateString.encode('utf-8', 'replace'), "%Y-%m-%d %H:%M:%S")))
@@ -305,4 +557,19 @@ elif mode==2:
 elif mode==3:
         GA("PlayVideo",name)
         playVideo(url)
+elif mode==4:
+        ListArtistType()
+elif mode==5:
+        ListArtist(url,name)
+elif mode==6:
+        ListAlbum(url)
+elif mode==7:
+        ListSongs(url,name)
+elif mode==8:
+        (url,artype)=url.split("|")
+        GetArtist(url,artype)
+        ListArtist(url,artype)
+elif mode==9:
+        GetSongs(url)
+        ListAlbum(url)
 xbmcplugin.endOfDirectory(int(sysarg))
