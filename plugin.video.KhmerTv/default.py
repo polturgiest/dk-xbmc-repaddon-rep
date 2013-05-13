@@ -123,6 +123,8 @@ def ListSongs(artist_url,album):
     favs = cur.fetchall()
     artist=""
     totalsong = 0
+    xbmc.PlayList(0).clear()
+    addLink("Play All",artist_url,10,"")
     for row in favs:
         totalsong=totalsong+1
         arturl = row[0]
@@ -130,6 +132,7 @@ def ListSongs(artist_url,album):
         songImg=row[2]
         songname   = row[3]
         songurl   = row[4].replace(" ","%20")
+        addPlaylist(songname,songurl,songImg,"")
         songitem(songname,songurl,songImg,album,artist, totalsong)
 
 
@@ -307,7 +310,9 @@ def GetXMLChannel():
                 addDir(vname,"",2,"")
 
 
-
+def PlayAll():
+    pl=xbmc.PlayList(0)
+    xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(pl)
 def playVideo(url):
     xbmcPlayer = xbmc.Player()
     xbmcPlayer.play(url)
@@ -488,7 +493,17 @@ def addLink(name,url,mode,iconimage):
         liz.addContextMenuItems(contextMenuItems, replaceItems=True)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
         return ok
-		
+
+def addPlaylist(name,url,iconimage,fanart):
+        ok=True
+        pl=xbmc.PlayList(0)
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo("music", infoLabels={ "Title": name})
+        liz.setProperty('mimetype', 'audio/mpeg')
+        liz.setProperty( "Fanart_Image", fanart )
+        pl.add(url, liz)
+        return ok
+
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
@@ -572,4 +587,7 @@ elif mode==8:
 elif mode==9:
         GetSongs(url)
         ListAlbum(url)
+elif mode==10:
+        PlayAll()
+		
 xbmcplugin.endOfDirectory(int(sysarg))
