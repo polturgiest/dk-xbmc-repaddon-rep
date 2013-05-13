@@ -146,7 +146,7 @@ def songitem(songname,songurl,songImg,album,artist, totalsong):
         trackLabel = artist + " - " + album + " - " + songname
         item = xbmcgui.ListItem(label = trackLabel, thumbnailImage=songImg, iconImage=songImg)
         item.setPath(songurl)
-        item.setInfo( type="music", infoLabels={ "title": name, "album": album, "artist": artist} )
+        item.setInfo( type="Video", infoLabels={ "title": name, "album": album, "artist": artist} )
         item.setProperty('mimetype', 'audio/mpeg')
         item.setProperty("IsPlayable", "true")
         item.setProperty('title', songname)
