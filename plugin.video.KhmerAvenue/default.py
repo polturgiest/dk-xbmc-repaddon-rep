@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "KhmerAvenue"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.12" #<---- PLUGIN VERSION
+VERSION = "1.0.13" #<---- PLUGIN VERSION
 
 common = CommonFunctions
 common.plugin = "plugin.video.KhmerAvenue"
@@ -248,14 +248,14 @@ def loadPlaylist(newlink,name):
                    match=re.compile('<iframe frameborder="0" [^>]*src="(.+?)">').findall(newlink)
                    if(len(match)==0):
                            match=re.compile('<iframe src="(.+?)" [^>]*').findall(newlink)
+                           if(len(match)==0):
+                                    match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
                 newlink=match[0]
 
            if (newlink.find("dailymotion") > -1):
-                newlink=newlink+"&"
-                match=re.compile('http://www.dailymotion.com\/embed\/video\/(.+?)&').findall(newlink)
-                if(len(match) == 0):
-                        match = re.compile('http://www.dailymotion.com/swf/(.+?)&').findall(newlink)
-                link = 'http://www.dailymotion.com/video/'+str(match[0])
+                match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
+                lastmatch = match[0][len(match[0])-1]
+                link = 'http://www.dailymotion.com/'+str(lastmatch)
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
                 response = urllib2.urlopen(req)
@@ -267,7 +267,7 @@ def loadPlaylist(newlink,name):
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
                 	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
+                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
            elif (newlink.find("video.google.com") > -1):
@@ -317,6 +317,8 @@ def loadVideos(url,name):
                    match=re.compile('<iframe frameborder="0" [^>]*src="(.+?)">').findall(newlink)
                    if(len(match)==0):
                            match=re.compile('<iframe src="(.+?)" [^>]*').findall(newlink)
+                           if(len(match)==0):
+                                   match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
            newlink=match[0]
            #xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
            if (newlink.find("dailymotion") > -1):
