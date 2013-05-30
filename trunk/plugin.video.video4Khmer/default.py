@@ -22,7 +22,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "video4khmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.9" #<---- PLUGIN VERSION
+VERSION = "1.0.10" #<---- PLUGIN VERSION
 def HOME():
         addDir('Search','http://www.video4khmer.com/',4,'http://www.video4khmer.com/templates/3column/images/header/logo.png')
         addDir('Thai Lakorns','http://www.video4khmer.com/browse-khmer-movie-thai-lakorn-drama-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
@@ -322,7 +322,7 @@ def CreateList(videoType,videoLink):
         
 def loadPlaylist(newlink,name):
         try:
-           if (newlink.find("video4khmer.com") > -1):
+           if (newlink.find("video4khmer.com") > -1 or newlink.find("khmervdo.com") > -1 ):
                 print newlink
                 linkcontent = GetContent(newlink)
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
@@ -330,6 +330,8 @@ def loadPlaylist(newlink,name):
                 
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('swfobject\.embedSWF\("(.+?)",').findall(newContent)
+                        if(len(titlecontent) == 0):
+                               titlecontent = re.compile("file:\s*'(.+?)',").findall(newContent)
                 newlink=titlecontent[0]
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
@@ -389,7 +391,7 @@ def loadPlaylist(newlink,name):
 def loadVideos(newlink,name):
         try:
            GA("LoadVideo",name)
-           if (newlink.find("video4khmer.com") > -1):
+           if (newlink.find("video4khmer.com") > -1 or newlink.find("khmervdo.com") > -1 ):
                 print newlink
                 linkcontent = GetContent(newlink)
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
@@ -397,6 +399,8 @@ def loadVideos(newlink,name):
                 
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('swfobject\.embedSWF\("(.+?)",').findall(newContent)
+                        if(len(titlecontent) == 0):
+                               titlecontent = re.compile("file:\s*'(.+?)',").findall(newContent)
                 newlink=titlecontent[0]
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
