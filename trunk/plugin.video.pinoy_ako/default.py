@@ -9,16 +9,18 @@ try: import simplejson as json
 except ImportError: import json
 import cgi
 import urlresolver
-
+from t0mm0.common.addon import Addon
 import datetime
 ADDON = xbmcaddon.Addon(id='plugin.video.pinoy_ako')
+addon = Addon('plugin.video.pinoy_ako')
+datapath = addon.get_profile()
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
     ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
     
 PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.3" #<---- PLUGIN VERSION
+VERSION = "1.0.5" #<---- PLUGIN VERSION
 
 strdomain ='http://www.pinoy-ako.info'
 def HOME():
@@ -363,45 +365,76 @@ def resolve_180upload(url,inhtml=None):
         dialog = xbmcgui.DialogProgress()
         dialog.create('Resolving', 'Resolving 180Upload Link...')
         dialog.update(0)
-        
+        puzzle_img = os.path.join(datapath, "180_puzzle.png")
         print '180Upload - Requesting GET URL: %s' % url
         if(inhtml==None):
                html = net.http_GET(url).content
         else:
                html = inhtml
         
-        op = 'download1'
-        id = re.search('<input type="hidden" name="id" value="(.+?)">', html).group(1)
-        rand = re.search('<input type="hidden" name="rand" value="(.+?)">', html).group(1)
-        method_free = ''
+        dialog.update(50)
+                
+        data = {}
+        r = re.findall(r'type="hidden" name="(.+?)" value="(.+?)">', html)
+
+        if r:
+            for name, value in r:
+                data[name] = value
+        else:
+            raise Exception('Unable to resolve 180Upload Link')
         
-        data = {'op': op, 'id': id, 'rand': rand, 'method_free': method_free}
+        #Check for SolveMedia Captcha image
+        solvemedia = re.search('<iframe src="(http://api.solvemedia.com.+?)"', html)
+
+        if solvemedia:
+           dialog.close()
+           html = net.http_GET(solvemedia.group(1)).content
+           hugekey=re.search('id="adcopy_challenge" value="(.+?)">', html).group(1)
+           open(puzzle_img, 'wb').write(net.http_GET("http://api.solvemedia.com%s" % re.search('<img src="(.+?)"', html).group(1)).content)
+           img = xbmcgui.ControlImage(450,15,400,130, puzzle_img)
+           wdlg = xbmcgui.WindowDialog()
+           wdlg.addControl(img)
+           wdlg.show()
         
-        dialog.update(33)
-        
+           xbmc.sleep(3000)
+
+           kb = xbmc.Keyboard('', 'Type the letters in the image', False)
+           kb.doModal()
+           capcode = kb.getText()
+   
+           if (kb.isConfirmed()):
+               userInput = kb.getText()
+               if userInput != '':
+                   solution = kb.getText()
+               elif userInput == '':
+                   Notify('big', 'No text entered', 'You must enter text in the image to access video', '')
+                   return False
+           else:
+               return False
+               
+           wdlg.close()
+           dialog.create('Resolving', 'Resolving 180Upload Link...') 
+           dialog.update(50)
+           if solution:
+               data.update({'adcopy_challenge': hugekey,'adcopy_response': solution})
+
         print '180Upload - Requesting POST URL: %s' % url
         html = net.http_POST(url, data).content
-        
-        op = 'download2'
-        id = re.search('<input type="hidden" name="id" value="(.+?)">', html).group(1)
-        rand = re.search('<input type="hidden" name="rand" value="(.+?)">', html).group(1)
-        method_free = ''
-
-        data = {'op': op, 'id': id, 'rand': rand, 'method_free': method_free, 'down_direct': 1}
-
-        dialog.update(66)
-
-        print '180Upload - Requesting POST URL: %s' % url
-        html = net.http_POST(url, data).content
-        link = re.search('<span style="background:#f9f9f9;border:1px dotted #bbb;padding:7px;">.+?<a href="(.+?)">', html,re.DOTALL).group(1)
-        print '180Upload Link Found: %s' % link
-    
         dialog.update(100)
-        dialog.close()
-        return link
+        
+        link = re.search('<a href="(.+?)" onclick="thanks\(\)">Download now!</a>', html)
+        if link:
+            print '180Upload Link Found: %s' % link.group(1)
+            return link.group(1)
+        else:
+            raise Exception('Unable to resolve 180Upload Link')
+
     except Exception, e:
         print '**** 180Upload Error occured: %s' % e
         raise
+    finally:
+        dialog.close()
+		
 def get_match(data,patron,index=0):
     matches = re.findall( patron , data , flags=re.DOTALL )
     return matches[index]
@@ -628,6 +661,22 @@ def loadVideos(url,name):
                 xmlUrl=re.compile('"playlist=(.+?)&').findall(unpacked)[0]
                 vidcontent = postContent2(xmlUrl,None,url)
                 vidlink=re.compile('<file>(.+?)</file>').findall(vidcontent)[0]
+           elif (newlink.find("uploadpluz") > -1):
+                videoid=  re.compile('http://nosvideo.com/embed/(.+?)/').findall(newlink)
+                if(len(videoid)>0):
+                       newlink="http://nosvideo.com/"+videoid[0]
+                link = GetContent(newlink)
+                pcontent=''.join(link.splitlines()).replace('\'','"')
+                scriptcontent=re.compile('<div id="player_code">(.+?)</div>').findall(pcontent)[0]
+                packed = scriptcontent.split("</script>")[1].replace('<script type="text/javascript">',"")
+                unpacked = unpackjs4(packed)
+                if unpacked=="":
+                        unpacked = unpackjs3(packed,tipoclaves=2)
+                        
+                unpacked = unpacked.replace("\\","")
+
+                vidUrl=re.compile('"file","(.+?)"').findall(unpacked)[0]
+                vidlink=vidUrl+"|Referer=http%3A%2F%2Fuploadpluz.com%3A8080%2Fplayer%2Fplayer.swf"
            elif (newlink.find("180upload") > -1):
                 urlnew= re.compile('http://180upload.com/embed-(.+?).html').findall(newlink)
                 print urlnew
@@ -657,7 +706,6 @@ def loadVideos(url,name):
            playVideo("pinoy",vidlink)
         #except: pass
         
-
 def extractFlashVars(data):
     for line in data.split("\n"):
             index = line.find("ytplayer.config =")
@@ -1041,6 +1089,7 @@ elif mode==2:
         GA("INDEX",name)
         INDEX(url)
 elif mode==3:
+       #PlaywithHeader()
        loadVideos(url,name)
 elif mode==4:
        GetVideoLinks(url)
