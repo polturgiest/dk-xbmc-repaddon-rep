@@ -20,7 +20,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.5" #<---- PLUGIN VERSION
+VERSION = "1.0.6" #<---- PLUGIN VERSION
 
 strdomain ='http://www.pinoy-ako.info'
 def HOME():
@@ -608,6 +608,7 @@ def loadVideos(url,name):
            GA("LoadVideo",name)
            newlink=url
            xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
+           print "newlink=" + newlink
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(url)
                 if(len(match) == 0):
@@ -691,7 +692,15 @@ def loadVideos(url,name):
                 vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]
            elif (newlink.find("youtube") > -1) and (newlink.find("/embed/") > -1):
                 playlistid=re.compile('/embed/(.+?)\?').findall(newlink+"?")
-                vidlink="plugin://plugin.video.youtube/?action=play_video&videoid="+playlistid[0]
+                vidlink=getYoutube(playlistid[0])
+           elif (newlink.find("youtube") > -1):
+                match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink1)
+                if(len(match) == 0):
+                    match=re.compile('http://www.youtube.com/watch\?v=(.+?)&dk;').findall(newlink1)
+                if(len(match) > 0):
+                    lastmatch = match[0][len(match[0])-1].replace('v/','')
+                print "in youtube" + lastmatch[0]
+                vidlink=getYoutube(lastmatch[0])
            else:
                 sources = []
                 label=name
@@ -848,7 +857,7 @@ def getYoutube(videoid):
                                 url = url + u"&signature=" + url_desc_map[u"sig"][0]
                         links[key] = url
                 highResoVid=selectVideoQuality(links)
-                return highResoVid    
+                return highResoVid   
 
 def parseDate(dateString):
     try:
