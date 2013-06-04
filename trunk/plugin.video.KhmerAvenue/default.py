@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "KhmerAvenue"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.13" #<---- PLUGIN VERSION
+VERSION = "1.0.14" #<---- PLUGIN VERSION
 
 common = CommonFunctions
 common.plugin = "plugin.video.KhmerAvenue"
@@ -34,13 +34,16 @@ def HOME():
 def INDEX(url):
     try:
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile('<div id="content" class="clearfix">(.+?)<div id="sidebar">').findall(newlink)
         match=re.compile('<a class="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)">             <img src="(.+?)"').findall(match[0])
         for vcontent in match:
             (vurl,vname, vimage)=vcontent
             addDir(vname.encode("utf-8"),vurl,5,vimage)
-        match5=re.compile("</a><a href='([^>]+)' class='nextpostslink'>([^>]+)</a></div>").findall(newlink)
+        match5=re.compile("</span><a href='([^>]+)' class='nextpostslink'>([^>]+)</a>").findall(newlink)
         if(len(match5)):
                 addDir("Next >>",match5[0][0],2,"")
     except: pass
@@ -56,6 +59,9 @@ def SEARCH():
         
 def SearchResults(url):
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile('<a class="widget-title" href="(.+?)"><img src="(.+?)" alt="(.+?)"').findall(newlink)
         if(len(match) >= 1):
@@ -143,6 +149,9 @@ def getVimeoVideourl(videoid):
 def Episodes(url,name):
     #try:
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         addLink(name.encode("utf-8"),url,3,'')
         match=re.compile('<div class="episodebox">(.+?)<div id="comments" class="clearfix">').findall(newlink)
