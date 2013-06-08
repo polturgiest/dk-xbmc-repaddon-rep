@@ -373,6 +373,27 @@
 </addon>
 
 <addon
+  id="plugin.video.seesantv"
+  version="1.0.0"
+  name="seesantv"
+  provider-name="Dknight">
+  <requires>
+        <import addon="xbmc.python" version="2.0"/>
+		<import addon="script.module.simplejson" />
+		<import addon="script.module.t0mm0.common" version="1.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>SeeSanTv</summary>
+    <description>Watch SeeSanTv Videos</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon
   id="plugin.video.sugoideasV2"
   version="1.0.5"
   name="sugoideasV2"
