@@ -219,7 +219,7 @@ def getSchedule(sched_date):
                 for vtmp,vcontent in latestepi:
                         (sUrl,stmp,sName)=re.compile('<a class="CalTVshowName pukeGreen" href="(.+?)" title="(.+?)">(.+?)</a>').findall(vcontent)[0]
                         (eUrl,eName)=re.compile('<a class="CalTVshowEpisode blue" href="(.+?)">(.+?)</a>').findall(vcontent)[0]
-                        addDir(sName,sUrl,7,"")
+                        addDirContext(sName,sUrl,7,"")
                         addDir("  --"+eName,eUrl,4,"")  
 def List4Days():
         sched_date=str(datetime.date.today())
