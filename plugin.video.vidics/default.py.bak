@@ -1,5 +1,5 @@
 import httplib
-import urlparse,urllib,urllib2,re,sys
+import urllib,urllib2,re,sys
 import cookielib,os,string,cookielib,StringIO,gzip
 import os,time,base64,logging
 from t0mm0.common.net import Net
@@ -8,14 +8,13 @@ import xbmcaddon,xbmcplugin,xbmcgui
 import json
 import urlresolver
 import time,datetime
-import core
 from xml.dom.minidom import Document
 from t0mm0.common.addon import Addon
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.vidics')
 home = __settings__.getAddonInfo('path')
 #addon = Addon('plugin.video.1channel', sys.argv)
-datapath = xbmc.translatePath(os.path.join(home, 'resources', ''))
+#filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
 #langfile = xbmc.translatePath(os.path.join(home, 'resources', 'lang.txt'))
 strdomain ="http://www.vidics.ch"
 AZ_DIRECTORIES = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Z']
@@ -95,24 +94,6 @@ def SaveData(SQLStatement): #8888
     db.commit()
     db.close()
 
-def HostResolver(url):
-		print "in HostResolver"
-		parsed_uri = urlparse.urlparse(url)
-		server=str(parsed_uri.netloc)
-		server=server.split(".")
-		if(len(server)>2):
-			server=server[1]
-		else:
-			server=server[0]
-		server=server.replace("180upload","one80upload")
-		exec "from servers import "+server+" as server_connector"
-		rtnstatus,msg = server_connector.test_video_exists( page_url=url )
-		if(rtnstatus):
-			video_urls = server_connector.get_video_url( page_url=url , video_password="" )
-			return video_urls[0][1]
-		else:
-			return ""
-		
 def SaveFav(fav_type, name, url, img):
         if fav_type == '': fav_type = getVideotype(url)
         statement  = 'INSERT INTO favorites (type, name, url, imgurl) VALUES (%s,%s,%s,%s)'
@@ -440,16 +421,10 @@ def ParseVideoLink(url,name):
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
                 vidlink=re.compile('file: "(.+?)",').findall(pcontent)[0]
         elif (redirlink.find("flashx.tv") > -1):
-                idkey = re.compile('<input name="objectid" id="objectid" type="hidden" value="(.+?)" />').findall(link)[0]
-                plycontent=GetContent("http://play.flashx.tv/player/embed.php?vid="+idkey)
-                plycontent= ''.join(plycontent.splitlines()).replace('\'','"')
-                playercode=re.compile('<span class="auto-style6">\s*<a href="(.+?)" onClick="popup').findall(plycontent)[0]
-                plycontent=GetContent(playercode)
-                plycontent= ''.join(plycontent.splitlines()).replace('\'','"')
-                playercode=re.compile('<object [^>]*data=["\']?([^>^"^\']+)["\']?[^>]*>').findall(plycontent)[0]
-                playercode=playercode.split("config=")[1]
-                finalcontent=GetContent(playercode)
-                vidlink=re.compile('<file>(.+?)</file>').findall(finalcontent)[0]
+                keycode=re.compile('/video/(.+?)/').findall(redirlink)[0]
+                xmlUrl = "http://play.flashx.tv/nuevo/player/confenc.php?str="+keycode
+                vidcontent = postContent2(xmlUrl,None,url)
+                vidlink=re.compile('<file>(.+?)</file>').findall(vidcontent)[0]
         elif (redirlink.find("speedvid") > -1):
                 keycode=re.compile('\|image\|(.+?)\|(.+?)\|file\|').findall(link)
                 domainurl=re.compile('\[IMG\](.+?)\[/IMG\]').findall(link)[0]
@@ -594,7 +569,7 @@ def ParseVideoLink(url,name):
                 if source:
                         vidlink = source.resolve()
                 else:
-                        vidlink =HostResolver(redirlink)
+                        vidlink =""
 		dialog.close()
         return vidlink
                
@@ -1075,80 +1050,50 @@ def resolve_billionuploads(url,inhtml=None):
     #    print '**** BillionUploads Error occured: %s' % e
     #    raise
 def resolve_180upload(url,inhtml=None):
-    net = Net()
+
     try:
         dialog = xbmcgui.DialogProgress()
         dialog.create('Resolving', 'Resolving 180Upload Link...')
         dialog.update(0)
-        puzzle_img = os.path.join(datapath, "180_puzzle.png")
+        
         print '180Upload - Requesting GET URL: %s' % url
         if(inhtml==None):
                html = net.http_GET(url).content
         else:
                html = inhtml
         
-        dialog.update(50)
-                
-        data = {}
-        r = re.findall(r'type="hidden" name="(.+?)" value="(.+?)">', html)
-
-        if r:
-            for name, value in r:
-                data[name] = value
-        else:
-            raise Exception('Unable to resolve 180Upload Link')
+        op = 'download1'
+        id = re.search('<input type="hidden" name="id" value="(.+?)">', html).group(1)
+        rand = re.search('<input type="hidden" name="rand" value="(.+?)">', html).group(1)
+        method_free = ''
         
-        #Check for SolveMedia Captcha image
-        solvemedia = re.search('<iframe src="(http://api.solvemedia.com.+?)"', html)
-
-        if solvemedia:
-           dialog.close()
-           html = net.http_GET(solvemedia.group(1)).content
-           hugekey=re.search('id="adcopy_challenge" value="(.+?)">', html).group(1)
-           open(puzzle_img, 'wb').write(net.http_GET("http://api.solvemedia.com%s" % re.search('<img src="(.+?)"', html).group(1)).content)
-           img = xbmcgui.ControlImage(450,15,400,130, puzzle_img)
-           wdlg = xbmcgui.WindowDialog()
-           wdlg.addControl(img)
-           wdlg.show()
+        data = {'op': op, 'id': id, 'rand': rand, 'method_free': method_free}
         
-           xbmc.sleep(3000)
+        dialog.update(33)
+        
+        print '180Upload - Requesting POST URL: %s' % url
+        html = net.http_POST(url, data).content
+        
+        op = 'download2'
+        id = re.search('<input type="hidden" name="id" value="(.+?)">', html).group(1)
+        rand = re.search('<input type="hidden" name="rand" value="(.+?)">', html).group(1)
+        method_free = ''
 
-           kb = xbmc.Keyboard('', 'Type the letters in the image', False)
-           kb.doModal()
-           capcode = kb.getText()
-   
-           if (kb.isConfirmed()):
-               userInput = kb.getText()
-               if userInput != '':
-                   solution = kb.getText()
-               elif userInput == '':
-                   Notify('big', 'No text entered', 'You must enter text in the image to access video', '')
-                   return False
-           else:
-               return False
-               
-           wdlg.close()
-           dialog.create('Resolving', 'Resolving 180Upload Link...') 
-           dialog.update(50)
-           if solution:
-               data.update({'adcopy_challenge': hugekey,'adcopy_response': solution})
+        data = {'op': op, 'id': id, 'rand': rand, 'method_free': method_free, 'down_direct': 1}
+
+        dialog.update(66)
 
         print '180Upload - Requesting POST URL: %s' % url
         html = net.http_POST(url, data).content
+        link = re.search('<span style="background:#f9f9f9;border:1px dotted #bbb;padding:7px;">.+?<a href="(.+?)">', html,re.DOTALL).group(1)
+        print '180Upload Link Found: %s' % link
+    
         dialog.update(100)
-        
-        link = re.search('<a href="(.+?)" onclick="thanks\(\)">Download now!</a>', html)
-        if link:
-            print '180Upload Link Found: %s' % link.group(1)
-            return link.group(1)
-        else:
-            raise Exception('Unable to resolve 180Upload Link')
-
+        dialog.close()
+        return link
     except Exception, e:
         print '**** 180Upload Error occured: %s' % e
         raise
-    finally:
-        dialog.close()
     
 
 def resolve_speedyshare(url,inhtml=None):
@@ -1660,7 +1605,6 @@ print "currentmode" + str(mode)
 if mode==None or url==None or len(url)<1:
         HOME()
 elif mode==2:
-
         ListGenres(url,name) 
 elif mode==3:
         playVideo(url,name)
@@ -1695,7 +1639,6 @@ elif mode==17:
 elif mode==18:
         GenreList(url,5)
 elif mode==19:
-        HostResolver("http://www.videoweed.es/file/e0985134d3080")
         GenreList(url,6)
 elif mode==20:
         List4Days()
