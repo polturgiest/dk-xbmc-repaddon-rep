@@ -687,6 +687,9 @@ def loadVideos(url,name):
            elif (newlink.find("youtube") > -1) and (newlink.find("playlists") > -1):
                 playlistid=re.compile('playlists/(.+?)\?v').findall(newlink)
                 vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]
+           elif (newlink.find("youtube") > -1) and (newlink.find("list=") > -1):
+                playlistid=re.compile('videoseries\?list=(.+?)&').findall(newlink+"&")
+                vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]
            elif (newlink.find("youtube") > -1) and (newlink.find("/p/") > -1):
                 playlistid=re.compile('/p/(.+?)\?').findall(newlink)
                 vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]
