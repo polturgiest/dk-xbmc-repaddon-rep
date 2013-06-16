@@ -1695,7 +1695,6 @@ elif mode==17:
 elif mode==18:
         GenreList(url,5)
 elif mode==19:
-        HostResolver("http://www.videoweed.es/file/e0985134d3080")
         GenreList(url,6)
 elif mode==20:
         List4Days()
