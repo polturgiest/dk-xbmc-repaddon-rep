@@ -429,16 +429,16 @@ def ParseVideoLink(url,name):
                 xmlUrl=re.compile('"playlist=(.+?)&').findall(unpacked)[0]
                 vidcontent = postContent2(xmlUrl,None,url)
                 vidlink=re.compile('<file>(.+?)</file>').findall(vidcontent)[0]
-        elif (redirlink.find("played.to") > -1):
-                idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
-                op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
-                fname = re.compile('<input type="hidden" name="fname" value="(.+?)">').findall(link)[0]
-                rand = re.compile('<input type="hidden" name="hash" value="(.+?)">').findall(link)[0]
-                btn = re.compile('<input type="submit" name="imhuman" value="(.+?)" id="btn_download"').findall(link)[0]
-                posdata=urllib.urlencode({"op":op,"usr_login":"","fname":fname,"hash":rand,"id":idkey,"referer":url,"imhuman":btn})
-                pcontent=postContent(redirlink,posdata,url)
-                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
-                vidlink=re.compile('file: "(.+?)",').findall(pcontent)[0]
+#        elif (redirlink.find("played.to") > -1):
+#                idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
+#                op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
+#                fname = re.compile('<input type="hidden" name="fname" value="(.+?)">').findall(link)[0]
+#                rand = re.compile('<input type="hidden" name="hash" value="(.+?)">').findall(link)[0]
+#                btn = re.compile('<input type="submit" name="imhuman" value="(.+?)" id="btn_download"').findall(link)[0]
+#                posdata=urllib.urlencode({"op":op,"usr_login":"","fname":fname,"hash":rand,"id":idkey,"referer":url,"imhuman":btn})
+#                pcontent=postContent(redirlink,posdata,url)
+#                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+#                vidlink=re.compile('file: "(.+?)",').findall(pcontent)[0]
         elif (redirlink.find("flashx.tv") > -1):
                 idkey = re.compile('<input name="objectid" id="objectid" type="hidden" value="(.+?)" />').findall(link)[0]
                 plycontent=GetContent("http://play.flashx.tv/player/embed.php?vid="+idkey)
