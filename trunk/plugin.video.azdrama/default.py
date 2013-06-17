@@ -18,18 +18,19 @@ if ADDON.getSetting('ga_visitor')=='':
 PATH = "AzDrama"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.6" #<---- PLUGIN VERSION
-
+domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net"]
+domain = domainlist[int(ADDON.getSetting('domainurl'))]
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
 def HOME():
         #addDir('Search','http://www.khmeravenue.com/',4,'http://yeuphim.net/images/logo.png')
-        addDir('Recent Updates','http://azdrama.net/recently-updated/',2,'')
-        addDir('English Subtitles','http://azdrama.net/english/&sort=date',7,'')
-        addDir('HK Dramas','http://azdrama.net/hk-drama/',2,'')
-        addDir('HK Shows','http://azdrama.net/hk-show/',2,'')
-        addDir('Korean Dramas','http://azdrama.net/korean-drama/',2,'')
-        addDir('Mainland Chinese Dramas','http://azdrama.net/chinese-drama/',2,'')
-        addDir('Taiwanese Dramas','http://azdrama.net/taiwanese-drama/',2,'')
+        addDir('Recent Updates','http://'+domain+'/recently-updated/',2,'')
+        addDir('English Subtitles','http://'+domain+'/english/&sort=date',7,'')
+        addDir('HK Dramas','http://'+domain+'/hk-drama/',2,'')
+        addDir('HK Shows','http://'+domain+'/hk-show/',2,'')
+        addDir('Korean Dramas','http://'+domain+'/korean-drama/',2,'')
+        addDir('Mainland Chinese Dramas','http://'+domain+'/chinese-drama/',2,'')
+        addDir('Taiwanese Dramas','http://'+domain+'/taiwanese-drama/',2,'')
 
 def INDEX(url):
     #try:
