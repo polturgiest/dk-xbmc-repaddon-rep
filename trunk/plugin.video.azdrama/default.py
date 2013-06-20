@@ -27,6 +27,7 @@ def HOME():
         addDir('Recent Updates','http://'+domain+'/recently-updated/',2,'')
         addDir('English Subtitles','http://'+domain+'/english/&sort=date',7,'')
         addDir('HK Dramas','http://'+domain+'/hk-drama/',2,'')
+        addDir('HK Movies','http://'+domain+'/hk-movie/',2,'')
         addDir('HK Shows','http://'+domain+'/hk-show/',2,'')
         addDir('Korean Dramas','http://'+domain+'/korean-drama/',2,'')
         addDir('Mainland Chinese Dramas','http://'+domain+'/chinese-drama/',2,'')
