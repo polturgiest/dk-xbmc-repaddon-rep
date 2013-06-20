@@ -122,7 +122,7 @@ def decodeurl(encodedurl):
 def getVidPage(url,name):
   contentlink = GetContent(url)
   contentlink = ''.join(contentlink.splitlines()).replace('\'','"')
-  mlink=re.compile('<a id="clicktoepisode" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(contentlink)
+  mlink=re.compile('<a id="xemphimus" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(contentlink)
   return mlink[0].replace("title=","")
 
 
