@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.0" #<---- PLUGIN VERSION
+VERSION = "1.1.1" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
@@ -88,10 +88,22 @@ def SaveLang(langcode, name):
 def Genre(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         vcontent =re.compile('<section class="section mbn">(.+?)</section>').findall(link) 
-        vidlist=re.compile('data-tooltip-src="/tooltips/(.+?)/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<img alt="(.+?)" height="130" src="(.+?)" width="230" />').findall(vcontent[0])
-        for vtype,vid,vurl,vname,vimg in vidlist:
-            if(vtype=="tv"):
+        vidulist=re.compile('<ul class="medias medias-block medias-wide mbx">(.+?)</ul>').findall(vcontent[0])
+        vidlist=re.compile('<li class="media">(.+?)</li>').findall(vidulist[0])
+        for vlist in vidlist:
+            vtype=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">').findall(vlist)[0]
+            vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(vlist)
+            if(len(vid)==0):
+                    vid=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json"').findall(vlist)
+            vid=vid[0]
+            vurl=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(vlist)[0]
+            #vname=re.compile('<li class="media">(.+?)</li>').findall(vlist)
+            (vname,vtmp1,vimg,vtmp2)=re.compile('<img alt="(.+?)" height="(.+?)" src="(.+?)" width="(.+?)" />').findall(vlist)[0]
+            if(vtype.find("/tv/") > -1):
                     vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                     mode=7
             else:
@@ -99,7 +111,7 @@ def Genre(url,name):
                     vid=vurlist[len(vurlist)-1].split("-")[0]
                     vlink =vid
                     mode=4
-            addDir(vname,vlink,mode,vimg)
+            addDir(vname.decode("UTF-8"),vlink,mode,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
