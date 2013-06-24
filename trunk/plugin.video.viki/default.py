@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.1" #<---- PLUGIN VERSION
+VERSION = "1.1.2" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
@@ -68,7 +68,7 @@ def HOME():
         addDir('Updated Tv shows','http://www.viki.com/tv/browse?sort=latest',8,'')
         addDir('Updated Movies','http://www.viki.com/movies/browse?sort=latest',8,'')
         addDir('Updated Music','http://www.viki.com/music/browse?sort=latest',8,'')
-        addDir('Select Sub Language','http://www.viki.com/tv',10,'')
+        addDir('Select Sub Language','http://www.viki.com/tv/browse?sort=viewed',10,'')
 def LangOption():
         addDir('Show All Languages','All',10,'')
 		
