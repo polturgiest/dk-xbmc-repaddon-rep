@@ -135,7 +135,7 @@ def SaveFav(fav_type, name, url, img):
 def AddFavContext(vidtype, vidurl, vidname, vidimg):
         runstring = 'RunScript(plugin.video.vidics,%s,?mode=22&vidtype=%s&name=%s&imageurl=%s&url=%s)' %(sys.argv[1],vidtype,vidname,vidimg,vidurl)
         #runstring = 'RunPlugin(%s)' % addon.build_plugin_url({'mode':22, 'vidtype':vidtype, 'name':vidname, 'url':vidurl, 'imageurl':vidimg})
-        cm = []
+        cm = add_contextsearchmenu(vidname,vidtype)
         cm.append(('Add to Vidics Favorites', runstring))
         return cm
 def ListFavorites():
@@ -156,13 +156,13 @@ def BrowseFavorites(section):
         img      = row[3]
         vtype= row[0]
         fanart = ''
-
+        cm = add_contextsearchmenu(title,vtype)
         remfavstring = 'RunScript(plugin.video.vidics,%s,?mode=23&name=%s&url=%s)' %(sys.argv[1],urllib.quote_plus(title.encode("utf-8")),urllib.quote_plus(favurl))
-        cm = [('Remove from Favorites', remfavstring)]
+        cm.append(('Remove from Favorites', remfavstring))
         nextmode=7
         if(vtype=="movie"):
               nextmode=4
-        addDirContext(title,favurl,nextmode,img,"","",cm)
+        addDirContext(title,favurl,nextmode,img,"",vtype,cm)
     db.close()
 
 def DeleteFav(name,url): 
@@ -219,7 +219,7 @@ def getSchedule(sched_date):
                 for vtmp,vcontent in latestepi:
                         (sUrl,stmp,sName)=re.compile('<a class="CalTVshowName pukeGreen" href="(.+?)" title="(.+?)">(.+?)</a>').findall(vcontent)[0]
                         (eUrl,eName)=re.compile('<a class="CalTVshowEpisode blue" href="(.+?)">(.+?)</a>').findall(vcontent)[0]
-                        addDirContext(sName,sUrl,7,"")
+                        addDirContext(sName,sUrl,7,"","","tv")
                         addDir("  --"+eName,eUrl,4,"")  
 def List4Days():
         sched_date=str(datetime.date.today())
@@ -252,7 +252,39 @@ def Mirrors(url,name):
          quality =re.compile('<h4>(.+?)</h4>').findall(vcontent)
          linkinfo =re.compile('<a href="(.+?)" target="_blank" rel="nofollow">(.+?)</a>').findall(vcontent)
          addLink(linkinfo[0][1],strdomain+linkinfo[0][0],3,"") 
-			
+
+def add_contextsearchmenu(title, video_type):
+    title=urllib.quote(title.encode("utf-8"))
+    contextmenuitems = []
+    if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
+        contextmenuitems.append(('Search 1channel',
+                                 'XBMC.Container.Update(%s?mode=%s&section=%s&query=%s)' % (
+                                     'plugin://plugin.video.1channel/', '7000',video_type, title)))
+    if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
+        contextmenuitems.append(('Search Icefilms',
+                                 'XBMC.Container.Update(%s?mode=555&url=%s&search=%s&nextPage=%s)' % (
+                                     'plugin://plugin.video.icefilms/', 'http://www.icefilms.info/', title, '1')))
+    if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tubeplus'):
+        if video_type == 'tv':
+            section = 'tv-shows'
+        else:
+            section = 'movies'
+        contextmenuitems.append(('Search tubeplus', 'XBMC.Container.Update(%s?mode=Search&section=%s&query=%s)' % (
+            'plugin://plugin.video.tubeplus/', section, title)))
+    if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tvlinks'):
+        if video_type == 'tv':
+            contextmenuitems.append(('Search tvlinks', 'XBMC.Container.Update(%s?mode=Search&query=%s)' % (
+                'plugin://plugin.video.tvlinks/', title)))
+    if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.solarmovie'):
+        if video_type == 'tv':
+            section = 'tv-shows'
+        else:
+            section = 'movies'
+        contextmenuitems.append(('Search solarmovie', 'XBMC.Container.Update(%s?mode=Search&section=%s&query=%s)' % (
+            'plugin://plugin.video.solarmovie/', section, title)))
+
+    return contextmenuitems
+	
 def ParseVideoLink(url,name):
         dialog = xbmcgui.DialogProgress()
         dialog.create('Resolving', 'Resolving video Link...')       
