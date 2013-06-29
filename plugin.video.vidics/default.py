@@ -266,11 +266,14 @@ def add_contextsearchmenu(title, video_type):
                                      'plugin://plugin.video.icefilms/', 'http://www.icefilms.info/', title, '1')))
     if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tubeplus'):
         if video_type == 'tv':
-            section = 'tv-shows'
+            section = 'None'
+            serurl='http://www.tubeplus.me/search/tv-shows/%s/'%(title)
         else:
-            section = 'movies'
-        contextmenuitems.append(('Search tubeplus', 'XBMC.Container.Update(%s?mode=Search&section=%s&query=%s)' % (
-            'plugin://plugin.video.tubeplus/', section, title)))
+            serurl='http://www.tubeplus.me/search/movies/"%s"/'%(title)
+            section = 'movie'
+       
+        contextmenuitems.append(('Search tubeplus', 'XBMC.Container.Update(%s?mode=150&types=%s&url=%s&linkback=latesttv)' % (
+            'plugin://plugin.video.tubeplus/', section, serurl)))
     if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tvlinks'):
         if video_type == 'tv':
             contextmenuitems.append(('Search tvlinks', 'XBMC.Container.Update(%s?mode=Search&query=%s)' % (
