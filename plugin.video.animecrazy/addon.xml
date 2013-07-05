@@ -5,11 +5,11 @@
        provider-name="AJ Updated by Dknight">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <broken>deprecated</broken>
   </requires>
   <extension point="xbmc.python.pluginsource"
             library="default.py">
         <provides>video</provides>
+		<broken>deprecated</broken>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>AnimeCrazy.net - Watch Asian Animation Online</summary>

@@ -6,11 +6,11 @@
        provider-name="AJ Updated by Dknight">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <broken>deprecated</broken>
   </requires>
   <extension point="xbmc.python.pluginsource"
             library="default.py">
         <provides>video</provides>
+		<broken>deprecated</broken>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>AnimeCrazy.net - Watch Asian Animation Online</summary>
@@ -92,11 +92,11 @@
        provider-name="AJ Updated by Dknight">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <broken>deprecated</broken>
   </requires>
   <extension point="xbmc.python.pluginsource"
             library="default.py">
         <provides>video</provides>
+		<broken>deprecated</broken>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>DramaCrazy.net - Watch Asian Drama Online</summary>
@@ -169,11 +169,11 @@
         <import addon="xbmc.python" version="2.0"/>
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
-		<broken>deprecated</broken>
   </requires>
   <extension point="xbmc.python.pluginsource"
             library="default.py">
         <provides>video</provides>
+		<broken>deprecated</broken>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>KhmerAccess</summary>
@@ -212,11 +212,11 @@
         <import addon="xbmc.python" version="2.0"/>
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
-		<broken>deprecated</broken>
   </requires>
   <extension point="xbmc.python.pluginsource"
             library="default.py">
         <provides>video</provides>
+		<broken>deprecated</broken>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>KhmerFever</summary>
