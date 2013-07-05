@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.3" #<---- PLUGIN VERSION
+VERSION = "1.1.4" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
@@ -149,7 +149,7 @@ def UpdatedVideos(url,name):
             else:
                     vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                     mode=7
-            addDir(vname,vlink,mode,vimg)
+            addDir(vname.decode("utf-8"),vlink,mode,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
