@@ -5,6 +5,7 @@
        provider-name="AJ Updated by Dknight">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
+    <broken>deprecated</broken>
   </requires>
   <extension point="xbmc.python.pluginsource"
             library="default.py">

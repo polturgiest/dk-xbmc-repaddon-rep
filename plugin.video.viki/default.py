@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.2" #<---- PLUGIN VERSION
+VERSION = "1.1.3" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
@@ -67,7 +67,7 @@ def HOME():
         addDir('Genres','http://www.viki.com/genres',2,'')
         addDir('Updated Tv shows','http://www.viki.com/tv/browse?sort=latest',8,'')
         addDir('Updated Movies','http://www.viki.com/movies/browse?sort=latest',8,'')
-        addDir('Updated Music','http://www.viki.com/music/browse?sort=latest',8,'')
+        addDir('Updated Music','http://www.viki.com/music/browse?sort=latest',6,'')
         addDir('Select Sub Language','http://www.viki.com/tv/browse?sort=viewed',10,'')
 def LangOption():
         addDir('Show All Languages','All',10,'')
@@ -77,7 +77,7 @@ def ListGenres(url,name):
         link = ''.join(link.splitlines()).replace('\'','"')
         vidlist=re.compile('<a href="(.+?)" class="thumbnail-medium thumbnail-genre (.+?)">\s*<h2 class="genre-title">(.+?)</h2>\s*</a>').findall(link)
         for vurl,vimg,vname in vidlist:
-            addDir(vname.replace("&amp;","&"),strdomain+'/genres/'+vimg,6,"")
+            addDir(vname.replace("&amp;","&"),strdomain+'/genres/'+vimg+"?sort=latest",8,"")
 			
 def SaveLang(langcode, name):
     f = open(langfile, 'w');f.write(langcode);f.close()   
@@ -91,19 +91,20 @@ def Genre(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        vcontent =re.compile('<section class="section mbn">(.+?)</section>').findall(link) 
-        vidulist=re.compile('<ul class="medias medias-block medias-wide mbx">(.+?)</ul>').findall(vcontent[0])
-        vidlist=re.compile('<li class="media">(.+?)</li>').findall(vidulist[0])
+        #vcontent =re.compile('<div class="tab-content">(.+?)</section>').findall(link) 
+        vidulist=re.compile('<ul class="thumb-grid mbl">(.+?)</ul>').findall(link)
+        vidlist=re.compile('<li[^>]*>(.+?)</li>').findall(vidulist[0])
+        print vidulist
         for vlist in vidlist:
-            vtype=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">').findall(vlist)[0]
+            vurl=re.compile('<a href="(.+?)" class="thumbnail">').findall(vlist)[0]
             vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(vlist)
             if(len(vid)==0):
                     vid=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json"').findall(vlist)
             vid=vid[0]
-            vurl=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(vlist)[0]
+            #vurl=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(vlist)[0]
             #vname=re.compile('<li class="media">(.+?)</li>').findall(vlist)
             (vname,vtmp1,vimg,vtmp2)=re.compile('<img alt="(.+?)" height="(.+?)" src="(.+?)" width="(.+?)" />').findall(vlist)[0]
-            if(vtype.find("/tv/") > -1):
+            if(vurl.find("/tv/") > -1):
                     vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                     mode=7
             else:
@@ -121,22 +122,33 @@ def Genre(url,name):
 def UpdatedVideos(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        vcontent=re.compile('<div class="tab-content">(.+?)<div class="pagination">').findall(link)
-        vidlist=re.compile('data-tooltip-src="/tooltips/(.+?)/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<img alt="(.+?)" height="107" src="(.+?)" width="190" />').findall(vcontent[0])
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        vcontent=re.compile('Recently Added\s*</a>\s*</li>\s*</ul>(.+?)</ul>').findall(link)
+        if(len(vcontent) ==0):
+               vcontent=re.compile('<ul class="medias medias-block medias-wide mbx" id="searchResults">(.+?)</ul>').findall(link)
+        vidlist=re.compile('<li class="media">(.+?)</li>').findall(vcontent[0])
         mode=7
-        for vtmp,vid,vurl,vname,vimg in vidlist:
-            if(vtmp=="movies"):
-                    vurlist=vurl.split("/")
+        for licontent in vidlist:
+            vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(licontent)[0]
+            if(len(vid)==0):
+                    vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(vlist)
+            vurl,vname=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">(.+?)</a>\s*</h2>').findall(licontent)[0]
+            vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(licontent)[0]
+
+            if(vurl.find("/movies/") > -1):
+                    vurlist=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(licontent)[0].encode("utf-8")
+                    vurlist=vurlist.split("/")
                     vid=vurlist[len(vurlist)-1].split("-")[0]
                     vlink =vid
                     mode=4
-            elif(vtmp=="videos"):
+            elif(vurl.find("/videos/")> -1):
                     vlink =strdomain+vurl
                     mode=7
             else:
                     vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                     mode=7
-
             addDir(vname,vlink,mode,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
@@ -293,7 +305,7 @@ def SEARCHVideos():
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
         searchurl="http://www.viki.com/search?utf8=%E2%9C%93&q=" + searchText 
-        Genre(searchurl,searchText.lower())
+        UpdatedVideos(searchurl,searchText.lower())
 
 def SEARCHByID():
         keyb = xbmc.Keyboard('', 'Enter Viki Video ID')
@@ -332,8 +344,10 @@ def getVidQuality(vidid,name,filename,checkvideo):
   GA("Playing",name)
   if(checkvideo):
           pardata=GetVideoInfo(vidid)
-          partnum=len(pardata["parts"])
-          if(partnum>1):
+
+          if "parts" in pardata:
+             partnum=len(pardata["parts"])
+             if(partnum>1):
                 for i in range(partnum):
                      addDir(name +" part " + str(pardata["parts"][i]["part"]),pardata["parts"][i]["id"],15,"")
                 return ""
