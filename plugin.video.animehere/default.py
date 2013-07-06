@@ -269,7 +269,7 @@ def ParseVideoLink(url,name):
         dialog = xbmcgui.DialogProgress()
         dialog.create('Resolving', 'Resolving video Link...')       
         dialog.update(0)
-        (respon,cj) = CheckRedirect(url)
+        (respon,cj) = CheckRedirect(urllib.unquote_plus(url).replace("&amp;","&"))
         link=respon.content
         tmpcontent=link
         redirlink = urllib.unquote_plus(url).replace("&amp;","&")
@@ -281,6 +281,23 @@ def ParseVideoLink(url,name):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
                 vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
                 vidlink='plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid='+vidlink
+        elif (redirlink.find("vidzur") > -1 or redirlink.find("videofun") > -1):
+                media_url= ""
+                op = re.compile('playlist:\s*\[(.+?)\]').findall(link)[0]
+                urls=op.split("{")
+                for rows in urls:
+                     if(rows.find("url") > -1):
+                          murl= re.compile('url:\s*"(.+?)"').findall(rows)[0]
+                          media_url=urllib.unquote_plus(murl)
+                vidlink = media_url
+        elif (redirlink.find("yourupload") > -1):
+                media_url= ""
+                media_url = re.compile('<meta property="og:video" content="(.+?)"/>').findall(link)[0]
+                vidlink = media_url
+        elif (redirlink.find("video44") > -1):
+                media_url= ""
+                media_url = re.compile('file:\s*"(.+?)"').findall(link)[0]
+                vidlink = media_url
         elif (redirlink.find("video.google.com") > -1):
                 match=redirlink.split("docid=")
                 glink=""
