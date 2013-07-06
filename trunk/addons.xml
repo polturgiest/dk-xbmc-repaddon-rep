@@ -23,7 +23,7 @@
 
 <addon
   id="plugin.video.animehere"
-  version="1.0.0"
+  version="1.0.1"
   name="animehere"
   provider-name="Dknight">
   <requires>

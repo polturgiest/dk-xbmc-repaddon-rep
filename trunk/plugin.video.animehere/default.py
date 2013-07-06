@@ -269,10 +269,11 @@ def ParseVideoLink(url,name):
         dialog = xbmcgui.DialogProgress()
         dialog.create('Resolving', 'Resolving video Link...')       
         dialog.update(0)
-        (respon,cj) = CheckRedirect(urllib.unquote_plus(url).replace("&amp;","&"))
+        url=urllib.unquote_plus(url).replace("&amp;","&").replace("&#038;","&")
+        (respon,cj) = CheckRedirect(url)
         link=respon.content
         tmpcontent=link
-        redirlink = urllib.unquote_plus(url).replace("&amp;","&")
+        redirlink = url
         link = ''.join(link.splitlines()).replace('\'','"')
         if (redirlink.find("embed.novamov") > -1):
                 novalink=re.compile('v=(.+?)&').findall(redirlink+"&dk")
@@ -719,15 +720,18 @@ def INDEXList(url,vidtype):
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         listcontent=re.compile('<section class="animebox cfix">(.+?)</section>').findall(newlink)
-        vidlist=re.compile('<li[^>]*>(.+?)</li>').findall(listcontent[0])
-        for moveieinfo in vidlist:
-            vtitle,vurl,vimg,vtmp=re.compile('<a title="(.+?)" href="(.+?)"><img src="(.+?)" alt="(.+?)"/></a>').findall(moveieinfo)[0]
-            vtmp=re.compile('<span class="num"><a href="(.+?)">(.+?)</a></span>').findall(moveieinfo)
+        if(len(listcontent) >0):
+            vidlist=re.compile('<li[^>]*>(.+?)</li>').findall(listcontent[0])
+            for moveieinfo in vidlist:
+                 vtmp=re.compile('<a title="(.+?)" href="(.+?)"><img src="(.+?)" alt="(.+?)"/></a>').findall(moveieinfo)
+                 if(len(vtmp)>0):
+                      vtitle,vurl,vimg,vtmp=vtmp[0]
+                      vtmp=re.compile('<span class="num"><a href="(.+?)">(.+?)</a></span>').findall(moveieinfo)
 
-            addDirContext(vtitle,strdomain+vurl,8,strdomain+vimg,"","tv")
-            if(len(vtmp)>0):
-                 eUrl,eName=vtmp[0]
-                 addDir("  -- Latest Ep:"+eName,strdomain+eUrl,4,strdomain+vimg)  
+                      addDirContext(vtitle,strdomain+vurl,8,strdomain+vimg,"","tv")
+                      if(len(vtmp)>0):
+                           eUrl,eName=vtmp[0]
+                           addDir("  -- Latest Ep:"+eName,strdomain+eUrl,4,strdomain+vimg)  
         paginacontent=re.compile('<article class="page cfix">(.+?)</article>').findall(newlink)
         
         if(len(paginacontent)>0):
@@ -1630,7 +1634,7 @@ except:
 		
 sysarg=str(sys.argv[1]) 
 
-print "crap" + str(url)
+print "url" + str(url)
 if mode==None or url==None or len(url)<1:
         HOME()
 elif mode==2:
