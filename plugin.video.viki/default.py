@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.4" #<---- PLUGIN VERSION
+VERSION = "1.1.5" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
@@ -131,25 +131,27 @@ def UpdatedVideos(url,name):
         vidlist=re.compile('<li class="media">(.+?)</li>').findall(vcontent[0])
         mode=7
         for licontent in vidlist:
-            vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(licontent)[0]
+            vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(licontent)
             if(len(vid)==0):
-                    vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(vlist)
-            vurl,vname=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">(.+?)</a>\s*</h2>').findall(licontent)[0]
-            vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(licontent)[0]
-
-            if(vurl.find("/movies/") > -1):
-                    vurlist=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(licontent)[0].encode("utf-8")
-                    vurlist=vurlist.split("/")
-                    vid=vurlist[len(vurlist)-1].split("-")[0]
-                    vlink =vid
-                    mode=4
-            elif(vurl.find("/videos/")> -1):
-                    vlink =strdomain+vurl
-                    mode=7
-            else:
-                    vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
-                    mode=7
-            addDir(vname.decode("utf-8"),vlink,mode,vimg)
+                    vid=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json"').findall(licontent)
+            if(len(vid)>0):
+                    vid=vid[0]
+                    vurl,vname=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">(.+?)</a>\s*</h2>').findall(licontent)[0]
+                    vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(licontent)[0]
+            
+                    if(vurl.find("/movies/") > -1):
+                         vurlist=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(licontent)[0].encode("utf-8")
+                         vurlist=vurlist.split("/")
+                         vid=vurlist[len(vurlist)-1].split("-")[0]
+                         vlink =vid
+                         mode=4
+                    elif(vurl.find("/videos/")> -1):
+                        vlink =strdomain+vurl
+                        mode=7
+                    else:
+                        vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
+                        mode=7
+                    addDir(vname.decode("utf-8"),vlink,mode,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
