@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
 PATH = "AzDrama"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.6" #<---- PLUGIN VERSION
-domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net"]
+domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net", "azdrama.sx"]
 domain = domainlist[int(ADDON.getSetting('domainurl'))]
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
