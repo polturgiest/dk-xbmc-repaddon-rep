@@ -41,7 +41,11 @@ def GetContent(url):
     try:
        net = Net()
        second_response = net.http_GET(url)
-       return second_response.content
+       rcontent=second_response.content
+       try:
+            rcontent =rcontent.encode("UTF-8")
+       except: pass
+       return rcontent
     except:	
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
@@ -183,8 +187,8 @@ def HOME():
         addDir('Search Movies','search',9,'')
         addDir('Search TV Shows','search',10,'')
         addDir('Search Actors','search',15,'')
-        addDir('Recently Added Movies','http://www.vidics.ch/Category-Movies/Genre-Any/Letter-Any/LatestFirst/1.htm',5,'')
-        addDir('Recently Added TV Shows','http://www.vidics.ch/Category-TvShows/Genre-Any/Letter-Any/LatestFirst/1.htm',6,'')
+        addDir('Recently Added Movies','http://www.vidics.ch/Category-Movies/Genre-Any/Letter-Any/LatestFirst/1.htm',26,'')
+        addDir('Recently Added TV Shows','http://www.vidics.ch/Category-TvShows/Genre-Any/Letter-Any/LatestFirst/1.htm',27,'')
         addDir('Favorites','Category-Movies',24,'')
         addDir('Movies A-Z','Category-Movies',16,'')
         addDir('TV Shows A-Z','Category-TvShows',17,'')
@@ -214,13 +218,14 @@ def getSchedule(sched_date):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
         listcontent=re.compile('<div class="indexClanedarDay left" id="date_'+sched_date+'">(.+?)</div>').findall(newlink)
+        print 
         if(len(listcontent)>0):
-                latestepi=re.compile('<h3 class="CalTvshow" title="(.+?)">(.+?)</h3>').findall(listcontent[0])
+                latestepi=re.compile('<h3 itemscope itemtype="http://schema.org/TVSeries" class="CalTvshow" title="(.+?)">(.+?)</h3>').findall(listcontent[0])
                 for vtmp,vcontent in latestepi:
-                        (sUrl,stmp,sName)=re.compile('<a class="CalTVshowName pukeGreen" href="(.+?)" title="(.+?)">(.+?)</a>').findall(vcontent)[0]
-                        (eUrl,eName)=re.compile('<a class="CalTVshowEpisode blue" href="(.+?)">(.+?)</a>').findall(vcontent)[0]
-                        addDirContext(sName,sUrl,7,"","","tv")
-                        addDir("  --"+eName,eUrl,4,"")  
+                        (sUrl,stmp,sName)=re.compile('<a itemprop="url" class="CalTVshowName pukeGreen" href="(.+?)" title="(.+?)">(.+?)</a>').findall(vcontent)[0]
+                        (eUrl,eName)=re.compile('<a itemprop="url" class="CalTVshowEpisode blue" href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vcontent)[0]
+                        addDirContext(RemoveHTML(sName),strdomain+sUrl,7,"","","tv")
+                        addDir("  --"+RemoveHTML(eName),strdomain+eUrl,4,"")  
 def List4Days():
         sched_date=str(datetime.date.today())
         date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
@@ -254,7 +259,7 @@ def Mirrors(url,name):
          addLink(linkinfo[0][1],strdomain+linkinfo[0][0],3,"") 
 
 def add_contextsearchmenu(title, video_type):
-    title=urllib.quote(title.encode("utf-8"))
+    title=urllib.quote(title)
     contextmenuitems = []
     if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
         contextmenuitems.append(('Search 1channel',
@@ -662,7 +667,7 @@ def SEARCHMOV():
         searchText = ''
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        INDEXList("http://www.vidics.ch/Category-Movies/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",4,5,"movie")
+        INDEX("http://www.vidics.ch/Category-Movies/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",4,26,"movie")
 		
 def SEARCHTV():
         keyb = xbmc.Keyboard('', 'Enter search text')
@@ -670,7 +675,7 @@ def SEARCHTV():
         searchText = ''
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        INDEXList("http://www.vidics.ch/Category-TvShows/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",7,6,"tv")
+        INDEX("http://www.vidics.ch/Category-TvShows/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",7,27,"tv")
 		
 def SEARCHactor():
         keyb = xbmc.Keyboard('', 'Enter search text')
@@ -678,7 +683,7 @@ def SEARCHactor():
         searchText = ''
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        INDEXList("http://www.vidics.ch/Category-People/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",11,12,"")
+        INDEX("http://www.vidics.ch/Category-People/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",11,12,"")
 		
 def getstatic():
         f = open(langfile, "r")
@@ -718,7 +723,7 @@ def ProfileMovie(url,typename):
                 movielist=re.compile('<a class="green" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(listcontent[0])
                 for vurl,vname in movielist:
                     vname=html_re.sub('', vname)
-                    addDirContext(vname.strip(),vurl,13,"",plot="",vidtype="")
+                    addDirContext(vname.strip(),strdomain+vurl,13,"",plot="",vidtype="")
 					
 def ActorProfile(url):
         link = GetContent(url)
@@ -760,7 +765,7 @@ def Episodes(url,name):
         for (vurl,vname) in episodelist:
                 html_re = re.compile(r'<[^>]+>')
                 vname=html_re.sub('', vname)
-                addDir(vname,vurl,4,"")
+                addDir(vname,strdomain+vurl,4,"")
 
     #except: pass
 	
@@ -770,13 +775,41 @@ def Seasons(url):
         ssoninfo= re.compile('<h3 class="season_header">(.+?)</h3>').findall(link)
         for seas in ssoninfo:
                 epsodlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(seas)[0]
-                addDir(epsodlist[1],epsodlist[0],8,"")
+                addDir(epsodlist[1],strdomain+epsodlist[0],8,"")
+def INDEX(url,modenum,curmode,vidtype):
+    #try:
+        xbmc.executebuiltin("Container.SetViewMode(52)")
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        vcontent=re.compile('<td id="searchResults" [^>]*>(.+?)</td>').findall(newlink)
+        listcontent=re.compile('<div itemscope [^>]*class="searchResult">(.+?)</div></div></div></div>').findall(vcontent[0])
+        vpot=""
+        for moveieinfo in listcontent:
+            vtitle,vurl,vimg,vtmp1,vtmp2=re.compile('<a title="Watch(.+?)online free." href="(.+?)"><img itemprop="image" src="(.+?)" title="(.+?)" alt="(.+?)" /></a>').findall(moveieinfo)[0]
+            vtitle=RemoveHTML(vtitle)
+            if(vidtype==""):
+                 addDir(vtitle,strdomain+vurl,modenum,vimg,vpot)
+            else:
+                 addDirContext(vtitle,strdomain+vurl,modenum,vimg,vpot,vidtype)
+        paginacontent=re.compile('<table class="pagination" ?[^>]*>(.+?)</table>').findall(newlink)
+        
+        if(len(paginacontent)>0):
+                pagelist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(paginacontent[0])
+                for vurl,vname in pagelist:
+                    addDir("page: " + vname.replace("&rsaquo;",">").replace("&lsaquo;","<"),strdomain+vurl.replace(" ","%20"),curmode,"")
+					
 def INDEXList(url,modenum,curmode,vidtype):
     #try:
         xbmc.executebuiltin("Container.SetViewMode(52)")
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        listcontent=re.compile('<div class="tvshow">(.+?)</td>').findall(newlink)
+        listcontent=re.compile('<div itemscope [^>]*class="tvshow">(.+?)</td>').findall(newlink)
         vpot=""
         for moveieinfo in listcontent:
             vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(moveieinfo)[0]
@@ -789,10 +822,11 @@ def INDEXList(url,modenum,curmode,vidtype):
                   vsummary=re.compile('<div ?[^>]*>(.+?)</div>').findall(sumcontent)
             if(len(vsummary)>0):
                  vpot=vsummary[0]
+            vtitle=RemoveHTML(vtitle)
             if(vidtype==""):
-                 addDir(vtitle,vurl.replace("/People/",strdomain+"/People/").replace("/Category-People/",strdomain+"/Category-People/"),modenum,vimg,vpot)
+                 addDir(vtitle,strdomain+vurl.replace("/People/",strdomain+"/People/").replace("/Category-People/",strdomain+"/Category-People/"),modenum,vimg,vpot)
             else:
-                 addDirContext(vtitle,vurl.replace("/People/",strdomain+"/People/").replace("/Category-People/",strdomain+"/Category-People/"),modenum,vimg,vpot,vidtype)
+                 addDirContext(vtitle,strdomain+vurl.replace("/People/",strdomain+"/People/").replace("/Category-People/",strdomain+"/Category-People/"),modenum,vimg,vpot,vidtype)
         paginacontent=re.compile('<table class="pagination" ?[^>]*>(.+?)</table>').findall(newlink)
         
         if(len(paginacontent)>0):
@@ -1597,10 +1631,13 @@ def playVideo(url,name):
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(vidurl)
 		
-
+def RemoveHTML(strhtml):
+            html_re = re.compile(r'<[^>]+>')
+            strhtml=html_re.sub('', strhtml)
+            return strhtml
 
 def addDirContext(name,url,mode,iconimage,plot="",vidtype="", cm=[]):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode("utf-8"))+"&vidtype="+vidtype
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&vidtype="+vidtype
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name,"Plot": plot} )
@@ -1631,7 +1668,7 @@ def addNext(formvar,url,mode,iconimage):
         return ok
 		
 def addDir(name,url,mode,iconimage,plot=""):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode("utf-8"))
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name,"Plot": plot} )
@@ -1720,7 +1757,7 @@ elif mode==10:
 elif mode==11:
         ActorProfile(url)
 elif mode==12:
-        INDEXList(url,11,12,"")
+        INDEX(url,11,12,"")
 elif mode==13:
         DetermineVideotype(url)
 elif mode==14:
@@ -1728,13 +1765,13 @@ elif mode==14:
 elif mode==15:
         SEARCHactor()
 elif mode==16:
-        ListAZ(url,5)
+        ListAZ(url,26)
 elif mode==17:
-        ListAZ(url,6)
+        ListAZ(url,27)
 elif mode==18:
-        GenreList(url,5)
+        GenreList(url,26)
 elif mode==19:
-        GenreList(url,6)
+        GenreList(url,27)
 elif mode==20:
         List4Days()
 elif mode==21:
@@ -1747,5 +1784,9 @@ elif mode==24:
         ListFavorites()
 elif mode==25:
         BrowseFavorites(url)
+elif mode==26:
+        INDEX(url,4,26,"movie")
+elif mode==27:
+        INDEX(url,7,27,"tv")
 
 xbmcplugin.endOfDirectory(int(sysarg))
