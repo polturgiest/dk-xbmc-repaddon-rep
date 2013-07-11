@@ -6,3 +6,4 @@
 0.9.4 - Added TV schedule
 1.0.0 - fixed video hosters and added favorite menu
 1.0.1 - added option to search other addons
+1.0.3 - tmp fix site change
