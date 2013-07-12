@@ -17,7 +17,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "AzDrama"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.6" #<---- PLUGIN VERSION
+VERSION = "1.0.11" #<---- PLUGIN VERSION
 domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net", "azdrama.sx"]
 domain = domainlist[int(ADDON.getSetting('domainurl'))]
 def __init__(self):
@@ -97,6 +97,9 @@ def Mirrors(url,name):
 def Parts(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         partlist=re.compile('<li>VIP #1:(.+?)by:').findall(link)
         partctr=0
         if(len(partlist)>0):
@@ -105,6 +108,14 @@ def Parts(url,name):
                        for vlink in partlink:
                               partctr=partctr+1
                               addDir(name + " Part " + str(partctr),vlink,3,"")
+               else:    
+                       partlist=re.compile('<li>VIP #6:(.+?)by:').findall(link)
+                       if(len(partlist)>0):
+                              partlink=re.compile('<a href="(.+?)">').findall(partlist[0])
+                              if(len(partlink) > 0):
+                                    for vlink in partlink:
+                                         partctr=partctr+1
+                                         addDir(name + " Part " + str(partctr),vlink,3,"")
         return partctr
 		
 def CheckParts(url,name):
@@ -138,9 +149,25 @@ def Episodes(url,name,newmode):
 
 def GetEpisodeFromVideo(url,name):
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        listcontent=re.compile('<center><a href="(.+?)"><font style="(.+?)">(.+?)</font></a></center>').findall(newlink)
-        Episodes(listcontent[0][0]+"list-episode/",name,5)
+        listcontent=re.compile('<div align="center">(.+?)<div style=[^>]*>').findall(newlink)
+        if listcontent:
+            match=re.compile('<a href="(.+?)"><b>(.+?)</b>').findall(listcontent[0])
+            if match:
+                for (vurl,vname) in match:
+                    try:
+                        addDir("Episode: " + vname,vurl,11,"")
+                    except:
+                        addDir("Episode: " + vname.decode("utf-8"),vurl,11,"")
+            else:
+                listcontent=re.compile('<center><a href="(.+?)"><font style="(.+?)">(.+?)</font></a></center>').findall(newlink)
+                Episodes(listcontent[0][0]+"list-episode/",name,5)
+        else:
+             listcontent=re.compile('<center><a href="(.+?)"><font style="(.+?)">(.+?)</font></a></center>').findall(newlink)
+             Episodes(listcontent[0][0]+"list-episode/",name,5)
 
 def Geturl(strToken):
         for i in range(20):
@@ -185,13 +212,20 @@ def loadVideos(url,name):
                    qualityval = ["240","360p(MP4)","360p(FLV)","480p","720p","HTML5"]
                    qctr=0
                    embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
+                   if(len(embedlink)==0):
+                         embedlink=re.compile('<param [^>]*value="(.+?)" name="flashvars">').findall(framecontent) 
+                         print embedlink
                    for vname in embedlink:
-                         vlink=re.compile('file=(.+?)\&').findall(vname)
+                         vlink=re.compile('streamer=(.+?)\&').findall(vname)
+                         if(len(vlink) == 0):
+                             vlink=re.compile('file=(.+?)\&').findall(vname)
                          if(len(vlink) > 0):
                              addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
                          qctr=qctr+1
            else:
                    match=re.compile('<li>VIP #1: <a href="(.+?)">').findall(newlink)
+                   if(len(match) == 0):
+                           match=re.compile('<li>VIP #6: <a href="(.+?)">').findall(newlink)
                    if(len(match) > 0):
                            loadVideos(match[0],name)
                    else:  
