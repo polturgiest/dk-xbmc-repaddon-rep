@@ -62,14 +62,14 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        link = postContent(strdomain+"index.php?do=timkiem","search_this="+searchText,"http://www.kenh108.com/kenh108/index.php")
+        link = postContent(strdomain+"index.php?do=timkiem","search_this="+searchText,"http://www.luongson.net/kenh108/index.php")
         try:
             link =link.encode("UTF-8")
         except: pass
         link = ''.join(link.splitlines()).replace('\t','')
-        vidc=re.compile('<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center">(.+?)</table>').findall(link)
-        vidcontent=re.compile('top center;">(.+?)<img src="../images/lsb-movie_imgborder.png" border="0" width="145" height="145">').findall(vidc[0])
-        for moviecontent in vidcontent:
+        vidcontent=re.compile('<div class="searchresults_image" [^>]*url\(["\)]?([^>^"^\)]+)["\)]?[^>]*>(.+?)<').findall(link)
+        print vidcontent
+        for (vimg,moviecontent) in vidcontent:
             (vlink,vimg,vname)=re.compile('<a href="(.+?)&image=(.+?)" alt=(.+?)>').findall(moviecontent)[0]
             addDir(vname,strdomain+vlink,10,vimg)
 		
