@@ -18,36 +18,38 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Kenh108"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.1" #<---- PLUGIN VERSION
+VERSION = "1.0.2" #<---- PLUGIN VERSION
 
-strdomain ='http://www.kenh108.com/kenh108/'
+strdomain ='http://www.luongson.net/kenh108/'
 def HOME():
         addDir('Search',strdomain,8,'')
         addDir('Recently Updated Videos',strdomain+'index.php?do=list&type=recently_updated',2,'')
         addDir('Recently Added Videos',strdomain+'index.php?do=list&type=more',2,'')
 
 def ListHost(url):
-        link = postContent(url,"","http://www.kenh108.com/kenh108/index.php")
+        link = postContent(url,"","http://www.luongson.net/kenh108/index.php")
         try:
             link =link.encode("UTF-8")
         except: pass
         link  = ''.join(link.splitlines()).replace('\t','')
-        match = re.compile('<legend><b><font color=darkblue>Watch Online</font></b></legend>(.+?)</div>').findall(link)
-        serverlist=re.compile('<b>(.+?)</b>').findall(match[0]+"<br><br>")
+        serverlist= re.compile('<div class="noidung_servername">(.+?)</div>').findall(link)
+        lcount = 0
         for (vname) in serverlist:
-                addDir(vname,url,5,"")
+                TAG_RE = re.compile(r'<[^>]+>')
+                addDir(TAG_RE.sub('', vname),url+"|"+str(lcount),5,"")
+                lcount=lcount+1
 
 def INDEX(url):
-        link = postContent(url,"","http://www.kenh108.com/kenh108/index.php")
+        link = postContent(url,"","http://www.luongson.net/kenh108/index.php")
         try:
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        vidcontent=re.compile('<div class="listitem"><ul>(.+?)</ul>').findall(newlink)
+        vidcontent=re.compile('<div class="listmovies"><ul>(.+?)</ul>').findall(newlink)
         showlist=re.compile('<li>(.+?)</li>').findall(vidcontent[0])
         for showcontent in showlist:
-                (vlink,vname)=re.compile('<h1><a href="(.+?)>(.+?)</a></h1>').findall(showcontent)[0]
-                (vlink,vimg) =vlink.split("&image=")
+                (vimg,vlink)=re.compile('<div class="movie_pix" [^>]*url\(["\)]?([^>^"^\)]+)["\)]?[^>]*><a href="(.+?)">').findall(showcontent)[0]
+                (vlink,vname)=re.compile('<div class="movietitle"><a href="(.+?)">(.+?)<').findall(showcontent)[0]
                 TAG_RE = re.compile(r'<[^>]+>')
                 addDir(TAG_RE.sub('', vname),strdomain+vlink,10,vimg)
         pagelist=re.compile('<a class="paginate" title="(.+?)" href="(.+?)">').findall(newlink)
@@ -73,7 +75,7 @@ def SEARCH():
 		
 
 def GetVideoLinks(url):
-        link = postContent(url,"","http://www.kenh108.com/kenh108/index.php")
+        link = postContent(url,"","http://www.luongson.net/kenh108/index.php")
         link = ''.join(link.splitlines()).replace('\'','"')
         frmsrc1=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(link)
         if(len(frmsrc1) ==0):
@@ -84,18 +86,24 @@ def GetVideoLinks(url):
                               frmsrc1=re.compile('proxy.link=(.+?)&', re.IGNORECASE).findall(link)
                               if(len(frmsrc1) ==0):
                                     frmsrc1=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(link)
+                                    if(len(frmsrc1) ==0):
+                                             frmsrc1=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(link)
+                                             frmsrc1=re.compile('file=(.+?)&', re.IGNORECASE).findall(frmsrc1[0])
+                                             frmsrc1[0]=urllib.unquote_plus(frmsrc1[0])
+
                         else:
                               frmsrc1[0]="http://www.youtube.com/watch?v="+frmsrc1[0] 
         loadVideos(frmsrc1[0],"")
-def Episodes(url,name):
-        link = postContent(url,"","http://www.kenh108.com/kenh108/index.php")
+def Episodes(url,name,itemno):
+        link = postContent(url,"","http://www.luongson.net/kenh108/index.php")
         try:
             link =link.encode("UTF-8")
         except: pass
         link  = ''.join(link.splitlines()).replace('\t','')
-        match = re.compile('<legend><b><font color=darkblue>Watch Online</font></b></legend>(.+?)</div>').findall(link)
-        serverlist=re.compile('<b>'+name.replace("(","\(").replace(")","\)")+'</b>(.+?)<br><br>').findall(match[0]+"<br><br>")
-        episodelist=re.compile('<a href="(.+?)">(.+?)</a>').findall(serverlist[0])
+        match = re.compile('<div class="noidung_servers">(.+?)</div></div>').findall(link)
+        serverlist=re.compile('</div>(.+?)</div>').findall(match[0].replace("</div>","</div></div>")+"</div></div>")
+        itemno=int(itemno)
+        episodelist=re.compile('<a href="(.+?)">(.+?)</a>').findall(serverlist[itemno])
         for (vlink,vname) in episodelist:
                 addLink("Part " + vname,strdomain+vlink,4,"")
 
@@ -844,7 +852,8 @@ elif mode==4:
        GetVideoLinks(url)
 elif mode==5:
        GA("Episodes",name)
-       Episodes(url,name)
+       (url,itemno)=url.split("|")
+       Episodes(url,name,itemno)
 elif mode==6:
        INDEX2(url)
 elif mode==7:
