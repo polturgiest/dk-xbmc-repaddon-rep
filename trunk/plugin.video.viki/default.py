@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.5" #<---- PLUGIN VERSION
+VERSION = "1.1.6" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
@@ -67,7 +67,7 @@ def HOME():
         addDir('Genres','http://www.viki.com/genres',2,'')
         addDir('Updated Tv shows','http://www.viki.com/tv/browse?sort=latest',8,'')
         addDir('Updated Movies','http://www.viki.com/movies/browse?sort=latest',8,'')
-        addDir('Updated Music','http://www.viki.com/music/browse?sort=latest',6,'')
+        addDir('Updated Music','http://www.viki.com/music/browse?sort=latest',8,'')
         addDir('Select Sub Language','http://www.viki.com/tv/browse?sort=viewed',10,'')
 def LangOption():
         addDir('Show All Languages','All',10,'')
@@ -171,21 +171,31 @@ def getRelatedVID(url):
         return urllib.unquote_plus(vidcontent[0])
 		
 def getVidPage(url,page):
+  url1=url
   if(url.find("related_videos") == -1):
         vcontainerid=getContainerID(url)
-        url=strdomain+"/related_videos?container_id="+vcontainerid+"&page=1&type=music_videos"
-  link = GetContent(url)
+        url1=strdomain+"/related_videos?container_id="+vcontainerid+"&page=1&type=episodes"
+  link = GetContent(url1)
   link = ''.join(link.splitlines()).replace('\'','"')
-  vidcontainer=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+  if(len(link) ==0):
+        link = GetContent(url)
+        link = ''.join(link.splitlines()).replace('\'','"')
+        match=re.compile('<ul class="medias medias-block[^>]*data-slider-items="1">(.+?)</ul>').findall(link)
+        link=match[0]
+  
+  try:
+        link =link.encode("UTF-8")
+  except: pass
 
+  vidcontainer=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
   for vid,vurl,vname,vimg in vidcontainer:
         vurl = vurl.split("/videos/")[0]
         addDir(vname,vid,4,vimg)
   pagelist=re.compile('<a class="btn btn-small btn-wide" href="#">Show more</a>').findall(link)
   if(len(pagelist) > 0):
-          pagenum=re.compile('&page=(.+?)&type=episodes').findall(url)
+          pagenum=re.compile('&page=(.+?)&type=episodes').findall(url1)
           pagectr=int(pagenum[0])+1
-          addDir("page " + str(pagectr),url.replace("&page="+pagenum[0]+"&","&page="+str(pagectr)+"&"),7,"")
+          addDir("page " + str(pagectr),url1.replace("&page="+pagenum[0]+"&","&page="+str(pagectr)+"&"),7,"")
 
 
 def getLanguages(url, ltype):
@@ -319,6 +329,7 @@ def SEARCHByID():
 
 def GetVideoInfo(vidid):
     infourl=sign_request(vidid,".json")
+    print infourl
     data = json.load(urllib2.urlopen(infourl))
     return data
     
@@ -344,6 +355,8 @@ def sign_request(vidid,vtype):
 	
 def getVidQuality(vidid,name,filename,checkvideo):
   GA("Playing",name)
+  print vidid
+  print name
   if(checkvideo):
           pardata=GetVideoInfo(vidid)
 
@@ -589,7 +602,7 @@ def addNext(formvar,url,mode,iconimage):
         return ok
 		
 def addDir(name,url,mode,iconimage):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode("utf-8"))
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
