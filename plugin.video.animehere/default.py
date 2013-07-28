@@ -225,6 +225,10 @@ def Mirrors(url,name):
   for vurl in mirrorlist:
          vname=GetHostName(vurl)
          addLink(vname,vurl,3,"") 
+  mirrorlist=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(mirmatch[0])
+  for vurl in mirrorlist:
+         vname=GetHostName(vurl)
+         addLink(vname,vurl,3,"") 
 
 def add_contextsearchmenu(title, video_type):
     title=urllib.quote(title)
@@ -291,6 +295,26 @@ def ParseVideoLink(url,name):
                           murl= re.compile('url:\s*"(.+?)"').findall(rows)[0]
                           media_url=urllib.unquote_plus(murl)
                 vidlink = media_url
+        elif (redirlink.find("dailymotion") > -1):
+                match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(redirlink)
+                if(len(match) == 0):
+                        match=re.compile('(video|swf)/(.+?)&').findall(redirlink)
+                        match[0]=match[0][1]
+                link = 'http://www.dailymotion.com/video/'+str(match[0])
+                req = urllib2.Request(link)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
+                #print 'in dailymontion:' + str(newseqeunce)
+                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
+                if(len(imgSrc[0]) == 0):
+                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
+                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
+                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
         elif (redirlink.find("yourupload") > -1):
                 media_url= ""
                 media_url = re.compile('<meta property="og:video" content="(.+?)"/>').findall(link)[0]
@@ -629,7 +653,7 @@ def ParseVideoLink(url,name):
                 else:
                         vidlink =HostResolver(redirlink)
 		dialog.close()
-        return vidlink
+        return urllib.unquote_plus(vidlink)
                
 def ListAZ(catname,mode):
         for character in AZ_DIRECTORIES:
