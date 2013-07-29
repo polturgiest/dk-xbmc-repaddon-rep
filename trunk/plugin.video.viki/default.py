@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.6" #<---- PLUGIN VERSION
+VERSION = "1.1.7" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
@@ -201,11 +201,16 @@ def getVidPage(url,page):
 def getLanguages(url, ltype):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        match = re.compile('<select id="language" name="language">(.+?)</select>').findall(link)
+        try:
+                link =link.encode("UTF-8")
+        except: pass
+        print link
+        match = re.compile('<select [^>]*id="language" name="language">(.+?)</select>').findall(link)
         if(len(match)>0):
                 langlist= re.compile('<option value="(.+?)">(.+?)</option>').findall(match[0])
                 for purl,pname in langlist:
-                       addDir(pname,purl,11,"")
+                       if(pname !="Popular"):
+                             addDir(pname,purl,11,"")
 					   
 def checkLanguage(mediaid):
         data = GetVideoInfo(mediaid)
