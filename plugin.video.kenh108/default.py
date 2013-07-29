@@ -20,7 +20,7 @@ PATH = "Kenh108"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.2" #<---- PLUGIN VERSION
 
-strdomain ='http://www.luongson.net/kenh108/'
+strdomain ='http://www.lsb-phim.com/kenh108/'
 def HOME():
         addDir('Search',strdomain,8,'')
         addDir('Recently Updated Videos',strdomain+'index.php?do=list&type=recently_updated',2,'')
@@ -62,11 +62,12 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        link = postContent(strdomain+"index.php?do=timkiem","search_this="+searchText,"http://www.luongson.net/kenh108/index.php")
+        link = postContent(strdomain+"index.php?do=timkiem","search_this="+searchText,"http://www.lsb-phim.com/kenh108/index.php")
         try:
             link =link.encode("UTF-8")
         except: pass
         link = ''.join(link.splitlines()).replace('\t','')
+        print link
         vidcontent=re.compile('<div class="searchresults_image" [^>]*url\(["\)]?([^>^"^\)]+)["\)]?[^>]*>(.+?)<').findall(link)
         print vidcontent
         for (vimg,moviecontent) in vidcontent:
