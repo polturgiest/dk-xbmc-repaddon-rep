@@ -445,7 +445,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.10"
+  version="1.0.11"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
