@@ -339,7 +339,7 @@
 
 <addon
   id="plugin.video.NoobRoom"
-  version="1.0.12"
+  version="1.0.13"
   name="NoobRoom"
   provider-name="Dknight">
   <requires>
