@@ -1,5 +1,7 @@
 <?xml version="1.0" ?>
 <movielist>
+	<movie name="Epic" url="/1875" year="2013 "/>
+	<movie name="Hammer of the Gods" url="/1874" year="2013 "/>
 	<movie name="The Great Escape" url="/1872" year="1963 "/>
 	<movie name="Byzantium" url="/1871" year="2013 "/>
 	<movie name="The Magnificent Seven Ride%21" url="/1870" year="1972 "/>
