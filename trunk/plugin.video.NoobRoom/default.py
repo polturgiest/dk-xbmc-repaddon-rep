@@ -22,8 +22,12 @@ cookiefile= os.path.join(cookie_path, "cookiejar.lwp")
 cj=None
 authcode=ADDON.getSetting('authcode')
 reg_list = ["15", "12", "13", "14"]
-location=reg_list[int(ADDON.getSetting('region'))]
-isHD = "1"
+if(len(authcode) > 0 and authcode!="0"):
+     location=reg_list[int(ADDON.getSetting('region'))]
+     isHD = "1"
+else:
+     isHD = "0"
+     location=reg_list[0]
 if(ADDON.getSetting('use-hd')!='true'):
     isHD="0"
 	
@@ -82,13 +86,16 @@ def GetLoginCookie(cj,cookiefile):
            strpwd=urllib.quote_plus(GetInput("Please enter your password","Password",True))
            (cj,respon)=GetContent(nooblink+"/login2.php","email="+strUsername+"&password="+strpwd+"&remember=on",nooblink+"/login.php",cj)
            link = ''.join(respon.splitlines()).replace('\'','"')
-           matchauth=re.compile('"streamer": "(.+?)",').findall(link)
+           match=re.compile('"streamer": "(.+?)",').findall(link)
+           loginsuc=match[0].split("&")[1]
+           matchauth=loginsuc.replace("auth=","")
+           ADDON.setSetting('authcode',matchauth)
            #setSettings(strUsername,strpwd,True)
       cj.save(cookiefile, ignore_discard=True)
       cj=None
       cj = cookielib.LWPCookieJar()
       cj.load(cookiefile,ignore_discard=True)
-      if (len(matchauth)==0):
+      if (len(match)==0):
                 ADDON.setSetting('authcode',"")
                 d = xbmcgui.Dialog()
                 d.ok("Incorrect Login","Login failed",'Try logging in again')
@@ -113,25 +120,26 @@ def AutoLogin(url,cj):
       if strUsername != None and strUsername !="" and strpwd != None and strpwd !="":
            (cj,respon)=GetContent(nooblink+"/login2.php","email="+strUsername+"&password="+strpwd+"&remember=on",nooblink+"/login.php",cj)
            cj.save(cookiefile, ignore_discard=True)
+           link = ''.join(respon.splitlines()).replace('\'','"')
+           match=re.compile('"streamer": "(.+?)",').findall(link)
+           loginsuc=match[0].split("&")[1]
+           matchauth=loginsuc.replace("auth=","")
+           ADDON.setSetting('authcode',matchauth)  
       cj.load(cookiefile,ignore_discard=True)
       return (cj,respon)
-	  
+print "locationis="+location
 def GetVideoLink(url,isHD,cj):
     if(len(strUsername)==0 or len(strpwd)==0):
          (cj,link) = GetLoginCookie(cj,cookiefile)
     else:
          (cj,link) = AutoLogin(url,cj)
-    authstring=""
-    if(len(authcode) > 0):
-         authstring="&auth="+authcode
-    else:
-         isHD="0"
+    authstring="&auth="+authcode
     match=re.compile('"streamer": "(.+?)",').findall(link)[0].split("&")[0] +authstring+ "&loc="+location+"&hd="+isHD
 
     return (cj,match)
 	
 (cj,noobvideolink)=GetVideoLink(nooblink+"/login2.php",isHD,cj)
-
+print noobvideolink
 def HOME():
         addDir('Search','search',5,'')
         addDir('Movies A-Z','Movies',2,'')
@@ -256,7 +264,11 @@ def Episodes(name,videoId):
           match=re.compile("\/(.+?)&sp").findall(videoId+"&sp")
           if len(match)>=0:
                 videoId=match[0]
-          vidlink=GetDirVideoUrl(noobvideolink+"&tv=0"+"&start=0&file="+videoId,cj)
+          try:
+                vidlink=GetDirVideoUrl(noobvideolink+"&tv=0"+"&start=0&file="+videoId,cj)+ "&loc="+location
+          except:
+                vidlink=GetDirVideoUrl(noobvideolink.replace("&hd="+isHD,"&hd=0")+"&tv=0"+"&start=0&file="+videoId,cj)+ "&loc="+location
+          #vidlink="http://46.165.228.108/index.php?file=1871&start=0&hd=0&auth=&type=flv&tv=0"
           cookiestr =""
           for cookie in cj:
                 cookiestr=cookiestr+('%s=%s;'%(cookie.name,cookie.value))
@@ -280,8 +292,19 @@ def ListEpisodes(url,cj):
     (cj,link) = GetContent(url,"",nooblink,cj)
     link = ''.join(link.splitlines()).replace('\'','"')
     match=re.compile('<br><b>(.+?)<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(link)
+    cookiestr =""
+    for cookie in cj:
+            cookiestr=cookiestr+('%s=%s;'%(cookie.name,cookie.value))
     for i in range(len(match)):
-            addLink(match[i][0]+match[i][2],noobvideolink.replace("&hd=1","&hd=0")+match[i][1].replace("/?","&file=")+'|Referer="'+nooblink+'/player.swf'+'"',3,"")
+            vidlink=noobvideolink.replace("&hd=1","&hd=0")+match[i][1].replace("/?","&file=")
+            
+            if(i==0):
+                   vidlink=GetDirVideoUrl(vidlink,cj)+ "&loc="+location+"&hd=0"
+            else:
+                   vidlink=vidlink.replace(match[i-1][1].replace("/?","&file="),match[i][1].replace("/?","&file="))
+            fullvid= ('%s|Cookie="%s"' % (vidlink,cookiestr+"save=1") )
+            fullvid= ('%s|User-Agent="%s"' % (fullvid,'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0') )
+            addLink(match[i][0]+match[i][2],fullvid,3,"")
 
 def playVideo(videoType,videoId):
     url = ""
