@@ -8,7 +8,7 @@ import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import base64
 import xbmc
-
+import json
 import datetime
 
 ADDON = xbmcaddon.Addon(id='plugin.video.phim47')
@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "phim47"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.4" #<---- PLUGIN VERSION
+VERSION = "1.0.6" #<---- PLUGIN VERSION
 
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
@@ -66,14 +66,18 @@ homeLink="http://phim47.com/"
 def INDEX(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         match=re.compile('<div id="list">(.+?)<div class="pagination">').findall(link)
         vidlist = re.compile('<li><div class="zitemList"><a [^>]*href="(.+?)" title="(.+?)" [^>]*><img class="showend" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*></a></div>').findall(match[0])
         for vurl,vname,vimg in vidlist:
-            addDir(vname.encode("utf-8"),vurl.encode("utf-8"),7,vimg)
+            print vurl
+            addDir(vname,vurl,7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         navmatch=re.compile('[^>]* href="(.+?)" >(.+?)</a>').findall(pagelist[0])
         for vurl,vname in navmatch:
-            addDir(vname.encode("utf-8"),vurl.encode("utf-8"),2,"")
+            addDir(vname,vurl,2,"")
 
 
 def SEARCH():
@@ -91,6 +95,9 @@ def Mirrors(url,name):
   mirrorlink =getVidPage(url,name)
   link = GetContent(mirrorlink)
   link=''.join(link.splitlines()).replace('\'','"')
+  try:
+            link =link.encode("UTF-8")
+  except: pass
   mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
   servlist =re.compile('<div class="name left namew">(.+?)&nbsp;&nbsp;&nbsp;').findall(mirmatch[0])
   for vname in servlist:
@@ -130,14 +137,17 @@ def Episodes(url,name):
     #try:
         link = GetContent(url)
         link=''.join(link.splitlines()).replace('\'','"')
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
         servlist =re.compile('<div class="name left namew">'+name+'&nbsp;&nbsp;&nbsp;(.+?)<div class="clear_td">').findall(mirmatch[0])
         epilist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(servlist[0])
         curmatch =re.compile('<a class="current" >(.+?)</a>').findall(servlist[0])
         if(len(curmatch)>0):
-              addLink("part - "+ curmatch[0].strip().encode("utf-8"),"".join(i for i in url if ord(i)<128),3,'',name.encode("utf-8"))
+              addLink("part - "+ curmatch[0].strip(),"".join(i for i in url if ord(i)<128),3,'',name)
         for vlink,vLinkName in epilist:
-              addLink("part - "+ vLinkName.strip().encode("utf-8"),"".join(i for i in vlink if ord(i)<128),3,'',name.encode("utf-8"))
+              addLink("part - "+ vLinkName.strip(),"".join(i for i in vlink if ord(i)<128),3,'',name)
 
     #except: pass
 
@@ -162,26 +172,26 @@ def GetContent(url):
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
 
-def PostContent(url):
-        try:
-                net = Net()
-                headers = {}
-                headers['Accept']='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-                headers['Accept-Encoding'] = 'gzip, deflate'
-                headers['Accept-Charset']='ISO-8859-1,utf-8;q=0.7,*;q=0.7'
-                headers['Referer'] = 'http://yeuphim.net/'
-                headers['Content-Type'] = 'application/x-www-form-urlencoded'
-                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0.1) Gecko/20100101 Firefox/5.0.1'
-                headers['Connection'] = 'keep-alive'
-                headers['Host']='yeuphim.net'
-                headers['Accept-Language']='en-us,en;q=0.5'
-                headers['Pragma']='no-cache'
-                formdata={}
-                second_response = net.http_POST(url.encode("utf-8"),formdata,headers=headers,compression=False)
-                return second_response.content
-        except:
-                d = xbmcgui.Dialog()
-                d.ok('Time out',"Can't Connect to site",'Try again in a moment')
+def postContent(url,data,referr):
+    opener = urllib2.build_opener()
+    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                         ('Accept-Encoding','gzip, deflate'),
+                         ('Referer', referr),
+                         ('Content-Type', 'application/x-www-form-urlencoded'),
+                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+                         ('Connection','keep-alive'),
+                         ('Accept-Language','en-us,en;q=0.5'),
+                         ('Pragma','no-cache'),
+                         ('Host','player.phim47.com')]
+    usock=opener.open(url,data)
+    if usock.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO.StringIO(usock.read())
+        f = gzip.GzipFile(fileobj=buf)
+        response = f.read()
+    else:
+        response = usock.read()
+    usock.close()
+    return response
 
 def playVideo(videoType,videoId):
     url = ""
@@ -203,15 +213,26 @@ def loadVideos(url,name):
         xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
         link=GetContent(url)
         link = ''.join(link.splitlines()).replace('\t','').replace('\'','"')
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         match = re.compile('proxy.link=phim47\*(.+?)&').findall(link)
-        newlink =decodeurl(match[0])
+        if(len(match)==0):
+              match = re.compile('proxy.link=(.+?)&').findall(link)
+              newlink=match[0]
+        else:
+              newlink =decodeurl(match[0])
         if(newlink.find("cyworld.vn") > 0):
             vidcontent=GetContent(newlink)
             vidmatch=re.compile('<meta property="og:video" content="(.+?)" />').findall(vidcontent)
             vidlink=vidmatch[0]
             playVideo("direct",vidlink)
         elif(newlink.find("picasaweb.google") > 0):
-            vidcontent=GetContent(newlink)
+            vidcontent=postContent("http://player.phim47.com/load/plugins/picasaphp/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%20NT%206%2E1%3B%20WOW64%3B%20rv%3A13%2E0%29%20Gecko%2F20100101%20Firefox%2F13%2E0&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+            #vidcontent=GetContent(newlink)
+            #print vidcontent
+            #data = json.loads('{"'+vidcontent+'}]}')
+            #print data
             vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
             vidlink=vidmatch[0][0]
             playVideo("direct",vidlink)
