@@ -510,7 +510,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.6"
+  version="1.0.7"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>

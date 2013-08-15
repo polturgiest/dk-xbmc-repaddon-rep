@@ -19,7 +19,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "yeuphim"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.6" #<---- PLUGIN VERSION
+VERSION = "1.0.7" #<---- PLUGIN VERSION
 
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
@@ -228,9 +228,12 @@ def playVideo(videoType,videoId):
         xbmcPlayer.play(videoId)
 
 def loadVideos(url,name):
-        try:
+        #try:
            GA("LoadVideo",name)
            link=PostContent(url)
+           try:
+                   link =link.encode("UTF-8")
+           except: pass
            newlink = ''.join(link.splitlines()).replace('\t','')
            match=re.compile("'file', '(.+?)'").findall(newlink)
            if(len(match) > 0):
@@ -256,8 +259,8 @@ def loadVideos(url,name):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
-                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
+                vidmatch=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+                newseqeunce = urllib.unquote(vidmatch[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
@@ -294,7 +297,7 @@ def loadVideos(url,name):
                     playVideo('youtube',lastmatch)
                 else:
                     playVideo('yeuphim.net',urllib2.unquote(newlink).decode("utf8"))
-        except: pass
+        #except: pass
 		
 def extractFlashVars(data):
     for line in data.split("\n"):
