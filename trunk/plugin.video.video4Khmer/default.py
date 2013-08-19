@@ -12,7 +12,7 @@ import CommonFunctions
 import datetime
 common = CommonFunctions
 common.plugin = "plugin.video.video4khmer"
-strDomain ='http://www.khmervdo.com/'
+strDomain ='http://www.khvdo.com/'
 
 
 ADDON = xbmcaddon.Addon(id='plugin.video.video4Khmer')
@@ -24,29 +24,29 @@ PATH = "video4khmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.10" #<---- PLUGIN VERSION
 def HOME():
-        addDir('Search','http://www.khmervdo.com/',4,'http://www.khmervdo.com/templates/3column/images/header/logo.png')
-        addDir('Thai Lakorns','http://www.khmervdo.com/browse-khmer-movie-thai-lakorn-drama-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Movies','http://www.khmervdo.com/browse-khmer-thai-movie-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Videos','http://www.khmervdo.com/browse-khmer-movie-korean-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Korean Movies','http://www.khmervdo.com/browse-khmer-korean-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Chinese Drama','http://www.khmervdo.com/browse-khmer-movie-chinese-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Chinese Movies','http://www.khmervdo.com/browse-khmer-chinese-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Khmer Videos','http://www.khmervdo.com/browse-khmer-drama-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Movies','http://www.khmervdo.com/browse-khmer-movies-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Comedy','http://www.khmervdo.com/browse-khmer-comedy-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Boxing','http://www.khmervdo.com/browse-khmer-boxing-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Hang Meas Karaoke','http://www.khmervdo.com/browse-hang-meas-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Sunday Khmer Karaoke','http://www.khmervdo.com/browse-sunday-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Town Production Karaoke','http://www.khmervdo.com/browse-town-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Big Man Khmer Karaoke','http://www.khmervdo.com/browse-big-man-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('M Production Karaoke','http://www.khmervdo.com/browse-m-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Rock Production Karaoke','http://www.khmervdo.com/browse-rock-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Spark Production Karaoke','http://www.khmervdo.com/browse-spark-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Chenla Brother Karaoke','http://www.khmervdo.com/browse-chenla-brother-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer video clip','http://www.khmervdo.com/browse-khmer-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        #addDir('MISC','http://www.khmervdo.com/browse-this-and-that-accident-society-misc-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Tv show','http://www.khmervdo.com/browse-watch-cambodia-tv-shows-online-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Funney Videos','http://www.khmervdo.com/browse-funny-video-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')		
+        addDir('Search','http://www.khvdo.com/',4,'http://www.khvdo.com/templates/3column/images/header/logo.png')
+        addDir('Thai Lakorns','http://www.khvdo.com/browse-khmer-movie-thai-lakorn-drama-videos-1-date.html?ModPagespeed=noscript',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Thai Movies','http://www.khvdo.com/browse-khmer-thai-movie-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Videos','http://www.khvdo.com/browse-khmer-movie-korean-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        #addDir('Korean Movies','http://www.khvdo.com/browse-khmer-korean-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Chinese Drama','http://www.khvdo.com/browse-khmer-movie-chinese-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Chinese Movies','http://www.khvdo.com/browse-khmer-chinese-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Khmer Videos','http://www.khvdo.com/browse-khmer-drama-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Movies','http://www.khvdo.com/browse-khmer-movies-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Comedy','http://www.khvdo.com/browse-khmer-comedy-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Boxing','http://www.khvdo.com/browse-khmer-boxing-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Hang Meas Karaoke','http://www.khvdo.com/browse-hang-meas-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Sunday Khmer Karaoke','http://www.khvdo.com/browse-sunday-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Town Production Karaoke','http://www.khvdo.com/browse-town-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Big Man Khmer Karaoke','http://www.khvdo.com/browse-big-man-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('M Production Karaoke','http://www.khvdo.com/browse-m-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Rock Production Karaoke','http://www.khvdo.com/browse-rock-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Spark Production Karaoke','http://www.khvdo.com/browse-spark-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Chenla Brother Karaoke','http://www.khvdo.com/browse-chenla-brother-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer video clip','http://www.khvdo.com/browse-khmer-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        #addDir('MISC','http://www.khvdo.com/browse-this-and-that-accident-society-misc-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Tv show','http://www.khvdo.com/browse-watch-cambodia-tv-shows-online-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Funney Videos','http://www.khvdo.com/browse-funny-video-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')		
 def INDEX(url):
     #try:
         link = GetContent(url)
@@ -60,9 +60,13 @@ def INDEX(url):
         for vcontent in listcontent:
             (vurl,imgcontent)=vcontent
             titlecontent = re.compile('<img [^>]*title=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
-            vimage = re.compile('<img [^>]*pagespeed_high_res_src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
+            vimage = re.compile('<img [^>]*pagespeed_high_res_src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent) 
+            if(len(vimage)==0):
+                    vimage = re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
             if(len(vimage)==0):
                     vimage=re.compile('<img [^>]*pagespeed_lazy_src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
+                    if(len(vimage)==0):
+                           vimage=[""]
             if(len(titlecontent)):
                     (vname)=titlecontent[0]
                     addDir(vname.encode("utf-8"),vurl,5,vimage[0].replace(" title=",""))
@@ -71,7 +75,7 @@ def INDEX(url):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.khmervdo.com/"+pageurl,2,"")
+                        addDir("Page " + pagenum,"http://www.khvdo.com/"+pageurl,2,"")
     #except: pass
 			
 def SEARCH():
@@ -80,7 +84,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.khmervdo.com/search.php?keywords='+ searchText +'&btn=Search'
+        url = 'http://www.khvdo.com/search.php?keywords='+ searchText +'&btn=Search'
         SearchResults(url)
         
 def SearchResults(url):
@@ -101,7 +105,7 @@ def SearchResults(url):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.khmervdo.com/"+pageurl,6,"")			
+                        addDir("Page " + pagenum,"http://www.khvdo.com/"+pageurl,6,"")			
 			
 def Episodes_old(url,name):
     #try:
@@ -117,11 +121,11 @@ def Episodes_old(url,name):
                 vidseries=vidseries[0]
                 addLink(name,url,3,"")
         try:
-                lastvidseries = ParseXml("http://www.khmervdo.com/relatedclips.php?vid=" + vidseries)
+                lastvidseries = ParseXml("http://www.khvdo.com/relatedclips.php?vid=" + vidseries)
                 if(len(lastvidseries)):
-                        lastvidseries = ParseXml("http://www.khmervdo.com/relatedclips.php?vid=" + lastvidseries)
+                        lastvidseries = ParseXml("http://www.khvdo.com/relatedclips.php?vid=" + lastvidseries)
                         if(len(lastvidseries)):
-                                addDir("Next >>","http://www.khmervdo.com/relatedclips.php?vid=" + lastvidseries,7,"")
+                                addDir("Next >>","http://www.khvdo.com/relatedclips.php?vid=" + lastvidseries,7,"")
                 else:
                         raise Exception("Didn't fine listing")
         except:
@@ -243,7 +247,7 @@ def Episodes(url,name):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.khmervdo.com/"+pageurl,5,"")
+                        addDir("Page " + pagenum,"http://www.khvdo.com/"+pageurl,5,"")
     #except: pass    
 
 def ParseXml(url):
@@ -269,7 +273,7 @@ def ParseXml(url):
 
 
 def GetContent(url):
-    try:
+    #try:
        net = Net()
        headers = {}
        headers['Accept']='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
@@ -279,15 +283,15 @@ def GetContent(url):
        headers['Content-Type'] = 'application/x-www-form-urlencoded'
        headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0.1) Gecko/20100101 Firefox/5.0.1'
        headers['Connection'] = 'keep-alive'
-       headers['Host']='www.khmervdo.com'
+       headers['Host']='www.khvdo.com'
        headers['Accept-Language']='en-us,en;q=0.5'
        headers['Pragma']='no-cache'
        formdata={}   
        second_response = net.http_GET(url,headers=headers)
        return second_response.content
-    except:	
-       d = xbmcgui.Dialog()
-       d.ok(url,"Can't Connect to site",'Try again in a moment')
+    #except:	
+    #   d = xbmcgui.Dialog()
+    #   d.ok(url,"Can't Connect to site",'Try again in a moment')
 
 def playVideo(videoType,videoId):
     url = videoId
@@ -350,8 +354,8 @@ def CreateList(videoType,videoLink):
         
 def loadPlaylist(newlink,name):
         try:
-           if (newlink.find("video4khmer.com") > -1 or newlink.find("khmervdo.com") > -1 ):
-                print newlink
+           if (newlink.find("video4khmer.com") > -1 or newlink.find("khvdo.com") > -1 ):
+                print "currenturl" + newlink
                 linkcontent = GetContent(newlink)
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
                 titlecontent = re.compile("var flashvars = {file: '(.+?)',").findall(newContent)
@@ -419,8 +423,8 @@ def loadPlaylist(newlink,name):
 def loadVideos(newlink,name):
         try:
            GA("LoadVideo",name)
-           if (newlink.find("video4khmer.com") > -1 or newlink.find("khmervdo.com") > -1 ):
-                print newlink
+           if (newlink.find("video4khmer.com") > -1 or newlink.find("khvdo.com") > -1 ):
+                print "currenturl" + newlink
                 linkcontent = GetContent(newlink)
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
                 titlecontent = re.compile("var flashvars = {file: '(.+?)',").findall(newContent)
@@ -807,7 +811,7 @@ def addLink(name,url,mode,iconimage):
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
-        liz=xbmcgui.ListItem('Next >', iconImage="http://www.khmervdo.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem('Next >', iconImage="http://www.khvdo.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": 'Next >' } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
@@ -818,7 +822,7 @@ def addDir(name,url,mode,iconimage):
         except: pass
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
-        liz=xbmcgui.ListItem(name, iconImage="http://www.khmervdo.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem(name, iconImage="http://www.khvdo.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
