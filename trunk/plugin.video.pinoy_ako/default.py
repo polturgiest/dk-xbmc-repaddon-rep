@@ -20,7 +20,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.6" #<---- PLUGIN VERSION
+VERSION = "1.0.7" #<---- PLUGIN VERSION
 
 strdomain ='http://www.pinoy-ako.info'
 def HOME():
@@ -619,7 +619,7 @@ def loadVideos(url,name):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
