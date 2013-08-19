@@ -18,15 +18,17 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "Viki"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.7" #<---- PLUGIN VERSION
+VERSION = "1.1.8" #<---- PLUGIN VERSION
 
 home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
 langfile = xbmc.translatePath(os.path.join(home, 'resources', 'lang.txt'))
 strdomain ="http://www.viki.com"
 
-
-
+def RemoveHTML(inputstring):
+    TAG_RE = re.compile(r'<[^>]+>')
+    return TAG_RE.sub('', inputstring)
+	
 def GetContent(url):
     strresult=""
     try:
@@ -75,9 +77,13 @@ def LangOption():
 def ListGenres(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        vidlist=re.compile('<a href="(.+?)" class="thumbnail-medium thumbnail-genre (.+?)">\s*<h2 class="genre-title">(.+?)</h2>\s*</a>').findall(link)
-        for vurl,vimg,vname in vidlist:
-            addDir(vname.replace("&amp;","&"),strdomain+'/genres/'+vimg+"?sort=latest",8,"")
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        vidcontent=re.compile('<ul class="thumb-grid">(.+?)</ul>').findall(link)
+        vidlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vidcontent[0])
+        for vurl,vname in vidlist:
+            addDir(RemoveHTML(vname).replace("&amp;","&"),strdomain+vurl+"?sort=latest",8,"")
 			
 def SaveLang(langcode, name):
     f = open(langfile, 'w');f.write(langcode);f.close()   
@@ -94,7 +100,6 @@ def Genre(url,name):
         #vcontent =re.compile('<div class="tab-content">(.+?)</section>').findall(link) 
         vidulist=re.compile('<ul class="thumb-grid mbl">(.+?)</ul>').findall(link)
         vidlist=re.compile('<li[^>]*>(.+?)</li>').findall(vidulist[0])
-        print vidulist
         for vlist in vidlist:
             vurl=re.compile('<a href="(.+?)" class="thumbnail">').findall(vlist)[0]
             vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(vlist)
@@ -120,6 +125,7 @@ def Genre(url,name):
                     addDir("page " + pname.replace("&rarr;",">").decode("utf-8"),strdomain+purl,6,"")
 
 def UpdatedVideos(url,name):
+        print url
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
         try:
@@ -140,7 +146,7 @@ def UpdatedVideos(url,name):
                     vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(licontent)[0]
             
                     if(vurl.find("/movies/") > -1):
-                         vurlist=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(licontent)[0].encode("utf-8")
+                         vurlist=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(licontent)[0]
                          vurlist=vurlist.split("/")
                          vid=vurlist[len(vurlist)-1].split("-")[0]
                          vlink =vid
@@ -151,7 +157,7 @@ def UpdatedVideos(url,name):
                     else:
                         vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                         mode=7
-                    addDir(vname.decode("utf-8"),vlink,mode,vimg)
+                    addDir(vname.replace("&amp;","&").replace("&#x27;","'"),vlink,mode,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
@@ -204,7 +210,6 @@ def getLanguages(url, ltype):
         try:
                 link =link.encode("UTF-8")
         except: pass
-        print link
         match = re.compile('<select [^>]*id="language" name="language">(.+?)</select>').findall(link)
         if(len(match)>0):
                 langlist= re.compile('<option value="(.+?)">(.+?)</option>').findall(match[0])
@@ -233,13 +238,11 @@ def SearchChannelresults(url,searchtext):
         vidlist=re.compile('<div class="thumb-container big-thumb">        <a href="(.+?)">          <img alt="(.+?)" class="thumb-design" src="(.+?)" />').findall(link)
         for vurl,vname,vimg in vidlist:
             vurl = vurl.split("/videos/")[0]
-            print "currechannel:" + strdomain+vurl+"/videos"
             addDir(vname.lower().replace("<em>"+searchtext+"</em>",searchtext),strdomain+vurl+"/videos",7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</li>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a[^>]* href="(.+?)">(.+?)</a>').findall(pagelist[0])
                 for purl,pname in navlist:
-                    print strdomain+purl
                     addDir("page " + pname.decode("utf-8"),strdomain+purl,13,"")
 					
 def SEARCHChannel():
