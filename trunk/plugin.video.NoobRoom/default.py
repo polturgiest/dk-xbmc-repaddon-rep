@@ -8,6 +8,7 @@ import os
 import StringIO
 import gzip
 import time
+import string
 from t0mm0.common.net import Net
 from t0mm0.common.addon import Addon
 import xbmcaddon
@@ -41,6 +42,11 @@ if ADDON.getSetting('use-hd') != 'true':
 
 strUsername = ADDON.getSetting('Username')
 strpwd = ADDON.getSetting('Password')
+
+genres = [
+    "Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family",
+    "Fantasy", "Film-Noir", "Game-Show", "History", "Horror", "Music", "Musical", "Mystery", "News", "Reality-TV",
+    "Romance", "Sci-Fi", "Sport", "Talk-Show", "Thriller", "War", "Western"]
 
 
 def GetContent(url, data, referr, cj):
@@ -92,13 +98,12 @@ def GetLoginCookie(cj, cookiefile):
         strpwd = urllib.quote_plus(
             GetInput("Please enter your password", "Password", True))
         (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
-                                  "&password=" + strpwd + "&remember=on", nooblink + "/login.php", cj)
+                                  "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         link = ''.join(respon.splitlines()).replace('\'', '"')
         match = re.compile('"streamer": "(.+?)",').findall(link)
         loginsuc = match[0].split("&")[1]
         matchauth = loginsuc.replace("auth=", "")
         ADDON.setSetting('authcode', matchauth)
-        # setSettings(strUsername,strpwd,True)
     cj.save(cookiefile, ignore_discard=True)
     cj = cookielib.LWPCookieJar()
     cj.load(cookiefile, ignore_discard=True)
@@ -128,9 +133,9 @@ def AutoLogin(url, cj):
         os.makedirs(cookie_path)
     if cj is None:
         cj = cookielib.LWPCookieJar()
-    if strUsername is not None and strUsername != "" and strpwd != None and strpwd != "":
+    if strUsername is not None and strUsername != "" and strpwd is not None and strpwd != "":
         (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
-                                  "&password=" + strpwd + "&remember=on", nooblink + "/login.php", cj)
+                                  "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
         match = re.compile('"streamer": "(.+?)",').findall(link)
@@ -161,42 +166,20 @@ def GetVideoLink(url, isHD, cj):
 
 def HOME():
     addDir('Search', 'search', 5, '')
-    addDir('Movies A-Z', 'Movies', 2, '')
     addDir('TV Shows', 'TV', 9, '')
+    addDir('Movies A-Z', 'Movies', 2, '')
     addDir('Last 50 Added', 'Latest', 8, '')
-    addDir('Recently Released', 'Released', 12, '')
-    addDir('IMDB Rating order', 'ImdbRating', 13, '')
+    addDir('by Genre', 'GenreList', 14, '')
+    addDir('by Release date', 'Released', 12, '')
+    addDir('by IMDB Rating', 'ImdbRating', 13, '')
+    addDir('Kids Zone', 'KidsZone', 16, '')
     addLink('Refresh Movie list', 'Refresh', 7, '')
     addLink('Login', 'Login', 11, '')
 
 
 def INDEXAZ():
-    addDir('A', 'A', 4, '')
-    addDir('B', 'B', 4, '')
-    addDir('C', 'C', 4, '')
-    addDir('D', 'D', 4, '')
-    addDir('E', 'E', 4, '')
-    addDir('F', 'F', 4, '')
-    addDir('G', 'G', 4, '')
-    addDir('H', 'H', 4, '')
-    addDir('I', 'I', 4, '')
-    addDir('J', 'J', 4, '')
-    addDir('K', 'K', 4, '')
-    addDir('L', 'L', 4, '')
-    addDir('M', 'M', 4, '')
-    addDir('N', 'N', 4, '')
-    addDir('O', 'O', 4, '')
-    addDir('P', 'P', 4, '')
-    addDir('Q', 'Q', 4, '')
-    addDir('R', 'R', 4, '')
-    addDir('S', 'S', 4, '')
-    addDir('T', 'T', 4, '')
-    addDir('U', 'U', 4, '')
-    addDir('V', 'V', 4, '')
-    addDir('W', 'W', 4, '')
-    addDir('X', 'X', 4, '')
-    addDir('Y', 'Y', 4, '')
-    addDir('Z', 'Z', 4, '')
+    for one in string.ascii_uppercase:
+        addDir(one, one, 4, '')
     addDir('Others', '-1', 4, '')
 
 
@@ -231,13 +214,49 @@ def ImdbRating():
     renderListingPage("rating", "rating.php")
 
 
+def GenreList(genre=''):
+    if genre == '':
+        for one in genres:
+            addLink(one, string.lower(one), 15, '', True)
+
+    else:
+        genreHash = ""
+        for one in genres:
+            genreHash += "1" if string.lower(one) == genre else "0"
+
+        (jc, link) = GetContent(nooblink + "/genre.php?b=" + genreHash, "", nooblink, cj)
+        match = re.compile(
+            '<br>(.+?)- <a class=\'tippable\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>'
+        ).findall(link)
+
+        if len(match) > 0:
+            for one in match:
+                (movieYear, moviehref, movieName) = one
+                href = moviehref.replace("?", "")
+                movieYear = movieYear.replace(" ", "")
+                addLink('%s (%s)' % (urllib.unquote_plus(movieName), movieYear), href, 6, nooblink + "/2img" + href + ".jpg", False)
+        else:
+            xbmcplugin.endOfDirectory(handle=int(sysarg), updateListing=False, succeeded=True)
+            xbmc.executebuiltin("XBMC.Notification(No movies found!,You have selected %s genre,3000)" % genre)
+
+
 def Last25():
     renderListingPage("noobroom", "latest.php")
 
 
+def KidsZone():
+    (jc, link) = GetContent(nooblink + "/kids.php", "", nooblink, cj)
+    matchname = re.compile(
+        '<b><a style=\'color:#fff\' href=\'(.+?)\'>(.+?)</a>[^<]*</div>').findall(link)
+
+    for i in range(len(matchname)):
+        (href, movieName) = matchname[i]
+        href = href.replace("?", "")
+        addLink(urllib.unquote_plus(movieName), href, 6, nooblink + "/2img" + href + ".jpg", False)
+
+
 def SearchXml(SearchText):
     (jc, link) = GetContent(nooblink + "/search.php?q=" + SearchText, "", nooblink, cj)
-    print link
     match = re.compile(
         '<br>(.+?)- <a class=\'tippable\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>'
     ).findall(link)
@@ -245,24 +264,7 @@ def SearchXml(SearchText):
     for i in range(len(match)):
         (movieYear, moviehref, movieName) = match[i]
         href = moviehref.replace("?", "")
-        addLink(urllib.unquote_plus(movieName), href, 6, nooblink + "/2img" + href + ".jpg")
-    # localfile = xbmc.translatePath(
-    #     os.path.join(home, 'resources', "noobroom" + '.xml'))
-    # if os.path.isfile(filename) is False:
-    #     BuildXMl(cj, localfile, "latest.php")
-    # f = open(filename, "r")
-    # text = f.read()
-    # if SearchText == '-1':
-    #     match = re.compile(
-    #         '<movie name="[^A-Za-z](.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
-    #     SearchText = ""
-    # else:
-    #     match = re.compile('<movie name="' + SearchText +
-    #                        '(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
-    # for i in range(len(match)):
-    #     (mName, mNumber, vyear) = match[i]
-    #     addLink(urllib.unquote_plus(SearchText + mName), mNumber, 6, nooblink + "/2img" + mNumber + ".jpg")
-    #     addLink(SearchText + mName, mNumber, 6, "")
+        addLink('%s (%s)' % (urllib.unquote_plus(movieName), movieYear), href, 6, nooblink + "/2img" + href + ".jpg")
 
 def ParseXML(year, url, name, doc, mlist):
     movie = doc.createElement("movie")
@@ -306,7 +308,6 @@ def GetDirVideoUrl(url, cj):
 
         def http_error_302(self, req, fp, code, msg, headers):
             self.video_url = headers['Location']
-            print "redirecturl" + self.video_url
             return urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
 
         http_error_301 = http_error_303 = http_error_307 = http_error_302
@@ -314,7 +315,6 @@ def GetDirVideoUrl(url, cj):
     redirhndler = MyHTTPRedirectHandler()
 
     opener = urllib2.build_opener(redirhndler, urllib2.HTTPCookieProcessor(cj))
-    #opener = urllib2.build_opener()
     opener.addheaders = [(
         'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
         ('Accept-Encoding', 'gzip, deflate'),
@@ -331,7 +331,7 @@ def GetDirVideoUrl(url, cj):
 
 def Episodes(name, videoId):
     # try:
-    match = re.compile("\/(.+?)&sp").findall(videoId + "&sp")
+    match = re.compile("/(.+?)&sp").findall(videoId + "&sp")
     if len(match) >= 0:
         videoId = match[0]
     try:
@@ -340,10 +340,9 @@ def Episodes(name, videoId):
     except:
         vidlink = GetDirVideoUrl(noobvideolink.replace(
             "&hd=" + isHD, "&hd=0") + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
-    # vidlink="http://46.165.228.108/index.php?file=1871&start=0&hd=0&auth=&type=flv&tv=0"
     cookiestr = ""
     for cookie in cj:
-        cookiestr = cookiestr + ('%s=%s;' % (cookie.name, cookie.value))
+        cookiestr += '%s=%s;' % (cookie.name, cookie.value)
     fullvid = ('%s|Cookie="%s"' % (vidlink, cookiestr + "save=1"))
     fullvid = ('%s|User-Agent="%s"' %
                (fullvid, 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'))
@@ -352,7 +351,6 @@ def Episodes(name, videoId):
         'Title': name,
         'Thumb': nooblink + "/2img" + videoId + ".jpg"
     }
-
     playVideo("noobroom", fullvid, meta)
 
 
@@ -364,42 +362,39 @@ def ListTVSeries(cj):
     matchname = re.compile(
         '<b><a style="color:#fff" href="(.+?)">(.+?)</a></b>').findall(link)
     for i in range(len(match)):
-        addDir(matchname[i][1], nooblink + match[i][0], 10, nooblink + "/" + match[i][1])
+        addDir(matchname[i][1], nooblink + match[i][0], 10, match[i][1])
 
 
 def ListEpisodes(url, cj):
     (cj, link) = GetContent(url, "", nooblink, cj)
     link = ''.join(link.splitlines()).replace('\'', '"')
     match = re.compile(
-        '<br><b>(.+?)<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(link)
+        '<br><b>(.+?)<a[^>]*color:#(\w+);[^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(link)
     cookiestr = ""
     for cookie in cj:
-        cookiestr = cookiestr + ('%s=%s;' % (cookie.name, cookie.value))
+        cookiestr += '%s=%s;' % (cookie.name, cookie.value)
     for i in range(len(match)):
-        vidlink = noobvideolink.replace(
-            "&hd=1", "&hd=0") + match[i][1].replace("/?", "&file=")
+        vidlink = noobvideolink.replace("&hd=1", "&hd=0") + match[i][2].replace("/?", "&file=")
 
-        if i == 0:
-            vidlink = GetDirVideoUrl(
-                vidlink, cj) + "&loc=" + location + "&hd=0"
-        else:
-            vidlink = vidlink.replace(match[i - 1][1].replace(
-                "/?", "&file="), match[i][1].replace("/?", "&file="))
         fullvid = ('%s|Cookie="%s"' % (vidlink, cookiestr + "save=1"))
         fullvid = ('%s|User-Agent="%s"' %
                    (fullvid, 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'))
-        addLink(match[i][0] + match[i][2], fullvid, 3, "")
+        movieFree = ""
+        if match[i][1] == "ffffcc":
+            movieFree = " [COLOR yellow](free)[/COLOR]"
+        addLink(match[i][0] + match[i][3] + movieFree, fullvid, 3, "")
 
 
 def playVideo(videoType, link, meta=None):
+
+    if(link.find(nooblink) > -1):
+        tmplink= link.split("|")[0]
+        tmplink2=GetDirVideoUrl(tmplink, cj)
+        link=link.replace(tmplink,tmplink2) + "&loc=" + location + "&hd=0"
     print videoType + '=' + link
     if videoType == "youtube":
         url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + link.replace('?', '')
         xbmc.executebuiltin("xbmc.PlayMedia(" + url + ")")
-    # elif videoType == "vimeo":
-        # url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
-    # elif videoType == "tudou":
-        # url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId
     else:
         if(meta==None):
              meta = {
@@ -422,55 +417,29 @@ def parseDate(dateString):
         return datetime.datetime.today() - datetime.timedelta(days=1)
 
 
-def addLink(name, url, mode, iconimage):
+def addLink(name, url, mode, thumbImage, folder=False, iconImage="DefaultVideo.png"):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(
         url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
-    # ok = True
-    # rating = "5.0"
-    # movieModes = [6]
-    # if mode in movieModes:
-        # jsonData = getMovieInfo(name)
-        # rating = str(jsonData['rating'])
-
     meta = {'title': name}
-
-    liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-
+    liz = xbmcgui.ListItem(name, iconImage=iconImage, thumbnailImage=thumbImage)
     liz.setInfo('Video', meta)
-    # liz.setProperty('fanart_image', '')
-    # liz.setProperty('imdb', 'tt1343092')
-    # liz.setProperty('img', '')
-
     contextMenuItems = getContextMenuItems()
-
     liz.addContextMenuItems(contextMenuItems, replaceItems=True)
-
-    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz)
+    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=folder)
     return ok
 
 
 def addNext(formvar, url, mode, iconimage):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&formvar=" + str(
         formvar) + "&name=" + urllib.quote_plus('Next >')
-    ok = True
     liz = xbmcgui.ListItem(
         'Next >', iconImage=noobroomlogo, thumbnailImage=iconimage)
     liz.setInfo(type="Video", infoLabels={"Title": 'Next >'})
-    ok = xbmcplugin.addDirectoryItem(
-        handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
-    return ok
+    return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
 
 
 def addDir(name, url, mode, iconimage):
-    u = sys.argv[0] + "?url=" + urllib.quote_plus(
-        url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)
-    ok = True
-    liz = xbmcgui.ListItem(
-        name, iconImage=noobroomlogo, thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name})
-    ok = xbmcplugin.addDirectoryItem(
-        handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
-    return ok
+    addLink(name, url, mode, iconimage, True, noobroomlogo)
 
 
 def get_params():
@@ -479,12 +448,9 @@ def get_params():
     if len(paramstring) >= 2:
         params = sys.argv[2]
         cleanedparams = params.replace('?', '')
-        if params[len(params) - 1] == '/':
-            params = params[0:len(params) - 2]
         pairsofparams = cleanedparams.split('&')
         param = {}
         for i in range(len(pairsofparams)):
-            splitparams = {}
             splitparams = pairsofparams[i].split('=')
             if (len(splitparams)) == 2:
                 param[splitparams[0]] = splitparams[1]
@@ -494,29 +460,14 @@ def get_params():
 
 def getContextMenuItems():
     menu_items = []
-    # menu_items.append(('Show Information', 'XBMC.Action(Info)'), )
+    menu_items.append(('Show Information', 'XBMC.Action(Info)'), )
     return menu_items
 
 
 def getMovieInfo(movieName):
-    jsonUrl = 'http://deanclatworthy.com/imdb/?q=' + movieName
+    jsonUrl = 'http://mymovieapi.com/?title=' + movieName + '&type=json&plot=simple&episode=1&limit=1&yg=0&mt=none&lang=en-US&offset=&aka=simple&release=simple&business=0&tech=0&year=2013'
     data = json.load(urllib2.urlopen(jsonUrl))
     return data
-    # http://deanclatworthy.com/imdb/?q=The+Green+Mile
-    # url = 'http://deanclatworthy.com/'
-    # values = {}
-    # params = {}
-    # values["method"] = 'get'
-    # params["q"] = movieName
-    # if params is not None:
-    #     values["params"] = params
-    # headers = {"Content-Type":"application/json"}
-    #
-    # data = json.dumps(values)
-    # req = urllib2.Request(url, data, headers)
-    # response = urllib2.urlopen(req)
-    # response = response.read()
-    # return json.loads(response)
 
 params = get_params()
 url = None
@@ -541,6 +492,7 @@ except:
     pass
 
 sysarg = str(sys.argv[1])
+
 if mode is None or url is None or len(url) < 1:
     HOME()
 
@@ -568,4 +520,10 @@ elif mode == 12:
     Released()
 elif mode == 13:
     ImdbRating()
+elif mode == 14:
+    GenreList()
+elif mode == 15:
+    GenreList(url)
+elif mode == 16:
+    KidsZone()
 xbmcplugin.endOfDirectory(int(sysarg))
