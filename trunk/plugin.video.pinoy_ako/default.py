@@ -20,7 +20,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.7" #<---- PLUGIN VERSION
+VERSION = "1.0.8" #<---- PLUGIN VERSION
 
 strdomain ='http://www.pinoy-ako.info'
 def HOME():
@@ -612,7 +612,9 @@ def loadVideos(url,name):
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(url)
                 if(len(match) == 0):
-                        match=re.compile('http://www.dailymotion.com/video/(.+?)&AJ;').findall(url)
+                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(url+"&dk;")
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(url)
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
