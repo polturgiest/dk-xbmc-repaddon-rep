@@ -37,7 +37,6 @@ def HOME():
               mainurl,mainname=re.compile('<h2><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h2>').findall(vmenu)[0]
               addDir(mainname,mainurl,2,'')
               submatch=re.compile('<li><h3><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h3></li>').findall(vmenu)
-              print vmenu
               for vsubmenu in submatch:
                     vLink, vLinkName=vsubmenu
                     if(vLinkName.find("Danh Sach Phim") ==-1):
@@ -59,10 +58,11 @@ def INDEX(url):
             vname=re.compile('<strong >(.+?)</strong>').findall(vcontent)[0]
             addDir(vname,vidid,7,vimage)
         pagecontent=re.compile('<span class=pagecur>(.+?)</table>').findall(newlink)
-        match5=re.compile("<a class='pagelink' href='(.+?)'>(.+?)</a>").findall(pagecontent[0])
-        for vpage in match5:
-            (vurl,vname)=vpage
-            addDir("page: " + vname.encode("utf-8"),homeLink+vurl,2,"")
+        if(len(pagecontent) >0):
+             match5=re.compile("<a class='pagelink' href='(.+?)'>(.+?)</a>").findall(pagecontent[0])
+             for vpage in match5:
+                    (vurl,vname)=vpage
+                    addDir("page: " + vname.encode("utf-8"),homeLink+vurl,2,"")
     #except: pass
 
 	
