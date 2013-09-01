@@ -183,7 +183,9 @@ def Episodes(url,name):
                         else:
                                 addLink(name.encode("utf-8"),match[0],3,"")
                 else:
-                        match=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+                        match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+                        if(len(match) ==0):
+                                match=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                         if(len(match) >= 1):
                                 if(match[0].find(".swf") > -1):
                                         match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
