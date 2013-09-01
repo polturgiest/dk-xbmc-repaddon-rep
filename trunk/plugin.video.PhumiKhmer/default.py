@@ -25,18 +25,29 @@ VERSION = "1.0.8" #<---- PLUGIN VERSION
 
 strdomain ='http://moviekhmer.com/'
 def HOME():
-        addDir('Khmer Comedy','http://moviekhmer.com/category/khmer/khmer-comedy/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Movies','http://moviekhmer.com/category/khmer/khmer-movies/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Song','http://moviekhmer.com/category/khmer/khmer-songs/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer TV Show','http://moviekhmer.com/category/khmer/khmer-tv-show-khmer/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Movies','http://moviekhmer.com/category/thai/thai-movies/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Lakorns','http://moviekhmer.com/category/thai/thai-lakorns/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Drama','http://moviekhmer.com/category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Korean Movies','http://moviekhmer.com/category/korean/korean-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Chinese Movies','http://moviekhmer.com/category/chinese/chinese-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Series','http://moviekhmer.com/category/chinese/chinese-series/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Documentaries','http://moviekhmer.com/category/uncategories/documentary-uncategories/',2,'http://moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
+        addDir('Khmer Movies','http://www.phumikhmer.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Drama','http://www.phumikhmer.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Filipino Drama','http://www.phumikhmer.com/search/label/Philippine%20Movie?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Thai Movies','http://www.phumikhmer.com/search/label/Thai%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Thai Lakorns','http://www.phumikhmer.com/search/label/Thai%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Drama','http://www.phumikhmer.com/search/label/Korean%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        addDir('Korean Movies','http://www.phumikhmer.com/search/label/Korean%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        addDir('Hong Kong Drama','http://www.phumikhmer.com/search/label/Hong%20Kong%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Hong Kong Movies','http://www.phumikhmer.com/search/label/Hong%20Kong%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Taiwanese Drama','http://www.phumikhmer.com/search/label/Taiwan%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Taiwanese Movies','http://www.phumikhmer.com/search/label/Taiwan%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Chinese Movies','http://www.phumikhmer.com/search/label/Chinese%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Chinese Series','http://www.phumikhmer.com/search/label/Chinese%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Documentaries','http://www.phumikhmer.com/search/label/Documentary?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
+        addDir('Other Shows','http://www.phumikhmer.com/search/label/Hong%20Kong%20Drama?&max-results=18',6,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
 
+		
+def Shows():
+        addDir('Pak Mee','http://www.phumikhmer.com/search/label/Parkmi%20%28%E1%9E%96%E1%9E%B6%E1%9E%80%E1%9F%8B%E1%9E%98%E1%9E%B8%29?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Cartoon','http://www.phumikhmer.com/search/label/Cartoon%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('TV program','http://www.phumikhmer.com/search/label/TV%20Programe?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+
+		
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strdomain})
         collection = {}
@@ -107,25 +118,32 @@ def getVimeoVideourl(videoid):
 			
 			
 def INDEX(url):
-    try:
+    #try:
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         #start=newlink.index('<div id="main">')
         #end=newlink.index('<!-- main -->')
-        match=re.compile('<div class="arc-main">((.|\s)*?)<div id="page-sidebar">').findall(newlink)
-        if(len(match) >= 1 and len(match[0]) >= 1):
-                match=re.compile('<div class="img-th">((.|\s)*?)<h4 class="post-tit">').findall(match[0][0])
-                if(len(match) >= 1):
-                        for vcontent in match:
-                            match1=re.compile('<a href="(.+?)" rel="bookmark"><img [^>]*src="(.+?)" class="attachment-thumbnail wp-post-image" alt="(.+?)"').findall(vcontent[0])
-                            (vurl, vimage, vname)=match1[0]
-                            addDir(vname.encode("utf-8"),vurl,5,vimage)
-        match5=re.compile("<div class='wp-pagenavi'>((.|\s)*?)</div>").findall(newlink)
-        if(len(match5) >= 1 and len(match5[0]) >= 1 and newlink.find("class='nextpostslink'") > -1 ):
-                startlen=re.compile("<span class='current'>(.+?)</span>").findall(match5[0][0])
-                url=url.replace("page/"+startlen[0],"")
-                addDir("Next >>",url+'page/' + str(int(startlen[0])+1),2,"")
-    except: pass
+        match=re.compile("<div class='cutter'>(.+?)<script type='text/javascript'>\s*createSummaryAndThumb").findall(newlink)
+        for vcontent in match:
+                vurl=re.compile("<a href='(.+?)'>").findall(vcontent)[0]
+                match1=re.compile('bp_thumbnail_resize\("(.+?)","(.+?)"\)').findall(vcontent)
+                (vimage,vname)=match1[0]
+                vimage1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]* imageanchor="1">').findall(vcontent)
+                if(len(vimage1)>0):
+                      vimage=vimage1[0]
+                addDir(vname,vurl,5,vimage)
+        match5=re.compile("<span id='blog-pager-newer-link'>(.+?)</span>").findall(newlink)
+        if(len(match5) >= 1):
+                url=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(match5[0])[0]
+                addDir("<< Previous",url,2,"")
+        match5=re.compile("<span id='blog-pager-older-link'>(.+?)</span>").findall(newlink)
+        if(len(match5) >= 1 and len(match) > 17):
+                url=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(match5[0])[0]
+                addDir("Next >>",url,2,"")
+    #except: pass
 			
 def SearchResults(url):
         link = GetContent(url)
@@ -140,10 +158,13 @@ def SearchResults(url):
             addDir('Next>',nexurl,6,'')			
 			
 def Episodes(url,name):
-    try:
+    #try:
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('{ "file": "(.+?)", "title": "(.+?)", "description": "", "image":').findall(link)
+        match=re.compile('{\s*"file":\s*"(.+?)",\s*"title":\s*"(.+?)",\s*"description":\s*"').findall(link)
         if(len(match) >= 1):
                 for mcontent in match:
                     vLink, vLinkName=mcontent
@@ -181,7 +202,7 @@ def Episodes(url,name):
 										
  
               
-    except: pass		
+    #except: pass		
 
 
 def ParseXml(newcontent):
@@ -740,6 +761,7 @@ elif mode==3:
 elif mode==5:
        GA("episode",name)
        Episodes(url,name)
-
+elif mode==6:
+       Shows()
 	   
 xbmcplugin.endOfDirectory(int(sysarg))

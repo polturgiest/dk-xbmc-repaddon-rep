@@ -402,6 +402,28 @@
 </addon>
 
 <addon
+  id="plugin.video.PhumiKhmer"
+  version="1.0.0"
+  name="PhumiKhmer"
+  provider-name="Dknight">
+  <requires>
+        <import addon="xbmc.python" version="2.0"/>
+		<import addon="script.module.simplejson" />
+		<import addon="script.module.urlresolver"  version="0.0.1"/>
+		<import addon="script.module.t0mm0.common" version="1.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>PhumiKhmer</summary>
+    <description>Watch PhumiKhmer Videos</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon
   id="plugin.video.pinoy_ako"
   version="1.0.8"
   name="pinoy_ako"
