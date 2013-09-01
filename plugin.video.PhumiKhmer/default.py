@@ -11,7 +11,7 @@ import cgi
 import CommonFunctions
 import datetime
 common = CommonFunctions
-common.plugin = "plugin.video.video4khmer"
+common.plugin = "plugin.video.PhumiKhmer"
 
 import time
 ADDON = xbmcaddon.Addon(id='plugin.video.PhumiKhmer')
