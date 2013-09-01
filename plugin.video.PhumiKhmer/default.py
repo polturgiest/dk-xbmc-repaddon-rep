@@ -14,16 +14,16 @@ common = CommonFunctions
 common.plugin = "plugin.video.video4khmer"
 
 import time
-ADDON = xbmcaddon.Addon(id='plugin.video.MovieKhmer')
+ADDON = xbmcaddon.Addon(id='plugin.video.PhumiKhmer')
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
     ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
     
-PATH = "moviekhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
+PATH = "PhumiKhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.8" #<---- PLUGIN VERSION
 
-strdomain ='http://moviekhmer.com/'
+strdomain ='http://PhumiKhmer.com/'
 def HOME():
         addDir('Khmer Movies','http://www.phumikhmer.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Khmer Drama','http://www.phumikhmer.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
