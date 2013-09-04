@@ -124,7 +124,6 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        print newlink
         #start=newlink.index('<div id="main">')
         #end=newlink.index('<!-- main -->')
         match=re.compile("<div class='cutter'>(.+?)<script type='text/javascript'>\s*createSummaryAndThumb").findall(newlink)
