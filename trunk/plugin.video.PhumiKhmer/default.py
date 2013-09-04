@@ -21,7 +21,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "PhumiKhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.8" #<---- PLUGIN VERSION
+VERSION = "1.0.1" #<---- PLUGIN VERSION
 
 strdomain ='http://PhumiKhmer.com/'
 def HOME():
@@ -124,6 +124,7 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
+        print newlink
         #start=newlink.index('<div id="main">')
         #end=newlink.index('<!-- main -->')
         match=re.compile("<div class='cutter'>(.+?)<script type='text/javascript'>\s*createSummaryAndThumb").findall(newlink)
@@ -135,13 +136,14 @@ def INDEX(url):
                 if(len(vimage1)>0):
                       vimage=vimage1[0]
                 addDir(vname,vurl,5,vimage)
-        match5=re.compile("<span id='blog-pager-newer-link'>(.+?)</span>").findall(newlink)
+        match5=re.compile("<a class='blog-pager-newer-link' href='(.+?)' id='Blog1_blog-pager-newer-link' title='Newer Posts'>Newer Posts</a>").findall(newlink)
+        #print match5
         if(len(match5) >= 1):
-                url=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(match5[0])[0]
+                url=match5[0]
                 addDir("<< Previous",url,2,"")
-        match5=re.compile("<span id='blog-pager-older-link'>(.+?)</span>").findall(newlink)
+        match5=re.compile("<a class='blog-pager-older-link' href='(.+?)' id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>").findall(newlink)
         if(len(match5) >= 1 and len(match) > 17):
-                url=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(match5[0])[0]
+                url=match5[0]
                 addDir("Next >>",url,2,"")
     #except: pass
 			
