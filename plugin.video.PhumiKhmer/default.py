@@ -21,7 +21,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "PhumiKhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.1" #<---- PLUGIN VERSION
+VERSION = "1.0.8" #<---- PLUGIN VERSION
 
 strdomain ='http://PhumiKhmer.com/'
 def HOME():
@@ -124,9 +124,11 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
+
+        #print newlink
         #start=newlink.index('<div id="main">')
         #end=newlink.index('<!-- main -->')
-        match=re.compile("<div class='cutter'>(.+?)<script type='text/javascript'>\s*createSummaryAndThumb").findall(newlink)
+        match=re.compile("<div class='cutter'>(.+?)<script type='text/rocketscript'>\s*createSummaryAndThumb").findall(newlink)
         for vcontent in match:
                 vurl=re.compile("<a href='(.+?)'>").findall(vcontent)[0]
                 match1=re.compile('bp_thumbnail_resize\("(.+?)","(.+?)"\)').findall(vcontent)
