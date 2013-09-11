@@ -228,7 +228,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.14"
+  version="1.0.15"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>

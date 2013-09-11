@@ -18,19 +18,19 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "KhmerAvenue"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.14" #<---- PLUGIN VERSION
+VERSION = "1.0.15" #<---- PLUGIN VERSION
 
 common = CommonFunctions
 common.plugin = "plugin.video.KhmerAvenue"
-strDomain ='http://www.khmeravenue.com/'
+strDomain ='http://www.merlkon.com/'
 def HOME():
-        addDir('Search','http://www.khmeravenue.com/',4,'http://www.khmeravenue.com/wp-contents/uploads/logo.jpg')
-        addDir('Khmer Videos','http://www.khmeravenue.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Lakorns','http://www.khmeravenue.com/albumcategory/thai-videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Videos','http://www.khmeravenue.com/albumcategory/korean-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Chinese Videos','http://www.khmeravenue.com/albumcategory/chinese-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Bollywood Videos','http://www.khmeravenue.com/albumcategory/bollywood-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2013/01/santosima.jpg')
-        addDir('Philippines Videos','http://www.khmeravenue.com/albumcategory/philippines-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2012/09/dyesebel.jpg')
+        addDir('Search','http://www.merlkon.com/',4,'http://www.merlkon.com/wp-contents/uploads/logo.jpg')
+        addDir('Khmer Videos','http://www.merlkon.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Thai Lakorns','http://www.merlkon.com/albumcategory/thai-videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Videos','http://www.merlkon.com/albumcategory/korean-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Chinese Videos','http://www.merlkon.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Bollywood Videos','http://www.merlkon.com/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2013/01/santosima.jpg')
+        addDir('Philippines Videos','http://www.merlkon.com/albumcategory/philippines-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
     try:
         link = GetContent(url)
@@ -54,7 +54,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.khmeravenue.com/page/1/?s='+ searchText +'&x=4&y=6'
+        url = 'http://www.merlkon.com/page/1/?s='+ searchText +'&x=4&y=6'
         SearchResults(url)
         
 def SearchResults(url):
@@ -71,9 +71,27 @@ def SearchResults(url):
         if(len(match) >= 1):
             url=match[0][0]
             addDir("Next >>",url,6,"")
-            
+			
+def getVimeoUrl(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
+        print result
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find(',c={'):]
+            html = html[:html.find('}};') + 2]
+            html = html.replace(",c={", '{') 
+            try:
+                  collection = json.loads(html)
+                  codec=collection["request"]["files"]["codecs"][0]
+                  filecol = collection["request"]["files"][codec]
+                  return filecol["sd"]["url"]
+            except:
+                  return getVimeoVideourl(videoid)
+			
 def scrapeVideoInfo(videoid):
-        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strDomain})
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
+        print result
         collection = {}
         if result["status"] == 200:
             html = result["content"]
@@ -293,8 +311,8 @@ def loadPlaylist(newlink,name):
                         CreateList('google',gcontent[0])
            elif (newlink.find("vimeo") > -1):
                 print "newlink|" + newlink
-                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
-                vidurl=getVimeoVideourl(idmatch[0])
+                idmatch =re.compile("http://player.vimeo.com/video/(.+?)\?").findall(newlink+"?")
+                vidurl=getVimeoUrl(idmatch[0])
                 CreateList("other",vidurl)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
@@ -351,9 +369,9 @@ def loadVideos(url,name):
            elif (newlink.find("vimeo") > -1):
                 #
                 print "newlink|" + newlink
-                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                idmatch =re.compile("//player.vimeo.com/video/(.+?)\?").findall(newlink+"?")
                 print idmatch
-                vidurl=getVimeoVideourl(idmatch[0])
+                vidurl=getVimeoUrl(idmatch[0])
                 playVideo('khmeravenue',vidurl)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
