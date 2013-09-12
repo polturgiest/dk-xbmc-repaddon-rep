@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "KhmerAvenue"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.15" #<---- PLUGIN VERSION
+VERSION = "1.0.16" #<---- PLUGIN VERSION
 
 common = CommonFunctions
 common.plugin = "plugin.video.KhmerAvenue"
@@ -288,13 +288,13 @@ def loadPlaylist(newlink,name):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
                 	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
            elif (newlink.find("video.google.com") > -1):
@@ -357,13 +357,13 @@ def loadVideos(url,name):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
                 	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
            elif (newlink.find("vimeo") > -1):
