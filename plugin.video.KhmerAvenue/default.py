@@ -32,7 +32,7 @@ def HOME():
         addDir('Bollywood Videos','http://www.merlkon.com/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2013/01/santosima.jpg')
         addDir('Philippines Videos','http://www.merlkon.com/albumcategory/philippines-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
-    try:
+    #try:
         link = GetContent(url)
         try:
             link =link.encode("UTF-8")
@@ -42,11 +42,11 @@ def INDEX(url):
         match=re.compile('<a class="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)">             <img src="(.+?)"').findall(match[0])
         for vcontent in match:
             (vurl,vname, vimage)=vcontent
-            addDir(vname.encode("utf-8"),vurl,5,vimage)
-        match5=re.compile("</span><a href='([^>]+)' class='nextpostslink'>([^>]+)</a>").findall(newlink)
+            addDir(vname,vurl,5,vimage)
+        match5=re.compile("<a href='([^>]+)' class='nextpostslink'>([^>]+)</a>").findall(newlink)
         if(len(match5)):
                 addDir("Next >>",match5[0][0],2,"")
-    except: pass
+    #except: pass
 			
 def SEARCH():
         keyb = xbmc.Keyboard('', 'Enter search text')
