@@ -20,7 +20,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.8" #<---- PLUGIN VERSION
+VERSION = "1.0.9" #<---- PLUGIN VERSION
 
 strdomain ='http://www.pinoy-ako.info'
 def HOME():
@@ -39,7 +39,8 @@ def HOME():
         addDir('TV5 Shows','http://www.pinoy-ako.info/tv-show-replay/tv5-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         addDir('TV5 Old Shows','http://www.pinoy-ako.info/tv-show-replay/94-tv-guide/59771-watch-old-tv5-kapatid-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         addDir('TV Specials','http://www.pinoy-ako.info/tv-show-replay/tv-specials.html',5,'http://img857.imageshack.us/img857/8424/tvspecials.jpg')
-
+        addLink('ABS-CBN live','rtmp://tko.og.abscbn.streamguys.com:1935/abs/_definst_/abs live=true',11,'')
+        addLink('GMA live','rtmp://live.iguide.to/edge playpath=tj6zegfdas16p08 swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl=http://www.ilive.to/embedplayer.php?width=630&height=360&channel=44090&autoplay=true token=#e87JDUJD264YED687 swfVfy=1 live=1 timeout=15',11,'')
 def AllTV(url):
         link = GetContent(url)
         link=link.encode("UTF-8")
@@ -81,7 +82,35 @@ def SEARCH():
                 searchText = urllib.quote_plus(keyb.getText())
         url = 'http://www.pinoy-ako.info/component/search/?searchword='+ searchText +'&ordering=newest&searchphrase=all&limit=20'
         SearchResults(url)
-		
+
+def iLiveLink(mname,murl,thumb):
+        xbmc.executebuiltin("XBMC.Notification(Please Wait!,Opening Stream,3000)")
+        #link=GetContent(murl)
+        ok=True
+
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
+        #link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+        match=re.compile('http://www.ilive.to/embed/(.+?)&width=(.+?)&height=(.+?)&autoplay=true').findall(murl)
+        for fid,wid,hei in match:
+                    pageUrl='http://www.ilive.to/embedplayer.php?width='+wid+'&height='+hei+'&channel='+fid+'&autoplay=true'
+        link=GetContent(pageUrl)
+        playpath=re.compile('file: "(.+?).flv"').findall(link)
+        if len(playpath)==0:
+                        playpath=re.compile('http://snapshots.ilive.to/snapshots/(.+?)_snapshot.jpg').findall(thumb)      
+        for playPath in playpath:
+                    stream_url = 'rtmp://live.iguide.to/edge playpath=' + playPath + " swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl="+pageUrl+" token=#e87JDUJD264YED687 swfVfy=1 live=1 timeout=15"
+        listitem = xbmcgui.ListItem(thumbnailImage=thumb)
+        listitem.setInfo('video', {'Title': mname, 'Genre': 'Live'} )
+        
+        playlist.add(stream_url,listitem)
+        xbmcPlayer = xbmc.Player()
+        xbmcPlayer.play(playlist)
+                #WatchHistory
+
+        return ok
+
+				
 def SearchResults(url):
         link = GetContent(url)
         link=link.encode("UTF-8")
@@ -1099,6 +1128,9 @@ sysarg=str(sys.argv[1])
 if mode==None or url==None or len(url)<1:
         GA("HOME","HOME")
         HOME()
+elif mode==11:
+        playVideo("pinoy",url)
+        #iLiveLink("test","http://www.ilive.to/embed/44090&width=630&height=360&autoplay=true","")
 elif mode==2:
         GA("INDEX",name)
         INDEX(url)
