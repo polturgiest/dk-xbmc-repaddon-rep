@@ -5,7 +5,13 @@
     <info>events</info>
     <item>
       <title>Event1</title>
-      <link>rtmp://173.193.32.167:443/liverepeater/stream14_20123 pageUrl=http://sportodin.com/embed.php?id=stream14_20123 playPath=stream14_20123 swfUrl=http://c1776742.cdn.cloudfiles.rackspacecloud.com/flash/player.swf</link>
+      <link>rtmp://37.220.34.6:80/live/strpm10f5 playPath=strpm10f5 pageUrl=http://www.maxstream.in/embed.php?a=557 swfUrl=http://97ff0e7e610f20512dbe-483e6ce63d68aeb3d05af6c054efb801.r29.cf1.rackcdn.com/nomore.swf live=true</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+    <item>
+      <title>Event2</title>
+      <link>rtmp://46.246.124.6:443/liverepeater/30003 playPath=30003 pageUrl=http://movietrailers.yt/player2.php?id=30003 swfUrl=http://www.maxstream.in/player/player.swf live=true</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
