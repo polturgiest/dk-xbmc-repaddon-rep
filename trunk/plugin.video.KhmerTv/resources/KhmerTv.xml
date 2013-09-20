@@ -39,6 +39,11 @@
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
 	<item>
+      <title>National Tv</title>
+      <link>rtmp://72.52.104.21:1935/live/TVKL playpath=TVKL swfUrl=http://www.khiptv.com/Player.swf pageUrl=http://relax.khmer24h.net/channels-national-tv-16.aspx live=true</link>
+      <thumbnail>http://khiptv.com/images_tv/nat.png</thumbnail>
+    </item>
+	<item>
       <title>Hangmeas</title>
       <link>http://e-magic.info:44412/HMTV_pub</link>
       <thumbnail>http://khmer.be/images/tv/hangmeas-100x70.jpg</thumbnail>
