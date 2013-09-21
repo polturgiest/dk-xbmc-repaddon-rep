@@ -40,7 +40,7 @@ def HOME():
         addDir('TV5 Old Shows','http://www.pinoy-ako.info/tv-show-replay/94-tv-guide/59771-watch-old-tv5-kapatid-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         addDir('TV Specials','http://www.pinoy-ako.info/tv-show-replay/tv-specials.html',5,'http://img857.imageshack.us/img857/8424/tvspecials.jpg')
         addLink('ABS-CBN live','rtmp://tko.og.abscbn.streamguys.com:1935/abs/_definst_/abs live=true',11,'')
-        addLink('GMA live','rtmp://live.iguide.to/edge playpath=tj6zegfdas16p08 swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl=http://www.ilive.to/embedplayer.php?width=630&height=360&channel=44090&autoplay=true token=#e87JDUJD264YED687 swfVfy=1 live=1 timeout=15',11,'')
+        addLink('GMA live','rtmp://live.iguide.to/edge playpath=tj6zegfdas16p08 swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl=http://www.ilive.to/embedplayer.php?width=630&height=360&channel=44090&autoplay=true token=#e87JDUJD264YED687 swfVfy=1 live=1 timeout=15',12,'')
 def AllTV(url):
         link = GetContent(url)
         link=link.encode("UTF-8")
@@ -83,32 +83,6 @@ def SEARCH():
         url = 'http://www.pinoy-ako.info/component/search/?searchword='+ searchText +'&ordering=newest&searchphrase=all&limit=20'
         SearchResults(url)
 
-def iLiveLink(mname,murl,thumb):
-        xbmc.executebuiltin("XBMC.Notification(Please Wait!,Opening Stream,3000)")
-        #link=GetContent(murl)
-        ok=True
-
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
-        #link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
-        match=re.compile('http://www.ilive.to/embed/(.+?)&width=(.+?)&height=(.+?)&autoplay=true').findall(murl)
-        for fid,wid,hei in match:
-                    pageUrl='http://www.ilive.to/embedplayer.php?width='+wid+'&height='+hei+'&channel='+fid+'&autoplay=true'
-        link=GetContent(pageUrl)
-        playpath=re.compile('file: "(.+?).flv"').findall(link)
-        if len(playpath)==0:
-                        playpath=re.compile('http://snapshots.ilive.to/snapshots/(.+?)_snapshot.jpg').findall(thumb)      
-        for playPath in playpath:
-                    stream_url = 'rtmp://live.iguide.to/edge playpath=' + playPath + " swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl="+pageUrl+" token=#e87JDUJD264YED687 swfVfy=1 live=1 timeout=15"
-        listitem = xbmcgui.ListItem(thumbnailImage=thumb)
-        listitem.setInfo('video', {'Title': mname, 'Genre': 'Live'} )
-        
-        playlist.add(stream_url,listitem)
-        xbmcPlayer = xbmc.Player()
-        xbmcPlayer.play(playlist)
-                #WatchHistory
-
-        return ok
 
 				
 def SearchResults(url):
@@ -341,33 +315,47 @@ def GetContent(url):
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
 
-def PostContent(formvar,url):
-        try:
-                net = Net()
-                headers = {}
-                headers['Accept']='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-                headers['Accept-Encoding'] = 'gzip, deflate'
-                headers['Accept-Charset']='ISO-8859-1,utf-8;q=0.7,*;q=0.7'
-                headers['Referer'] = 'http://www.khmeraccess.com/video/videolist/videonew.html?cid=1'
-                headers['Content-Type'] = 'application/x-www-form-urlencoded'
-                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0.1) Gecko/20100101 Firefox/5.0.1'
-                headers['Connection'] = 'keep-alive'
-                headers['Host']='www.khmeraccess.com'
-                headers['Accept-Language']='en-us,en;q=0.5'
-                headers['Pragma']='no-cache'
-                formdata={}                      
-                formdata['start']=formvar
+def PostContent(referrer,url):
+    req = urllib2.Request(url)
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+    req.add_header('Referer', referrer)
+    response = urllib2.urlopen(req)
+    data=response.read()
+    response.close()
+    return data
 
 
-                #first_response = net.http_Get('http://khmerfever.com/wp-login.php',headers=header_dict)
-                #net.save_cookies('c:\cookies.txt')
-                #net.set_cookies('c:\cookies.txt')
-                second_response = net.http_POST(url,formdata,headers=headers,compression=False)
-                return second_response.content
-        except: 
-                d = xbmcgui.Dialog()
-                d.ok('Time out',"Can't Connect to site",'Try again in a moment')
-	
+def iLiveLink(mname,murl,thumb):
+        xbmc.executebuiltin("XBMC.Notification(Please Wait!,Opening Stream,3000)")
+        #link=GetContent(murl)
+        ok=True
+
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
+        #link=link.replace('\r','').replace('\n','').replace('\t','').replace('&nbsp;','')
+        match=re.compile('http://www.ilive.to/embed/(.+?)&width=(.+?)&height=(.+?)&autoplay=true').findall(murl)
+        for fid,wid,hei in match:
+                    pageUrl='http://www.ilive.to/embedplayer.php?width='+wid+'&height='+hei+'&channel='+fid+'&autoplay=true'
+        link=GetContent(pageUrl)
+        playpath=re.compile('file: "(.+?).flv"').findall(link)
+        tokenpage=re.compile('getJSON\("(.+?)", function').findall(link)
+        if len(tokenpage)>0:
+                        tokencontent=PostContent(pageUrl,tokenpage[0])
+                        token=re.compile('"token":"(.+?)"').findall(tokencontent)[0]
+        if len(playpath)==0:
+                        playpath=re.compile('http://snapshots.ilive.to/snapshots/(.+?)_snapshot.jpg').findall(thumb)      
+        for playPath in playpath:
+                    stream_url = 'rtmp://live.iguide.to/edge playpath=' + playPath + " swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl="+pageUrl+" token="+token+" swfVfy=1 live=1 timeout=15"
+        listitem = xbmcgui.ListItem(thumbnailImage=thumb)
+        listitem.setInfo('video', {'Title': mname, 'Genre': 'Live'} )
+        
+        playlist.add(stream_url,listitem)
+        xbmcPlayer = xbmc.Player()
+        xbmcPlayer.play(playlist)
+                #WatchHistory
+
+        return ok
+		
 def playVideo(videoType,videoId):
     url = ""
     print videoType + '=' + videoId
@@ -1130,7 +1118,8 @@ if mode==None or url==None or len(url)<1:
         HOME()
 elif mode==11:
         playVideo("pinoy",url)
-        #iLiveLink("test","http://www.ilive.to/embed/44090&width=630&height=360&autoplay=true","")
+elif mode==12:
+        iLiveLink("test","http://www.ilive.to/embed/44090&width=630&height=360&autoplay=true","")
 elif mode==2:
         GA("INDEX",name)
         INDEX(url)
