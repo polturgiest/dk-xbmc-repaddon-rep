@@ -9,6 +9,16 @@
       <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
     </item>
 	<item>
+<title>CTV8</title>
+<link>rtmp://122.252.178.139/live_ctv8/ctv8.stream_1080p2M playpath=ctv8.stream_1080p2M swfUrl=http://ctv8.com.kh/public/js/live.swf pageUrl=http://ctv8.com.kh/?page=livetv live=1 app=live_ctv8</link>
+<thumbnail>http://ctv8.com.kh/public/images/ctv8_logo/CTV8_LOGO.png</thumbnail>
+</item>
+<item>
+<title>KWorld</title>
+<link>rtmp://122.252.178.139/live_kworld/kworld.stream_1080p2M playpath=kworld.stream_1080p2M swfUrl=http://ctv8.com.kh/public/js/kworld/live.swf pageUrl=http://ctv8.com.kh/?page=livetv/kworld live=1 app=live_kworld</link>
+<thumbnail>http://ctv8.com.kh/public/images/ctv8_logo/CTV8_LOGO.png</thumbnail>
+</item>
+	<item>
       <title>KhipTV</title>
       <link>http://e-magic.info:44412/KhipTV</link>
       <thumbnail>
