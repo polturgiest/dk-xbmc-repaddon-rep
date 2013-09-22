@@ -61,8 +61,7 @@
     <item>
       <title>Sea TV</title>
       <link>rtmp://live.khmer.be:1935/live/SEATV playpath=SEATV swfUrl=http://khmer.be/KhmerTV/player.swf pageUrl=http://khmer.be/Live-TV/default.aspx?ch=seatv live=1</link>
-      <thumbnail>
-      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+      <thumbnail>http://khmer.be/images/tv/seatv.gif</thumbnail>
     </item>
     <item>
       <title>TVK</title>
