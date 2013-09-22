@@ -60,7 +60,7 @@
     </item>
     <item>
       <title>Sea TV</title>
-      <link>http://e-magic.info:44412/sea_Pub</link>
+      <link>rtmp://live.khmer.be:1935/live/SEATV playpath=SEATV swfUrl=http://khmer.be/KhmerTV/player.swf pageUrl=http://khmer.be/Live-TV/default.aspx?ch=seatv live=1</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
