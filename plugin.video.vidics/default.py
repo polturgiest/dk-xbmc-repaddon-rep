@@ -11,6 +11,7 @@ import time,datetime
 import core
 from xml.dom.minidom import Document
 from t0mm0.common.addon import Addon
+import commands
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.vidics')
 home = __settings__.getAddonInfo('path')
@@ -296,7 +297,27 @@ def add_contextsearchmenu(title, video_type):
             'plugin://plugin.video.solarmovie/', section, title)))
 
     return contextmenuitems
-	
+def TestPhp():
+         posdata="ihttpheader=true&iagent=Mozilla%2F5%2E0%20%28Windows%20NT%206%2E1%3B%20WOW64%3B%20rv%3A13%2E0%29%20Gecko%2F20100101%20Firefox%2F13%2E0&url=http%3A%2F%2Fpicasaweb%2Egoogle%2Ecom%2Flh%2Fphoto%2Fp0kYr%40c3AKOUpIulJKuZG0IVM%2AIanJ91ZTEDpmIzA%40OiJSEGDGufZGHjoj%3D%3D&isslverify=true"
+         pcontent=postContent("http://player.phim47.com/load/plugins/picasaphp/plugins_player.php",posdata,"http://phim47.com/xem-online/nu-than-lua-jeong-yi/The-Goddess-Of-Fire,-Jung-Yi-2013/197728.html") 
+         print pcontent
+         downloadMovie("url","test")
+def downloadMovie(url, title):
+        cmd = "System.Exec"
+        cmdapp = "C:\\Users\\dknight\\AppData\\Roaming\\XBMC\\addons\\plugin.video.vidics\\resources\\Debug\\Flashplayer.exe"
+      
+        #xbmcplugin.getSetting('bitcomet')
+        #cmdarg = '--url=' + str(url)
+        cmdarg = str(url)
+        print "%s(\"%s\" \"%s\")" % (cmd, cmdapp, cmdarg)
+        print commands.getstatusoutput(cmdapp)
+        #xbmc.executebuiltin("%s(\"%s\" \"%s\")" % (cmd, cmdapp, cmdarg))
+        #xbmc.executebuiltin("system.exec",thecmd)
+        #os.system('"'+'--url="' + str(url) + '" --silent', shell=True)
+        #xbmc.output(r'"D:\Program Files\BitComet\bitcomet.exe" ' + '--url="' + str(url) + '" --silent')
+        #xbmc.output('"D:\\Program Files\\BitComet\\bitcomet.exe"' + '--url="' + str(url) + '" --silent')
+        #xbmc.output('Trying to download video ' + str(url))
+        return None
 def ParseVideoLink(url,name):
         dialog = xbmcgui.DialogProgress()
         dialog.create('Resolving', 'Resolving video Link...')       
@@ -666,25 +687,34 @@ def SEARCHMOV():
         keyb.doModal()
         searchText = ''
         if (keyb.isConfirmed()):
-                searchText = urllib.quote_plus(keyb.getText())
-        INDEX("http://www.vidics.ch/Category-Movies/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",4,26,"movie")
+                searchText = keyb.getText()
+        SearchResult("movie",searchText)
 		
 def SEARCHTV():
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
         searchText = ''
         if (keyb.isConfirmed()):
-                searchText = urllib.quote_plus(keyb.getText())
-        INDEX("http://www.vidics.ch/Category-TvShows/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",7,27,"tv")
+                searchText = keyb.getText()
+        SearchResult("tv",searchText)
 		
 def SEARCHactor():
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
         searchText = ''
         if (keyb.isConfirmed()):
-                searchText = urllib.quote_plus(keyb.getText())
-        INDEX("http://www.vidics.ch/Category-People/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(searchText)+".htm",11,12,"")
-		
+                searchText = keyb.getText()
+        SearchResult("actor",searchText)
+
+def SearchResult(searchType,Searchtext):
+	Searchtext=urllib.quote_plus(Searchtext)
+	if searchType=="movie":
+			INDEX("http://www.vidics.ch/Category-Movies/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(Searchtext)+".htm",4,26,"movie")
+	elif searchType=="actor":
+			INDEX("http://www.vidics.ch/Category-People/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(Searchtext)+".htm",11,12,"")
+	else:
+			INDEX("http://www.vidics.ch/Category-TvShows/Genre-Any/Letter-Any/Relevancy/1/Search-"+urllib.quote_plus(Searchtext)+".htm",7,27,"tv")
+			
 def getstatic():
         f = open(langfile, "r")
         langs = f.read()
@@ -698,9 +728,15 @@ def postContent(url,data,referr):
                          ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
                          ('Connection','keep-alive'),
                          ('Accept-Language','en-us,en;q=0.5'),
-                         ('Pragma','no-cache')]
+                         ('Pragma','no-cache'),
+                         ('Host','player.phim47.com')]
     usock=opener.open(url,data)
-    response=usock.read()
+    if usock.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO.StringIO(usock.read())
+        f = gzip.GzipFile(fileobj=buf)
+        response = f.read()
+    else:
+        response = usock.read()
     usock.close()
     return response
 	
@@ -1767,6 +1803,7 @@ elif mode==15:
 elif mode==16:
         ListAZ(url,26)
 elif mode==17:
+        TestPhp()
         ListAZ(url,27)
 elif mode==18:
         GenreList(url,26)
@@ -1788,5 +1825,7 @@ elif mode==26:
         INDEX(url,4,26,"movie")
 elif mode==27:
         INDEX(url,7,27,"tv")
+elif mode==28:
+        SearchResult(url,name)
 
 xbmcplugin.endOfDirectory(int(sysarg))
