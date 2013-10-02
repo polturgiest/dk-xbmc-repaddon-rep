@@ -54,6 +54,7 @@
 	<movie name="The Shining" url="/1543" year="&lt;b&gt;8.5&lt;/b&gt; - 1980 "/>
 	<movie name="North by Northwest" url="/1594" year="&lt;b&gt;8.5&lt;/b&gt; - 1959 "/>
 	<movie name="Citizen Kane" url="/1656" year="&lt;b&gt;8.5&lt;/b&gt; - 1941 "/>
+	<movie name="Dragon Ball Z%3A Battle of Gods" url="/2147" year="&lt;b&gt;8.5&lt;/b&gt; - 2013 "/>
 	<movie name="Requiem for a Dream" url="/43" year="&lt;b&gt;8.4&lt;/b&gt; - 2000 "/>
 	<movie name="Star Wars%3A Episode VI - Return of the Jedi" url="/366" year="&lt;b&gt;8.4&lt;/b&gt; - 1983 "/>
 	<movie name="The Avengers" url="/206" year="&lt;b&gt;8.4&lt;/b&gt; - 2012 "/>
@@ -66,6 +67,11 @@
 	<movie name="Singin%27 in the Rain" url="/1601" year="&lt;b&gt;8.4&lt;/b&gt; - 1952 "/>
 	<movie name="Lawrence of Arabia" url="/1602" year="&lt;b&gt;8.4&lt;/b&gt; - 1963 "/>
 	<movie name="Princess Mononoke" url="/1931" year="&lt;b&gt;8.4&lt;/b&gt; - 1999 "/>
+	<movie name="To Kill a Mockingbird" url="/1948" year="&lt;b&gt;8.4&lt;/b&gt; - 1963 "/>
+	<movie name="Once Upon a Time in America" url="/1995" year="&lt;b&gt;8.4&lt;/b&gt; - 1984 "/>
+	<movie name="The Apartment" url="/1997" year="&lt;b&gt;8.4&lt;/b&gt; - 1960 "/>
+	<movie name="Oldboy" url="/2104" year="&lt;b&gt;8.4&lt;/b&gt; - 2003 "/>
+	<movie name="L.A. Confidential" url="/2109" year="&lt;b&gt;8.4&lt;/b&gt; - 1997 "/>
 	<movie name="Batman Begins" url="/80" year="&lt;b&gt;8.3&lt;/b&gt; - 2005 "/>
 	<movie name="Indiana Jones and the Last Crusade" url="/102" year="&lt;b&gt;8.3&lt;/b&gt; - 1989 "/>
 	<movie name="Toy Story" url="/342" year="&lt;b&gt;8.3&lt;/b&gt; - 1995 "/>
@@ -109,6 +115,8 @@
 	<movie name="Trainspotting" url="/1245" year="&lt;b&gt;8.2&lt;/b&gt; - 1996 "/>
 	<movie name="The Thing" url="/1283" year="&lt;b&gt;8.2&lt;/b&gt; - 1982 "/>
 	<movie name="The Big Lebowski" url="/1287" year="&lt;b&gt;8.2&lt;/b&gt; - 1998 "/>
+	<movie name="Cool Hand Luke" url="/2007" year="&lt;b&gt;8.2&lt;/b&gt; - 1967 "/>
+	<movie name="The Hunt" url="/2124" year="&lt;b&gt;8.2&lt;/b&gt; - 2012 "/>
 	<movie name="Gandhi" url="/10" year="&lt;b&gt;8.1&lt;/b&gt; - 1983 "/>
 	<movie name="Finding Nemo" url="/13" year="&lt;b&gt;8.1&lt;/b&gt; - 2003 "/>
 	<movie name="Harry Potter and the Deathly Hallows%3A Part 2" url="/355" year="&lt;b&gt;8.1&lt;/b&gt; - 2011 "/>
@@ -129,6 +137,9 @@
 	<movie name="Network" url="/1714" year="&lt;b&gt;8.1&lt;/b&gt; - 1976 "/>
 	<movie name="Ip Man" url="/1747" year="&lt;b&gt;8.1&lt;/b&gt; - 2008 "/>
 	<movie name="Ben-Hur" url="/1863" year="&lt;b&gt;8.1&lt;/b&gt; - 1960 "/>
+	<movie name="Star Trek Into Darkness" url="/2041" year="&lt;b&gt;8.1&lt;/b&gt; - 2013 "/>
+	<movie name="The Princess Bride" url="/2174" year="&lt;b&gt;8.1&lt;/b&gt; - 1987 "/>
+	<movie name="Twelve Monkeys" url="/2266" year="&lt;b&gt;8.1&lt;/b&gt; - 1996 "/>
 	<movie name="Jurassic Park" url="/35" year="&lt;b&gt;8.0&lt;/b&gt; - 1993 "/>
 	<movie name="Rosemary%27s Baby" url="/44" year="&lt;b&gt;8.0&lt;/b&gt; - 1968 "/>
 	<movie name="Edward Scissorhands" url="/164" year="&lt;b&gt;8.0&lt;/b&gt; - 1990 "/>
@@ -163,6 +174,9 @@
 	<movie name="Before Sunset" url="/1526" year="&lt;b&gt;8.0&lt;/b&gt; - 2004 "/>
 	<movie name="Before Sunrise" url="/1564" year="&lt;b&gt;8.0&lt;/b&gt; - 1995 "/>
 	<movie name="Elite Squad" url="/1578" year="&lt;b&gt;8.0&lt;/b&gt; - 2007 "/>
+	<movie name="Spartacus" url="/1966" year="&lt;b&gt;8.0&lt;/b&gt; - 1960 "/>
+	<movie name="The Conversation" url="/2150" year="&lt;b&gt;8.0&lt;/b&gt; - 1974 "/>
+	<movie name="The Artist" url="/2185" year="&lt;b&gt;8.0&lt;/b&gt; - 2012 "/>
 	<movie name="The Social Network" url="/49" year="&lt;b&gt;7.9&lt;/b&gt; - 2010 "/>
 	<movie name="Casino Royale" url="/125" year="&lt;b&gt;7.9&lt;/b&gt; - 2006 "/>
 	<movie name="End of Watch" url="/281" year="&lt;b&gt;7.9&lt;/b&gt; - 2012 "/>
@@ -204,6 +218,9 @@
 	<movie name="Mulholland Dr." url="/1744" year="&lt;b&gt;7.9&lt;/b&gt; - 2001 "/>
 	<movie name="Mud" url="/1838" year="&lt;b&gt;7.9&lt;/b&gt; - 2013 "/>
 	<movie name="Halloween" url="/1923" year="&lt;b&gt;7.9&lt;/b&gt; - 1978 "/>
+	<movie name="The French Connection" url="/2114" year="&lt;b&gt;7.9&lt;/b&gt; - 1971 "/>
+	<movie name="Crash" url="/2116" year="&lt;b&gt;7.9&lt;/b&gt; - 2005 "/>
+	<movie name="Once" url="/2146" year="&lt;b&gt;7.9&lt;/b&gt; - 2007 "/>
 	<movie name="The Boy in the Striped Pajamas" url="/19" year="&lt;b&gt;7.8&lt;/b&gt; - 2008 "/>
 	<movie name="Stardust" url="/30" year="&lt;b&gt;7.8&lt;/b&gt; - 2007 "/>
 	<movie name="Goldfinger" url="/144" year="&lt;b&gt;7.8&lt;/b&gt; - 1965 "/>
@@ -242,11 +259,18 @@
 	<movie name="Predator" url="/1813" year="&lt;b&gt;7.8&lt;/b&gt; - 1987 "/>
 	<movie name="My Left Foot" url="/1835" year="&lt;b&gt;7.8&lt;/b&gt; - 1989 "/>
 	<movie name="The Magnificent Seven" url="/1867" year="&lt;b&gt;7.8&lt;/b&gt; - 1960 "/>
+	<movie name="The Birds" url="/1965" year="&lt;b&gt;7.8&lt;/b&gt; - 1963 "/>
+	<movie name="Serpico" url="/1968" year="&lt;b&gt;7.8&lt;/b&gt; - 1973 "/>
+	<movie name="Rebel Without a Cause" url="/2085" year="&lt;b&gt;7.8&lt;/b&gt; - 1955 "/>
+	<movie name="The Fugitive" url="/2098" year="&lt;b&gt;7.8&lt;/b&gt; - 1993 "/>
+	<movie name="Ferris Bueller%27s Day Off" url="/2108" year="&lt;b&gt;7.8&lt;/b&gt; - 1986 "/>
+	<movie name="Amour" url="/2125" year="&lt;b&gt;7.8&lt;/b&gt; - 2012 "/>
+	<movie name="Battle Royale" url="/2157" year="&lt;b&gt;7.8&lt;/b&gt; - 2000 "/>
+	<movie name="Indie Game%3A The Movie" url="/2190" year="&lt;b&gt;7.8&lt;/b&gt; - 2012 "/>
 	<movie name="Boyz n the Hood" url="/163" year="&lt;b&gt;7.7&lt;/b&gt; - 1991 "/>
 	<movie name="Star Wars%3A Episode III - Revenge of the Sith" url="/363" year="&lt;b&gt;7.7&lt;/b&gt; - 2005 "/>
 	<movie name="Tombstone" url="/204" year="&lt;b&gt;7.7&lt;/b&gt; - 1993 "/>
 	<movie name="Watchmen" url="/285" year="&lt;b&gt;7.7&lt;/b&gt; - 2009 "/>
-	<movie name="Superbad" url="/288" year="&lt;b&gt;7.7&lt;/b&gt; - 2007 "/>
 	<movie name="Harry Potter and the Prisoner of Azkaban" url="/350" year="&lt;b&gt;7.7&lt;/b&gt; - 2004 "/>
 	<movie name="United 93" url="/440" year="&lt;b&gt;7.7&lt;/b&gt; - 2006 "/>
 	<movie name="Detachment" url="/602" year="&lt;b&gt;7.7&lt;/b&gt; - 2012 "/>
@@ -292,6 +316,15 @@
 	<movie name="Rushmore" url="/1811" year="&lt;b&gt;7.7&lt;/b&gt; - 1999 "/>
 	<movie name="A Bronx Tale" url="/1879" year="&lt;b&gt;7.7&lt;/b&gt; - 1993 "/>
 	<movie name="The Longest Day" url="/1914" year="&lt;b&gt;7.7&lt;/b&gt; - 1962 "/>
+	<movie name="True Grit" url="/2016" year="&lt;b&gt;7.7&lt;/b&gt; - 2010 "/>
+	<movie name="Close Encounters of the Third Kind" url="/2003" year="&lt;b&gt;7.7&lt;/b&gt; - 1977 "/>
+	<movie name="The Sweet Hereafter" url="/2053" year="&lt;b&gt;7.7&lt;/b&gt; - 1997 "/>
+	<movie name="Sympathy for Mr. Vengeance" url="/2102" year="&lt;b&gt;7.7&lt;/b&gt; - 2002 "/>
+	<movie name="The World%27s End %28Webrip%29" url="/2111" year="&lt;b&gt;7.7&lt;/b&gt; - 2013 "/>
+	<movie name="The Best Offer" url="/2139" year="&lt;b&gt;7.7&lt;/b&gt; - 2013 "/>
+	<movie name="Cape Fear" url="/2148" year="&lt;b&gt;7.7&lt;/b&gt; - 1962 "/>
+	<movie name="The Last of the Mohicans" url="/2233" year="&lt;b&gt;7.7&lt;/b&gt; - 1992 "/>
+	<movie name="Dark City" url="/2262" year="&lt;b&gt;7.7&lt;/b&gt; - 1998 "/>
 	<movie name="The Omen" url="/7" year="&lt;b&gt;7.6&lt;/b&gt; - 1976 "/>
 	<movie name="Lawless" url="/72" year="&lt;b&gt;7.6&lt;/b&gt; - 2012 "/>
 	<movie name="Indiana Jones and the Temple of Doom" url="/103" year="&lt;b&gt;7.6&lt;/b&gt; - 1984 "/>
@@ -351,11 +384,21 @@
 	<movie name="Philadelphia" url="/1742" year="&lt;b&gt;7.6&lt;/b&gt; - 1993 "/>
 	<movie name="Moulin Rouge%21" url="/1764" year="&lt;b&gt;7.6&lt;/b&gt; - 2001 "/>
 	<movie name="42" url="/1770" year="&lt;b&gt;7.6&lt;/b&gt; - 2013 "/>
-	<movie name="Fast %26 Furious 6" url="/1783" year="&lt;b&gt;7.6&lt;/b&gt; - 2013 "/>
 	<movie name="Equilibrium" url="/1826" year="&lt;b&gt;7.6&lt;/b&gt; - 2003 "/>
 	<movie name="The Warriors" url="/1866" year="&lt;b&gt;7.6&lt;/b&gt; - 1979 "/>
 	<movie name="When Harry Met Sally..." url="/1878" year="&lt;b&gt;7.6&lt;/b&gt; - 1989 "/>
 	<movie name="The Muppet Movie" url="/1913" year="&lt;b&gt;7.6&lt;/b&gt; - 1979 "/>
+	<movie name="Superbad" url="/1939" year="&lt;b&gt;7.6&lt;/b&gt; - 2007 "/>
+	<movie name="Hugo" url="/1979" year="&lt;b&gt;7.6&lt;/b&gt; - 2011 "/>
+	<movie name="Lost Highway" url="/2008" year="&lt;b&gt;7.6&lt;/b&gt; - 1997 "/>
+	<movie name="Sophie%27s Choice" url="/2009" year="&lt;b&gt;7.6&lt;/b&gt; - 1982 "/>
+	<movie name="The Fifth Element" url="/2097" year="&lt;b&gt;7.6&lt;/b&gt; - 1997 "/>
+	<movie name="Sympathy for Lady Vengeance" url="/2103" year="&lt;b&gt;7.6&lt;/b&gt; - 2005 "/>
+	<movie name="This Is the End" url="/2145" year="&lt;b&gt;7.6&lt;/b&gt; - 2013 "/>
+	<movie name="The City of Lost Children" url="/2257" year="&lt;b&gt;7.6&lt;/b&gt; - 1995 "/>
+	<movie name="The Abyss" url="/2260" year="&lt;b&gt;7.6&lt;/b&gt; - 1989 "/>
+	<movie name="How to Make Money Selling Drugs" url="/2279" year="&lt;b&gt;7.6&lt;/b&gt; - 2012 "/>
+	<movie name="Pacific Rim" url="/2287" year="&lt;b&gt;7.6&lt;/b&gt; - 2013 "/>
 	<movie name="Ted" url="/4" year="&lt;b&gt;7.5&lt;/b&gt; - 2012 "/>
 	<movie name="In the Loop" url="/8" year="&lt;b&gt;7.5&lt;/b&gt; - 2009 "/>
 	<movie name="From Russia with Love" url="/123" year="&lt;b&gt;7.5&lt;/b&gt; - 1964 "/>
@@ -396,8 +439,14 @@
 	<movie name="Star Trek%3A First Contact" url="/1672" year="&lt;b&gt;7.5&lt;/b&gt; - 1996 "/>
 	<movie name="Sleepy Hollow" url="/1707" year="&lt;b&gt;7.5&lt;/b&gt; - 1999 "/>
 	<movie name="Ip Man 2%3A Legend of the Grandmaster" url="/1748" year="&lt;b&gt;7.5&lt;/b&gt; - 2010 "/>
-	<movie name="How to Make Money Selling Drugs" url="/1785" year="&lt;b&gt;7.5&lt;/b&gt; - 2013 "/>
 	<movie name="Mesrine%3A Killer Instinct" url="/1818" year="&lt;b&gt;7.5&lt;/b&gt; - 2008 "/>
+	<movie name="The Flowers of War" url="/1952" year="&lt;b&gt;7.5&lt;/b&gt; - 2011 "/>
+	<movie name="Jacob%27s Ladder" url="/2000" year="&lt;b&gt;7.5&lt;/b&gt; - 1990 "/>
+	<movie name="Iron Man 3" url="/2014" year="&lt;b&gt;7.5&lt;/b&gt; - 2013 "/>
+	<movie name="Three Days of the Condor" url="/2084" year="&lt;b&gt;7.5&lt;/b&gt; - 1975 "/>
+	<movie name="The Meaning of Life" url="/2143" year="&lt;b&gt;7.5&lt;/b&gt; - 1983 "/>
+	<movie name="Chasing Ice" url="/2169" year="&lt;b&gt;7.5&lt;/b&gt; - 2012 "/>
+	<movie name="Tyrannosaur" url="/2195" year="&lt;b&gt;7.5&lt;/b&gt; - 2011 "/>
 	<movie name="Brave" url="/2" year="&lt;b&gt;7.4&lt;/b&gt; - 2012 "/>
 	<movie name="The Bucket List" url="/157" year="&lt;b&gt;7.4&lt;/b&gt; - 2008 "/>
 	<movie name="Sleepers" url="/200" year="&lt;b&gt;7.4&lt;/b&gt; - 1996 "/>
@@ -436,11 +485,18 @@
 	<movie name="Revolutionary Road" url="/1501" year="&lt;b&gt;7.4&lt;/b&gt; - 2009 "/>
 	<movie name="Lars and the Real Girl" url="/1558" year="&lt;b&gt;7.4&lt;/b&gt; - 2007 "/>
 	<movie name="Menace II Society" url="/1715" year="&lt;b&gt;7.4&lt;/b&gt; - 1993 "/>
-	<movie name="The Croods" url="/1809" year="&lt;b&gt;7.4&lt;/b&gt; - 2013 "/>
 	<movie name="Mesrine%3A Public Enemy %231" url="/1819" year="&lt;b&gt;7.4&lt;/b&gt; - 2008 "/>
 	<movie name="Richard III" url="/1860" year="&lt;b&gt;7.4&lt;/b&gt; - 1956 "/>
 	<movie name="Dawn of the Dead" url="/1885" year="&lt;b&gt;7.4&lt;/b&gt; - 2004 "/>
 	<movie name="The Great Gatsby" url="/1936" year="&lt;b&gt;7.4&lt;/b&gt; - 2013 "/>
+	<movie name="The NeverEnding Story" url="/1981" year="&lt;b&gt;7.4&lt;/b&gt; - 1984 "/>
+	<movie name="Open Range" url="/2012" year="&lt;b&gt;7.4&lt;/b&gt; - 2003 "/>
+	<movie name="Now You See Me" url="/2018" year="&lt;b&gt;7.4&lt;/b&gt; - 2013 "/>
+	<movie name="Christmas Vacation" url="/2088" year="&lt;b&gt;7.4&lt;/b&gt; - 1989 "/>
+	<movie name="Rudy" url="/2180" year="&lt;b&gt;7.4&lt;/b&gt; - 1993 "/>
+	<movie name="Under the Sea 3D" url="/2204" year="&lt;b&gt;7.4&lt;/b&gt; - 2009 "/>
+	<movie name="Driving Miss Daisy" url="/2219" year="&lt;b&gt;7.4&lt;/b&gt; - 1989 "/>
+	<movie name="Assault on Precinct 13" url="/2282" year="&lt;b&gt;7.4&lt;/b&gt; - 1976 "/>
 	<movie name="The Amazing Spider-Man" url="/31" year="&lt;b&gt;7.3&lt;/b&gt; - 2012 "/>
 	<movie name="Ruby Sparks" url="/33" year="&lt;b&gt;7.3&lt;/b&gt; - 2012 "/>
 	<movie name="Fast Five" url="/61" year="&lt;b&gt;7.3&lt;/b&gt; - 2011 "/>
@@ -504,6 +560,16 @@
 	<movie name="Law Abiding Citizen" url="/1718" year="&lt;b&gt;7.3&lt;/b&gt; - 2009 "/>
 	<movie name="Animal Kingdom" url="/1756" year="&lt;b&gt;7.3&lt;/b&gt; - 2010 "/>
 	<movie name="Copperhead" url="/1774" year="&lt;b&gt;7.3&lt;/b&gt; - 2013 "/>
+	<movie name="The Descent" url="/1950" year="&lt;b&gt;7.3&lt;/b&gt; - 2006 "/>
+	<movie name="The Lincoln Lawyer" url="/2031" year="&lt;b&gt;7.3&lt;/b&gt; - 2011 "/>
+	<movie name="Fast %26 Furious 6" url="/2066" year="&lt;b&gt;7.3&lt;/b&gt; - 2013 "/>
+	<movie name="The Cook%2C the Thief%2C His Wife %26 Her Lover" url="/2074" year="&lt;b&gt;7.3&lt;/b&gt; - 1990 "/>
+	<movie name="The Kings of Summer" url="/2077" year="&lt;b&gt;7.3&lt;/b&gt; - 2013 "/>
+	<movie name="Disconnect" url="/2078" year="&lt;b&gt;7.3&lt;/b&gt; - 2013 "/>
+	<movie name="Blow Out" url="/2096" year="&lt;b&gt;7.3&lt;/b&gt; - 1981 "/>
+	<movie name="The Croods" url="/2140" year="&lt;b&gt;7.3&lt;/b&gt; - 2013 "/>
+	<movie name="Cape Fear" url="/2149" year="&lt;b&gt;7.3&lt;/b&gt; - 1991 "/>
+	<movie name="Eraserhead" url="/2217" year="&lt;b&gt;7.3&lt;/b&gt; - 1978 "/>
 	<movie name="Cloverfield" url="/20" year="&lt;b&gt;7.2&lt;/b&gt; - 2008 "/>
 	<movie name="From Dusk Till Dawn" url="/27" year="&lt;b&gt;7.2&lt;/b&gt; - 1996 "/>
 	<movie name="Crimson Tide" url="/97" year="&lt;b&gt;7.2&lt;/b&gt; - 1995 "/>
@@ -558,8 +624,19 @@
 	<movie name="Broken" url="/1812" year="&lt;b&gt;7.2&lt;/b&gt; - 2012 "/>
 	<movie name="The Virgin Suicides" url="/1830" year="&lt;b&gt;7.2&lt;/b&gt; - 2000 "/>
 	<movie name="What Maisie Knew" url="/1837" year="&lt;b&gt;7.2&lt;/b&gt; - 2013 "/>
-	<movie name="Dumb %26amp%3B Dumber" url="/1880" year="&lt;b&gt;7.2&lt;/b&gt; - 1994 "/>
+	<movie name="Dumb %26 Dumber" url="/1880" year="&lt;b&gt;7.2&lt;/b&gt; - 1994 "/>
 	<movie name="The Messenger" url="/1892" year="&lt;b&gt;7.2&lt;/b&gt; - 2010 "/>
+	<movie name="Kon-Tiki" url="/1962" year="&lt;b&gt;7.2&lt;/b&gt; - 2013 "/>
+	<movie name="Wild at Heart" url="/1972" year="&lt;b&gt;7.2&lt;/b&gt; - 1990 "/>
+	<movie name="We%27re the Millers %28Webrip%29" url="/2030" year="&lt;b&gt;7.2&lt;/b&gt; - 2013 "/>
+	<movie name="Kick-Ass 2 %28Webrip%29" url="/2060" year="&lt;b&gt;7.2&lt;/b&gt; - 2013 "/>
+	<movie name="World War Z" url="/2067" year="&lt;b&gt;7.2&lt;/b&gt; - 2013 "/>
+	<movie name="The East" url="/2072" year="&lt;b&gt;7.2&lt;/b&gt; - 2013 "/>
+	<movie name="Jerry Maguire" url="/2106" year="&lt;b&gt;7.2&lt;/b&gt; - 1996 "/>
+	<movie name="Hard Times" url="/2110" year="&lt;b&gt;7.2&lt;/b&gt; - 1975 "/>
+	<movie name="This Boy%27s Life" url="/2181" year="&lt;b&gt;7.2&lt;/b&gt; - 1993 "/>
+	<movie name="Yellow Submarine" url="/2263" year="&lt;b&gt;7.2&lt;/b&gt; - 1968 "/>
+	<movie name="Fahrenheit 451" url="/2281" year="&lt;b&gt;7.2&lt;/b&gt; - 1966 "/>
 	<movie name="Tremors" url="/11" year="&lt;b&gt;7.1&lt;/b&gt; - 1990 "/>
 	<movie name="Jarhead" url="/16" year="&lt;b&gt;7.1&lt;/b&gt; - 2005 "/>
 	<movie name="Burn After Reading" url="/41" year="&lt;b&gt;7.1&lt;/b&gt; - 2008 "/>
@@ -602,7 +679,7 @@
 	<movie name="Pitch Black" url="/1031" year="&lt;b&gt;7.1&lt;/b&gt; - 2000 "/>
 	<movie name="The Karate Kid" url="/1089" year="&lt;b&gt;7.1&lt;/b&gt; - 1984 "/>
 	<movie name="There%27s Something About Mary" url="/1103" year="&lt;b&gt;7.1&lt;/b&gt; - 1998 "/>
-	<movie name="Robot %26amp%3B Frank" url="/1111" year="&lt;b&gt;7.1&lt;/b&gt; - 2012 "/>
+	<movie name="Robot %26 Frank" url="/1111" year="&lt;b&gt;7.1&lt;/b&gt; - 2012 "/>
 	<movie name="Shooter" url="/1229" year="&lt;b&gt;7.1&lt;/b&gt; - 2007 "/>
 	<movie name="Old School" url="/1254" year="&lt;b&gt;7.1&lt;/b&gt; - 2003 "/>
 	<movie name="Melancholia" url="/1255" year="&lt;b&gt;7.1&lt;/b&gt; - 2011 "/>
@@ -613,7 +690,6 @@
 	<movie name="Jack Reacher" url="/1370" year="&lt;b&gt;7.1&lt;/b&gt; - 2012 "/>
 	<movie name="Kill the Irishman" url="/1400" year="&lt;b&gt;7.1&lt;/b&gt; - 2012 "/>
 	<movie name="Upstream Color" url="/1414" year="&lt;b&gt;7.1&lt;/b&gt; - 2013 "/>
-	<movie name="Desperado" url="/1429" year="&lt;b&gt;7.1&lt;/b&gt; - 1995 "/>
 	<movie name="Chronicle" url="/1542" year="&lt;b&gt;7.1&lt;/b&gt; - 2012 "/>
 	<movie name="Warm Bodies" url="/1556" year="&lt;b&gt;7.1&lt;/b&gt; - 2013 "/>
 	<movie name="Hard Candy" url="/1572" year="&lt;b&gt;7.1&lt;/b&gt; - 2006 "/>
@@ -632,6 +708,23 @@
 	<movie name="Coach Carter" url="/1900" year="&lt;b&gt;7.1&lt;/b&gt; - 2005 "/>
 	<movie name="Silverado" url="/1903" year="&lt;b&gt;7.1&lt;/b&gt; - 1985 "/>
 	<movie name="Kingdom of Heaven" url="/1932" year="&lt;b&gt;7.1&lt;/b&gt; - 2005 "/>
+	<movie name="Friday" url="/1970" year="&lt;b&gt;7.1&lt;/b&gt; - 1995 "/>
+	<movie name="Nowhere Boy" url="/1975" year="&lt;b&gt;7.1&lt;/b&gt; - 2009 "/>
+	<movie name="We Bought a Zoo" url="/1977" year="&lt;b&gt;7.1&lt;/b&gt; - 2011 "/>
+	<movie name="The Jerk" url="/2025" year="&lt;b&gt;7.1&lt;/b&gt; - 1979 "/>
+	<movie name="Sexy Beast" url="/2037" year="&lt;b&gt;7.1&lt;/b&gt; - 2001 "/>
+	<movie name="Desperado" url="/2038" year="&lt;b&gt;7.1&lt;/b&gt; - 1995 "/>
+	<movie name="Highlander" url="/2087" year="&lt;b&gt;7.1&lt;/b&gt; - 1986 "/>
+	<movie name="Dressed to Kill" url="/2090" year="&lt;b&gt;7.1&lt;/b&gt; - 1980 "/>
+	<movie name="A Hijacking" url="/2105" year="&lt;b&gt;7.1&lt;/b&gt; - 2012 "/>
+	<movie name="Carnage" url="/2127" year="&lt;b&gt;7.1&lt;/b&gt; - 2011 "/>
+	<movie name="Brothers" url="/2196" year="&lt;b&gt;7.1&lt;/b&gt; - 2009 "/>
+	<movie name="Born to Be Wild" url="/2197" year="&lt;b&gt;7.1&lt;/b&gt; - 2011 "/>
+	<movie name="Fracture" url="/2200" year="&lt;b&gt;7.1&lt;/b&gt; - 2007 "/>
+	<movie name="Starship Troopers" url="/2220" year="&lt;b&gt;7.1&lt;/b&gt; - 1997 "/>
+	<movie name="Definitely%2C Maybe" url="/2235" year="&lt;b&gt;7.1&lt;/b&gt; - 2008 "/>
+	<movie name="Murder in the First" url="/2264" year="&lt;b&gt;7.1&lt;/b&gt; - 1995 "/>
+	<movie name="The Doors" url="/2265" year="&lt;b&gt;7.1&lt;/b&gt; - 1991 "/>
 	<movie name="Pineapple Express" url="/18" year="&lt;b&gt;7.0&lt;/b&gt; - 2008 "/>
 	<movie name="Madagascar 3%3A Europe%27s Most Wanted" url="/21" year="&lt;b&gt;7.0&lt;/b&gt; - 2012 "/>
 	<movie name="Meet Joe Black" url="/52" year="&lt;b&gt;7.0&lt;/b&gt; - 1998 "/>
@@ -689,8 +782,18 @@
 	<movie name="10 Things I Hate About You" url="/1659" year="&lt;b&gt;7.0&lt;/b&gt; - 1999 "/>
 	<movie name="The Legend Is Born%3A Ip Man" url="/1749" year="&lt;b&gt;7.0&lt;/b&gt; - 2010 "/>
 	<movie name="Paul" url="/1754" year="&lt;b&gt;7.0&lt;/b&gt; - 2011 "/>
+	<movie name="The Iceman" url="/1960" year="&lt;b&gt;7.0&lt;/b&gt; - 2013 "/>
 	<movie name="Spaceballs" url="/1907" year="&lt;b&gt;7.0&lt;/b&gt; - 1987 "/>
 	<movie name="The Driver" url="/1915" year="&lt;b&gt;7.0&lt;/b&gt; - 1978 "/>
+	<movie name="Help%21" url="/1967" year="&lt;b&gt;7.0&lt;/b&gt; - 1965 "/>
+	<movie name="Behind the Candelabra" url="/2063" year="&lt;b&gt;7.0&lt;/b&gt; - 2013 "/>
+	<movie name="House of Usher" url="/2075" year="&lt;b&gt;7.0&lt;/b&gt; - 1960 "/>
+	<movie name="Out of Africa" url="/2086" year="&lt;b&gt;7.0&lt;/b&gt; - 1985 "/>
+	<movie name="A Scanner Darkly" url="/2118" year="&lt;b&gt;7.0&lt;/b&gt; - 2006 "/>
+	<movie name="My Week with Marilyn" url="/2122" year="&lt;b&gt;7.0&lt;/b&gt; - 2011 "/>
+	<movie name="Ain%27t Them Bodies Saints" url="/2250" year="&lt;b&gt;7.0&lt;/b&gt; - 2013 "/>
+	<movie name="Muriel%27s Wedding" url="/2253" year="&lt;b&gt;7.0&lt;/b&gt; - 1995 "/>
+	<movie name="Get Low" url="/2286" year="&lt;b&gt;7.0&lt;/b&gt; - 2010 "/>
 	<movie name="You Only Live Twice" url="/143" year="&lt;b&gt;6.9&lt;/b&gt; - 1967 "/>
 	<movie name="Ice Age%3A The Meltdown" url="/359" year="&lt;b&gt;6.9&lt;/b&gt; - 2006 "/>
 	<movie name="Mean Girls" url="/239" year="&lt;b&gt;6.9&lt;/b&gt; - 2004 "/>
@@ -736,6 +839,7 @@
 	<movie name="Welcome to the Rileys" url="/1771" year="&lt;b&gt;6.9&lt;/b&gt; - 2010 "/>
 	<movie name="Evil Dead" url="/1777" year="&lt;b&gt;6.9&lt;/b&gt; - 2013 "/>
 	<movie name="Orphan" url="/1910" year="&lt;b&gt;6.9&lt;/b&gt; - 2009 "/>
+	<movie name="Unknown" url="/2120" year="&lt;b&gt;6.9&lt;/b&gt; - 2011 "/>
 	<movie name="Madagascar" url="/14" year="&lt;b&gt;6.8&lt;/b&gt; - 2005 "/>
 	<movie name="Your Sister%27s Sister" url="/39" year="&lt;b&gt;6.8&lt;/b&gt; - 2012 "/>
 	<movie name="For Your Eyes Only" url="/135" year="&lt;b&gt;6.8&lt;/b&gt; - 1981 "/>
@@ -790,10 +894,9 @@
 	<movie name="The A-Team" url="/1539" year="&lt;b&gt;6.8&lt;/b&gt; - 2010 "/>
 	<movie name="The Company Men" url="/1540" year="&lt;b&gt;6.8&lt;/b&gt; - 2011 "/>
 	<movie name="Oz the Great and Powerful" url="/1561" year="&lt;b&gt;6.8&lt;/b&gt; - 2013 "/>
-	<movie name="Ace Ventura%3A Pet Detective" url="/1614" year="&lt;b&gt;6.8&lt;/b&gt; - 1994 "/>
+	<movie name="Ace Ventura%3A Pet Detective" url="/2080" year="&lt;b&gt;6.8&lt;/b&gt; - 1994 "/>
 	<movie name="Rush Hour" url="/1621" year="&lt;b&gt;6.8&lt;/b&gt; - 1998 "/>
 	<movie name="Constantine" url="/1623" year="&lt;b&gt;6.8&lt;/b&gt; - 2005 "/>
-	<movie name="V%2FH%2FS%2F2" url="/1650" year="&lt;b&gt;6.8&lt;/b&gt; - 2013 "/>
 	<movie name="The Devil%27s Rejects" url="/1662" year="&lt;b&gt;6.8&lt;/b&gt; - 2005 "/>
 	<movie name="Pretty Woman" url="/1700" year="&lt;b&gt;6.8&lt;/b&gt; - 1990 "/>
 	<movie name="Undisputed II%3A Last Man Standing" url="/1737" year="&lt;b&gt;6.8&lt;/b&gt; - 2007 "/>
@@ -802,10 +905,25 @@
 	<movie name="The Sapphires" url="/1822" year="&lt;b&gt;6.8&lt;/b&gt; - 2012 "/>
 	<movie name="Independence Day" url="/1825" year="&lt;b&gt;6.8&lt;/b&gt; - 1996 "/>
 	<movie name="Panic Room" url="/1855" year="&lt;b&gt;6.8&lt;/b&gt; - 2002 "/>
-	<movie name="Byzantium" url="/1871" year="&lt;b&gt;6.8&lt;/b&gt; - 2013 "/>
+	<movie name="The Brides of Dracula" url="/2163" year="&lt;b&gt;6.8&lt;/b&gt; - 1960 "/>
 	<movie name="Coming to America" url="/1877" year="&lt;b&gt;6.8&lt;/b&gt; - 1988 "/>
 	<movie name="Hellboy" url="/1883" year="&lt;b&gt;6.8&lt;/b&gt; - 2004 "/>
 	<movie name="Lemony Snicket%27s A Series of Unfortunate Events" url="/1899" year="&lt;b&gt;6.8&lt;/b&gt; - 2004 "/>
+	<movie name="The Score" url="/1953" year="&lt;b&gt;6.8&lt;/b&gt; - 2001 "/>
+	<movie name="Pain %26 Gain" url="/1963" year="&lt;b&gt;6.8&lt;/b&gt; - 2013 "/>
+	<movie name="Silver Streak" url="/1987" year="&lt;b&gt;6.8&lt;/b&gt; - 1976 "/>
+	<movie name="The Last Boy Scout" url="/1988" year="&lt;b&gt;6.8&lt;/b&gt; - 1991 "/>
+	<movie name="The Towering Inferno" url="/1996" year="&lt;b&gt;6.8&lt;/b&gt; - 1974 "/>
+	<movie name="Machete" url="/1999" year="&lt;b&gt;6.8&lt;/b&gt; - 2010 "/>
+	<movie name="The Fog" url="/2073" year="&lt;b&gt;6.8&lt;/b&gt; - 1980 "/>
+	<movie name="Still Mine" url="/2064" year="&lt;b&gt;6.8&lt;/b&gt; - 2013 "/>
+	<movie name="The Holiday" url="/2121" year="&lt;b&gt;6.8&lt;/b&gt; - 2006 "/>
+	<movie name="Clear and Present Danger" url="/2130" year="&lt;b&gt;6.8&lt;/b&gt; - 1994 "/>
+	<movie name="Ultimate Avengers" url="/2135" year="&lt;b&gt;6.8&lt;/b&gt; - 2006 "/>
+	<movie name="Local Color" url="/2179" year="&lt;b&gt;6.8&lt;/b&gt; - 2009 "/>
+	<movie name="John Q" url="/2213" year="&lt;b&gt;6.8&lt;/b&gt; - 2002 "/>
+	<movie name="Extremely Loud %26amp%3B Incredibly Close" url="/2228" year="&lt;b&gt;6.8&lt;/b&gt; - 2012 "/>
+	<movie name="Conan the Barbarian" url="/2275" year="&lt;b&gt;6.8&lt;/b&gt; - 1982 "/>
 	<movie name="Savages" url="/3" year="&lt;b&gt;6.7&lt;/b&gt; - 2012 "/>
 	<movie name="Madagascar%3A Escape 2 Africa" url="/17" year="&lt;b&gt;6.7&lt;/b&gt; - 2008 "/>
 	<movie name="Quantum of Solace" url="/127" year="&lt;b&gt;6.7&lt;/b&gt; - 2008 "/>
@@ -877,6 +995,18 @@
 	<movie name="The Lake House" url="/1817" year="&lt;b&gt;6.7&lt;/b&gt; - 2006 "/>
 	<movie name="What Dreams May Come" url="/1834" year="&lt;b&gt;6.7&lt;/b&gt; - 1998 "/>
 	<movie name="Fletch" url="/1876" year="&lt;b&gt;6.7&lt;/b&gt; - 1985 "/>
+	<movie name="Signs" url="/1954" year="&lt;b&gt;6.7&lt;/b&gt; - 2002 "/>
+	<movie name="Sleepless in Seattle" url="/1969" year="&lt;b&gt;6.7&lt;/b&gt; - 1993 "/>
+	<movie name="The Disappearance of Alice Creed" url="/1974" year="&lt;b&gt;6.7&lt;/b&gt; - 2010 "/>
+	<movie name="The Last Castle" url="/2002" year="&lt;b&gt;6.7&lt;/b&gt; - 2001 "/>
+	<movie name="Anonymous" url="/2068" year="&lt;b&gt;6.7&lt;/b&gt; - 2011 "/>
+	<movie name="Proof" url="/2123" year="&lt;b&gt;6.7&lt;/b&gt; - 2005 "/>
+	<movie name="Ultimate Avengers II" url="/2136" year="&lt;b&gt;6.7&lt;/b&gt; - 2006 "/>
+	<movie name="Cool Runnings" url="/2144" year="&lt;b&gt;6.7&lt;/b&gt; - 1993 "/>
+	<movie name="Monster House" url="/2188" year="&lt;b&gt;6.7&lt;/b&gt; - 2006 "/>
+	<movie name="The New World" url="/2211" year="&lt;b&gt;6.7&lt;/b&gt; - 2006 "/>
+	<movie name="Seraphim Falls" url="/2227" year="&lt;b&gt;6.7&lt;/b&gt; - 2007 "/>
+	<movie name="Hysteria" url="/2229" year="&lt;b&gt;6.7&lt;/b&gt; - 2011 "/>
 	<movie name="Octopussy" url="/134" year="&lt;b&gt;6.6&lt;/b&gt; - 1983 "/>
 	<movie name="Hope Springs" url="/151" year="&lt;b&gt;6.6&lt;/b&gt; - 2012 "/>
 	<movie name="The Magic of Belle Isle" url="/214" year="&lt;b&gt;6.6&lt;/b&gt; - 2012 "/>
@@ -916,7 +1046,7 @@
 	<movie name="The Chronicles of Narnia%3A Prince Caspian" url="/1242" year="&lt;b&gt;6.6&lt;/b&gt; - 2008 "/>
 	<movie name="Austin Powers%3A The Spy Who Shagged Me" url="/1271" year="&lt;b&gt;6.6&lt;/b&gt; - 1999 "/>
 	<movie name="John Carter" url="/1297" year="&lt;b&gt;6.6&lt;/b&gt; - 2012 "/>
-	<movie name="Angels %26amp%3B Demons" url="/1309" year="&lt;b&gt;6.6&lt;/b&gt; - 2009 "/>
+	<movie name="Angels %26 Demons" url="/1309" year="&lt;b&gt;6.6&lt;/b&gt; - 2009 "/>
 	<movie name="Prince of Persia%3A The Sands of Time" url="/1347" year="&lt;b&gt;6.6&lt;/b&gt; - 2010 "/>
 	<movie name="The Family Man" url="/1457" year="&lt;b&gt;6.6&lt;/b&gt; - 2000 "/>
 	<movie name="Superman%3A Unbound" url="/1473" year="&lt;b&gt;6.6&lt;/b&gt; - 2013 "/>
@@ -927,10 +1057,19 @@
 	<movie name="The Call" url="/1702" year="&lt;b&gt;6.6&lt;/b&gt; - 2013 "/>
 	<movie name="Song for Marion" url="/1721" year="&lt;b&gt;6.6&lt;/b&gt; - 2013 "/>
 	<movie name="Pretty in Pink" url="/1741" year="&lt;b&gt;6.6&lt;/b&gt; - 1986 "/>
+	<movie name="Body Double" url="/1986" year="&lt;b&gt;6.6&lt;/b&gt; - 1984 "/>
 	<movie name="I Declare War" url="/1851" year="&lt;b&gt;6.6&lt;/b&gt; - 2012 "/>
 	<movie name="The Forbidden Kingdom" url="/1889" year="&lt;b&gt;6.6&lt;/b&gt; - 2008 "/>
 	<movie name="Epic" url="/1919" year="&lt;b&gt;6.6&lt;/b&gt; - 2013 "/>
 	<movie name="That Touch of Mink" url="/1935" year="&lt;b&gt;6.6&lt;/b&gt; - 1962 "/>
+	<movie name="Bruce Almighty" url="/1946" year="&lt;b&gt;6.6&lt;/b&gt; - 2003 "/>
+	<movie name="Love %26 Other Drugs" url="/1980" year="&lt;b&gt;6.6&lt;/b&gt; - 2010 "/>
+	<movie name="Rumble in the Bronx" url="/1998" year="&lt;b&gt;6.6&lt;/b&gt; - 1996 "/>
+	<movie name="Under the Tuscan Sun" url="/2094" year="&lt;b&gt;6.6&lt;/b&gt; - 2003 "/>
+	<movie name="Stuck in Love" url="/2168" year="&lt;b&gt;6.6&lt;/b&gt; - 2013 "/>
+	<movie name="The Grass Is Greener" url="/2175" year="&lt;b&gt;6.6&lt;/b&gt; - 1961 "/>
+	<movie name="Man on a Ledge" url="/2184" year="&lt;b&gt;6.6&lt;/b&gt; - 2012 "/>
+	<movie name="Paper Man" url="/2270" year="&lt;b&gt;6.6&lt;/b&gt; - 2009 "/>
 	<movie name="Outbreak" url="/26" year="&lt;b&gt;6.5&lt;/b&gt; - 1995 "/>
 	<movie name="Fast %26 Furious" url="/57" year="&lt;b&gt;6.5&lt;/b&gt; - 2009 "/>
 	<movie name="U-571" url="/106" year="&lt;b&gt;6.5&lt;/b&gt; - 2000 "/>
@@ -992,6 +1131,15 @@
 	<movie name="Drinking Buddies" url="/1845" year="&lt;b&gt;6.5&lt;/b&gt; - 2013 "/>
 	<movie name="Hereafter" url="/1898" year="&lt;b&gt;6.5&lt;/b&gt; - 2010 "/>
 	<movie name="Prince Avalanche" url="/1934" year="&lt;b&gt;6.5&lt;/b&gt; - 2013 "/>
+	<movie name="A Boy and His Dog" url="/1957" year="&lt;b&gt;6.5&lt;/b&gt; - 1975 "/>
+	<movie name="The Reluctant Fundamentalist" url="/2029" year="&lt;b&gt;6.5&lt;/b&gt; - 2013 "/>
+	<movie name="Joy Ride" url="/2128" year="&lt;b&gt;6.5&lt;/b&gt; - 2001 "/>
+	<movie name="Byzantium" url="/2170" year="&lt;b&gt;6.5&lt;/b&gt; - 2013 "/>
+	<movie name="K-19%3A The Widowmaker" url="/2230" year="&lt;b&gt;6.5&lt;/b&gt; - 2002 "/>
+	<movie name="Bloodsport" url="/2231" year="&lt;b&gt;6.5&lt;/b&gt; - 1988 "/>
+	<movie name="Europa Report" url="/2244" year="&lt;b&gt;6.5&lt;/b&gt; - 2013 "/>
+	<movie name="EuroTrip" url="/2258" year="&lt;b&gt;6.5&lt;/b&gt; - 2004 "/>
+	<movie name="The Village" url="/2267" year="&lt;b&gt;6.5&lt;/b&gt; - 2004 "/>
 	<movie name="Indiana Jones and the Kingdom of the Crystal Skull" url="/101" year="&lt;b&gt;6.4&lt;/b&gt; - 2008 "/>
 	<movie name="Tomorrow Never Dies" url="/129" year="&lt;b&gt;6.4&lt;/b&gt; - 1997 "/>
 	<movie name="On the Road" url="/158" year="&lt;b&gt;6.4&lt;/b&gt; - 2012 "/>
@@ -1050,9 +1198,15 @@
 	<movie name="Morning Glory" url="/1787" year="&lt;b&gt;6.4&lt;/b&gt; - 2010 "/>
 	<movie name="City of Ember" url="/1788" year="&lt;b&gt;6.4&lt;/b&gt; - 2008 "/>
 	<movie name="The Slammin%27 Salmon" url="/1827" year="&lt;b&gt;6.4&lt;/b&gt; - 2009 "/>
-	<movie name="Only God Forgives" url="/1833" year="&lt;b&gt;6.4&lt;/b&gt; - 2013 "/>
 	<movie name="Halloween II" url="/1924" year="&lt;b&gt;6.4&lt;/b&gt; - 1981 "/>
 	<movie name="From Paris with Love" url="/1933" year="&lt;b&gt;6.4&lt;/b&gt; - 2010 "/>
+	<movie name="Road Trip" url="/1949" year="&lt;b&gt;6.4&lt;/b&gt; - 2000 "/>
+	<movie name="Weird Science" url="/2076" year="&lt;b&gt;6.4&lt;/b&gt; - 1985 "/>
+	<movie name="Night Train to Lisbon" url="/2132" year="&lt;b&gt;6.4&lt;/b&gt; - 2013 "/>
+	<movie name="Child%27s Play" url="/2158" year="&lt;b&gt;6.4&lt;/b&gt; - 1988 "/>
+	<movie name="Accepted" url="/2268" year="&lt;b&gt;6.4&lt;/b&gt; - 2006 "/>
+	<movie name="The Awakening" url="/2274" year="&lt;b&gt;6.4&lt;/b&gt; - 2011 "/>
+	<movie name="Room 237" url="/2280" year="&lt;b&gt;6.4&lt;/b&gt; - 2012 "/>
 	<movie name="You%27ve Got Mail" url="/6" year="&lt;b&gt;6.3&lt;/b&gt; - 1998 "/>
 	<movie name="The Lost World%3A Jurassic Park" url="/34" year="&lt;b&gt;6.3&lt;/b&gt; - 1997 "/>
 	<movie name="Some Guy Who Kills People" url="/40" year="&lt;b&gt;6.3&lt;/b&gt; - 2012 "/>
@@ -1126,15 +1280,26 @@
 	<movie name="Star Trek%3A Insurrection" url="/1673" year="&lt;b&gt;6.3&lt;/b&gt; - 1998 "/>
 	<movie name="Star Trek%3A Nemesis" url="/1674" year="&lt;b&gt;6.3&lt;/b&gt; - 2002 "/>
 	<movie name="Mamma Mia%21" url="/1765" year="&lt;b&gt;6.3&lt;/b&gt; - 2008 "/>
-	<movie name="Europa Report" url="/1773" year="&lt;b&gt;6.3&lt;/b&gt; - 2013 "/>
 	<movie name="Redemption" url="/1781" year="&lt;b&gt;6.3&lt;/b&gt; - 2013 "/>
 	<movie name="Father of the Bride" url="/1815" year="&lt;b&gt;6.3&lt;/b&gt; - 1991 "/>
-	<movie name="Scenic Route" url="/1841" year="&lt;b&gt;6.3&lt;/b&gt; - 2013 "/>
 	<movie name="Night at the Museum" url="/1857" year="&lt;b&gt;6.3&lt;/b&gt; - 2006 "/>
 	<movie name="Van Wilder" url="/1881" year="&lt;b&gt;6.3&lt;/b&gt; - 2002 "/>
 	<movie name="Going the Distance" url="/1897" year="&lt;b&gt;6.3&lt;/b&gt; - 2010 "/>
 	<movie name="Space Cowboys" url="/1902" year="&lt;b&gt;6.3&lt;/b&gt; - 2000 "/>
 	<movie name="Ninja Assassin" url="/1909" year="&lt;b&gt;6.3&lt;/b&gt; - 2009 "/>
+	<movie name="Big Miracle" url="/1943" year="&lt;b&gt;6.3&lt;/b&gt; - 2012 "/>
+	<movie name="Lovelace" url="/1961" year="&lt;b&gt;6.3&lt;/b&gt; - 2013 "/>
+	<movie name="Adore" url="/1991" year="&lt;b&gt;6.3&lt;/b&gt; - 2013 "/>
+	<movie name="A Single Shot" url="/2048" year="&lt;b&gt;6.3&lt;/b&gt; - 2013 "/>
+	<movie name="The Fury" url="/2024" year="&lt;b&gt;6.3&lt;/b&gt; - 1978 "/>
+	<movie name="Simon Killer" url="/2046" year="&lt;b&gt;6.3&lt;/b&gt; - 2013 "/>
+	<movie name="The Blair Witch Project" url="/2095" year="&lt;b&gt;6.3&lt;/b&gt; - 1999 "/>
+	<movie name="The Losers" url="/2099" year="&lt;b&gt;6.3&lt;/b&gt; - 2010 "/>
+	<movie name="Ordinary Decent Criminal" url="/2191" year="&lt;b&gt;6.3&lt;/b&gt; - 2000 "/>
+	<movie name="Burning Man" url="/2199" year="&lt;b&gt;6.3&lt;/b&gt; - 2011 "/>
+	<movie name="Knight and Day" url="/2208" year="&lt;b&gt;6.3&lt;/b&gt; - 2010 "/>
+	<movie name="The Crossing Guard" url="/2223" year="&lt;b&gt;6.3&lt;/b&gt; - 1995 "/>
+	<movie name="Cedar Rapids" url="/2272" year="&lt;b&gt;6.3&lt;/b&gt; - 2011 "/>
 	<movie name="Vacancy" url="/29" year="&lt;b&gt;6.2&lt;/b&gt; - 2007 "/>
 	<movie name="The Campaign" url="/78" year="&lt;b&gt;6.2&lt;/b&gt; - 2012 "/>
 	<movie name="Step Up Revolution" url="/82" year="&lt;b&gt;6.2&lt;/b&gt; - 2012 "/>
@@ -1181,18 +1346,28 @@
 	<movie name="I Give It a Year" url="/1469" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
 	<movie name="Hansel %26 Gretel%3A Witch Hunters" url="/1492" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
 	<movie name="Leap Year" url="/1498" year="&lt;b&gt;6.2&lt;/b&gt; - 2010 "/>
-	<movie name="Burlesque" url="/1499" year="&lt;b&gt;6.2&lt;/b&gt; - 2010 "/>
 	<movie name="Wrong" url="/1545" year="&lt;b&gt;6.2&lt;/b&gt; - 2012 "/>
 	<movie name="Wall Street%3A Money Never Sleeps" url="/1547" year="&lt;b&gt;6.2&lt;/b&gt; - 2010 "/>
 	<movie name="Womb" url="/1569" year="&lt;b&gt;6.2&lt;/b&gt; - 2011 "/>
 	<movie name="The Brass Teapot" url="/1629" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
-	<movie name="Kate %26amp%3B Leopold" url="/1713" year="&lt;b&gt;6.2&lt;/b&gt; - 2001 "/>
+	<movie name="Kate %26 Leopold" url="/1713" year="&lt;b&gt;6.2&lt;/b&gt; - 2001 "/>
 	<movie name="London Boulevard" url="/1728" year="&lt;b&gt;6.2&lt;/b&gt; - 2010 "/>
 	<movie name="Siberian Education" url="/1792" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
 	<movie name="Emperor" url="/1920" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
 	<movie name="The Thing" url="/1856" year="&lt;b&gt;6.2&lt;/b&gt; - 2011 "/>
 	<movie name="Cleanskin" url="/1895" year="&lt;b&gt;6.2&lt;/b&gt; - 2012 "/>
 	<movie name="Surrogates" url="/1906" year="&lt;b&gt;6.2&lt;/b&gt; - 2009 "/>
+	<movie name="Step Up" url="/1992" year="&lt;b&gt;6.2&lt;/b&gt; - 2006 "/>
+	<movie name="The Burning" url="/2020" year="&lt;b&gt;6.2&lt;/b&gt; - 1981 "/>
+	<movie name="The Bling Ring" url="/2079" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
+	<movie name="Last Man Standing" url="/2151" year="&lt;b&gt;6.2&lt;/b&gt; - 1996 "/>
+	<movie name="The Frozen Ground" url="/2165" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
+	<movie name="Scenic Route" url="/2166" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
+	<movie name="V%2FH%2FS%2F2" url="/2242" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
+	<movie name="Big Daddy" url="/2261" year="&lt;b&gt;6.2&lt;/b&gt; - 1999 "/>
+	<movie name="My Little Pony%3A Equestria Girls" url="/2271" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
+	<movie name="Man of Tai Chi" url="/2284" year="&lt;b&gt;6.2&lt;/b&gt; - 2013 "/>
+	<movie name="Assault on Precinct 13" url="/2285" year="&lt;b&gt;6.2&lt;/b&gt; - 2005 "/>
 	<movie name="Cockneys vs Zombies" url="/32" year="&lt;b&gt;6.1&lt;/b&gt; - 2012 "/>
 	<movie name="Red Dawn" url="/51" year="&lt;b&gt;6.1&lt;/b&gt; - 1984 "/>
 	<movie name="The Tale of Despereaux" url="/74" year="&lt;b&gt;6.1&lt;/b&gt; - 2008 "/>
@@ -1234,6 +1409,7 @@
 	<movie name="Dark Skies" url="/1466" year="&lt;b&gt;6.1&lt;/b&gt; - 2013 "/>
 	<movie name="Saw III" url="/1476" year="&lt;b&gt;6.1&lt;/b&gt; - 2006 "/>
 	<movie name="Two for the Money" url="/1483" year="&lt;b&gt;6.1&lt;/b&gt; - 2005 "/>
+	<movie name="Burlesque" url="/2240" year="&lt;b&gt;6.1&lt;/b&gt; - 2010 "/>
 	<movie name="Jersey Girl" url="/1511" year="&lt;b&gt;6.1&lt;/b&gt; - 2004 "/>
 	<movie name="Anger Management" url="/1527" year="&lt;b&gt;6.1&lt;/b&gt; - 2003 "/>
 	<movie name="Welcome to the Punch" url="/1550" year="&lt;b&gt;6.1&lt;/b&gt; - 2013 "/>
@@ -1248,6 +1424,12 @@
 	<movie name="Romance %26 Cigarettes" url="/1829" year="&lt;b&gt;6.1&lt;/b&gt; - 2005 "/>
 	<movie name="Chalet Girl" url="/1896" year="&lt;b&gt;6.1&lt;/b&gt; - 2011 "/>
 	<movie name="Reign of Fire" url="/1901" year="&lt;b&gt;6.1&lt;/b&gt; - 2002 "/>
+	<movie name="Planet 51" url="/1973" year="&lt;b&gt;6.1&lt;/b&gt; - 2009 "/>
+	<movie name="American Mary" url="/2119" year="&lt;b&gt;6.1&lt;/b&gt; - 2013 "/>
+	<movie name="13" url="/2113" year="&lt;b&gt;6.1&lt;/b&gt; - 2010 "/>
+	<movie name="The Strangers" url="/2117" year="&lt;b&gt;6.1&lt;/b&gt; - 2008 "/>
+	<movie name="The Golden Compass" url="/2269" year="&lt;b&gt;6.1&lt;/b&gt; - 2007 "/>
+	<movie name="Jennifer Eight" url="/2283" year="&lt;b&gt;6.1&lt;/b&gt; - 1992 "/>
 	<movie name="Wrong Turn" url="/62" year="&lt;b&gt;6.0&lt;/b&gt; - 2003 "/>
 	<movie name="The Craft" url="/96" year="&lt;b&gt;6.0&lt;/b&gt; - 1996 "/>
 	<movie name="Die Another Day" url="/126" year="&lt;b&gt;6.0&lt;/b&gt; - 2002 "/>
@@ -1291,7 +1473,7 @@
 	<movie name="Bullet to the Head" url="/1584" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
 	<movie name="Sucker Punch" url="/1590" year="&lt;b&gt;6.0&lt;/b&gt; - 2011 "/>
 	<movie name="The Liability" url="/1607" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
-	<movie name="Ace Ventura%3A When Nature Calls" url="/1615" year="&lt;b&gt;6.0&lt;/b&gt; - 1995 "/>
+	<movie name="Ace Ventura%3A When Nature Calls" url="/2081" year="&lt;b&gt;6.0&lt;/b&gt; - 1995 "/>
 	<movie name="Rush Hour 3" url="/1622" year="&lt;b&gt;6.0&lt;/b&gt; - 2007 "/>
 	<movie name="No One Lives" url="/1685" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
 	<movie name="Push" url="/1709" year="&lt;b&gt;6.0&lt;/b&gt; - 2009 "/>
@@ -1299,6 +1481,19 @@
 	<movie name="G.I. Joe%3A Retaliation" url="/1796" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
 	<movie name="Waterworld" url="/1840" year="&lt;b&gt;6.0&lt;/b&gt; - 1995 "/>
 	<movie name="The Lifeguard" url="/1853" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
+	<movie name="Iron Sky" url="/1947" year="&lt;b&gt;6.0&lt;/b&gt; - 2012 "/>
+	<movie name="Bug" url="/1971" year="&lt;b&gt;6.0&lt;/b&gt; - 2007 "/>
+	<movie name="The Seasoning House" url="/1990" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
+	<movie name="Idle Hands" url="/2010" year="&lt;b&gt;6.0&lt;/b&gt; - 1999 "/>
+	<movie name="Street Trash" url="/2065" year="&lt;b&gt;6.0&lt;/b&gt; - 1987 "/>
+	<movie name="The Nanny Diaries" url="/2091" year="&lt;b&gt;6.0&lt;/b&gt; - 2007 "/>
+	<movie name="Takers" url="/2100" year="&lt;b&gt;6.0&lt;/b&gt; - 2010 "/>
+	<movie name="Speed Racer" url="/2129" year="&lt;b&gt;6.0&lt;/b&gt; - 2008 "/>
+	<movie name="The Hard Word" url="/2156" year="&lt;b&gt;6.0&lt;/b&gt; - 2003 "/>
+	<movie name="The Hangover Part III" url="/2171" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
+	<movie name="Sister Act" url="/2177" year="&lt;b&gt;6.0&lt;/b&gt; - 1992 "/>
+	<movie name="Loosies" url="/2216" year="&lt;b&gt;6.0&lt;/b&gt; - 2012 "/>
+	<movie name="Only God Forgives" url="/2245" year="&lt;b&gt;6.0&lt;/b&gt; - 2013 "/>
 	<movie name="Shallow Hal" url="/28" year="&lt;b&gt;5.9&lt;/b&gt; - 2001 "/>
 	<movie name="Splice" url="/188" year="&lt;b&gt;5.9&lt;/b&gt; - 2010 "/>
 	<movie name="Valhalla Rising" url="/191" year="&lt;b&gt;5.9&lt;/b&gt; - 2010 "/>
@@ -1332,6 +1527,17 @@
 	<movie name="Small Apartments" url="/1694" year="&lt;b&gt;5.9&lt;/b&gt; - 2013 "/>
 	<movie name="Undisputed" url="/1736" year="&lt;b&gt;5.9&lt;/b&gt; - 2002 "/>
 	<movie name="Miami Vice" url="/1779" year="&lt;b&gt;5.9&lt;/b&gt; - 2006 "/>
+	<movie name="Step Up 2%3A The Streets" url="/1993" year="&lt;b&gt;5.9&lt;/b&gt; - 2008 "/>
+	<movie name="Shall We Dance" url="/2070" year="&lt;b&gt;5.9&lt;/b&gt; - 2004 "/>
+	<movie name="The Bodyguard" url="/2101" year="&lt;b&gt;5.9&lt;/b&gt; - 1992 "/>
+	<movie name="Snake Eyes" url="/2142" year="&lt;b&gt;5.9&lt;/b&gt; - 1998 "/>
+	<movie name="Brake" url="/2186" year="&lt;b&gt;5.9&lt;/b&gt; - 2012 "/>
+	<movie name="Broken Arrow" url="/2192" year="&lt;b&gt;5.9&lt;/b&gt; - 1996 "/>
+	<movie name="Kickboxer" url="/2205" year="&lt;b&gt;5.9&lt;/b&gt; - 1989 "/>
+	<movie name="Haywire" url="/2207" year="&lt;b&gt;5.9&lt;/b&gt; - 2012 "/>
+	<movie name="Sahara" url="/2212" year="&lt;b&gt;5.9&lt;/b&gt; - 2005 "/>
+	<movie name="Curse of Chucky" url="/2255" year="&lt;b&gt;5.9&lt;/b&gt; - 2013 "/>
+	<movie name="A Night at the Roxbury" url="/2259" year="&lt;b&gt;5.9&lt;/b&gt; - 1998 "/>
 	<movie name="Jurassic Park III" url="/36" year="&lt;b&gt;5.8&lt;/b&gt; - 2001 "/>
 	<movie name="The Legend of Zorro" url="/92" year="&lt;b&gt;5.8&lt;/b&gt; - 2005 "/>
 	<movie name="The Amityville Horror" url="/93" year="&lt;b&gt;5.8&lt;/b&gt; - 2005 "/>
@@ -1370,6 +1576,16 @@
 	<movie name="The Heartbreak Kid" url="/1882" year="&lt;b&gt;5.8&lt;/b&gt; - 2007 "/>
 	<movie name="The Break-Up" url="/1886" year="&lt;b&gt;5.8&lt;/b&gt; - 2006 "/>
 	<movie name="My Best Friend%27s Girl" url="/1888" year="&lt;b&gt;5.8&lt;/b&gt; - 2008 "/>
+	<movie name="The Descent%3A Part 2" url="/1951" year="&lt;b&gt;5.8&lt;/b&gt; - 2009 "/>
+	<movie name="Step Up 3D" url="/1994" year="&lt;b&gt;5.8&lt;/b&gt; - 2010 "/>
+	<movie name="The Look of Love" url="/2040" year="&lt;b&gt;5.8&lt;/b&gt; - 2013 "/>
+	<movie name="The Presidio" url="/2055" year="&lt;b&gt;5.8&lt;/b&gt; - 1988 "/>
+	<movie name="The Fourth Kind" url="/2112" year="&lt;b&gt;5.8&lt;/b&gt; - 2009 "/>
+	<movie name="The 6th Day" url="/2115" year="&lt;b&gt;5.8&lt;/b&gt; - 2000 "/>
+	<movie name="Home Run" url="/2173" year="&lt;b&gt;5.8&lt;/b&gt; - 2013 "/>
+	<movie name="88 Minutes" url="/2193" year="&lt;b&gt;5.8&lt;/b&gt; - 2008 "/>
+	<movie name="Rampart" url="/2194" year="&lt;b&gt;5.8&lt;/b&gt; - 2012 "/>
+	<movie name="The Time Machine" url="/2225" year="&lt;b&gt;5.8&lt;/b&gt; - 2002 "/>
 	<movie name="The Watch" url="/1" year="&lt;b&gt;5.7&lt;/b&gt; - 2012 "/>
 	<movie name="Original Sin" url="/5" year="&lt;b&gt;5.7&lt;/b&gt; - 2001 "/>
 	<movie name="The Fast and the Furious%3A Tokyo Drift" url="/56" year="&lt;b&gt;5.7&lt;/b&gt; - 2006 "/>
@@ -1415,6 +1631,14 @@
 	<movie name="The Oranges" url="/1821" year="&lt;b&gt;5.7&lt;/b&gt; - 2012 "/>
 	<movie name="Piranha" url="/1904" year="&lt;b&gt;5.7&lt;/b&gt; - 2010 "/>
 	<movie name="Halloween 4%3A The Return of Michael Myers" url="/1926" year="&lt;b&gt;5.7&lt;/b&gt; - 1988 "/>
+	<movie name="Around the World in 80 Days" url="/1941" year="&lt;b&gt;5.7&lt;/b&gt; - 2004 "/>
+	<movie name="Arthur Newman" url="/2026" year="&lt;b&gt;5.7&lt;/b&gt; - 2013 "/>
+	<movie name="Passenger 57" url="/2054" year="&lt;b&gt;5.7&lt;/b&gt; - 1992 "/>
+	<movie name="Vegas Vacation" url="/2089" year="&lt;b&gt;5.7&lt;/b&gt; - 1997 "/>
+	<movie name="Gone" url="/2206" year="&lt;b&gt;5.7&lt;/b&gt; - 2012 "/>
+	<movie name="G.I. Jane" url="/2218" year="&lt;b&gt;5.7&lt;/b&gt; - 1997 "/>
+	<movie name="Born to Race" url="/2236" year="&lt;b&gt;5.7&lt;/b&gt; - 2011 "/>
+	<movie name="%2B1" url="/2248" year="&lt;b&gt;5.7&lt;/b&gt; - 2013 "/>
 	<movie name="Fire with Fire" url="/22" year="&lt;b&gt;5.6&lt;/b&gt; - 2012 "/>
 	<movie name="The Pact" url="/79" year="&lt;b&gt;5.6&lt;/b&gt; - 2012 "/>
 	<movie name="Cop Out" url="/113" year="&lt;b&gt;5.6&lt;/b&gt; - 2010 "/>
@@ -1429,7 +1653,7 @@
 	<movie name="The Karate Kid%2C Part II" url="/1090" year="&lt;b&gt;5.6&lt;/b&gt; - 1986 "/>
 	<movie name="The Devil%27s in the Details" url="/1110" year="&lt;b&gt;5.6&lt;/b&gt; - 2013 "/>
 	<movie name="Made of Honor" url="/1323" year="&lt;b&gt;5.6&lt;/b&gt; - 2008 "/>
-	<movie name="Iron Man%3A Rise of Technovore" url="/1385" year="&lt;b&gt;5.6&lt;/b&gt; - 1970 "/>
+	<movie name="Iron Man%3A Rise of Technovore" url="/1385" year="&lt;b&gt;5.6&lt;/b&gt; - 2013 "/>
 	<movie name="The Guilt Trip" url="/1388" year="&lt;b&gt;5.6&lt;/b&gt; - 2012 "/>
 	<movie name="Antiviral" url="/1391" year="&lt;b&gt;5.6&lt;/b&gt; - 2012 "/>
 	<movie name="Saw V" url="/1478" year="&lt;b&gt;5.6&lt;/b&gt; - 2008 "/>
@@ -1442,12 +1666,20 @@
 	<movie name="Jug Face" url="/1802" year="&lt;b&gt;5.6&lt;/b&gt; - 2013 "/>
 	<movie name="Father of the Bride Part II" url="/1816" year="&lt;b&gt;5.6&lt;/b&gt; - 1995 "/>
 	<movie name="The Time Being" url="/1843" year="&lt;b&gt;5.6&lt;/b&gt; - 2013 "/>
-	<movie name="The Purge" url="/1846" year="&lt;b&gt;5.6&lt;/b&gt; - 2013 "/>
 	<movie name="A Thousand Words" url="/1890" year="&lt;b&gt;5.6&lt;/b&gt; - 2012 "/>
 	<movie name="You%2C Me and Dupree" url="/1891" year="&lt;b&gt;5.6&lt;/b&gt; - 2006 "/>
 	<movie name="Wanderlust" url="/1894" year="&lt;b&gt;5.6&lt;/b&gt; - 2012 "/>
 	<movie name="Reindeer Games" url="/1905" year="&lt;b&gt;5.6&lt;/b&gt; - 2000 "/>
 	<movie name="Be Cool" url="/1916" year="&lt;b&gt;5.6&lt;/b&gt; - 2005 "/>
+	<movie name="Goddess" url="/2023" year="&lt;b&gt;5.6&lt;/b&gt; - 2013 "/>
+	<movie name="The Big Brawl" url="/2035" year="&lt;b&gt;5.6&lt;/b&gt; - 1980 "/>
+	<movie name="At Any Price" url="/2039" year="&lt;b&gt;5.6&lt;/b&gt; - 2013 "/>
+	<movie name="5 Days of War" url="/2093" year="&lt;b&gt;5.6&lt;/b&gt; - 2011 "/>
+	<movie name="Arthur" url="/2189" year="&lt;b&gt;5.6&lt;/b&gt; - 2011 "/>
+	<movie name="Armored" url="/2198" year="&lt;b&gt;5.6&lt;/b&gt; - 2009 "/>
+	<movie name="Mortal Kombat" url="/2232" year="&lt;b&gt;5.6&lt;/b&gt; - 1995 "/>
+	<movie name="Lady in the Water" url="/2273" year="&lt;b&gt;5.6&lt;/b&gt; - 2006 "/>
+	<movie name="Conan the Destroyer" url="/2276" year="&lt;b&gt;5.6&lt;/b&gt; - 1984 "/>
 	<movie name="The Nutty Professor" url="/12" year="&lt;b&gt;5.5&lt;/b&gt; - 1996 "/>
 	<movie name="Wrong Turn 2%3A Dead End" url="/63" year="&lt;b&gt;5.5&lt;/b&gt; - 2007 "/>
 	<movie name="Failure to Launch" url="/238" year="&lt;b&gt;5.5&lt;/b&gt; - 2006 "/>
@@ -1483,6 +1715,14 @@
 	<movie name="At Any Price" url="/1775" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
 	<movie name="Hatchet III" url="/1799" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
 	<movie name="Magic Magic" url="/1921" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
+	<movie name="Red Planet" url="/1955" year="&lt;b&gt;5.5&lt;/b&gt; - 2000 "/>
+	<movie name="Pawn Shop Chronicles" url="/1985" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
+	<movie name="As Cool as I Am" url="/2022" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
+	<movie name="I Spit on Your Grave 2" url="/2107" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
+	<movie name="Jobs %28Webrip%29" url="/2152" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
+	<movie name="The Samaritan" url="/2182" year="&lt;b&gt;5.5&lt;/b&gt; - 2012 "/>
+	<movie name="The Purge" url="/2243" year="&lt;b&gt;5.5&lt;/b&gt; - 2013 "/>
+	<movie name="Ingenious" url="/2254" year="&lt;b&gt;5.5&lt;/b&gt; - 2009 "/>
 	<movie name="2 Fast 2 Furious" url="/55" year="&lt;b&gt;5.4&lt;/b&gt; - 2003 "/>
 	<movie name="Cosmopolis" url="/117" year="&lt;b&gt;5.4&lt;/b&gt; - 2012 "/>
 	<movie name="House on Haunted Hill" url="/203" year="&lt;b&gt;5.4&lt;/b&gt; - 1999 "/>
@@ -1504,12 +1744,19 @@
 	<movie name="Scream 3" url="/1427" year="&lt;b&gt;5.4&lt;/b&gt; - 2000 "/>
 	<movie name="The Factory" url="/1456" year="&lt;b&gt;5.4&lt;/b&gt; - 2012 "/>
 	<movie name="Last Passenger" url="/1471" year="&lt;b&gt;5.4&lt;/b&gt; - 2013 "/>
-	<movie name="The Lords of Salem" url="/1494" year="&lt;b&gt;5.4&lt;/b&gt; - 2013 "/>
 	<movie name="Guns of the Magnificent Seven" url="/1869" year="&lt;b&gt;5.4&lt;/b&gt; - 1969 "/>
 	<movie name="The Magnificent Seven Ride%21" url="/1870" year="&lt;b&gt;5.4&lt;/b&gt; - 1972 "/>
 	<movie name="Evan Almighty" url="/1887" year="&lt;b&gt;5.4&lt;/b&gt; - 2007 "/>
 	<movie name="The Pagemaster" url="/1911" year="&lt;b&gt;5.4&lt;/b&gt; - 1994 "/>
 	<movie name="Halloween H20%3A 20 Years Later" url="/1929" year="&lt;b&gt;5.4&lt;/b&gt; - 1998 "/>
+	<movie name="Fighting" url="/1989" year="&lt;b&gt;5.4&lt;/b&gt; - 2009 "/>
+	<movie name="R.I.P.D." url="/2050" year="&lt;b&gt;5.4&lt;/b&gt; - 2013 "/>
+	<movie name="Love and Honor" url="/2057" year="&lt;b&gt;5.4&lt;/b&gt; - 2013 "/>
+	<movie name="Hick" url="/2062" year="&lt;b&gt;5.4&lt;/b&gt; - 2012 "/>
+	<movie name="Child%27s Play 2" url="/2159" year="&lt;b&gt;5.4&lt;/b&gt; - 1990 "/>
+	<movie name="Virtuosity" url="/2167" year="&lt;b&gt;5.4&lt;/b&gt; - 1995 "/>
+	<movie name="Stone" url="/2226" year="&lt;b&gt;5.4&lt;/b&gt; - 2010 "/>
+	<movie name="New Year%27s Eve" url="/2237" year="&lt;b&gt;5.4&lt;/b&gt; - 2011 "/>
 	<movie name="A Fantastic Fear of Everything" url="/75" year="&lt;b&gt;5.3&lt;/b&gt; - 2012 "/>
 	<movie name="Twilight" url="/66" year="&lt;b&gt;5.3&lt;/b&gt; - 2008 "/>
 	<movie name="Aliens in the Attic" url="/90" year="&lt;b&gt;5.3&lt;/b&gt; - 2009 "/>
@@ -1517,6 +1764,7 @@
 	<movie name="Inbred" url="/109" year="&lt;b&gt;5.3&lt;/b&gt; - 2012 "/>
 	<movie name="Sex and the City" url="/178" year="&lt;b&gt;5.3&lt;/b&gt; - 2008 "/>
 	<movie name="Stolen" url="/217" year="&lt;b&gt;5.3&lt;/b&gt; - 2012 "/>
+	<movie name="National Security" url="/1940" year="&lt;b&gt;5.3&lt;/b&gt; - 2003 "/>
 	<movie name="StreetDance 2" url="/292" year="&lt;b&gt;5.3&lt;/b&gt; - 2012 "/>
 	<movie name="Just Married" url="/328" year="&lt;b&gt;5.3&lt;/b&gt; - 2003 "/>
 	<movie name="Bulletproof Monk" url="/330" year="&lt;b&gt;5.3&lt;/b&gt; - 2003 "/>
@@ -1541,13 +1789,17 @@
 	<movie name="Lara Croft Tomb Raider%3A The Cradle of Life" url="/1626" year="&lt;b&gt;5.3&lt;/b&gt; - 2003 "/>
 	<movie name="12 Rounds%3A Reloaded" url="/1638" year="&lt;b&gt;5.3&lt;/b&gt; - 2013 "/>
 	<movie name="The Delta Force" url="/1643" year="&lt;b&gt;5.3&lt;/b&gt; - 1986 "/>
-	<movie name="Rapture-Palooza" url="/1649" year="&lt;b&gt;5.3&lt;/b&gt; - 2013 "/>
 	<movie name="Cobra" url="/1786" year="&lt;b&gt;5.3&lt;/b&gt; - 1986 "/>
 	<movie name="Save the Date" url="/1696" year="&lt;b&gt;5.3&lt;/b&gt; - 2012 "/>
 	<movie name="How Do You Know" url="/1727" year="&lt;b&gt;5.3&lt;/b&gt; - 2010 "/>
-	<movie name="Pawn Shop Chronicles" url="/1808" year="&lt;b&gt;5.3&lt;/b&gt; - 2013 "/>
 	<movie name="Return of the Seven" url="/1868" year="&lt;b&gt;5.3&lt;/b&gt; - 1966 "/>
 	<movie name="The Bounty Hunter" url="/1908" year="&lt;b&gt;5.3&lt;/b&gt; - 2010 "/>
+	<movie name="Bad Ass" url="/1942" year="&lt;b&gt;5.3&lt;/b&gt; - 2012 "/>
+	<movie name="Collateral Damage" url="/2126" year="&lt;b&gt;5.3&lt;/b&gt; - 2002 "/>
+	<movie name="The Core" url="/2131" year="&lt;b&gt;5.3&lt;/b&gt; - 2003 "/>
+	<movie name="All Is Bright" url="/2137" year="&lt;b&gt;5.3&lt;/b&gt; - 2013 "/>
+	<movie name="Intruders" url="/2209" year="&lt;b&gt;5.3&lt;/b&gt; - 2011 "/>
+	<movie name="When in Rome" url="/2234" year="&lt;b&gt;5.3&lt;/b&gt; - 2010 "/>
 	<movie name="Paul Blart%3A Mall Cop" url="/88" year="&lt;b&gt;5.2&lt;/b&gt; - 2009 "/>
 	<movie name="Crooked Arrows" url="/213" year="&lt;b&gt;5.2&lt;/b&gt; - 0 "/>
 	<movie name="Judge Dredd" url="/308" year="&lt;b&gt;5.2&lt;/b&gt; - 1995 "/>
@@ -1567,11 +1819,22 @@
 	<movie name="Conan the Barbarian" url="/1012" year="&lt;b&gt;5.2&lt;/b&gt; - 2011 "/>
 	<movie name="Under Siege 2%3A Dark Territory" url="/1104" year="&lt;b&gt;5.2&lt;/b&gt; - 1995 "/>
 	<movie name="The Mummy%3A Tomb of the Dragon Emperor" url="/1124" year="&lt;b&gt;5.2&lt;/b&gt; - 2008 "/>
+	<movie name="Rapture-Palooza" url="/2019" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
 	<movie name="Star Trek V%3A The Final Frontier" url="/1669" year="&lt;b&gt;5.2&lt;/b&gt; - 1989 "/>
 	<movie name="The Wee Man" url="/1797" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
 	<movie name="Straight A%27s" url="/1805" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
 	<movie name="Red Riding Hood" url="/1854" year="&lt;b&gt;5.2&lt;/b&gt; - 2011 "/>
 	<movie name="Killing Season" url="/1917" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
+	<movie name="Ghost Rider" url="/1944" year="&lt;b&gt;5.2&lt;/b&gt; - 2007 "/>
+	<movie name="Malone" url="/1956" year="&lt;b&gt;5.2&lt;/b&gt; - 1987 "/>
+	<movie name="The Big Wedding" url="/1958" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
+	<movie name="Bride of Chucky" url="/2161" year="&lt;b&gt;5.2&lt;/b&gt; - 1998 "/>
+	<movie name="The Lords of Salem" url="/2034" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
+	<movie name="Devil%27s Pass" url="/2051" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
+	<movie name="Bad Milo" url="/2059" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
+	<movie name="The Colony" url="/2071" year="&lt;b&gt;5.2&lt;/b&gt; - 2013 "/>
+	<movie name="Errors of the Human Body" url="/2134" year="&lt;b&gt;5.2&lt;/b&gt; - 2012 "/>
+	<movie name="The Boogens" url="/2176" year="&lt;b&gt;5.2&lt;/b&gt; - 1981 "/>
 	<movie name="The Three Stooges" url="/181" year="&lt;b&gt;5.1&lt;/b&gt; - 2012 "/>
 	<movie name="The Astronaut%27s Wife" url="/201" year="&lt;b&gt;5.1&lt;/b&gt; - 1999 "/>
 	<movie name="Bride Wars" url="/205" year="&lt;b&gt;5.1&lt;/b&gt; - 2009 "/>
@@ -1602,7 +1865,9 @@
 	<movie name="Company of Heroes" url="/1632" year="&lt;b&gt;5.1&lt;/b&gt; - 2013 "/>
 	<movie name="Visible Scars" url="/1824" year="&lt;b&gt;5.1&lt;/b&gt; - 2012 "/>
 	<movie name="Hotel for Dogs" url="/1828" year="&lt;b&gt;5.1&lt;/b&gt; - 2009 "/>
-	<movie name="The Big Wedding" url="/1850" year="&lt;b&gt;5.1&lt;/b&gt; - 2013 "/>
+	<movie name="Little Nicky" url="/2005" year="&lt;b&gt;5.1&lt;/b&gt; - 2000 "/>
+	<movie name="The Happening" url="/2210" year="&lt;b&gt;5.1&lt;/b&gt; - 2008 "/>
+	<movie name="Ambushed" url="/2241" year="&lt;b&gt;5.1&lt;/b&gt; - 2013 "/>
 	<movie name="Katy Perry%3A Part of Me" url="/357" year="&lt;b&gt;5.0&lt;/b&gt; - 2012 "/>
 	<movie name="Silent Night" url="/384" year="&lt;b&gt;5.0&lt;/b&gt; - 2012 "/>
 	<movie name="Sorority Row" url="/435" year="&lt;b&gt;5.0&lt;/b&gt; - 2009 "/>
@@ -1614,6 +1879,7 @@
 	<movie name="Deep Dark Canyon" url="/1678" year="&lt;b&gt;5.0&lt;/b&gt; - 2013 "/>
 	<movie name="Sexy Evil Genius" url="/1689" year="&lt;b&gt;5.0&lt;/b&gt; - 2013 "/>
 	<movie name="Hell Baby" url="/1849" year="&lt;b&gt;5.0&lt;/b&gt; - 2013 "/>
+	<movie name="Some Girl%28s%29" url="/2249" year="&lt;b&gt;5.0&lt;/b&gt; - 2013 "/>
 	<movie name="Evidence" url="/218" year="&lt;b&gt;4.9&lt;/b&gt; - 2012 "/>
 	<movie name="Open Season 3" url="/870" year="&lt;b&gt;4.9&lt;/b&gt; - 2011 "/>
 	<movie name="American Pie Presents%3A Band Camp" url="/936" year="&lt;b&gt;4.9&lt;/b&gt; - 2005 "/>
@@ -1626,6 +1892,11 @@
 	<movie name="The Haunting in Connecticut 2%3A Ghosts of Georgia" url="/1389" year="&lt;b&gt;4.9&lt;/b&gt; - 2013 "/>
 	<movie name="Carjacked" url="/1392" year="&lt;b&gt;4.9&lt;/b&gt; - 2011 "/>
 	<movie name="A Common Man" url="/1412" year="&lt;b&gt;4.9&lt;/b&gt; - 2013 "/>
+	<movie name="Seed of Chucky" url="/2162" year="&lt;b&gt;4.9&lt;/b&gt; - 2004 "/>
+	<movie name="Action Jackson" url="/2011" year="&lt;b&gt;4.9&lt;/b&gt; - 1988 "/>
+	<movie name="The Darkest Hour" url="/2083" year="&lt;b&gt;4.9&lt;/b&gt; - 2011 "/>
+	<movie name="Forbidden Ground" url="/2164" year="&lt;b&gt;4.9&lt;/b&gt; - 2013 "/>
+	<movie name="Sister Act 2%3A Back in the Habit" url="/2178" year="&lt;b&gt;4.9&lt;/b&gt; - 1993 "/>
 	<movie name="Meet Dave" url="/9" year="&lt;b&gt;4.8&lt;/b&gt; - 2008 "/>
 	<movie name="The Twilight Saga%3A Eclipse" url="/68" year="&lt;b&gt;4.8&lt;/b&gt; - 2010 "/>
 	<movie name="The Twilight Saga%3A Breaking Dawn - Part 1" url="/69" year="&lt;b&gt;4.8&lt;/b&gt; - 2011 "/>
@@ -1649,6 +1920,8 @@
 	<movie name="The Devil You Know" url="/1801" year="&lt;b&gt;4.8&lt;/b&gt; - 2013 "/>
 	<movie name="Halloween II" url="/1922" year="&lt;b&gt;4.8&lt;/b&gt; - 2009 "/>
 	<movie name="Halloween 5" url="/1927" year="&lt;b&gt;4.8&lt;/b&gt; - 1989 "/>
+	<movie name="After Earth" url="/2172" year="&lt;b&gt;4.8&lt;/b&gt; - 2013 "/>
+	<movie name="Resistance" url="/2224" year="&lt;b&gt;4.8&lt;/b&gt; - 2011 "/>
 	<movie name="Submission" url="/148" year="&lt;b&gt;4.7&lt;/b&gt; - 2011 "/>
 	<movie name="Charlie%27s Angels%3A Full Throttle" url="/1454" year="&lt;b&gt;4.7&lt;/b&gt; - 2003 "/>
 	<movie name="Freddy%27s Dead%3A The Final Nightmare" url="/1336" year="&lt;b&gt;4.7&lt;/b&gt; - 1991 "/>
@@ -1658,6 +1931,9 @@
 	<movie name="Lay the Favorite" url="/1789" year="&lt;b&gt;4.7&lt;/b&gt; - 2012 "/>
 	<movie name="Aliens vs. Predator%3A Requiem" url="/1814" year="&lt;b&gt;4.7&lt;/b&gt; - 2007 "/>
 	<movie name="Halloween%3A The Curse of Michael Myers" url="/1928" year="&lt;b&gt;4.7&lt;/b&gt; - 1995 "/>
+	<movie name="Evidence" url="/2052" year="&lt;b&gt;4.7&lt;/b&gt; - 2013 "/>
+	<movie name="Sisters %26 Brothers" url="/2133" year="&lt;b&gt;4.7&lt;/b&gt; - 2011 "/>
+	<movie name="Sliver" url="/2252" year="&lt;b&gt;4.7&lt;/b&gt; - 1993 "/>
 	<movie name="Vamps" url="/76" year="&lt;b&gt;4.6&lt;/b&gt; - 2012 "/>
 	<movie name="Maximum Conviction" url="/81" year="&lt;b&gt;4.6&lt;/b&gt; - 0 "/>
 	<movie name="Jonah Hex" url="/226" year="&lt;b&gt;4.6&lt;/b&gt; - 2010 "/>
@@ -1673,6 +1949,10 @@
 	<movie name="The Marine" url="/1634" year="&lt;b&gt;4.6&lt;/b&gt; - 2006 "/>
 	<movie name="The Power of Few" url="/1652" year="&lt;b&gt;4.6&lt;/b&gt; - 2013 "/>
 	<movie name="Come Out and Play" url="/1687" year="&lt;b&gt;4.6&lt;/b&gt; - 2013 "/>
+	<movie name="The Taking of Beverly Hills" url="/2036" year="&lt;b&gt;4.6&lt;/b&gt; - 1991 "/>
+	<movie name="So Undercover" url="/2069" year="&lt;b&gt;4.6&lt;/b&gt; - 2012 "/>
+	<movie name="Knife Fight" url="/2155" year="&lt;b&gt;4.6&lt;/b&gt; - 2012 "/>
+	<movie name="Child%27s Play 3" url="/2160" year="&lt;b&gt;4.6&lt;/b&gt; - 1991 "/>
 	<movie name="The Twilight Saga%3A New Moon" url="/67" year="&lt;b&gt;4.5&lt;/b&gt; - 2009 "/>
 	<movie name="The Last Airbender" url="/189" year="&lt;b&gt;4.5&lt;/b&gt; - 2010 "/>
 	<movie name="The Dinosaur Project" url="/500" year="&lt;b&gt;4.5&lt;/b&gt; - 2012 "/>
@@ -1682,7 +1962,9 @@
 	<movie name="My Boss%27s Daughter" url="/1320" year="&lt;b&gt;4.5&lt;/b&gt; - 2003 "/>
 	<movie name="Liars All" url="/1733" year="&lt;b&gt;4.5&lt;/b&gt; - 2013 "/>
 	<movie name="Gallowwalkers" url="/1847" year="&lt;b&gt;4.5&lt;/b&gt; - 2013 "/>
-	<movie name="Hammer of the Gods" url="/1874" year="&lt;b&gt;4.5&lt;/b&gt; - 2013 "/>
+	<movie name="Hammer of the Gods" url="/1959" year="&lt;b&gt;4.5&lt;/b&gt; - 2013 "/>
+	<movie name="Empire State" url="/2017" year="&lt;b&gt;4.5&lt;/b&gt; - 2013 "/>
+	<movie name="Dead in Tombstone" url="/2256" year="&lt;b&gt;4.5&lt;/b&gt; - 2013 "/>
 	<movie name="Wrong Turn 3%3A Left for Dead" url="/64" year="&lt;b&gt;4.4&lt;/b&gt; - 2009 "/>
 	<movie name="The Holding" url="/83" year="&lt;b&gt;4.4&lt;/b&gt; - 2011 "/>
 	<movie name="Branded" url="/85" year="&lt;b&gt;4.4&lt;/b&gt; - 2012 "/>
@@ -1695,6 +1977,7 @@
 	<movie name="Movie 43" url="/1416" year="&lt;b&gt;4.4&lt;/b&gt; - 2013 "/>
 	<movie name="Dead Mine" url="/1470" year="&lt;b&gt;4.4&lt;/b&gt; - 2012 "/>
 	<movie name="Black Rock" url="/1823" year="&lt;b&gt;4.4&lt;/b&gt; - 2013 "/>
+	<movie name="Starship Troopers 3%3A Marauder" url="/2222" year="&lt;b&gt;4.4&lt;/b&gt; - 2008 "/>
 	<movie name="Wrong Turn 4%3A Bloody Beginnings" url="/65" year="&lt;b&gt;4.3&lt;/b&gt; - 2011 "/>
 	<movie name="Monster High%3A Ghoul%27s Rule%21" url="/98" year="&lt;b&gt;4.3&lt;/b&gt; - 2012 "/>
 	<movie name="Barricade" url="/112" year="&lt;b&gt;4.3&lt;/b&gt; - 2012 "/>
@@ -1705,8 +1988,11 @@
 	<movie name="The Santa Clause 3%3A The Escape Clause" url="/1096" year="&lt;b&gt;4.3&lt;/b&gt; - 2006 "/>
 	<movie name="Under the Bed" url="/1390" year="&lt;b&gt;4.3&lt;/b&gt; - 2012 "/>
 	<movie name="Jacob" url="/1407" year="&lt;b&gt;4.3&lt;/b&gt; - 2011 "/>
+	<movie name="Robosapien%3A Rebooted" url="/2238" year="&lt;b&gt;4.3&lt;/b&gt; - 2013 "/>
 	<movie name="Assassins Run" url="/1677" year="&lt;b&gt;4.3&lt;/b&gt; - 2013 "/>
 	<movie name="I Still Know What You Did Last Summer" url="/1724" year="&lt;b&gt;4.3&lt;/b&gt; - 1998 "/>
+	<movie name="Ghost Rider%3A Spirit of Vengeance" url="/1945" year="&lt;b&gt;4.3&lt;/b&gt; - 2012 "/>
+	<movie name="Suddenly" url="/2058" year="&lt;b&gt;4.3&lt;/b&gt; - 2013 "/>
 	<movie name="Lottery Ticket" url="/180" year="&lt;b&gt;4.2&lt;/b&gt; - 2010 "/>
 	<movie name="Julia X 3D" url="/221" year="&lt;b&gt;4.2&lt;/b&gt; - 0 "/>
 	<movie name="Taxi" url="/581" year="&lt;b&gt;4.2&lt;/b&gt; - 2004 "/>
@@ -1716,12 +2002,15 @@
 	<movie name="Remains" url="/1450" year="&lt;b&gt;4.2&lt;/b&gt; - 2011 "/>
 	<movie name="The Rambler" url="/1757" year="&lt;b&gt;4.2&lt;/b&gt; - 2013 "/>
 	<movie name="The Canyons" url="/1864" year="&lt;b&gt;4.2&lt;/b&gt; - 2013 "/>
-	<movie name="Mac %26amp%3B Devin Go to High School" url="/1893" year="&lt;b&gt;4.2&lt;/b&gt; - 2012 "/>
+	<movie name="Mac %26 Devin Go to High School" url="/1893" year="&lt;b&gt;4.2&lt;/b&gt; - 2012 "/>
 	<movie name="Halloween III%3A Season of the Witch" url="/1925" year="&lt;b&gt;4.2&lt;/b&gt; - 1982 "/>
+	<movie name="And Now a Word from Our Sponsor" url="/2021" year="&lt;b&gt;4.2&lt;/b&gt; - 2013 "/>
 	<movie name="xXx%3A State of the Union" url="/1100" year="&lt;b&gt;4.1&lt;/b&gt; - 2005 "/>
 	<movie name="Outback" url="/1387" year="&lt;b&gt;4.1&lt;/b&gt; - 2012 "/>
 	<movie name="Barbie in the Pink Shoes" url="/1455" year="&lt;b&gt;4.1&lt;/b&gt; - 2013 "/>
 	<movie name="Dead Before Dawn 3D" url="/1680" year="&lt;b&gt;4.1&lt;/b&gt; - 2012 "/>
+	<movie name="The Black Waters of Echo%27s Pond" url="/2239" year="&lt;b&gt;4.1&lt;/b&gt; - 2009 "/>
+	<movie name="The Devil Inside" url="/2187" year="&lt;b&gt;4.1&lt;/b&gt; - 2012 "/>
 	<movie name="Wrong Turn 5%3A Bloodlines" url="/37" year="&lt;b&gt;4.0&lt;/b&gt; - 2012 "/>
 	<movie name="Humans Versus Zombies" url="/784" year="&lt;b&gt;4.0&lt;/b&gt; - 2011 "/>
 	<movie name="Piranha 3DD" url="/634" year="&lt;b&gt;4.0&lt;/b&gt; - 2012 "/>
@@ -1731,39 +2020,54 @@
 	<movie name="Dino Time" url="/1642" year="&lt;b&gt;4.0&lt;/b&gt; - 2012 "/>
 	<movie name="Dose of Reality" url="/1679" year="&lt;b&gt;4.0&lt;/b&gt; - 2013 "/>
 	<movie name="The Traveler" url="/1717" year="&lt;b&gt;4.0&lt;/b&gt; - 2010 "/>
+	<movie name="Hansel %26amp%3B Gretel Get Baked" url="/1982" year="&lt;b&gt;4.0&lt;/b&gt; - 2013 "/>
+	<movie name="The Contractor" url="/2138" year="&lt;b&gt;4.0&lt;/b&gt; - 2013 "/>
 	<movie name="Sex and the City 2" url="/184" year="&lt;b&gt;3.9&lt;/b&gt; - 2010 "/>
+	<movie name="Compulsion" url="/2154" year="&lt;b&gt;3.9&lt;/b&gt; - 2013 "/>
 	<movie name="Halloween%3A Resurrection" url="/1930" year="&lt;b&gt;3.9&lt;/b&gt; - 2002 "/>
+	<movie name="Mancation" url="/2013" year="&lt;b&gt;3.9&lt;/b&gt; - 2012 "/>
+	<movie name="Peeples" url="/2061" year="&lt;b&gt;3.9&lt;/b&gt; - 2013 "/>
 	<movie name="Madea%27s Witness Protection" url="/116" year="&lt;b&gt;3.8&lt;/b&gt; - 2012 "/>
 	<movie name="College Road Trip" url="/227" year="&lt;b&gt;3.8&lt;/b&gt; - 2008 "/>
 	<movie name="Last Ounce of Courage" url="/382" year="&lt;b&gt;3.8&lt;/b&gt; - 0 "/>
-	<movie name="Compulsion" url="/1739" year="&lt;b&gt;3.8&lt;/b&gt; - 2013 "/>
+	<movie name="Germ" url="/2251" year="&lt;b&gt;3.8&lt;/b&gt; - 2013 "/>
 	<movie name="RoboCop 3" url="/1038" year="&lt;b&gt;3.7&lt;/b&gt; - 1993 "/>
 	<movie name="Hijacked" url="/1373" year="&lt;b&gt;3.7&lt;/b&gt; - 2012 "/>
 	<movie name="Prank" url="/1731" year="&lt;b&gt;3.7&lt;/b&gt; - 2013 "/>
+	<movie name="Prom Night" url="/1984" year="&lt;b&gt;3.7&lt;/b&gt; - 2008 "/>
 	<movie name="The Wicker Man" url="/73" year="&lt;b&gt;3.6&lt;/b&gt; - 2006 "/>
 	<movie name="LOL" url="/772" year="&lt;b&gt;3.6&lt;/b&gt; - 2012 "/>
 	<movie name="Superman IV%3A The Quest for Peace" url="/1382" year="&lt;b&gt;3.6&lt;/b&gt; - 1987 "/>
 	<movie name="Stranded" url="/1631" year="&lt;b&gt;3.6&lt;/b&gt; - 2013 "/>
+	<movie name="Psychosis" url="/2033" year="&lt;b&gt;3.6&lt;/b&gt; - 2011 "/>
+	<movie name="Orc Wars" url="/2278" year="&lt;b&gt;3.6&lt;/b&gt; - 2013 "/>
 	<movie name="Stomp the Yard 2%3A Homecoming" url="/220" year="&lt;b&gt;3.5&lt;/b&gt; - 2011 "/>
 	<movie name="Spy Kids%3A All the Time in the World in 4D" url="/677" year="&lt;b&gt;3.5&lt;/b&gt; - 2011 "/>
 	<movie name="Jaws 3-D" url="/1050" year="&lt;b&gt;3.5&lt;/b&gt; - 1983 "/>
 	<movie name="Temptation%3A Confessions of a Marriage Counselor" url="/1750" year="&lt;b&gt;3.5&lt;/b&gt; - 2013 "/>
 	<movie name="Scary Movie 5" url="/1848" year="&lt;b&gt;3.5&lt;/b&gt; - 2013 "/>
+	<movie name="Sharknado" url="/2082" year="&lt;b&gt;3.5&lt;/b&gt; - 2013 "/>
+	<movie name="Starship Troopers 2%3A Hero of the Federation" url="/2221" year="&lt;b&gt;3.5&lt;/b&gt; - 2004 "/>
 	<movie name="Mortal Kombat%3A Annihilation" url="/108" year="&lt;b&gt;3.4&lt;/b&gt; - 1997 "/>
 	<movie name="Vampires Suck" url="/294" year="&lt;b&gt;3.3&lt;/b&gt; - 2010 "/>
 	<movie name="Episode 50" url="/801" year="&lt;b&gt;3.3&lt;/b&gt; - 2011 "/>
 	<movie name="3 Geezers%21" url="/1701" year="&lt;b&gt;3.2&lt;/b&gt; - 2013 "/>
+	<movie name="Age of Dinosaurs" url="/2141" year="&lt;b&gt;3.2&lt;/b&gt; - 2013 "/>
 	<movie name="Bikini Spring Break" url="/800" year="&lt;b&gt;3.0&lt;/b&gt; - 2012 "/>
+	<movie name="The Amityville Asylum" url="/2032" year="&lt;b&gt;3.0&lt;/b&gt; - 2013 "/>
 	<movie name="Hold Your Breath" url="/729" year="&lt;b&gt;2.9&lt;/b&gt; - 2012 "/>
 	<movie name="Jaws%3A The Revenge" url="/1051" year="&lt;b&gt;2.7&lt;/b&gt; - 1987 "/>
 	<movie name="Celebrity Sex Tape" url="/210" year="&lt;b&gt;2.6&lt;/b&gt; - 2012 "/>
 	<movie name="30 Nights of Paranormal Activity" url="/923" year="&lt;b&gt;2.6&lt;/b&gt; - 2013 "/>
+	<movie name="Mega Shark vs Giant Octopus" url="/2215" year="&lt;b&gt;2.6&lt;/b&gt; - 2009 "/>
+	<movie name="Zombie Massacre" url="/1983" year="&lt;b&gt;2.2&lt;/b&gt; - 2013 "/>
 	<movie name="Disaster Movie" url="/87" year="&lt;b&gt;1.8&lt;/b&gt; - 2008 "/>
 	<movie name="Escape" url="/453" year="&lt;b&gt;&lt;/b&gt; - 0 "/>
 	<movie name="Batman%3A The Dark Knight Returns%2C Part 2" url="/681" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>
 	<movie name="Dragon Lore%3A Curse of the Shadow" url="/1637" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>
 	<movie name="Absolute Deception" url="/1688" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>
 	<movie name="Summoned" url="/1732" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>
+	<movie name="Fright Night 2" url="/2277" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>
 	<movie name="The Demented" url="/1800" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>
 	<movie name="The Crown and the Dragon" url="/1803" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>
 	<movie name="Justice League%3A The Flashpoint Paradox" url="/1842" year="&lt;b&gt;&lt;/b&gt; - 2013 "/>

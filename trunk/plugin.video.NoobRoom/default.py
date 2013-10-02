@@ -145,7 +145,10 @@ def AutoLogin(url, cj):
     cj.load(cookiefile, ignore_discard=True)
     return cj, respon
 
-
+def SEARCHTC(name):
+    searchText = urllib.quote_plus(name)
+    SearchXml(searchText)
+	
 def GetVideoLink(url, isHD, cj):
     if len(strUsername) == 0 or len(strpwd) == 0:
         (cj, link) = GetLoginCookie(cj, cookiefile)
@@ -365,7 +368,7 @@ def ListTVSeries(cj):
         addDir(matchname[i][1], nooblink + match[i][0], 10, match[i][1])
 
 
-def ListEpisodes(url, cj):
+def ListEpisodes(name,url, cj):
     (cj, link) = GetContent(url, "", nooblink, cj)
     link = ''.join(link.splitlines()).replace('\'', '"')
     match = re.compile(
@@ -382,10 +385,15 @@ def ListEpisodes(url, cj):
         movieFree = ""
         if match[i][1] == "ffffcc":
             movieFree = " [COLOR yellow](free)[/COLOR]"
-        addLink(match[i][0] + match[i][3] + movieFree, fullvid, 3, "")
+        addTVLink(match[i][0] + match[i][3] + movieFree, fullvid, 3, name)
 
 
 def playVideo(videoType, link, meta=None):
+    if(meta==None):
+             meta = {
+                 'Title': '',
+                 'Thumb': ''
+    }
 
     if(link.find(nooblink) > -1):
         tmplink= link.split("|")[0]
@@ -396,11 +404,7 @@ def playVideo(videoType, link, meta=None):
         url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + link.replace('?', '')
         xbmc.executebuiltin("xbmc.PlayMedia(" + url + ")")
     else:
-        if(meta==None):
-             meta = {
-                 'Title': '',
-                 'Thumb': ''
-             }
+
         listitem = xbmcgui.ListItem(meta.get("Title"))
         listitem.setInfo('video', meta)
         xbmcPlayer = xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER)
@@ -428,7 +432,17 @@ def addLink(name, url, mode, thumbImage, folder=False, iconImage="DefaultVideo.p
     ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=folder)
     return ok
 
-
+def addTVLink(name, url, mode, showname=""):
+    u = sys.argv[0] + "?url=" + urllib.quote_plus(
+        url) + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name)+ "&showname=" + urllib.quote_plus(showname)
+    meta = {'title': name}
+    liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage="")
+    liz.setInfo('Video', meta)
+    contextMenuItems = getContextMenuItems()
+    liz.addContextMenuItems(contextMenuItems, replaceItems=True)
+    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
+    return ok
+	
 def addNext(formvar, url, mode, iconimage):
     u = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=" + str(mode) + "&formvar=" + str(
         formvar) + "&name=" + urllib.quote_plus('Next >')
@@ -490,7 +504,11 @@ try:
     formvar = int(params["formvar"])
 except:
     pass
-
+try:
+    showname = urllib.unquote_plus(params["showname"])
+except:
+    showname=name
+	
 sysarg = str(sys.argv[1])
 
 if mode is None or url is None or len(url) < 1:
@@ -499,7 +517,8 @@ if mode is None or url is None or len(url) < 1:
 elif mode == 2:
     INDEXAZ()
 elif mode == 3:
-    playVideo("noobroom", url)
+    meta = {'Title': showname,'Thumb': ''}
+    playVideo("noobroom", url,meta)
 elif mode == 4:
     SearchXml(url)
 elif mode == 5:
@@ -513,7 +532,7 @@ elif mode == 8:
 elif mode == 9:
     ListTVSeries(cj)
 elif mode == 10:
-    ListEpisodes(url, cj)
+    ListEpisodes(name,url, cj)
 elif mode == 11:
     GetLoginCookie(cj, cookiefile)
 elif mode == 12:
@@ -526,4 +545,6 @@ elif mode == 15:
     GenreList(url)
 elif mode == 16:
     KidsZone()
+elif mode == 17:
+    SEARCHTC(name)
 xbmcplugin.endOfDirectory(int(sysarg))
