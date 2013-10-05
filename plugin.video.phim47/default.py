@@ -19,18 +19,39 @@ if ADDON.getSetting('ga_visitor')=='':
 PATH = "phim47"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.6" #<---- PLUGIN VERSION
+homeLink="http://phim.li/"
 
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
+#def HOME():
+#        addDir('Search','http://phim47.com/',4,'http://yeuphim.net/images/logo.png')
+#        addDir('HQ Videos','http://phim47.com/list-hd.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
+#        addDir('Movies','http://phim47.com/movie-list/phim-le.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
+#        addDir('Series','http://phim47.com/movie-list/phim-bo.html ',2,'http://phim47.com/skin/movie/style/images/logo.png')
+#        addDir('Videos By Region','http://phim47.com/',8,'http://phim47.com/skin/movie/style/images/logo.png')
+#        addDir('Videos By Category ','http://phim47.com/',9,'http://phim47.com/skin/movie/style/images/logo.png')
+def RemoveHTML(inputstring):
+    TAG_RE = re.compile(r'<[^>]+>')
+    return TAG_RE.sub('', inputstring)
+	
 def HOME():
         addDir('Search','http://phim47.com/',4,'http://yeuphim.net/images/logo.png')
-        addDir('HQ Videos','http://phim47.com/list-hd.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Movies','http://phim47.com/movie-list/phim-le.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Series','http://phim47.com/movie-list/phim-bo.html ',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Videos By Region','http://phim47.com/',8,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Videos By Category ','http://phim47.com/',9,'http://phim47.com/skin/movie/style/images/logo.png')
-
-
+        link = GetContent(homeLink)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        match=re.compile('<li class="downmenu">(.+?)(</span>|</ul>)</li>').findall(newlink)
+        for vmenu,vtmp in match:
+              maincontent=re.compile('<span><a [^>]*onmouseover=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></span>').findall(vmenu+"</span>")
+              if(len(maincontent) == 0):
+                   maincontent=re.compile('<span><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></span>').findall(vmenu+"</span>")
+              mainurl,mainname=maincontent[0]
+              addDir(mainname,homeLink+mainurl,2,'')
+              submatch=re.compile('<li><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(vmenu)
+              for vsubmenu in submatch:
+                    vLink, vLinkName=vsubmenu
+                    addDir("--- "+ RemoveHTML(vLinkName).strip(),homeLink+vLink,2,'')
 def Countries():
         addDir('Vietnam','http://phim47.com/phim-viet-nam.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
         addDir('Korea','http://phim47.com/phim-han-quoc.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
@@ -62,7 +83,6 @@ def Categories():
         addDir('Popular','http://phim47.com/the-loai-phim-da-su---co-trang.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
         addDir('Crime Drama','http://phim47.com/the-loai-phim-hinh-su.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
 		
-homeLink="http://phim47.com/"
 def INDEX(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
@@ -72,8 +92,7 @@ def INDEX(url):
         match=re.compile('<div id="list">(.+?)<div class="pagination">').findall(link)
         vidlist = re.compile('<li><div class="zitemList"><a [^>]*href="(.+?)" title="(.+?)" [^>]*><img class="showend" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*></a></div>').findall(match[0])
         for vurl,vname,vimg in vidlist:
-            print vurl
-            addDir(vname,vurl,7,vimg)
+            addDir(vname,homeLink+vurl,7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         navmatch=re.compile('[^>]* href="(.+?)" >(.+?)</a>').findall(pagelist[0])
         for vurl,vname in navmatch:
@@ -87,7 +106,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://phim47.com/tim-kiem/'+searchText+'/0'
+        url = 'http://phim.li/tim-kiem/'+searchText+'.html'
         INDEX(url)
     except: pass
 
@@ -129,6 +148,9 @@ def decodeurl(encodedurl):
 def getVidPage(url,name):
   contentlink = GetContent(url)
   contentlink = ''.join(contentlink.splitlines()).replace('\'','"')
+  try:
+            contentlink =contentlink.encode("UTF-8")
+  except: pass
   mlink=re.compile('<a id="xemphimus" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(contentlink)
   return mlink[0].replace("title=","")
 
@@ -143,7 +165,7 @@ def Episodes(url,name):
         mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
         servlist =re.compile('<div class="name left namew">'+name+'&nbsp;&nbsp;&nbsp;(.+?)<div class="clear_td">').findall(mirmatch[0])
         epilist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(servlist[0])
-        curmatch =re.compile('<a class="current" >(.+?)</a>').findall(servlist[0])
+        curmatch =re.compile('<a class="current"\s*>(.+?)</a>').findall(servlist[0])
         if(len(curmatch)>0):
               addLink("part - "+ curmatch[0].strip(),"".join(i for i in url if ord(i)<128),3,'',name)
         for vlink,vLinkName in epilist:
@@ -182,7 +204,7 @@ def postContent(url,data,referr):
                          ('Connection','keep-alive'),
                          ('Accept-Language','en-us,en;q=0.5'),
                          ('Pragma','no-cache'),
-                         ('Host','player.phim47.com')]
+                         ('Host','www.phim.li')]
     usock=opener.open(url,data)
     if usock.info().get('Content-Encoding') == 'gzip':
         buf = StringIO.StringIO(usock.read())
@@ -222,13 +244,14 @@ def loadVideos(url,name):
               newlink=match[0]
         else:
               newlink =decodeurl(match[0])
+        #newlink="http://picasaweb.google.com/lh/photo/L><bkExMzFHWsMxWPnx?qfp0Izq><HmrJ91ZTEDpmIzA@OiJSEGDGufZGHjoj=="
         if(newlink.find("cyworld.vn") > 0):
             vidcontent=GetContent(newlink)
             vidmatch=re.compile('<meta property="og:video" content="(.+?)" />').findall(vidcontent)
             vidlink=vidmatch[0]
             playVideo("direct",vidlink)
         elif(newlink.find("picasaweb.google") > 0):
-            vidcontent=postContent("http://player.phim47.com/load/plugins/picasaphp/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%20NT%206%2E1%3B%20WOW64%3B%20rv%3A13%2E0%29%20Gecko%2F20100101%20Firefox%2F13%2E0&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+            vidcontent=postContent("http://player.phim.li/picasaphp/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%20NT%206%2E1%3B%20WOW64%3B%20rv%3A13%2E0%29%20Gecko%2F20100101%20Firefox%2F13%2E0&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
             #vidcontent=GetContent(newlink)
             #print vidcontent
             #data = json.loads('{"'+vidcontent+'}]}')
