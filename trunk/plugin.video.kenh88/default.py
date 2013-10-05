@@ -19,7 +19,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "kenh88"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.0" #<---- PLUGIN VERSION
+VERSION = "1.0.1" #<---- PLUGIN VERSION
 homeLink="http://www.kenh88.com"
 viddomain="http://www.phimmobile.com"
 
@@ -35,6 +35,7 @@ def HOME():
         match=re.compile('<li class="child">(.+?)</ul>').findall(newlink)
         for vmenu in match:
               mainurl,mainname=re.compile('<h2><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h2>').findall(vmenu)[0]
+              print mainname
               addDir(mainname,mainurl,2,'')
               submatch=re.compile('<li><h3><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h3></li>').findall(vmenu)
               for vsubmenu in submatch:
@@ -128,7 +129,7 @@ def GetDirVideoUrl(url,referr):
         ('Accept-Encoding', 'gzip, deflate'),
         ('Referer',referr),
         #('Content-Type', 'application/x-www-form-urlencoded'),
-        ('User-Agent', 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16'),
+        ('User-Agent', 'Mozilla/5.0 (iPad; U; CPU OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5'),
         ('Connection', 'keep-alive'),
         ('Accept-Language', 'en-us,en;q=0.5'),
         ('Pragma', 'no-cache'),
@@ -154,7 +155,7 @@ def GetContentMob(url):
         ('Accept-Encoding', 'gzip, deflate'),
         ('Referer',"http://www.phimmobile.com/index.php"),
         #('Content-Type', 'application/x-www-form-urlencoded'),
-        ('User-Agent', 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16'),
+        ('User-Agent', 'Mozilla/5.0 (iPad; U; CPU OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5'),
         ('Connection', 'keep-alive'),
         ('Accept-Language', 'en-us,en;q=0.5'),
         ('Pragma', 'no-cache'),
