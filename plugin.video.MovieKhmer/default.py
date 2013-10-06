@@ -11,7 +11,7 @@ import cgi
 import CommonFunctions
 import datetime
 common = CommonFunctions
-common.plugin = "plugin.video.MovieKhmer"
+common.plugin = "plugin.video.video4khmer"
 
 import time
 ADDON = xbmcaddon.Addon(id='plugin.video.MovieKhmer')
@@ -23,19 +23,19 @@ PATH = "moviekhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.8" #<---- PLUGIN VERSION
 
-strdomain ='http://moviekhmer.com/'
+strdomain ='http://www.moviekhmer.com/'
 def HOME():
-        addDir('Khmer Comedy','http://moviekhmer.com/category/khmer/khmer-comedy/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Movies','http://moviekhmer.com/category/khmer/khmer-movies/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Song','http://moviekhmer.com/category/khmer/khmer-songs/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer TV Show','http://moviekhmer.com/category/khmer/khmer-tv-show-khmer/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Movies','http://moviekhmer.com/category/thai/thai-movies/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Lakorns','http://moviekhmer.com/category/thai/thai-lakorns/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Drama','http://moviekhmer.com/category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Korean Movies','http://moviekhmer.com/category/korean/korean-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Chinese Movies','http://moviekhmer.com/category/chinese/chinese-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Series','http://moviekhmer.com/category/chinese/chinese-series/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Documentaries','http://moviekhmer.com/category/uncategories/documentary-uncategories/',2,'http://moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
+        addDir('Khmer Comedy','http://www.moviekhmer.com/category/khmer/khmer-comedy/',2,'http://www.moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Movies','http://www.moviekhmer.com/category/khmer/khmer-movies/',2,'http://www.moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Song','http://www.moviekhmer.com/category/khmer/khmer-songs/',2,'http://www.moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer TV Show','http://www.moviekhmer.com/category/khmer/khmer-tv-show-khmer/',2,'http://www.moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Thai Movies','http://www.moviekhmer.com/category/thai/thai-movies/',2,'http://www.moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Thai Lakorns','http://www.moviekhmer.com/category/thai/thai-lakorns/',2,'http://www.moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Drama','http://www.moviekhmer.com/category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        addDir('Korean Movies','http://www.moviekhmer.com/category/korean/korean-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        addDir('Chinese Movies','http://www.moviekhmer.com/category/chinese/chinese-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Chinese Series','http://www.moviekhmer.com/category/chinese/chinese-series/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Documentaries','http://www.moviekhmer.com/category/uncategories/documentary-uncategories/',2,'http://www.moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
 
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strdomain})
@@ -124,6 +124,7 @@ def INDEX(url):
         if(len(match5) >= 1 and len(match5[0]) >= 1 and newlink.find("class='nextpostslink'") > -1 ):
                 startlen=re.compile("<span class='current'>(.+?)</span>").findall(match5[0][0])
                 url=url.replace("page/"+startlen[0],"")
+                print url
                 addDir("Next >>",url+'page/' + str(int(startlen[0])+1),2,"")
     except: pass
 			
@@ -140,10 +141,10 @@ def SearchResults(url):
             addDir('Next>',nexurl,6,'')			
 			
 def Episodes(url,name):
-    try:
+    #try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('{ "file": "(.+?)", "title": "(.+?)", "description": "", "image":').findall(link)
+        match=re.compile('\{\s*"file":\s*"(.+?)",\s*"title":\s*"(.+?)",\s*"description":').findall(link)
         if(len(match) >= 1):
                 for mcontent in match:
                     vLink, vLinkName=mcontent
@@ -152,7 +153,7 @@ def Episodes(url,name):
                 match=re.compile('"file": "(.+?)",').findall(link)
                 if(len(match) >= 1):
                         if(".xml" in match[0]):
-                                newcontent=GetContent("http://moviekhmer.com"+match[0])
+                                newcontent=GetContent("http://www.moviekhmer.com"+match[0].replace(" ","%20"))
                                 ParseXml(newcontent)
                         elif (len(match) > 1):
                                 counter = 0
@@ -181,7 +182,7 @@ def Episodes(url,name):
 										
  
               
-    except: pass		
+    #except: pass		
 
 
 def ParseXml(newcontent):
@@ -243,6 +244,7 @@ def GetContent2(url):
 	
 def GetContent(url):
     try:
+       print "xmlurl="+url
        net = Net()
        second_response = net.http_GET(url)
        return second_response.content
@@ -347,8 +349,7 @@ def loadVideos(url,name):
         
 def OtherContent():
     net = Net()
-    response = net.http_GET('http://khmerportal.com/videos')
-    print response       
+    response = net.http_GET('http://khmerportal.com/videos')      
 def extractFlashVars(data):
     for line in data.split("\n"):
             index = line.find("ytplayer.config =")
