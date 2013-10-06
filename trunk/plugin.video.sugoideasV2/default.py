@@ -93,6 +93,7 @@ def PLAYLIST_VIDEOLINKS(url,name):
         pDialog.update(0,'Please wait for the process to retrieve video link.',remaining_display)
         
         for videoLink in links:
+            if(len(videoLink)>0):
                 ytid=getYoutubeID(videoLink)
                 loadedLinks = loadedLinks + 1
                 percent = (loadedLinks * 100)/totalLinks
@@ -100,12 +101,16 @@ def PLAYLIST_VIDEOLINKS(url,name):
                        liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
                        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
                        #yturl = "plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=" + ytid
-                       yturl=getYoutube(ytid)
+                       if(ytid.find("http:") < 0):
+                            yturl=getYoutube(ytid)
+                       else:
+                            yturl=ytid
                        playlist.add(url=yturl, listitem=liz)
                 remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
                 pDialog.update(percent,'Please wait for the process to retrieve video link.',remaining_display)
                 if (pDialog.iscanceled()):
-                        return False   
+                        return False
+            
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(playList)
         if not xbmcPlayer.isPlayingVideo():
@@ -344,6 +349,9 @@ def getYoutubeID(url):
     match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(html)
     if len(match) > 0:
          id = match[0][len(match[0])-1].replace('v/','')
+    else:
+         match=re.compile('file:\s*"(.+?)"').findall(html)
+         id = loadVideos(match[0],"")
     return id
 
 def categoryList():
@@ -594,6 +602,39 @@ def APP_LAUNCH():
                 print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
 checkGA()
 
+def loadVideos(newlink,name):
+        #newlink="http://picasaweb.google.com/lh/photo/L><bkExMzFHWsMxWPnx?qfp0Izq><HmrJ91ZTEDpmIzA@OiJSEGDGufZGHjoj=="
+           if (newlink.find("dailymotion") > -1):
+                match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
+                lastmatch = match[0][len(match[0])-1]
+                link = 'http://www.dailymotion.com/'+str(lastmatch)
+                req = urllib2.Request(link)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                sequence=re.compile('"sequence",  "(.+?)"').findall(link)
+                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
+                #print 'in dailymontion:' + str(newseqeunce)
+                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
+                if(len(imgSrc[0]) == 0):
+                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
+                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
+                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+           elif (newlink.find("4shared") > -1):
+                d = xbmcgui.Dialog()
+                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
+           elif (newlink.find("vimeo") > -1):
+                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                if(len(idmatch) > 0):
+                        vidlink=idmatch[0]
+           else:
+                vidlink=newlink
+           return vidlink
+    #except:
+       #d = xbmcgui.Dialog()
+       #d.ok(url,"Can't play video",'Try another link')
 def videoList(url):
     videos = getVideos(url) 
     totalLen = len(videos) 
@@ -665,16 +706,19 @@ elif mode == '3':
     GA("PlayVideo",name)
     videoList(url)
 elif mode == '4':
-    try:
+    #try:
         id = getYoutubeID(url)
-        playVideo("youtube",id)
+        if(id.find("http:") < 0):
+           type="youtube"
+        else:
+           type="direct"
+        playVideo(type,id)
         #video_map = getYoutubeVideoUrl(id)
         #video_link = getHQYoutubeVideoUrl(video_map)
         #xbmc.Player().play(video_link)
-    except:
-        dialog = xbmcgui.Dialog()
-        dialog.ok('eror', 'Error Playing Video')   
-        pass    
+    #except:
+    #    dialog = xbmcgui.Dialog()
+    #    dialog.ok('eror', 'Error Playing Video')      
 elif mode == '5':
     dramaYearList();
 elif mode == '6': 

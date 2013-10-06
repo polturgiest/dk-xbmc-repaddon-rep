@@ -466,7 +466,7 @@
 
 <addon
   id="plugin.video.sugoideasV2"
-  version="1.0.5"
+  version="1.0.6"
   name="sugoideasV2"
   provider-name="Created by YangSun revised by Dknight">
   <requires>
