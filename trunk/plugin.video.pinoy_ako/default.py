@@ -20,7 +20,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.11" #<---- PLUGIN VERSION
+VERSION = "1.0.9" #<---- PLUGIN VERSION
 
 strdomain ='http://www.pinoy-ako.info'
 def HOME():
@@ -345,7 +345,7 @@ def iLiveLink(mname,murl,thumb):
         if len(playpath)==0:
                         playpath=re.compile('http://snapshots.ilive.to/snapshots/(.+?)_snapshot.jpg').findall(thumb)      
         for playPath in playpath:
-                    stream_url = 'rtmp://live.iguide.to/edge playpath=' + playPath + " swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl="+pageUrl+" token=I8772LDKksadhGHGagf# live=1 timeout=15"
+                    stream_url = "rtmp://live.iguide.to/edge playpath=tj6zegfdas16p08 live=1 timeout=15 swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl=http://www.ilive.to/embedplayer.php?width=640&height=480&channel=49953&autoplay=true token=I8772LDKksadhGHGagf#"
         listitem = xbmcgui.ListItem(thumbnailImage=thumb)
         listitem.setInfo('video', {'Title': mname, 'Genre': 'Live'} )
         
