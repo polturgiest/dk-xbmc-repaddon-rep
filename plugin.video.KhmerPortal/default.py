@@ -23,9 +23,9 @@ VERSION = "1.0.7" #<---- PLUGIN VERSION
 
 common = CommonFunctions
 common.plugin = "plugin.video.KhmerPortal"
-strdomain ='khmerportal.com'
+strdomain ='www.khmermov.com'
 def HOME():
-        addDir('Chinese','/category/chinese/chinese-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Chinese','/category/chinese/chinese-series/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         addDir('Korean Drama','/category/korean/korean-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
         addDir('Khmer Entertainment','/category/khmer-other-videos/khmer-other-videos-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category12.jpg')
         addDir('Thai Lakorn','/category/thai/thai-episode-1/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category13.jpg')
@@ -54,7 +54,23 @@ def INDEX(url):
                 match=re.compile("href='(.+?)'").findall(match[0])
                 nexurl= match[0]
                 addDir('Next>',nexurl,2,'')
-				
+
+def getVimeoUrl(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strdomain})
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find(',c={'):]
+            html = html[:html.find('}};') + 2]
+            html = html.replace(",c={", '{') 
+            try:
+                  collection = json.loads(html)
+                  codec=collection["request"]["files"]["codecs"][0]
+                  filecol = collection["request"]["files"][codec]
+                  return filecol["sd"]["url"]
+            except:
+                  return getVimeoVideourl(videoid)
+				  
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": "http://khmerportal.com"})
         collection = {}
@@ -168,7 +184,7 @@ def playVideo(videoType,videoId):
     #elif (videoType == "vimeo"):
     #    url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "vimeo"):
-        url = getVimeoVideourl(videoId)
+        url = getVimeoUrl(videoId)
     elif (videoType == "tudou"):
         url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId
 

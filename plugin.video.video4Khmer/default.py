@@ -12,7 +12,7 @@ import CommonFunctions
 import datetime
 common = CommonFunctions
 common.plugin = "plugin.video.video4khmer"
-strDomain ='http://www.khvdo.com/'
+strDomain ='http://www.vdokhmer.com/'
 
 
 ADDON = xbmcaddon.Addon(id='plugin.video.video4Khmer')
@@ -24,29 +24,29 @@ PATH = "video4khmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.10" #<---- PLUGIN VERSION
 def HOME():
-        addDir('Search','http://www.khvdo.com/',4,'http://www.khvdo.com/templates/3column/images/header/logo.png')
-        addDir('Thai Lakorns','http://www.khvdo.com/browse-khmer-movie-thai-lakorn-drama-videos-1-date.html?ModPagespeed=noscript',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Movies','http://www.khvdo.com/browse-khmer-thai-movie-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Videos','http://www.khvdo.com/browse-khmer-movie-korean-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
-        #addDir('Korean Movies','http://www.khvdo.com/browse-khmer-korean-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Chinese Drama','http://www.khvdo.com/browse-khmer-movie-chinese-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Chinese Movies','http://www.khvdo.com/browse-khmer-chinese-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Khmer Videos','http://www.khvdo.com/browse-khmer-drama-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Movies','http://www.khvdo.com/browse-khmer-movies-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Comedy','http://www.khvdo.com/browse-khmer-comedy-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Boxing','http://www.khvdo.com/browse-khmer-boxing-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Hang Meas Karaoke','http://www.khvdo.com/browse-hang-meas-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Sunday Khmer Karaoke','http://www.khvdo.com/browse-sunday-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Town Production Karaoke','http://www.khvdo.com/browse-town-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Big Man Khmer Karaoke','http://www.khvdo.com/browse-big-man-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('M Production Karaoke','http://www.khvdo.com/browse-m-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Rock Production Karaoke','http://www.khvdo.com/browse-rock-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Spark Production Karaoke','http://www.khvdo.com/browse-spark-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Chenla Brother Karaoke','http://www.khvdo.com/browse-chenla-brother-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer video clip','http://www.khvdo.com/browse-khmer-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        #addDir('MISC','http://www.khvdo.com/browse-this-and-that-accident-society-misc-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Tv show','http://www.khvdo.com/browse-watch-cambodia-tv-shows-online-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Funney Videos','http://www.khvdo.com/browse-funny-video-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')		
+        addDir('Search','http://www.vdokhmer.com/',4,'http://www.vdokhmer.com/templates/3column/images/header/logo.png')
+        addDir('Thai Lakorns','http://www.vdokhmer.com/browse-khmer-movie-thai-lakorn-drama-videos-1-date.html?ModPagespeed=noscript',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Thai Movies','http://www.vdokhmer.com/browse-khmer-thai-movie-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Videos','http://www.vdokhmer.com/browse-khmer-movie-korean-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        #addDir('Korean Movies','http://www.vdokhmer.com/browse-khmer-korean-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Chinese Drama','http://www.vdokhmer.com/browse-khmer-movie-chinese-drama-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Chinese Movies','http://www.vdokhmer.com/browse-khmer-chinese-movie-videos-1-date.html',2,'http://www.khmeravenue.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Khmer Videos','http://www.vdokhmer.com/browse-khmer-drama-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Movies','http://www.vdokhmer.com/browse-khmer-movies-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Comedy','http://www.vdokhmer.com/browse-khmer-comedy-watch-online-free-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Boxing','http://www.vdokhmer.com/browse-khmer-boxing-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Hang Meas Karaoke','http://www.vdokhmer.com/browse-hang-meas-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Sunday Khmer Karaoke','http://www.vdokhmer.com/browse-sunday-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Town Production Karaoke','http://www.vdokhmer.com/browse-town-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Big Man Khmer Karaoke','http://www.vdokhmer.com/browse-big-man-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('M Production Karaoke','http://www.vdokhmer.com/browse-m-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Rock Production Karaoke','http://www.vdokhmer.com/browse-rock-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Spark Production Karaoke','http://www.vdokhmer.com/browse-spark-production-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Chenla Brother Karaoke','http://www.vdokhmer.com/browse-chenla-brother-khmer-video-karaoke-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer video clip','http://www.vdokhmer.com/browse-khmer-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        #addDir('MISC','http://www.vdokhmer.com/browse-this-and-that-accident-society-misc-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Tv show','http://www.vdokhmer.com/browse-watch-cambodia-tv-shows-online-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Funney Videos','http://www.vdokhmer.com/browse-funny-video-clips-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')		
 def INDEX(url):
     #try:
         link = GetContent(url)
@@ -75,7 +75,7 @@ def INDEX(url):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.khvdo.com/"+pageurl,2,"")
+                        addDir("Page " + pagenum,"http://www.vdokhmer.com/"+pageurl,2,"")
     #except: pass
 			
 def SEARCH():
@@ -84,7 +84,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.khvdo.com/search.php?keywords='+ searchText +'&btn=Search'
+        url = 'http://www.vdokhmer.com/search.php?keywords='+ searchText +'&btn=Search'
         SearchResults(url)
         
 def SearchResults(url):
@@ -105,7 +105,7 @@ def SearchResults(url):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.khvdo.com/"+pageurl,6,"")			
+                        addDir("Page " + pagenum,"http://www.vdokhmer.com/"+pageurl,6,"")			
 			
 def Episodes_old(url,name):
     #try:
@@ -121,11 +121,11 @@ def Episodes_old(url,name):
                 vidseries=vidseries[0]
                 addLink(name,url,3,"")
         try:
-                lastvidseries = ParseXml("http://www.khvdo.com/relatedclips.php?vid=" + vidseries)
+                lastvidseries = ParseXml("http://www.vdokhmer.com/relatedclips.php?vid=" + vidseries)
                 if(len(lastvidseries)):
-                        lastvidseries = ParseXml("http://www.khvdo.com/relatedclips.php?vid=" + lastvidseries)
+                        lastvidseries = ParseXml("http://www.vdokhmer.com/relatedclips.php?vid=" + lastvidseries)
                         if(len(lastvidseries)):
-                                addDir("Next >>","http://www.khvdo.com/relatedclips.php?vid=" + lastvidseries,7,"")
+                                addDir("Next >>","http://www.vdokhmer.com/relatedclips.php?vid=" + lastvidseries,7,"")
                 else:
                         raise Exception("Didn't fine listing")
         except:
@@ -138,7 +138,22 @@ def Episodes_old(url,name):
                             youtubeid = re.compile('/vi/(.+?)/').findall(vpic)
                             addLink(name + " " + str(counter),"http://www.youtube.com/watch?v="+youtubeid[0],3,vpic)
     #except: pass
-	
+def getVimeoUrl(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find(',c={'):]
+            html = html[:html.find('}};') + 2]
+            html = html.replace(",c={", '{') 
+            try:
+                  collection = json.loads(html)
+                  codec=collection["request"]["files"]["codecs"][0]
+                  filecol = collection["request"]["files"][codec]
+                  return filecol["sd"]["url"]
+            except:
+                  return getVimeoVideourl(videoid)
+				  
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strDomain})
         collection = {}
@@ -147,7 +162,6 @@ def scrapeVideoInfo(videoid):
             html = html[html.find('{config:{'):]
             html = html[:html.find('}}},') + 3]
             html = html.replace("{config:{", '{"config":{') + "}"
-            print repr(html)
             collection = json.loads(html)
         return collection
 
@@ -175,7 +189,6 @@ def getVideoInfo(videoid):
             if str(isHD) == "1":
                 video['isHD'] = "1"
 
-
         if len(video) == 0:
             common.log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
             video = {}
@@ -202,9 +215,7 @@ def getVimeoVideourl(videoid):
         
         if ('apierror' not in video):
             video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
-            print video_url
             result = common.fetchPage({"link": video_url, "no-content": "true"})
-            print repr(result)
             video['video_url'] = result["new_url"]
 
             common.log("Done")
@@ -247,7 +258,7 @@ def Episodes(url,name):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.khvdo.com/"+pageurl,5,"")
+                        addDir("Page " + pagenum,"http://www.vdokhmer.com/"+pageurl,5,"")
     #except: pass    
 
 def ParseXml(url):
@@ -279,11 +290,11 @@ def GetContent(url):
        headers['Accept']='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
        headers['Accept-Encoding'] = 'gzip, deflate'
        headers['Accept-Charset']='ISO-8859-1,utf-8;q=0.7,*;q=0.7'
-       headers['Referer'] = strDomain
-       headers['Content-Type'] = 'application/x-www-form-urlencoded'
-       headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0.1) Gecko/20100101 Firefox/5.0.1'
+       #headers['Referer'] = strDomain
+       #headers['Content-Type'] = 'application/x-www-form-urlencoded'
+       headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:15.0) Gecko/20100101 Firefox/15.0.1'
        headers['Connection'] = 'keep-alive'
-       headers['Host']='www.khvdo.com'
+       #headers['Host']='www.vdokhmer.com'
        headers['Accept-Language']='en-us,en;q=0.5'
        headers['Pragma']='no-cache'
        formdata={}   
@@ -299,7 +310,7 @@ def playVideo(videoType,videoId):
         url = getYoutube(videoId)
         print "myvideoyou"+url
     elif (videoType == "vimeo"):
-        url = getVimeoVideourl(videoId)
+        url = getVimeoUrl(videoId)
     elif (videoType == "tudou"):
         url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
     xbmcPlayer = xbmc.Player()
@@ -340,30 +351,30 @@ def CreateList(videoType,videoLink):
     if (videoType == "youtube"):
         url1 = getYoutube(videoLink)
     elif (videoType == "vimeo"):
-        url1 = getVimeoVideourl(videoId)
+        url1 = getVimeoUrl(videoLink)
     elif (videoType == "tudou"):
         url1 = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
     else:
         url1=videoLink
 
     if(len(videoLink) >0):
-        print url1
         liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.add(url=url1, listitem=liz)
         
 def loadPlaylist(newlink,name):
-        try:
-           if (newlink.find("video4khmer.com") > -1 or newlink.find("khvdo.com") > -1 ):
+        #try:
+           if (newlink.find("video4khmer.com") > -1 or newlink.find("vdokhmer.com") > -1 ):
                 print "currenturl" + newlink
                 linkcontent = GetContent(newlink)
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
                 titlecontent = re.compile("var flashvars = {file: '(.+?)',").findall(newContent)
-                
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('swfobject\.embedSWF\("(.+?)",').findall(newContent)
-                        if(len(titlecontent) == 0):
-                               titlecontent = re.compile("file:\s*'(.+?)',").findall(newContent)
+                if(len(titlecontent) == 0):
+                        titlecontent = re.compile("file:\s*'(.+?)',").findall(newContent)
+                if(len(titlecontent) == 0):
+                        titlecontent = re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newContent)
                 newlink=titlecontent[0]
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
@@ -398,7 +409,7 @@ def loadPlaylist(newlink,name):
                         CreateList('google',gcontent[0])
            elif (newlink.find("vimeo") > -1):
                 print "newlink|" + newlink
-                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)\?").findall(newlink+"?")
                 if(len(idmatch) > 0):
                         CreateList('vimeo',idmatch[0])
            elif (newlink.find("4shared") > -1):
@@ -418,12 +429,12 @@ def loadPlaylist(newlink,name):
                     CreateList("youtube",lastmatch)
                 else:
                     CreateList("other",urllib2.unquote(newlink).decode("utf8"))
-        except: pass
+        #except: pass
 		
 def loadVideos(newlink,name):
         try:
            GA("LoadVideo",name)
-           if (newlink.find("video4khmer.com") > -1 or newlink.find("khvdo.com") > -1 ):
+           if (newlink.find("video4khmer.com") > -1 or newlink.find("vdokhmer.com") > -1 ):
                 print "currenturl" + newlink
                 linkcontent = GetContent(newlink)
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
@@ -431,8 +442,10 @@ def loadVideos(newlink,name):
                 
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('swfobject\.embedSWF\("(.+?)",').findall(newContent)
-                        if(len(titlecontent) == 0):
-                               titlecontent = re.compile("file:\s*'(.+?)',").findall(newContent)
+                if(len(titlecontent) == 0):
+                        titlecontent = re.compile("file:\s*'(.+?)',").findall(newContent)
+                if(len(titlecontent) == 0):
+                        titlecontent = re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newContent)
                 newlink=titlecontent[0]
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
@@ -467,7 +480,7 @@ def loadVideos(newlink,name):
                         playVideo('google',gcontent[0])
            elif (newlink.find("vimeo") > -1):
                 print "newlink|" + newlink
-                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)\?").findall(newlink+"?")
                 if(len(idmatch) > 0):
                         playVideo('vimeo',idmatch[0])
            elif (newlink.find("4shared") > -1):
@@ -811,7 +824,7 @@ def addLink(name,url,mode,iconimage):
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
-        liz=xbmcgui.ListItem('Next >', iconImage="http://www.khvdo.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem('Next >', iconImage="http://www.vdokhmer.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": 'Next >' } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
@@ -822,7 +835,7 @@ def addDir(name,url,mode,iconimage):
         except: pass
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
-        liz=xbmcgui.ListItem(name, iconImage="http://www.khvdo.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem(name, iconImage="http://www.vdokhmer.com/templates/3column/images/header/logo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok

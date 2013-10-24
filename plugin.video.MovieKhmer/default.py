@@ -36,7 +36,23 @@ def HOME():
         addDir('Chinese Movies','http://www.moviekhmer.com/category/chinese/chinese-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         addDir('Chinese Series','http://www.moviekhmer.com/category/chinese/chinese-series/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         addDir('Documentaries','http://www.moviekhmer.com/category/uncategories/documentary-uncategories/',2,'http://www.moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
-
+		
+def getVimeoUrl(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strdomain})
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find(',c={'):]
+            html = html[:html.find('}};') + 2]
+            html = html.replace(",c={", '{') 
+            try:
+                  collection = json.loads(html)
+                  codec=collection["request"]["files"]["codecs"][0]
+                  filecol = collection["request"]["files"][codec]
+                  return filecol["sd"]["url"]
+            except:
+                  return getVimeoVideourl(videoid)
+				  
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strdomain})
         collection = {}
@@ -291,7 +307,7 @@ def playVideo(videoType,videoId):
                 url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
                 xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
     elif (videoType == "vimeo"):
-        url = getVimeoVideourl(videoId)
+        url = getVimeoUrl(videoId)
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(url)
     elif (videoType == "tudou"):

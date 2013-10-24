@@ -47,7 +47,22 @@ def Shows():
         addDir('Cartoon','http://www.phumikhmer.com/search/label/Cartoon%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('TV program','http://www.phumikhmer.com/search/label/TV%20Programe?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
 
-		
+def getVimeoUrl(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strdomain})
+        collection = {}
+        if result["status"] == 200:
+            html = result["content"]
+            html = html[html.find(',c={'):]
+            html = html[:html.find('}};') + 2]
+            html = html.replace(",c={", '{') 
+            try:
+                  collection = json.loads(html)
+                  codec=collection["request"]["files"]["codecs"][0]
+                  filecol = collection["request"]["files"][codec]
+                  return filecol["sd"]["url"]
+            except:
+                  return getVimeoVideourl(videoid)
+				  
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strdomain})
         collection = {}
@@ -349,7 +364,7 @@ def playVideo(videoType,videoId):
                 url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
                 xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
     elif (videoType == "vimeo"):
-        url = getVimeoVideourl(videoId)
+        url = getVimeoUrl(videoId)
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(url)
     elif (videoType == "tudou"):
