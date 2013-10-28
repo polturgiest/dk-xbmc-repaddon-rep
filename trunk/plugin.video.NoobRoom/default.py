@@ -41,14 +41,17 @@ if ADDON.getSetting('use-hd') != 'true':
     isHD = "0"
 
 strUsername = ADDON.getSetting('Username')
-strpwd = ADDON.getSetting('Password')
+strpwd = ADDON.getSetting('Password').replace("@","%40")
 
 genres = [
     "Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family",
     "Fantasy", "Film-Noir", "Game-Show", "History", "Horror", "Music", "Musical", "Mystery", "News", "Reality-TV",
     "Romance", "Sci-Fi", "Sport", "Talk-Show", "Thriller", "War", "Western"]
 
-
+if os.path.exists(cookie_path):
+    cj = cookielib.LWPCookieJar()
+    cj.load(cookiefile, ignore_discard=True)
+	
 def GetContent(url, data, referr, cj):
     if cj is None:
         cj = cookielib.LWPCookieJar()
@@ -134,14 +137,22 @@ def AutoLogin(url, cj):
     if cj is None:
         cj = cookielib.LWPCookieJar()
     if strUsername is not None and strUsername != "" and strpwd is not None and strpwd != "":
+      try:
         (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
         match = re.compile('"streamer": "(.+?)",').findall(link)
         loginsuc = match[0].split("&")[1]
-        matchauth = loginsuc.replace("auth=", "")
-        ADDON.setSetting('authcode', matchauth)
+      except:
+        (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
+                                  "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
+        cj.save(cookiefile, ignore_discard=True)
+        link = ''.join(respon.splitlines()).replace('\'', '"')
+        match = re.compile('"streamer": "(.+?)",').findall(link)
+        loginsuc = match[0].split("&")[1]
+      matchauth = loginsuc.replace("auth=", "")
+      ADDON.setSetting('authcode', matchauth)
     cj.load(cookiefile, ignore_discard=True)
     return cj, respon
 
