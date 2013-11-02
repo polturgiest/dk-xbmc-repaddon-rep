@@ -48,7 +48,7 @@ genres = [
     "Fantasy", "Film-Noir", "Game-Show", "History", "Horror", "Music", "Musical", "Mystery", "News", "Reality-TV",
     "Romance", "Sci-Fi", "Sport", "Talk-Show", "Thriller", "War", "Western"]
 
-if os.path.exists(cookie_path):
+if os.path.exists(cookiefile):
     cj = cookielib.LWPCookieJar()
     cj.load(cookiefile, ignore_discard=True)
 	
@@ -98,16 +98,25 @@ def GetLoginCookie(cj, cookiefile):
         GetInput("Please enter your username", "Username", False))
     respon = ""
     if strUsername is not None and strUsername != "":
-        strpwd = urllib.quote_plus(
-            GetInput("Please enter your password", "Password", True))
+        strpwd = urllib.quote_plus(GetInput("Please enter your password", "Password", True))
         (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
+        cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
         match = re.compile('"streamer": "(.+?)",').findall(link)
+        if(len(match) ==0):
+           cj.load(cookiefile, ignore_discard=True)
+           (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
+                                  "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
+           print "this lik" + respon
+           cj.save(cookiefile, ignore_discard=True)
+           link = ''.join(respon.splitlines()).replace('\'', '"')
+
+           match = re.compile('"streamer": "(.+?)",').findall(link)
         loginsuc = match[0].split("&")[1]
         matchauth = loginsuc.replace("auth=", "")
         ADDON.setSetting('authcode', matchauth)
-    cj.save(cookiefile, ignore_discard=True)
+
     cj = cookielib.LWPCookieJar()
     cj.load(cookiefile, ignore_discard=True)
     if len(match) == 0:
@@ -176,7 +185,7 @@ def GetVideoLink(url, isHD, cj):
     return cj, match
 
 
-(cj, noobvideolink) = GetVideoLink(nooblink + "/login2.php", isHD, cj)
+
 
 def HOME():
     addDir('Search', 'search', 5, '')
@@ -343,8 +352,10 @@ def GetDirVideoUrl(url, cj):
     return redirhndler.video_url
 
 
-def Episodes(name, videoId):
+def Episodes(name, videoId,cj):
     # try:
+    xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
+    (cj, noobvideolink) = GetVideoLink(nooblink + "/login2.php", isHD, cj)
     match = re.compile("/(.+?)&sp").findall(videoId + "&sp")
     if len(match) >= 0:
         videoId = match[0]
@@ -380,6 +391,7 @@ def ListTVSeries(cj):
 
 
 def ListEpisodes(name,url, cj):
+    (cj, noobvideolink) = GetVideoLink(nooblink + "/login2.php", isHD, cj)
     (cj, link) = GetContent(url, "", nooblink, cj)
     link = ''.join(link.splitlines()).replace('\'', '"')
     match = re.compile(
@@ -535,7 +547,7 @@ elif mode == 4:
 elif mode == 5:
     SEARCH()
 elif mode == 6:
-    Episodes(name, str(url))
+    Episodes(name, str(url),cj)
 elif mode == 7:
     RefreshAll()
 elif mode == 8:
