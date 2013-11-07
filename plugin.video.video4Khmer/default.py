@@ -75,7 +75,7 @@ def INDEX(url):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.vdokhmer.com/"+pageurl,2,"")
+                        addDir("Page " + pagenum,pageurl,2,"")
     #except: pass
 			
 def SEARCH():
@@ -231,7 +231,7 @@ def Episodes(url,name):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div id="browse_results" (.+?)<ul>(.+?)</ul></div>').findall(newlink)
+        match=re.compile('<div id="list_subcats"(.+?)<ul>(.+?)</ul></div>').findall(newlink)
         if(len(match) >= 1):
                 linkmatch=re.compile('<li class="video"><div class="video_i">(.+?)</div></li>').findall(match[0][1])
                 counter = 0
@@ -258,7 +258,7 @@ def Episodes(url,name):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,"http://www.vdokhmer.com/"+pageurl,5,"")
+                        addDir("Page " + pagenum,pageurl,5,"")
     #except: pass    
 
 def ParseXml(url):
