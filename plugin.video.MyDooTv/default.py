@@ -177,7 +177,11 @@ def postContent(url,data,referr,cj):
 
 def GetVideoUrl(pid,cid):
         videourl="http://"+strdomain+"/assets/services/player_json.php?method=getVideoData&pid="+pid+"&cid="+cid+"&country=US"
-        data = GetJSON(videourl,"","",cj)
+        try:
+                data = GetJSON(videourl,"","",cj)
+        except:
+                AutoLogin(cj)
+                data = GetJSON(videourl,"","",cj)
         imgsrc="http://cdn2.dootvimage.com/images/medium/"
         for product in data:
                 urlfull="http://"+product["hostname"]+".dootvserver.com"+product["uri_prefix"]
