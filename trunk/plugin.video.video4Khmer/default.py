@@ -75,7 +75,7 @@ def INDEX(url):
                 pages=re.compile('<a href="(.+?)">(.+?)</a>').findall(match5[0])
                 for pcontent in pages:
                         (pageurl,pagenum)=pcontent
-                        addDir("Page " + pagenum,pageurl,2,"")
+                        addDir("Page " + pagenum,pageurl.replace('" ',"?").replace(" ","+"),2,"")
     #except: pass
 			
 def SEARCH():
