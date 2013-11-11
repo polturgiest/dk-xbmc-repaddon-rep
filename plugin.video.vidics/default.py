@@ -321,7 +321,8 @@ def ParseVideoLink(url,name,movieinfo):
     win.setProperty('1ch.playing.season', str(3))
     win.setProperty('1ch.playing.episode', str(4))
     # end 1channel code
-    try:
+    #try:
+    if True:
         if (redirlink.find("youtube") > -1):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
                 vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
@@ -445,6 +446,33 @@ def ParseVideoLink(url,name,movieinfo):
                 if(len(vidlink) == 0):
                         vidlink = re.compile('"file","(.+?)"').findall(pcontent)
                 vidlink=vidlink[0]
+        elif (redirlink.find("divxpress") > -1):
+                idkey = re.compile('<input type="hidden" name="id" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                rand = re.compile('<input type="hidden" name="rand" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":"download2","rand":rand,"id":idkey,"referer":url,"method_free":"","method_premium":"","down_direct":"1"})
+                pcontent=postContent(redirlink,posdata,url)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                packed = re.compile('swfobject.js"></script><script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
+                sUnpacked = unpackjs4(packed).replace("\\","")
+                vidlink = re.compile('addVariable\("file",\s*"(.+?)"\)').findall(sUnpacked)[0]
+
+        elif (redirlink.find("videopremium") > -1):
+                idkey = re.compile('<input type="hidden" name="id" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                mfree = re.compile('<input type="submit" name="method_free" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":"download1","usr_login":"","id":idkey,"referer":"","method_free":mfree})
+                pcontent=postContent(redirlink,posdata,url)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                packed = re.compile('src="/swfobject.js"></script>\s*<script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
+                sUnpacked = unpackjs4(packed)  
+                vidpart = re.compile('"file":"(.+?)",p2pkey:"(.+?)"').findall(sUnpacked)[0]
+                vidswf = re.compile('embedSWF\("(.+?)",').findall(sUnpacked)[0]
+                vidlink=""
+                if(len(vidpart) > 0):
+                        vidlink = "rtmp://e9.md.iplay.md/play/"+vidpart[1]+" swfUrl="+vidswf+" playPath="+vidpart[1] +" pageUrl=" + redirlink + " tcUrl=rtmp://e9.md.iplay.md/play"
+                #vidlink="rtmp://e9.md.iplay.md/play/mp4:rx90tddtnfmc.f4v swfUrl=http://videopremium.tv/uplayer/uppod.swf pageUrl=http://videopremium.tv/rx90tddtnfmc playPath=mp4:rx90tddtnfmc.f4v tcUrl=rtmp://e9.md.iplay.md/play"
+
         elif (redirlink.find("vodlocker") > -1):
                 idkey = re.compile('<input type="hidden" name="id" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
@@ -469,6 +497,21 @@ def ParseVideoLink(url,name,movieinfo):
                         
                 unpacked = unpacked.replace("\\","")
                 vidlink = re.compile("'file','(.+?)'").findall(unpacked)[0]
+        elif (redirlink.find("bonanzashare") > -1):
+                capchacon =re.compile('<b>Enter code below:</b>(.+?)</table>').findall(link)
+                capchar=re.compile('<span style="position:absolute;padding-left:(.+?);[^>]*>(.+?)</span>').findall(capchacon[0])
+                capchar=sorted(capchar, key=lambda x: int(x[0].replace("px","")))
+                capstring =""
+                for tmp,aph in capchar:
+                        capstring=capstring+chr(int(aph.replace("&#","").replace(";","")))
+                idkey = re.compile('<input type="hidden" name="id" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                rand = re.compile('<input type="hidden" name="rand" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                ddirect = re.compile('<input type="hidden" name="down_direct" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":op,"id":idkey,"referer":url,"method_free":"","rand":rand,"method_premium":"","code":capstring,"down_direct":ddirect})
+                newpcontent=postContent(redirlink,posdata,url)
+                newpcontent=''.join(newpcontent.splitlines()).replace('\'','"')
+                vidlink=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>Download the file</a>').findall(newpcontent)[0] 
         elif (redirlink.find("videozed") > -1):
                 idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
@@ -578,6 +621,7 @@ def ParseVideoLink(url,name,movieinfo):
                          r = re.search(sPattern, pcontent, re.DOTALL + re.IGNORECASE)
                          if r:
                               sJavascript = r.group()
+                              print sJavascript
                               sUnpacked = jsunpack.unpack(sJavascript)
                               stream_url = re.search('[^\w\.]file[\"\']?\s*[:,]\s*[\"\']([^\"\']+)', sUnpacked)
                               if stream_url:
@@ -710,6 +754,7 @@ def ParseVideoLink(url,name,movieinfo):
                 pcontent=postContent2(redirlink,posdata,url)
                 pcontent=''.join(pcontent.splitlines())
                 packed = re.compile("<span id='flvplayer'></span>(.+?)</script>").findall(pcontent)[0]
+                print packed 
                 unpacked = unpackjs5(packed)  
                 unpacked = unpacked.replace("\\","")
                 vidlink = re.compile('file:"(.+?)"').findall(unpacked)[0]
@@ -761,20 +806,20 @@ def ParseVideoLink(url,name,movieinfo):
                         vidlink = source.resolve()
                 else:
                         vidlink =HostResolver(redirlink)
-    except:
-                if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
-                        redir = redirlink.split("/file/")
-                        redirlink = redir[0] +"/file/" + redir[1].upper()
-                sources = []
-                label=name
-                hosted_media = urlresolver.HostedMediaFile(url=redirlink, title=label)
-                sources.append(hosted_media)
-                source = urlresolver.choose_source(sources)
-                print "inresolver=" + redirlink
-                if source:
-                        vidlink = source.resolve()
-                else:
-                        vidlink =HostResolver(redirlink)
+    #except:
+    #            if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
+    #                    redir = redirlink.split("/file/")
+    #                    redirlink = redir[0] +"/file/" + redir[1].upper()
+    #            sources = []
+    #            label=name
+    #            hosted_media = urlresolver.HostedMediaFile(url=redirlink, title=label)
+    #            sources.append(hosted_media)
+    #            source = urlresolver.choose_source(sources)
+    #            print "inresolver=" + redirlink
+    #            if source:
+    #                    vidlink = source.resolve()
+    #            else:
+    #                    vidlink =HostResolver(redirlink)
     dialog.close()
     return vidlink
                
@@ -1117,14 +1162,15 @@ def unpackjs4(texto):
     claves = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","10","11","12","13","14","15","16","17","18","19","1a","1b","1c","1d","1e","1f","1g","1h","1i","1j","1k","1l","1m","1n","1o","1p","1q","1r","1s","1t","1u","1v","1w","1x","1y","1z"]
     palabras = matches[0][1].split("|")
     diccionario = {}
-   
     i=0
     for palabra in palabras:
+      try:
         if palabra!="":
             diccionario[claves[i]]=palabra
         else:
             diccionario[claves[i]]=claves[i]
-        i=i+1
+      except: pass
+      i=i+1
 
 
     def lookup(match):
