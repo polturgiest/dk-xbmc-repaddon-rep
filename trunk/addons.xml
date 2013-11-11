@@ -507,7 +507,7 @@
 
 <addon
   id="plugin.video.vidics"
-  version="1.0.5"
+  version="1.0.6"
   name="Vidics"
   provider-name="Dknight">
   <requires>
