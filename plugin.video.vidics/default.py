@@ -453,9 +453,15 @@ def ParseVideoLink(url,name,movieinfo):
                 posdata=urllib.urlencode({"op":"download2","rand":rand,"id":idkey,"referer":url,"method_free":"","method_premium":"","down_direct":"1"})
                 pcontent=postContent(redirlink,posdata,url)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
-                packed = re.compile('swfobject.js"></script><script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
-                sUnpacked = unpackjs4(packed).replace("\\","")
-                vidlink = re.compile('addVariable\("file",\s*"(.+?)"\)').findall(sUnpacked)[0]
+                packed = re.compile('swfobject.js"></script><script type="text/javascript">(.+?)</script>').findall(pcontent)
+                if(len(packed) == 0):
+                      packed = re.compile('<div id="player_code"><script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
+                      sUnpacked = unpackjs4(packed).replace("\\","")
+                      vidlink = re.compile('src="(.+?)"').findall(sUnpacked)[0]
+                else:
+                      packed=packed[0]
+                      sUnpacked = unpackjs4(packed).replace("\\","")
+                      vidlink = re.compile('addVariable\("file",\s*"(.+?)"\)').findall(sUnpacked)
 
         elif (redirlink.find("videopremium") > -1):
                 idkey = re.compile('<input type="hidden" name="id" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
