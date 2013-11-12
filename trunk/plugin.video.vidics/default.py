@@ -321,8 +321,8 @@ def ParseVideoLink(url,name,movieinfo):
     win.setProperty('1ch.playing.season', str(3))
     win.setProperty('1ch.playing.episode', str(4))
     # end 1channel code
-    #try:
-    if True:
+    try:
+    #if True:
         if (redirlink.find("youtube") > -1):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
                 vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
@@ -565,13 +565,19 @@ def ParseVideoLink(url,name,movieinfo):
                 unpacked = sUnpacked.replace("\\","")
                 vidlink = re.compile('file:"(.+?)",').findall(unpacked)[0]
         elif (redirlink.find("sharesix") > -1):
-                packed = get_match(tmpcontent , "(<script type='text/javascript'>eval\(.*?function\(p,\s*a,\s*c,\s*k,\s*e,\s*d.*?)</script>",1)
-                unpacked = unpackjs(packed)
+                idkey = re.compile('<input type="hidden" name="id" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                fname = re.compile('<input type="hidden" name="fname" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":"download1","usr_login":"","id":idkey,"fname":fname,"referer":url})
+                pcontent=postContent(redirlink,posdata+"&method_free=Free",url)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                packed = re.compile('swfobject.js"></script>\s*<script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
+                unpacked = unpackjs4(packed)
                 if unpacked=="":
                         unpacked = unpackjs3(packed,tipoclaves=2)
                         
                 unpacked = unpacked.replace("\\","")
-                vidlink = re.compile("'file','(.+?)'").findall(unpacked)[0]
+                vidlink = re.compile('.addVariable\("file",\s*"(.+?)"').findall(unpacked)[0]
         elif (redirlink.find("bonanzashare") > -1):
                 capchacon =re.compile('<b>Enter code below:</b>(.+?)</table>').findall(link)
                 capchar=re.compile('<span style="position:absolute;padding-left:(.+?);[^>]*>(.+?)</span>').findall(capchacon[0])
@@ -892,20 +898,20 @@ def ParseVideoLink(url,name,movieinfo):
                         vidlink = source.resolve()
                 else:
                         vidlink =HostResolver(redirlink)
-    #except:
-    #            if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
-    #                    redir = redirlink.split("/file/")
-    #                    redirlink = redir[0] +"/file/" + redir[1].upper()
-    #            sources = []
-    #            label=name
-    #            hosted_media = urlresolver.HostedMediaFile(url=redirlink, title=label)
-    #            sources.append(hosted_media)
-    #            source = urlresolver.choose_source(sources)
-    #            print "inresolver=" + redirlink
-    #            if source:
-    #                    vidlink = source.resolve()
-    #            else:
-    #                    vidlink =HostResolver(redirlink)
+    except:
+                if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
+                        redir = redirlink.split("/file/")
+                        redirlink = redir[0] +"/file/" + redir[1].upper()
+                sources = []
+                label=name
+                hosted_media = urlresolver.HostedMediaFile(url=redirlink, title=label)
+                sources.append(hosted_media)
+                source = urlresolver.choose_source(sources)
+                print "inresolver=" + redirlink
+                if source:
+                        vidlink = source.resolve()
+                else:
+                        vidlink =HostResolver(redirlink)
     dialog.close()
     return vidlink
                
