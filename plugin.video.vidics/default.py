@@ -728,7 +728,12 @@ def ParseVideoLink(url,name,movieinfo):
                 playercode=re.compile('<object [^>]*data=["\']?([^>^"^\']+)["\']?[^>]*>').findall(plycontent)[0]
                 playercode=playercode.split("config=")[1]
                 finalcontent=GetContent(playercode)
-                vidlink=re.compile('<file>(.+?)</file>').findall(finalcontent)[0]
+                vidlink=re.compile('<file>(.+?)</file>').findall(finalcontent)
+                if(len(vidlink)==0):
+                      finalcontent=GetContent(playercode)
+                      vidlink=re.compile('<file>(.+?)</file>').findall(finalcontent)[0]
+                else:
+                      vidlink=vidlink[0]
         elif (redirlink.find("speedvid") > -1):
                 keycode=re.compile('\|image\|(.+?)\|(.+?)\|file\|').findall(link)
                 domainurl=re.compile('\[IMG\](.+?)\[/IMG\]').findall(link)[0]
