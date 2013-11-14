@@ -88,8 +88,8 @@ def ShowLiveTV():
     addLink('Keera Channel','rtmp://01-live-04.dootvserver.com:80/usliveKeera/mp4:/liveKeerastream_20131012 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.4355233052352092 app=usliveKeera/ live=true',14,'','')
     addLink('Keera2 Channel','rtmp://02-live-18.dootvserver.com:80/usliveKeera/mp4:/liveKeera2stream_20131012 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.4355233052352092 app=usliveKeera/ live=true',14,'','')
     addLink('Nation Channel','rtmp://01-live-01.dootvserver.com:80/usliveNationNews/mp4:/liveNationstream_20131012 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.4355233052352092 app=usliveNationNews/ live=true',14,'','')
-    addLink('Miracle Channels','rtmpte://llnwvps348.fc.llnwd.net:80/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_hc9F6XfTTvcpokzyz8SUUY_640_360_700 live=true',14,'','')
-    addLink('WorkPoint TV','rtmp://02-live-11.dootvserver.com:80/usliveWorkpoint/mp4:liveWorkpointstream swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
+   #addLink('Miracle Channels','rtmpte://llnwvps348.fc.llnwd.net:80/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_hc9F6XfTTvcpokzyz8SUUY_640_360_700 live=true',14,'','')
+   #addLink('WorkPoint TV','rtmp://02-live-11.dootvserver.com:80/usliveWorkpoint/mp4:liveWorkpointstream swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
 	
 
 def SEARCH(url):
