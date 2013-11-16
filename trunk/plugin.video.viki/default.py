@@ -193,7 +193,7 @@ def getVidPage(url,page):
         link =link.encode("UTF-8")
   except: pass
 
-  vidcontainer=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+  vidcontainer=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json" itemtype="http://schema.org/VideoObject">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
   for vid,vurl,vname,vimg in vidcontainer:
         vurl = vurl.split("/videos/")[0]
         addDir(vname,vid,4,vimg)
