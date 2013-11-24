@@ -132,10 +132,12 @@ def GetVideoLinks(url):
         link = ''.join(link.splitlines()).replace('\'','"')
         vidcontent=re.compile('</table><table class="contentpaneopen">(.+?)<span class="article_separator">').findall(link)
         tabvids=re.compile('<div class="(blitzer|tabbertab|jwts_tabber|smoothness)">(.+?)</div></div>').findall(vidcontent[0])
-        singlevids=re.compile('<p style="text-align:center;">(.+?)</p>').findall(vidcontent[0])
-        singledivs=re.compile('<div style="text-align: center;">(.+?)</div>').findall(vidcontent[0])
+        singlevids=re.compile('<p style="text-align:\s*center;">(.+?)</p>').findall(vidcontent[0])
+        singledivs=re.compile('<div style="text-align:\s*center;">(.+?)</div>').findall(vidcontent[0])
         singlevids.extend(singledivs)
         mirrorcnt = 0
+        print singlevids
+        print tabvids
         for spancontent in singlevids:
                 if (spancontent.find("blitzer") == -1 and spancontent.find("tabbertab") == -1 ):
                         mirrorcnt=mirrorcnt+1
