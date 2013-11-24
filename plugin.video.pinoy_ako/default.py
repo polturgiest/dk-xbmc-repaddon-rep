@@ -136,8 +136,6 @@ def GetVideoLinks(url):
         singledivs=re.compile('<div style="text-align:\s*center;">(.+?)</div>').findall(vidcontent[0])
         singlevids.extend(singledivs)
         mirrorcnt = 0
-        print singlevids
-        print tabvids
         for spancontent in singlevids:
                 if (spancontent.find("blitzer") == -1 and spancontent.find("tabbertab") == -1 ):
                         mirrorcnt=mirrorcnt+1
@@ -699,12 +697,41 @@ def loadVideos(url,name):
 
                 vidUrl=re.compile('"file","(.+?)"').findall(unpacked)[0]
                 vidlink=vidUrl+"|Referer=http%3A%2F%2Fuploadpluz.com%3A8080%2Fplayer%2Fplayer.swf"
+           elif (newlink.find("nowvideo") > -1):
+                link = GetContent(newlink)
+                link=''.join(link.splitlines()).replace('\'','"')
+                fileid=re.compile('flashvars.file="(.+?)";').findall(link)[0]
+                codeid=re.compile('flashvars.cid="(.+?)";').findall(link)
+                if(len(codeid) > 0):
+                     codeid=codeid[0]
+                else:
+                     codeid=""
+                keycode=re.compile('flashvars.filekey=(.+?);').findall(link)[0]
+                keycode=re.compile('var\s*'+keycode+'="(.+?)";').findall(link)[0]
+                vidcontent=GetContent("http://www.nowvideo.sx/api/player.api.php?codes="+urllib.quote_plus(codeid) + "&key="+urllib.quote_plus(keycode) + "&file=" + urllib.quote_plus(fileid))
+                vidlink = re.compile('url=(.+?)\&').findall(vidcontent)[0]
            elif (newlink.find("180upload") > -1):
                 urlnew= re.compile('http://180upload.com/embed-(.+?).html').findall(newlink)
-                print urlnew
-                if(len(urlnew) > 0):
-                      newlink="http://180upload.com/" + urlnew[0]
-                vidlink=resolve_180upload(newlink,None)
+                if(len(urlnew) == 0):
+                      #newlink="http://180upload.com/" + urlnew[0]
+                      vidlink=resolve_180upload(newlink,None)
+                link = GetContent(newlink)
+                file_code = re.compile('<input type="hidden" name="file_code" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                embed_width = re.compile('<input type="hidden" name="embed_width" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                embed_height = re.compile('<input type="hidden" name="embed_height" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                test34 = re.compile('<input type="hidden" name="test34" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":op,"file_code":file_code,"referer":url,"embed_width":embed_width,"embed_height":embed_height,"test34":test34})
+                pcontent=postContent2(newlink,posdata,url)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                packed = re.compile('/swfobject.js"></script><script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
+                print packed
+                unpacked = unpackjs4(packed)
+                if unpacked=="":
+                        unpacked = unpackjs3(packed,tipoclaves=2)
+                unpacked=unpacked.replace("\\","")
+                print unpacked
+                vidlink = re.compile('addVariable\("file",\s*"(.+?)"\)').findall(unpacked)[0]
            elif (newlink.find("youtube") > -1) and (newlink.find("playlists") > -1):
                 playlistid=re.compile('playlists/(.+?)\?v').findall(newlink)
                 vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]

@@ -882,8 +882,25 @@ def ParseVideoLink(url,name,movieinfo):
                 vidlink=resolve_vidhog(redirlink,tmpcontent)
         elif (redirlink.find("speedyshare") > -1):
                 vidlink=resolve_speedyshare(redirlink,tmpcontent)
-        #elif (redirlink.find("180upload") > -1):
-        #        vidlink=resolve_180upload(redirlink,tmpcontent)
+        elif (redirlink.find("180upload") > -1):
+                vidcode = re.compile('180upload.com/(.+?)dk').findall(redirlink+"dk")[0] 
+                urlnew= 'http://180upload.com/embed-'+vidcode+'.html'
+                link=GetContent(urlnew)
+                file_code = re.compile('<input type="hidden" name="file_code" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                embed_width = re.compile('<input type="hidden" name="embed_width" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                embed_height = re.compile('<input type="hidden" name="embed_height" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                test34 = re.compile('<input type="hidden" name="test34" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":op,"file_code":file_code,"referer":url,"embed_width":embed_width,"embed_height":embed_height,"test34":test34})
+                pcontent=postContent2(urlnew,posdata,url)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                packed = re.compile('/swfobject.js"></script><script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
+                unpacked = unpackjs4(packed)
+                if unpacked=="":
+                        unpacked = unpackjs3(packed,tipoclaves=2)
+                unpacked=unpacked.replace("\\","")
+                vidlink = re.compile('addVariable\("file",\s*"(.+?)"\)').findall(unpacked)[0]
+				
         else:
                 if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
                         redir = redirlink.split("/file/")
@@ -1547,82 +1564,7 @@ def resolve_billionuploads(url,inhtml=None):
     #except Exception, e:
     #    print '**** BillionUploads Error occured: %s' % e
     #    raise
-def resolve_180upload(url,inhtml=None):
-    net = Net()
-    try:
-        dialog = xbmcgui.DialogProgress()
-        dialog.create('Resolving', 'Resolving 180Upload Link...')
-        dialog.update(0)
-        puzzle_img = os.path.join(datapath, "180_puzzle.png")
-        print '180Upload - Requesting GET URL: %s' % url
-        if(inhtml==None):
-               html = net.http_GET(url).content
-        else:
-               html = inhtml
-        
-        dialog.update(50)
-                
-        data = {}
-        r = re.findall(r'type="hidden" name="(.+?)" value="(.+?)">', html)
 
-        if r:
-            for name, value in r:
-                data[name] = value
-        else:
-            raise Exception('Unable to resolve 180Upload Link')
-        
-        #Check for SolveMedia Captcha image
-        solvemedia = re.search('<iframe src="(http://api.solvemedia.com.+?)"', html)
-
-        if solvemedia:
-           dialog.close()
-           html = net.http_GET(solvemedia.group(1)).content
-           hugekey=re.search('id="adcopy_challenge" value="(.+?)">', html).group(1)
-           open(puzzle_img, 'wb').write(net.http_GET("http://api.solvemedia.com%s" % re.search('<img src="(.+?)"', html).group(1)).content)
-           img = xbmcgui.ControlImage(450,15,400,130, puzzle_img)
-           wdlg = xbmcgui.WindowDialog()
-           wdlg.addControl(img)
-           wdlg.show()
-        
-           xbmc.sleep(3000)
-
-           kb = xbmc.Keyboard('', 'Type the letters in the image', False)
-           kb.doModal()
-           capcode = kb.getText()
-   
-           if (kb.isConfirmed()):
-               userInput = kb.getText()
-               if userInput != '':
-                   solution = kb.getText()
-               elif userInput == '':
-                   Notify('big', 'No text entered', 'You must enter text in the image to access video', '')
-                   return False
-           else:
-               return False
-               
-           wdlg.close()
-           dialog.create('Resolving', 'Resolving 180Upload Link...') 
-           dialog.update(50)
-           if solution:
-               data.update({'adcopy_challenge': hugekey,'adcopy_response': solution})
-
-        print '180Upload - Requesting POST URL: %s' % url
-        html = net.http_POST(url, data).content
-        dialog.update(100)
-        
-        link = re.search('<a href="(.+?)" onclick="thanks\(\)">Download now!</a>', html)
-        if link:
-            print '180Upload Link Found: %s' % link.group(1)
-            return link.group(1)
-        else:
-            raise Exception('Unable to resolve 180Upload Link')
-
-    except Exception, e:
-        print '**** 180Upload Error occured: %s' % e
-        raise
-    finally:
-        dialog.close()
-    
 
 def resolve_speedyshare(url,inhtml=None):
 
