@@ -94,9 +94,9 @@ def INDEX(url):
         for vurl,vname,vimg in vidlist:
             addDir(vname,homeLink+vurl,7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
-        navmatch=re.compile('[^>]* href="(.+?)" >(.+?)</a>').findall(pagelist[0])
+        navmatch=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
         for vurl,vname in navmatch:
-            addDir(vname,vurl,2,"")
+            addDir("page " + vname,homeLink +'/'+vurl,2,"")
 
 
 def SEARCH():
