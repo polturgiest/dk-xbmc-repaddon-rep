@@ -31,8 +31,8 @@ def HOME():
         addDir('Khmer TV Show',strdomain+'category/khmer/khmer-tv-show-khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Thai Movies',strdomain+'category/thai/thai-movies/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         addDir('Thai Lakorns',strdomain+'category/thai/thai-lakorns/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Drama',strdomain+'category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Korean Movies',strdomain+'category/korean/korean-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        #addDir('Korean Drama',strdomain+'category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        #addDir('Korean Movies',strdomain+'category/korean/korean-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
         addDir('Chinese Movies',strdomain+'category/chinese/chinese-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         addDir('Chinese Series',strdomain+'category/chinese/chinese-series/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         addDir('Documentaries',strdomain+'category/uncategories/documentary-uncategories/',2,strdomain+'wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
@@ -125,6 +125,9 @@ def getVimeoVideourl(videoid):
 def INDEX(url):
     try:
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         #start=newlink.index('<div id="main">')
         #end=newlink.index('<!-- main -->')
@@ -133,8 +136,11 @@ def INDEX(url):
                 match=re.compile('<div class="img-th">((.|\s)*?)<h4 class="post-tit">').findall(match[0][0])
                 if(len(match) >= 1):
                         for vcontent in match:
-                            match1=re.compile('<a href="(.+?)" rel="bookmark"><img [^>]*src="(.+?)" class="attachment-thumbnail wp-post-image" alt="(.+?)"').findall(vcontent[0])
-                            (vurl, vimage, vname)=match1[0]
+                            #match1=re.compile('<a href="(.+?)" rel="bookmark"><img [^>]*src="(.+?)" class="attachment-thumbnail wp-post-image" alt="(.+?)"').findall(vcontent[0])
+                            vurl=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])[0]
+                            vimage=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])[0]
+                            vname=re.compile('<img [^>]*alt=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])[0]
+                            #(vurl, vimage, vname)=match1[0]
                             addDir(vname.encode("utf-8"),vurl,5,vimage)
         match5=re.compile("<div class='wp-pagenavi'>((.|\s)*?)</div>").findall(newlink)
         if(len(match5) >= 1 and len(match5[0]) >= 1 and newlink.find("class='nextpostslink'") > -1 ):
