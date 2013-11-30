@@ -17,7 +17,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "MyDooTv"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.1.2" #<---- PLUGIN VERSION
+VERSION = "1.1.6" #<---- PLUGIN VERSION
 
 datapath = addon.get_profile()
 cookie_path = os.path.join(datapath, 'cookies')
@@ -91,7 +91,10 @@ def ShowLiveTV():
    #addLink('Miracle Channels','rtmpte://llnwvps348.fc.llnwd.net:80/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_hc9F6XfTTvcpokzyz8SUUY_640_360_700 live=true',14,'','')
    #addLink('WorkPoint TV','rtmp://02-live-11.dootvserver.com:80/usliveWorkpoint/mp4:liveWorkpointstream swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
 	
-
+if os.path.exists(cookiefile):
+    cj = cookielib.LWPCookieJar()
+    cj.load(cookiefile, ignore_discard=True)
+	
 def SEARCH(url):
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
@@ -142,7 +145,7 @@ def GetJSON(url,data,referr,cj):
     #opener = urllib2.build_opener()
     opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
                          ('Accept-Encoding','gzip, deflate'),
-                         ('Referer', referr),
+                         ('Referer', "http://www.mydootv.com/video.php"),
                          ('Content-Type', 'application/x-www-form-urlencoded'),
                          ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
                          ('Connection','keep-alive'),
@@ -321,7 +324,7 @@ def GetLoginCookie(cj,cookiefile):
       cj=None
       cj = cookielib.LWPCookieJar()
       cj.load(cookiefile,ignore_discard=True)
-      (cj,respon)=postContent("http://www.mydootv.com/video.php","","",cj)
+      (cj,respon)=postContent("http://www.mydootv.com/video.php","","http://www.mydootv.com/",cj)
       if (respon.find("player_content") == -1):
                 d = xbmcgui.Dialog()
                 d.ok("Incorrect Login","Login failed",'Try logging in again')
