@@ -69,14 +69,14 @@ def HOME():
 
   
 def ShowLiveTV():
-    addLink('TV 3 US Server','rtmp://02-live-17.dootvserver.com:80/uslive3/mp4:/live3stream_20131116 app=uslive3/ swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
+    addLink('TV 3 US Server','rtmp://01-live-07.dootvserver.com:80/uslive3/mp4:/live3stream_20131126 app=uslive3/ swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.5899002235742413 live=true',14,'','')
     #addLink('TV 3 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive3/mp4:uklive3stream swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
     addLink('Sabaidee2 tv','rtmp://202.142.207.150/live/livesabaidee2 swfUrl=http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv swfVfy=true live=true http:http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv',14,'','')
     addLink('Sabaidee tv','rtmp://203.146.170.102:1935/live/livestream3 swfUrl=http://www.r-siam.com/player.swf/ swfVfy=true live=true',14,'','')
     addLink('Oho','rtmp://flash.login.in.th/ohochannel/ohochannel swfUrl=http://www.tv-tube.tv/players/jwflashplayer/player-5.9-licensed.swf swfVfy=true live=true pageUrl=http://www.tv-tube.tv/tvchannels/watch/3300/oho-channel',14,'','')
     addLink('MTV5','rtmp://203.146.170.102:1935/live/livestream2 swfUrl=http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf/[[DYNAMIC]]/1 swfVfy=true live=true pageUrl=http://mvtv.co.th/wp/tv.php?channel=mv5',14,'','')
-    addLink('TV 5','rtmp://01-live-05.dootvserver.com:80/uslive5test/mp4:/live5stream_20131012 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 app=uslive5test/ live=true',14,'','')
-    addLink('TV 7 ','rtmp://02-live-16.dootvserver.com:80/uslive7/mp4:/live7stream_20131116 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 app=uslive7/ live=true',14,'','')
+    addLink('TV 5','rtmp://01-live-04.dootvserver.com:80/uslive5test/mp4:/live5stream_20131126 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 app=uslive5test/ live=true',14,'','')
+    addLink('TV 7 ','rtmp://01-live-07.dootvserver.com:80/uslive7/mp4:/live7stream_20131126 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 app=uslive7/ live=true',14,'','')
     #addLink('TV 7 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive7/mp4:uklive7stream9 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
     addLink('TV 9 US Server','rtmp://01-live-03.dootvserver.com:80/uslive9/mp4:/live9stream_20131012 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.16547436119536219 app=uslive9/ live=true',14,'','')
     addLink('NBT','rtmp://02-live-16.dootvserver.com:80/usliveNBT/mp4:/liveNBTstream_20131012 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 app=usliveNBT/ live=true',14,'','')
