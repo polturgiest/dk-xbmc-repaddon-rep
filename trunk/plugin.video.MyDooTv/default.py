@@ -69,12 +69,9 @@ def HOME():
 
   
 def ShowLiveTV():
+    ExternalLive()
     addLink('TV 3 US Server','rtmp://01-live-07.dootvserver.com:80/uslive3/mp4:/live3stream_20131126 app=uslive3/ swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.5899002235742413 live=true',14,'','')
     #addLink('TV 3 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive3/mp4:uklive3stream swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
-    addLink('Sabaidee2 tv','rtmp://202.142.207.150/live/livesabaidee2 swfUrl=http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv swfVfy=true live=true http:http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv',14,'','')
-    addLink('Sabaidee tv','rtmp://203.146.170.102:1935/live/livestream3 swfUrl=http://www.r-siam.com/player.swf/ swfVfy=true live=true',14,'','')
-    addLink('Oho','rtmp://flash.login.in.th/ohochannel/ohochannel swfUrl=http://www.tv-tube.tv/players/jwflashplayer/player-5.9-licensed.swf swfVfy=true live=true pageUrl=http://www.tv-tube.tv/tvchannels/watch/3300/oho-channel',14,'','')
-    addLink('MTV5','rtmp://203.146.170.102:1935/live/livestream2 swfUrl=http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf/[[DYNAMIC]]/1 swfVfy=true live=true pageUrl=http://mvtv.co.th/wp/tv.php?channel=mv5',14,'','')
     addLink('TV 5','rtmp://01-live-04.dootvserver.com:80/uslive5test/mp4:/live5stream_20131126 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 app=uslive5test/ live=true',14,'','')
     addLink('TV 7 ','rtmp://01-live-07.dootvserver.com:80/uslive7/mp4:/live7stream_20131126 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 app=uslive7/ live=true',14,'','')
     #addLink('TV 7 UK Server','rtmp://01-live-01.dootvserver.com:80/uklive7/mp4:uklive7stream9 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
@@ -90,6 +87,34 @@ def ShowLiveTV():
     addLink('Nation Channel','rtmp://01-live-01.dootvserver.com:80/usliveNationNews/mp4:/liveNationstream_20131012 swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.4355233052352092 app=usliveNationNews/ live=true',14,'','')
    #addLink('Miracle Channels','rtmpte://llnwvps348.fc.llnwd.net:80/llnwvps348/_definst_/Hmv0CG7hRxokmH9xKend38_hc9F6XfTTvcpokzyz8SUUY_640_360_700 live=true',14,'','')
    #addLink('WorkPoint TV','rtmp://02-live-11.dootvserver.com:80/usliveWorkpoint/mp4:liveWorkpointstream swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.6368541977568903 live=true',14,'','')
+
+def ExternalLive():
+    addLink('Sabaidee2 tv','rtmp://202.142.207.150/live/livesabaidee2 swfUrl=http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv swfVfy=true live=true http:http://www.tv-tube.tv/tvchannels/watch/3364/sabaidee-tv',14,'','')
+    addLink('Sabaidee tv','rtmp://203.146.170.102:1935/live/livestream3 swfUrl=http://www.r-siam.com/player.swf/ swfVfy=true live=true',14,'','')
+    addLink('Oho','rtmp://flash.login.in.th/ohochannel/ohochannel swfUrl=http://www.tv-tube.tv/players/jwflashplayer/player-5.9-licensed.swf swfVfy=true live=true pageUrl=http://www.tv-tube.tv/tvchannels/watch/3300/oho-channel',14,'','')
+    addLink('MTV5','rtmp://203.146.170.102:1935/live/livestream2 swfUrl=http://fpdownload.adobe.com/strobe/FlashMediaPlayback.swf/[[DYNAMIC]]/1 swfVfy=true live=true pageUrl=http://mvtv.co.th/wp/tv.php?channel=mv5',14,'','')
+   
+def DynamicLive():
+    ExternalLive()
+    data = GetJSON("http://www.mydootv.com/assets/services/get_livechannel_list_json.php?method=getlivechannellist&website=mydootv","","",cj)
+    for product in data:
+                prodid=product["id"]
+                fullimg=product["images"]
+                #if(product["url_hd"]!=""):
+                #       addLink(product["channel_name"] + " HD",str(prodid),15,fullimg,"1")
+                addLink(product["channel_name"],str(prodid),15,fullimg,"0")
+
+def GetLiveURL(prodid,ishd):
+    data = GetJSON("http://www.mydootv.com/assets/services/player_live_json.php?method=getLiveChannelStream4MydooTV&cid="+prodid+"&country=","","",cj)
+    for product in data:
+                if(ishd=="1"):
+                       rtmppath=product["rtmp_streamer_hd"]
+                       rtmpfile=product["rtmp_file_hd"]
+                else:
+                       rtmppath=product["rtmp_streamer"]
+                       rtmpfile=product["rtmp_file"]
+                urlfull=rtmppath+rtmpfile+" app="+rtmppath.split("/")[3]+"/ swfUrl=http://www.mydootv.com/assets/flowplayer/flowplayer.commercial-3.2.15.swf?0.5899002235742413 live=true"
+                playVideo("",urlfull)
 	
 if os.path.exists(cookiefile):
     cj = cookielib.LWPCookieJar()
@@ -596,10 +621,17 @@ elif mode==12:
         GetServerList("/sorted_01_0711.txt",url)
 elif mode==13:
         GA("LiveTV",name)
-        ShowLiveTV()
+        if (tmpUser != None and tmpUser !="") and (tmpPwd != None and tmpPwd !=""): 
+             DynamicLive()
+        else:
+             ShowLiveTV()
 elif mode==14:
         GA("PlayVideo",name)
         playVideo(serverurl,url)
+elif mode==15:
+        GA("PlayVideo",name)
+        GetLiveURL(url,serverurl)
+
 
 	   
 xbmcplugin.endOfDirectory(int(sysarg))
