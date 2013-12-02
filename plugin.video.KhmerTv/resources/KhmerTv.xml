@@ -65,12 +65,12 @@
     </item>
     <item>
       <title>TVK</title>
-      <link>http://e-magic.info:44412/tvk_Pub</link>
+      <link>http://svr-live.khmerlive.tv/tvk?ovpsv=2.3.1.0</link>
       <thumbnail>http://khiptv.com/images_tv/TVK.PNG</thumbnail>
     </item>
     <item>
       <title>Bayon</title>
-      <link>http://e-magic.info:44412/Bayon_Pub</link>
+      <link>http://svr-live.khmerlive.tv/bayon</link>
       <thumbnail>
       http://khiptv.com/images_tv/bayon-tv.png</thumbnail>
     </item>
@@ -81,7 +81,7 @@
     </item>
     <item>
       <title>bayon_NEWS</title>
-      <link>http://e-magic.info:44412/bayon_NEWS</link>
+      <link>http://svr-live.khmerlive.tv/bayonnews?ovpsv=2.3.1.0</link>
       <thumbnail>
       http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
     </item>
@@ -93,12 +93,12 @@
     </item>
     <item>
       <title>TV9</title>
-      <link>http://e-magic.info:44412/tv9_Pub</link>
+      <link>http://e-magic.info:44412/tv9_PF</link>
       <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
     </item>
     <item>
       <title>Apsara</title>
-      <link>http://e-magic.info:44412/Apsara_Pub</link>
+      <link>rtmp://203.176.130.118:8989/live/?ba8e9397-1374-447c-95ee-63224d8d65fd/apsaratv_480k.stream</link>
       <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
     </item>
     <item>
