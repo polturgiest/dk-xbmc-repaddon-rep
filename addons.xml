@@ -379,7 +379,7 @@
 
 <addon
   id="plugin.video.phim47"
-  version="1.0.9"
+  version="1.0.10"
   name="phim47"
   provider-name="Dknight">
   <requires>
