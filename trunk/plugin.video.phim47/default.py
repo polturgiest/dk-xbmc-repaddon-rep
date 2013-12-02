@@ -90,8 +90,9 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         match=re.compile('<div id="list">(.+?)<div class="pagination">').findall(link)
-        vidlist = re.compile('<li><div class="zitemList"><a [^>]*href="(.+?)" title="(.+?)" [^>]*><img class="showend" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*></a></div>').findall(match[0])
+        vidlist = re.compile('<li><div class="zitemList"><a [^>]*href="(.+?)" title="(.+?)" [^>]*>(.+?)</a>').findall(match[0])
         for vurl,vname,vimg in vidlist:
+            vimg=re.compile('<img class="showend" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vimg)[0]
             addDir(vname,homeLink+vurl,7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         navmatch=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
