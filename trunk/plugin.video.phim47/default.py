@@ -20,7 +20,7 @@ PATH = "phim47"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.6" #<---- PLUGIN VERSION
 homeLink="http://phim.li/"
-
+usehd = ADDON.getSetting('use-hd') == 'true'
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
 #def HOME():
@@ -258,7 +258,10 @@ def loadVideos(url,name):
             #data = json.loads('{"'+vidcontent+'}]}')
             #print data
             vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
-            vidlink=vidmatch[0][0]
+            hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
+            if(len(hdmatch) > 0) and usehd==True:
+                 vidmatch=hdmatch
+            vidlink=vidmatch[-1][0]
             playVideo("direct",vidlink)
         elif(newlink.find("youtube") > 0):
             vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
