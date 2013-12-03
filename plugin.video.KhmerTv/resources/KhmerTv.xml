@@ -70,7 +70,7 @@
     </item>
     <item>
       <title>Bayon</title>
-      <link>http://svr-live.khmerlive.tv/bayon</link>
+      <link>rtmp://live.khmer.be:1935/live/BayonTV</link>
       <thumbnail>
       http://khiptv.com/images_tv/bayon-tv.png</thumbnail>
     </item>
@@ -82,12 +82,6 @@
     <item>
       <title>bayon_NEWS</title>
       <link>http://svr-live.khmerlive.tv/bayonnews?ovpsv=2.3.1.0</link>
-      <thumbnail>
-      http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
-    </item>
-	<item>
-       <title>bayon Replay</title>
-      <link>http://e-magic.info:44412/Bayon_RE</link>
       <thumbnail>
       http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
     </item>
