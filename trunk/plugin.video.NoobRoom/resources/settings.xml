@@ -1,7 +1,7 @@
 <settings>
    <category label="Addon-Settings">
   	<setting id="use-hd" type="bool" label="Enable HD" default="true"/>
-    <setting id="region" type="enum" values="Amsterdam(Free)|Washington(Premium)|Los Angeles(Premium)|Frankfurt(Premium)" label="Region" default="0" enable="true" />
+    <setting id="region" type="enum" values="Amsterdam(Free)|Washington(Premium)|Los Angeles(Premium)|Frankfurt(Premium)|London(Premium )" label="Region" default="0" enable="true" />
    </category>
    <category label="Login">
   <setting id="Username" type="text" label="Username" default="" visible="true"/>
