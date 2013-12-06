@@ -747,7 +747,7 @@ def INDEXList(url,vidtype):
         if(len(listcontent) >0):
             vidlist=re.compile('<li[^>]*>(.+?)</li>').findall(listcontent[0])
             for moveieinfo in vidlist:
-                 vtmp=re.compile('<a title="(.+?)" href="(.+?)"><img src="(.+?)" alt="(.+?)"/></a>').findall(moveieinfo)
+                 vtmp=re.compile('<a title="(.+?)" href="(.+?)"><img src="(.+?)" alt="(.+?)"\s*/></a>').findall(moveieinfo)
                  if(len(vtmp)>0):
                       vtitle,vurl,vimg,vtmp=vtmp[0]
                       vtmp=re.compile('<span class="num"><a href="(.+?)">(.+?)</a></span>').findall(moveieinfo)
