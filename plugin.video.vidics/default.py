@@ -306,6 +306,22 @@ def downloadMovie(url, title):
         print commands.getstatusoutput(cmdapp)
 
         return None
+		
+def GetParts(vicontent,vidname):
+        dialog = xbmcgui.Dialog()
+        titles = []
+        urlcontent=re.compile('<div class="movie_link1">(.+?)</div>').findall(vicontent)
+        urllist=[]
+        for ucontent in urlcontent:
+            titletext=re.compile('<h4>(.+?)</h4>').findall(ucontent)[0]
+            url=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(ucontent)[0]
+            titles.append(titletext)
+            urllist.append(url)
+        index = dialog.select('Choose your stream', titles)
+        win = xbmcgui.Window(10000)
+        win.setProperty('1ch.playing.episode', str(index))
+        return CheckRedirect(urllist[index])
+		
 def ParseVideoLink(url,name,movieinfo):
     dialog = xbmcgui.DialogProgress()
     dialog.create('Resolving', 'Resolving video Link...')       
@@ -320,9 +336,20 @@ def ParseVideoLink(url,name,movieinfo):
     win.setProperty('1ch.playing.title', movieinfo)
     win.setProperty('1ch.playing.season', str(3))
     win.setProperty('1ch.playing.episode', str(4))
+    if(redirlink.find("vidics") >-1):
+            (respon,cj) = GetParts(link,name)
+            link=respon.content
+            tmpcontent=link
+            redirlink = respon.get_url().lower()
+            link = ''.join(link.splitlines()).replace('\'','"')
+
+
+
     # end 1channel code
+
     try:
     #if True:
+
         if (redirlink.find("youtube") > -1):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
                 vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
@@ -702,7 +729,6 @@ def ParseVideoLink(url,name,movieinfo):
                          r = re.search(sPattern, pcontent, re.DOTALL + re.IGNORECASE)
                          if r:
                               sJavascript = r.group()
-                              print sJavascript
                               sUnpacked = jsunpack.unpack(sJavascript)
                               stream_url = re.search('[^\w\.]file[\"\']?\s*[:,]\s*[\"\']([^\"\']+)', sUnpacked)
                               if stream_url:
@@ -846,7 +872,6 @@ def ParseVideoLink(url,name,movieinfo):
                 pcontent=postContent2(redirlink,posdata,url)
                 pcontent=''.join(pcontent.splitlines())
                 packed = re.compile("<span id='flvplayer'></span>(.+?)</script>").findall(pcontent)[0]
-                print packed 
                 unpacked = unpackjs5(packed)  
                 unpacked = unpacked.replace("\\","")
                 vidlink = re.compile('file:"(.+?)"').findall(unpacked)[0]
@@ -1051,13 +1076,11 @@ def SearchChannelresults(url,searchtext):
         vidlist=re.compile('<div class="thumb-container big-thumb">        <a href="(.+?)">          <img alt="(.+?)" class="thumb-design" src="(.+?)" />').findall(link)
         for vurl,vname,vimg in vidlist:
             vurl = vurl.split("/videos/")[0]
-            print "currechannel:" + strdomain+vurl+"/videos"
             addDir(vname.lower().replace("<em>"+searchtext+"</em>",searchtext),strdomain+vurl+"/videos",7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</li>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a[^>]* href="(.+?)">(.+?)</a>').findall(pagelist[0])
                 for purl,pname in navlist:
-                    print strdomain+purl
                     addDir("page " + pname.decode("utf-8"),strdomain+purl,13,"")
 					
 
@@ -1090,11 +1113,13 @@ def INDEX(url,modenum,curmode,vidtype):
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         vcontent=re.compile('<td id="searchResults" [^>]*>(.+?)</td>').findall(newlink)
-        listcontent=re.compile('<div itemscope [^>]*class="searchResult">(.+?)</div></div></div></div>').findall(vcontent[0])
+        listcontent=re.compile('<div itemscope [^>]*class="searchResult">(.+?)}</div></div></div>').findall(vcontent[0])
         vpot=""
         for moveieinfo in listcontent:
             vtitle,vurl,vimg,vtmp1,vtmp2=re.compile('<a title="Watch(.+?)online free." href="(.+?)"><img itemprop="image" src="(.+?)" title="(.+?)" alt="(.+?)" /></a>').findall(moveieinfo)[0]
             vtitle=RemoveHTML(vtitle)
+            vpot=re.compile('"description":"(.+?)"').findall(moveieinfo)[0] 
+            vpot=urllib.unquote_plus(vpot)
             if(vidtype==""):
                  addDir(vtitle,strdomain+vurl,modenum,vimg,vpot)
             else:
@@ -1129,6 +1154,7 @@ def INDEXList(url,modenum,curmode,vidtype):
                  vpot=vsummary[0]
             vtitle=RemoveHTML(vtitle)
             if(vidtype==""):
+                 
                  addDir(vtitle,strdomain+vurl.replace("/People/",strdomain+"/People/").replace("/Category-People/",strdomain+"/Category-People/"),modenum,vimg,vpot)
             else:
                  addDirContext(vtitle,strdomain+vurl.replace("/People/",strdomain+"/People/").replace("/Category-People/",strdomain+"/Category-People/"),modenum,vimg,vpot,vidtype)
