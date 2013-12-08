@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "phim47"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.6" #<---- PLUGIN VERSION
+VERSION = "1.0.11" #<---- PLUGIN VERSION
 homeLink="http://phim.li/"
 usehd = ADDON.getSetting('use-hd') == 'true'
 def __init__(self):
@@ -112,9 +112,14 @@ def SEARCH():
     except: pass
 
 def Mirrors(url,name):
-  mirrorlink =getVidPage(url,name)
-  link = GetContent(mirrorlink)
-  link=''.join(link.splitlines()).replace('\'','"')
+  try:
+      mirrorlink =getVidPage(url,name)
+      link = GetContent(mirrorlink)
+      link=''.join(link.splitlines()).replace('\'','"')
+  except Exception as e:
+      d = xbmcgui.Dialog()
+      d.ok(name,"no video","can't find video link")
+      print "mirror error:" + str(e)
   try:
             link =link.encode("UTF-8")
   except: pass
@@ -231,6 +236,20 @@ def playVideo(videoType,videoId):
         xbmcPlayer.play(videoId)
 
 def loadVideos(url,name):
+        GA("LoadVideo","NA")
+        xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
+        link=GetContent(url)
+        link = ''.join(link.splitlines()).replace('\t','').replace('\'','"').replace('\\','')
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        match = re.compile('setup\({\s*playlist:\s*"(.+?)",').findall(link)
+        if(len(match)>0):
+               vidcontent=GetContent(match[0])
+               vidlink = re.compile('<jwplayer:source [^>]*file=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vidcontent)[0]
+               playVideo("direct",vidlink)
+		
+def loadVideosold(url,name):
     #try:
         GA("LoadVideo","NA")
         xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
