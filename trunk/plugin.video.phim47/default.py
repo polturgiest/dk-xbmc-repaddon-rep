@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "phim47"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.11" #<---- PLUGIN VERSION
+VERSION = "1.0.6" #<---- PLUGIN VERSION
 homeLink="http://phim.li/"
 usehd = ADDON.getSetting('use-hd') == 'true'
 def __init__(self):
@@ -89,15 +89,16 @@ def INDEX(url):
         try:
             link =link.encode("UTF-8")
         except: pass
-        match=re.compile('<div id="list">(.+?)<div class="pagination">').findall(link)
+        match=re.compile('<div id="list">(.+?)<div class="right box_right">').findall(link)
         vidlist = re.compile('<li><div class="zitemList"><a [^>]*href="(.+?)" title="(.+?)" [^>]*>(.+?)</a>').findall(match[0])
         for vurl,vname,vimg in vidlist:
             vimg=re.compile('<img class="showend" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vimg)[0]
             addDir(vname,homeLink+vurl,7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
-        navmatch=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
-        for vurl,vname in navmatch:
-            addDir("page " + vname,homeLink +'/'+vurl,2,"")
+        if(len(pagelist)>0):
+            navmatch=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
+            for vurl,vname in navmatch:
+                addDir("page " + vname,homeLink +'/'+vurl,2,"")
 
 
 def SEARCH():
