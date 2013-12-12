@@ -244,10 +244,14 @@ def loadVideos(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        match = re.compile('setup\({\s*playlist:\s*"(.+?)",').findall(link)
+        match = re.compile('so.addVariable\("file",\s*"(.+?)"\)').findall(link)
         if(len(match)>0):
                vidcontent=GetContent(match[0])
-               vidlink = re.compile('<jwplayer:source [^>]*file=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vidcontent)[0]
+               vidmatch = re.compile('<jwplayer:file>(.+?)</jwplayer:file>').findall(vidcontent)
+               hdmatch = re.compile('<jwplayer:hd.file>(.+?)</jwplayer:hd.file>').findall(vidcontent)
+               if(len(hdmatch) > 0) and usehd==True:
+                   vidmatch=hdmatch
+               vidlink=vidmatch[0]
                playVideo("direct",vidlink)
 		
 def loadVideosold(url,name):
