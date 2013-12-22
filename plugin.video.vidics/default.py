@@ -252,8 +252,8 @@ def List4Days():
 def Mirrors(url,name):
   link = GetContent(url)
   link=''.join(link.splitlines()).replace('\'','"')
-  mirmatch=re.compile('<div class="movie_link">(.+?)</tr>').findall(link)
-  for vcontent in mirmatch:
+  mirmatch=re.compile('<div class="movie_link(.+?)">(.+?)</tr>').findall(link)
+  for vhost,vcontent in mirmatch:
          quality =re.compile('<h4>(.+?)</h4>').findall(vcontent)
          linkinfo =re.compile('<a href="(.+?)" target="_blank" rel="nofollow">(.+?)</a>').findall(vcontent)
          addLink(linkinfo[0][1],strdomain+linkinfo[0][0],3,"",name) 
@@ -1088,12 +1088,14 @@ def Episodes(url,name):
     #try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        listcontent=re.compile('</h3>(.+?)<div id="comments">').findall(newlink)[0]
-        episodelist=re.compile('<a class="episode" [^s][^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(listcontent)
-        for (vurl,vname) in episodelist:
-                html_re = re.compile(r'<[^>]+>')
-                vname=html_re.sub('', vname)
-                addDir(vname,strdomain+vurl,4,"")
+        listcontent=re.compile('<div class="season season_[0-9]">(.+?)<br clear="all"\s*/>').findall(newlink)
+        for listcontent2 in listcontent:
+            if (listcontent2.find(">"+name+"</a></h3>") > -1):
+                episodelist=re.compile('<a class="episode" [^s][^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(listcontent2)
+                for (vurl,vname) in episodelist:
+                     html_re = re.compile(r'<[^>]+>')
+                     vname=html_re.sub('', vname)
+                     addDir(vname,strdomain+vurl,4,"")
 
     #except: pass
 	
