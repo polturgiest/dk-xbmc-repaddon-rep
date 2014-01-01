@@ -147,7 +147,8 @@ def INDEX(url):
         for vcontent in match:
                 vurl=re.compile("<a href='(.+?)'>").findall(vcontent)[0]
                 match1=re.compile('bp_thumbnail_resize\("(.+?)","(.+?)"\)').findall(vcontent)
-                (vimage,vname)=match1[0]
+                if(len(match1) > 0):
+                     (vimage,vname)=match1[0]
                 vimage1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]* imageanchor="1">').findall(vcontent)
                 if(len(vimage1)>0):
                       vimage=vimage1[0]
