@@ -253,7 +253,13 @@ def Episodes(url,name):
                                         hasitem=ParseSeparate(newlink,'title: "(.+?)",','file: "(.+?)",')
                                 else:
                                         hasitem=ParseSeparate(newlink,'{"title":"(.+?)","creator":','"levels":\[{"file":"(.+?)"}')
-										
+        match=re.compile('<div class="drama-info">(.+?)</div>').findall(newlink)
+        if(len(match) >= 1):
+                match=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match[0])
+                if(len(match) >= 1):
+                    for mcontent in match:
+                        vLink, vLinkName=mcontent
+                        addLink(vLinkName.encode("utf-8"),vLink,3,'')
  
               
     #except: pass		
@@ -744,7 +750,7 @@ def addLink(name,url,mode,iconimage):
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
-        liz=xbmcgui.ListItem('Next >', iconImage="http://i42.tinypic.com/4uz9lc.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem('Next >', iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": 'Next >' } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
@@ -752,7 +758,7 @@ def addNext(formvar,url,mode,iconimage):
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
-        liz=xbmcgui.ListItem(name, iconImage="http://i42.tinypic.com/4uz9lc.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
