@@ -11,7 +11,7 @@ import cgi
 import CommonFunctions
 import datetime
 common = CommonFunctions
-common.plugin = "plugin.video.video4khmer"
+common.plugin = "plugin.video.MovieKhmer"
 
 import time
 ADDON = xbmcaddon.Addon(id='plugin.video.MovieKhmer')
@@ -133,20 +133,20 @@ def INDEX(url):
         #end=newlink.index('<!-- main -->')
         match=re.compile('<div class="arc-main">((.|\s)*?)<div id="page-sidebar">').findall(newlink)
         if(len(match) >= 1 and len(match[0]) >= 1):
-                match=re.compile('<div class="img-th">((.|\s)*?)<h4 class="post-tit">').findall(match[0][0])
+                match=re.compile('<div class="img-th">((.|\s)*?)</h4>').findall(match[0][0])
                 if(len(match) >= 1):
                         for vcontent in match:
                             #match1=re.compile('<a href="(.+?)" rel="bookmark"><img [^>]*src="(.+?)" class="attachment-thumbnail wp-post-image" alt="(.+?)"').findall(vcontent[0])
-                            vurl=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])[0]
+                            vlink=re.compile('<h4 class="post-tit"><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vcontent[0])
+                            vurl=vlink[0][0]
                             vimage=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])[0]
-                            vname=re.compile('<img [^>]*alt=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])[0]
+                            vname=vlink[0][1]
                             #(vurl, vimage, vname)=match1[0]
-                            addDir(vname.encode("utf-8"),vurl,5,vimage)
+                            addDir(vname.encode("utf-8").replace("Thai Lakorn &#8211;",""),vurl,5,vimage)
         match5=re.compile("<div class='wp-pagenavi'>((.|\s)*?)</div>").findall(newlink)
         if(len(match5) >= 1 and len(match5[0]) >= 1 and newlink.find("class='nextpostslink'") > -1 ):
                 startlen=re.compile("<span class='current'>(.+?)</span>").findall(match5[0][0])
                 url=url.replace("page/"+startlen[0],"")
-                print url
                 addDir("Next >>",url+'page/' + str(int(startlen[0])+1),2,"")
     except: pass
 			
