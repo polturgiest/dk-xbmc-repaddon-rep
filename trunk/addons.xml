@@ -23,7 +23,7 @@
 
 <addon
   id="plugin.video.animehere"
-  version="1.0.3"
+  version="1.0.4"
   name="animehere"
   provider-name="Dknight">
   <requires>
@@ -507,7 +507,7 @@
 
 <addon
   id="plugin.video.vidics"
-  version="1.0.11"
+  version="1.0.12"
   name="Vidics"
   provider-name="Dknight">
   <requires>

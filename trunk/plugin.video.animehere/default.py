@@ -321,8 +321,20 @@ def ParseVideoLink(url,name):
                 vidlink = media_url
         elif (redirlink.find("video44") > -1):
                 media_url= ""
-                media_url = re.compile('file:\s*"(.+?)"').findall(link)[0]
+                media_url = re.compile('url:\s*"(.+?)"').findall(link)[0]
                 vidlink = media_url
+        elif (redirlink.find("videobug") > -1):
+                media_url= ""
+                media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
+                vidlink = urllib.unquote(media_url)
+        elif (redirlink.find("play44") > -1):
+                media_url= ""
+                media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
+                vidlink = urllib.unquote(media_url)
+        elif (redirlink.find("byzoo") > -1):
+                media_url= ""
+                media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
+                vidlink = urllib.unquote(media_url)
         elif (redirlink.find("video.google.com") > -1):
                 match=redirlink.split("docid=")
                 glink=""

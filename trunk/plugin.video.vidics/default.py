@@ -342,9 +342,6 @@ def ParseVideoLink(url,name,movieinfo):
             tmpcontent=link
             redirlink = respon.get_url().lower()
             link = ''.join(link.splitlines()).replace('\'','"')
-
-
-
     # end 1channel code
 
     try:
@@ -354,6 +351,18 @@ def ParseVideoLink(url,name,movieinfo):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
                 vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
                 vidlink='plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid='+vidlink
+        elif (redirlink.find("yourupload") > -1):
+                media_url= ""
+                media_url = re.compile('<meta property="og:video" content="(.+?)"/>').findall(link)[0]
+                vidlink = media_url
+        elif (redirlink.find("video44") > -1):
+                media_url= ""
+                media_url = re.compile('url:\s*"(.+?)"').findall(link)[0]
+                vidlink = media_url
+        elif (redirlink.find("videobug") > -1):
+                media_url= ""
+                media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
+                vidlink = urllib.unquote(media_url)
         elif (redirlink.find("video.google.com") > -1):
                 match=redirlink.split("docid=")
                 glink=""
@@ -426,10 +435,11 @@ def ParseVideoLink(url,name,movieinfo):
                 dialog.update(50)
                 pcontent=postContent(redirlink,posdata+"&imhuman=Proceed+to+video",url)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
-                vidlink = re.compile('setup\(\{\s*file:\s*"(.+?)",\s*').findall(pcontent)
-                if(len(vidlink) == 0):
-                        vidlink = re.compile('"file","(.+?)"').findall(pcontent)
-                vidlink=vidlink[0]
+                tmplink = re.compile('setup\(\{\s*file:\s*"(.+?)",\s*streamer:\s*"(.+?)"').findall(pcontent)
+                vidlink = tmplink[0][1]+"/"+tmplink[0][0] + " playPath="+tmplink[0][0]
+                if(tmplink[0][0].find("http:") > -1):
+                        #vidlink = re.compile('setup\(\{\s*file:\s*"(.+?)",\s*').findall(pcontent)
+                        vidlink = tmplink[0][0]
         elif (redirlink.find("slickvid") > -1):
                 idkey = re.compile('<input type="hidden" name="id" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
