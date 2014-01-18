@@ -443,7 +443,7 @@ def loadVideos(newlink,name):
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('swfobject\.embedSWF\("(.+?)",').findall(newContent)
                 if(len(titlecontent) == 0):
-                        titlecontent = re.compile("file:\s*'(.+?)',").findall(newContent)
+                        titlecontent = re.compile("'file':\s*'(.+?)'").findall(newContent)
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newContent)
                 newlink=titlecontent[0]
