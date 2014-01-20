@@ -24,23 +24,42 @@ home = __settings__.getAddonInfo('path')
 filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
 langfile = xbmc.translatePath(os.path.join(home, 'resources', 'lang.txt'))
 strdomain ="http://www.viki.com"
+enableProxy= ADDON.getSetting('enableProxy')
+reg_list = ["https://losangeles-s02-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1", 
+            "https://bucharest-s05-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1",
+            "https://frankfurt-s02-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1", 
+            "https://london-s01-i15-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1"]
+proxyurl = reg_list[int(ADDON.getSetting('region'))]
+
 
 def RemoveHTML(inputstring):
     TAG_RE = re.compile(r'<[^>]+>')
     return TAG_RE.sub('', inputstring)
 	
-def GetContent(url):
+def GetContent(url, useProxy=False):
     strresult=""
+
+    if useProxy==True:
+        url = proxyurl.replace("*url*",urllib.quote_plus(url))
+        #proxy_handler = urllib2.ProxyHandler({'http':us_proxy})
+        #opener = urllib2.build_opener(proxy_handler)
+        #urllib2.install_opener(opener)
+        print "use proxy:" + str(useProxy) + url
     try:
-       net = Net()
-       second_response = net.http_GET(url)
-       strresult=second_response.content
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)')
+        response = urllib2.urlopen(req)
+        strresult=response.read()
+        response.close()
     except Exception, e:
        print str(e)+" |" + url
     return strresult
 
 def write2srt(url, fname):
-    subcontent=GetContent(url).encode("utf-8")
+    try:
+          subcontent=GetContent(url).encode("utf-8")
+    except:
+          subcontent=GetContent(url)
     f = open(fname, 'w');f.write(subcontent);f.close()
 
 def json2srt(url, fname):
@@ -92,7 +111,7 @@ def SaveLang(langcode, name):
     HOME()
 
 def Genre(url,name):
-        link = GetContent(url)
+        link = GetContent(url,False)
         link = ''.join(link.splitlines()).replace('\'','"')
         try:
             link =link.encode("UTF-8")
@@ -125,12 +144,13 @@ def Genre(url,name):
                     addDir("page " + pname.replace("&rarr;",">").decode("utf-8"),strdomain+purl,6,"")
 
 def UpdatedVideos(url,name):
-        print url
-        link = GetContent(url)
-        link = ''.join(link.splitlines()).replace('\'','"')
+        useProxy=(enableProxy=="true")
+        link = GetContent(url,useProxy)
+        link = ''.join(link.splitlines()).replace('\'','"').replace("/go/browse.php?u=","").replace("http%3A%2F%2Fwww.viki.com","").replace("%2F","/").replace("&amp;b=1","")
         try:
             link =link.encode("UTF-8")
         except: pass
+
         vcontent=re.compile('Recently Added\s*</a>\s*</li>\s*</ul>(.+?)</ul>').findall(link)
         if(len(vcontent) ==0):
                vcontent=re.compile('<ul class="medias medias-block medias-wide mbx" id="searchResults">(.+?)</ul>').findall(link)
@@ -157,7 +177,7 @@ def UpdatedVideos(url,name):
                     else:
                         vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                         mode=7
-                    addDir(vname.replace("&amp;","&").replace("&#x27;","'"),vlink,mode,vimg)
+                    addDir(vname.replace("&amp;","&").replace("&#x27;","'"),vlink,mode,urllib.unquote_plus(vimg))
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
@@ -365,6 +385,7 @@ def getVidQuality(vidid,name,filename,checkvideo):
   GA("Playing",name)
   print vidid
   print name
+  useProxy=(enableProxy=="true")
   if(checkvideo):
           pardata=GetVideoInfo(vidid)
 
@@ -374,16 +395,24 @@ def getVidQuality(vidid,name,filename,checkvideo):
                 for i in range(partnum):
                      addDir(name +" part " + str(pardata["parts"][i]["part"]),pardata["parts"][i]["id"],15,"")
                 return ""
-  vidurl = sign_request(vidid,"/streams.json")
+  if(useProxy):
+          vidurl=proxyurl.replace("*url*",urllib.quote_plus(sign_request(vidid,"/streams.json")))
+  else:
+          vidurl = sign_request(vidid,"/streams.json")
   data = json.load(urllib2.urlopen(vidurl))
   if(len(data) == 0):
-          vidurl = sign_request(vidid+"v","/streams")
+          if(useProxy):
+                vidurl=proxyurl.replace("*url*",urllib.quote_plus(sign_request(vidid+"v","/streams")))
+          else:
+                vidurl = sign_request(vidid+"v","/streams")
           data = json.load(urllib2.urlopen(vidurl))
   langcode=checkLanguage(vidid)
   strQual=""
   strprot=""
+  print vidurl
   try:
           suburl=sign_request(vidid,"/subtitles/" + langcode + ".srt")
+          print suburl
           write2srt(suburl, filename) 
   except:
           suburl=sign_request(vidid,"/subtitles/en.srt")
@@ -404,6 +433,7 @@ def getVidQuality(vidid,name,filename,checkvideo):
                  
 
 def playVideo(suburl,videoId):
+        print videoId
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
         xbmcPlayer.setSubtitles(suburl) 
