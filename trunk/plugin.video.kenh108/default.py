@@ -67,9 +67,7 @@ def SEARCH():
             link =link.encode("UTF-8")
         except: pass
         link = ''.join(link.splitlines()).replace('\t','')
-        print link
         vidcontent=re.compile('<div class="searchresults_image" [^>]*url\(["\)]?([^>^"^\)]+)["\)]?[^>]*>(.+?)<').findall(link)
-        print vidcontent
         for (vimg,moviecontent) in vidcontent:
             (vlink,vimg,vname)=re.compile('<a href="(.+?)&image=(.+?)" alt=(.+?)>').findall(moviecontent)[0]
             addDir(vname,strdomain+vlink,10,vimg)
@@ -104,7 +102,7 @@ def Episodes(url,name,itemno):
         match = re.compile('<div class="noidung_servers">(.+?)</div></div>').findall(link)
         serverlist=re.compile('</div>(.+?)</div>').findall(match[0].replace("</div>","</div></div>")+"</div></div>")
         itemno=int(itemno)
-        episodelist=re.compile('<a href="(.+?)">(.+?)</a>').findall(serverlist[itemno])
+        episodelist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(serverlist[itemno])
         for (vlink,vname) in episodelist:
                 addLink("Part " + vname,strdomain+vlink,4,"")
 
@@ -358,14 +356,16 @@ def loadVideos(url,name):
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(url)
                 if(len(match) == 0):
-                        match=re.compile('http://www.dailymotion.com/video/(.+?)&AJ;').findall(url)
+                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(url+"&dk;")
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(url)
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
