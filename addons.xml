@@ -162,7 +162,7 @@
 
 <addon
   id="plugin.video.kenh108"
-  version="1.0.3"
+  version="1.0.4"
   name="kenh108"
   provider-name="Dknight">
   <requires>
