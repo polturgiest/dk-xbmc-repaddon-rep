@@ -23,19 +23,19 @@ PATH = "moviekhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.8" #<---- PLUGIN VERSION
 
-strdomain ='http://www.movkhmer.com/'
+strdomain ='http://www.allnob.com/'
 def HOME():
-        addDir('Khmer Comedy',strdomain+'category/khmer/khmer-comedy/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Movies',strdomain+'category/khmer/khmer-movies/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Song',strdomain+'category/khmer/khmer-songs/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer TV Show',strdomain+'category/khmer/khmer-tv-show-khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Movies',strdomain+'category/thai/thai-movies/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Lakorns',strdomain+'category/thai/thai-lakorns/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        #addDir('Khmer Comedy',strdomain+'category/khmer/khmer-comedy/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        #addDir('Khmer Movies',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        #addDir('Khmer Song',strdomain+'category/khmer/khmer-songs/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer TV Show',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Thai Movies',strdomain+'category/thai/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Thai Lakorns',strdomain+'category/thai/thai-lakorn/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         #addDir('Korean Drama',strdomain+'category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
         #addDir('Korean Movies',strdomain+'category/korean/korean-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Chinese Movies',strdomain+'category/chinese/chinese-movies/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Series',strdomain+'category/chinese/chinese-series/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Documentaries',strdomain+'category/uncategories/documentary-uncategories/',2,strdomain+'wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
+        addDir('Chinese Movies',strdomain+'category/chinese/chinese-movie/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Chinese Series',strdomain+'category/chinese/chinese-drama/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Documentaries',strdomain+'category/uncategorized/',2,strdomain+'wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
 		
 def getVimeoUrl(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strdomain})
