@@ -29,6 +29,7 @@ def HOME():
         addDir('Thai Lakorns','http://www.merlkon.com/albumcategory/thai-videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         addDir('Korean Videos','http://www.merlkon.com/albumcategory/korean-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/04/lietome.jpg')
         addDir('Chinese Videos','http://www.merlkon.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Chinese Videos 2','http://www.khmerave.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
         addDir('Bollywood Videos','http://www.merlkon.com/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2013/01/santosima.jpg')
         addDir('Philippines Videos','http://www.merlkon.com/albumcategory/philippines-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
@@ -74,7 +75,6 @@ def SearchResults(url):
 			
 def getVimeoUrl(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
-        print result
         collection = {}
         if result["status"] == 200:
             html = result["content"]
@@ -91,14 +91,12 @@ def getVimeoUrl(videoid):
 			
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
-        print result
         collection = {}
         if result["status"] == 200:
             html = result["content"]
             html = html[html.find('{config:{'):]
             html = html[:html.find('}}},') + 3]
             html = html.replace("{config:{", '{"config":{') + "}"
-            print repr(html)
             collection = json.loads(html)
         return collection
 
@@ -153,9 +151,7 @@ def getVimeoVideourl(videoid):
         
         if ('apierror' not in video):
             video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
-            print video_url
             result = common.fetchPage({"link": video_url, "no-content": "true"})
-            print repr(result)
             video['video_url'] = result["new_url"]
 
             common.log("Done")
@@ -173,7 +169,6 @@ def Episodes(url,name):
         newlink = ''.join(link.splitlines()).replace('\t','')
         addLink(name.encode("utf-8"),url,3,'')
         match=re.compile('<div class="episodebox">(.+?)<div id="comments" class="clearfix">').findall(newlink)
-        print match
         match=re.compile('<a href="(.+?)"><span class="part">(.+?)</span></a>').findall(match[0])
         counter = 1
         videolist =url+";#"
@@ -249,9 +244,9 @@ def CreateList(videoType,videoId):
     url1 = ""
     if (videoType == "youtube"):
         try:
-                url = getYoutube(videoId)
+                url1 = getYoutube(videoId)
         except:
-                url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+                url1 = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
     elif (videoType == "vimeo"):
         url1 = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
@@ -266,15 +261,15 @@ def CreateList(videoType,videoId):
         
 def loadPlaylist(newlink,name):
         #try:
-           if (newlink.find("khmeravenue.com") > -1):
+           if (newlink.find("khmerave") > -1) or (newlink.find("merlkon") > -1):
                 link=GetContent(newlink)
                 newlink = ''.join(link.splitlines()).replace('\t','')
 
                 match=re.compile("'file': '(.+?)',").findall(newlink)
                 if(len(match) == 0):
-                   match=re.compile('<iframe frameborder="0" [^>]*src="(.+?)">').findall(newlink)
+                   match=re.compile('<div class="video_main">\s*<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
                    if(len(match)==0):
-                           match=re.compile('<iframe src="(.+?)" [^>]*').findall(newlink)
+                           match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
                            if(len(match)==0):
                                     match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
                 newlink=match[0]
@@ -314,6 +309,14 @@ def loadPlaylist(newlink,name):
                 idmatch =re.compile("http://player.vimeo.com/video/(.+?)\?").findall(newlink+"?")
                 vidurl=getVimeoUrl(idmatch[0])
                 CreateList("other",vidurl)
+           elif (newlink.find("videobam") > -1):
+                link=GetContent(newlink)
+                link = ''.join(link.splitlines()).replace('\'','"')
+                match=re.compile('"url"\s*:\s*"(.+?)","').findall(link)
+                for vbam in match:
+                     if(vbam.find("mp4") > -1):
+                          vidurl=vbam.replace("\\","")
+                CreateList("other",vidurl)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
@@ -338,12 +341,11 @@ def loadVideos(url,name):
            GA("LoadVideos",name)
            link=GetContent(url)
            newlink = ''.join(link.encode("utf-8").splitlines()).replace('\t','')
-
            match=re.compile("'file': '(.+?)',").findall(newlink)
            if(len(match) == 0):
-                   match=re.compile('<iframe frameborder="0" [^>]*src="(.+?)">').findall(newlink)
+                   match=re.compile('<div class="video_main">\s*<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
                    if(len(match)==0):
-                           match=re.compile('<iframe src="(.+?)" [^>]*').findall(newlink)
+                           match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
                            if(len(match)==0):
                                    match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
            newlink=match[0]
@@ -373,6 +375,26 @@ def loadVideos(url,name):
                 print idmatch
                 vidurl=getVimeoUrl(idmatch[0])
                 playVideo('khmeravenue',vidurl)
+           elif (newlink.find("videobam") > -1):
+                link=GetContent(newlink)
+                link = ''.join(link.splitlines()).replace('\'','"')
+                match=re.compile('"url"\s*:\s*"(.+?)","').findall(link)
+                for vbam in match:
+                     if(vbam.find("mp4") > -1):
+                          vidurl=vbam.replace("\\","")
+                playVideo('khmeravenue',vidurl)
+           elif (newlink.find("docs.google.com") > -1):
+                link=GetContent(newlink)
+                link = ''.join(link.splitlines()).replace('\'','"')
+                match= re.compile('url_encoded_fmt_stream_map\":\"(.+?),\"').findall(link)
+                stream_url=""
+                if match:
+                    streams_map = str(match)
+                    stream= re.compile('url=(.+?)&type=.+?&quality=(.+?)[,\"]{1}').findall(streams_map)
+                    for group1,group2 in stream:
+                         stream_url = str(group1)
+                         stream_url = unescape(stream_url)
+                playVideo('khmeravenue',stream_url)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
