@@ -1101,11 +1101,13 @@ def Episodes(url,name):
         listcontent=re.compile('<div class="season season_[0-9]">(.+?)<br clear="all"\s*/>').findall(newlink)
         for listcontent2 in listcontent:
             if (listcontent2.find(">"+name+"</a></h3>") > -1):
+                listcontent2=re.compile('>'+name+'</a></h3>(.+?)</div>').findall(listcontent2)[0]
                 episodelist=re.compile('<a class="episode" [^s][^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(listcontent2)
                 for (vurl,vname) in episodelist:
                      html_re = re.compile(r'<[^>]+>')
                      vname=html_re.sub('', vname)
                      addDir(vname,strdomain+vurl,4,"")
+                break 
 
     #except: pass
 	
@@ -1115,7 +1117,7 @@ def Seasons(url):
         ssoninfo= re.compile('<h3 class="season_header">(.+?)</h3>').findall(link)
         for seas in ssoninfo:
                 epsodlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(seas)[0]
-                addDir(epsodlist[1],strdomain+epsodlist[0],8,"")
+                addDir(epsodlist[1],url,8,"")
 def INDEX(url,modenum,curmode,vidtype):
     #try:
         xbmc.executebuiltin("Container.SetViewMode(52)")
