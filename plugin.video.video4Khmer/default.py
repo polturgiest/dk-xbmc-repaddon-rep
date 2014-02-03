@@ -43,6 +43,7 @@ def HOME():
         addDir('Rock Production Karaoke','http://www.vdokhmer.com/khmer-movie-category/rock-production-khmer-video-karaoke-catalogue-513-page-1.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Spark Production Karaoke','http://www.vdokhmer.com/khmer-movie-category/spark-production-khmer-video-karaoke-catalogue-516-page-1.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Chenla Brother Karaoke','http://www.vdokhmer.com/khmer-movie-category/chenla-brother-khmer-video-karaoke-catalogue-518-page-1.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Radio','http://www.vdokhmer.com/khmerradio.php?rname=rfi',9,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Khmer video clip','http://www.vdokhmer.com/khmer-movie-category/khmer-clips-watch-online-free-catalogue-1366-page-1.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         #addDir('MISC','http://www.vdokhmer.com/browse-this-and-that-accident-society-misc-videos-1-date.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Khmer Tv show','http://www.vdokhmer.com/khmer-movie-category/watch-cambodia-tv-shows-online-catalogue-1278-page-1.html',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
@@ -77,7 +78,24 @@ def INDEX(url):
                         (pageurl,pagenum)=pcontent
                         addDir("Page " + pagenum,pageurl.replace('" ',"?").replace(" ","+"),2,"")
     #except: pass
-			
+def KhmerRadio():
+        addDir('RADIO FRANCE INTERNATIONALE','http://www.vdokhmer.com/khmerradio.php?rname=rfi',10,'http://www.vdokhmer.com/images/radio/small/rfi.gif')
+        addDir('RADIO FREE ASIA','http://www.vdokhmer.com/khmerradio.php?rname=rfa',10,'http://www.vdokhmer.com/images/radio/small/rfa.gif')
+        addDir('ABC RADIO AUSTRALIA','http://www.vdokhmer.com/khmerradio.php?rname=abc',10,'http://www.vdokhmer.com/images/radio/big/abc.png')
+        addDir('VOICE OF AMERICA','http://www.vdokhmer.com/khmerradio.php?rname=voa',10,'http://www.vdokhmer.com/images/radio/big/voa.png')
+        addDir('Latest New Khmer mp3','http://www.vdokhmer.com/khmer-mp3/latest-new-khmer-mp3-1-1.html',10,'http://www.vdokhmer.com/templates/3column/images/menu/new_mp3_play.png')
+        addDir('Khmer Oldies Male Singers mp3','http://www.vdokhmer.com/khmer-mp3/khmer-oldies-male-singers-from-50s-60s-70s-mp3-2-1.html',10,'http://www.vdokhmer.com/templates/3column/images/menu/old_mp3.png')
+        addDir('Khmer Oldies Male and FeMale Singers mp3','http://www.vdokhmer.com/khmer-mp3/khmer-oldies-male-and-female-singers-from-50s-60s-70s-mp3-3-1.html',10,'http://www.vdokhmer.com/templates/3column/images/menu/old_mp3_feat.png')
+
+def RadioList(url):
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        match=re.compile("\{\s*title:\s*'(.+?)'\s*,\s*mp3:\s*'(.+?)'\}").findall(newlink)
+        for vcontent in match:
+              addSong(vcontent[0],vcontent[1],"","","", 1)
 def SEARCH():
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
@@ -808,6 +826,21 @@ def APP_LAUNCH():
                 print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
 checkGA()
 
+def addSong(songname,songurl,songImg,album,artist, totalsong):
+        cm = []
+
+        trackLabel = artist + " - " + album + " - " + songname
+        item = xbmcgui.ListItem(label = trackLabel, thumbnailImage=songImg, iconImage=songImg)
+        item.setPath(songurl)
+        item.setInfo( type="Video", infoLabels={ "title": name, "album": album, "artist": artist} )
+        item.setProperty('mimetype', 'audio/mpeg')
+        item.setProperty("IsPlayable", "true")
+        item.setProperty('title', songname)
+        item.setProperty('album', album)
+        item.setProperty('artist', artist)
+        item.addContextMenuItems(cm, replaceItems=False)
+        u=sys.argv[0]+"?url="+urllib.quote_plus(songurl)+"&mode=3&name="+urllib.quote_plus(songname)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=songurl,listitem=item,isFolder=False, totalItems=totalsong)
 def addLink(name,url,mode,iconimage):
         try:
             name =name.encode("UTF-8")
@@ -933,6 +966,10 @@ elif mode==7:
        ParseXml(url)
 elif mode==8:
        PLAYLIST_VIDEOLINKS(url,name)
+elif mode==9:
+       KhmerRadio()
+elif mode==10:
+       RadioList(url)
 
 	   
 xbmcplugin.endOfDirectory(int(sysarg))
