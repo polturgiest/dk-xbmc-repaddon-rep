@@ -445,7 +445,7 @@
 
 <addon
   id="plugin.video.seesantv"
-  version="1.0.0"
+  version="1.0.1"
   name="seesantv"
   provider-name="Dknight">
   <requires>

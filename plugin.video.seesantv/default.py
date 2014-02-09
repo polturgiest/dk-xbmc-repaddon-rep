@@ -171,6 +171,9 @@ def postContent(url,data,referr,cj):
 def GetVideoUrl(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
+        vidserver=re.compile('file:\s*"(.+?)"', re.IGNORECASE).findall(link)
+        if(len(vidserver)>0):
+               vidurl = vidserver[0] 
         vidserver=re.compile('netConnectionUrl: "(.+?)"', re.IGNORECASE).findall(link)
         if(len(vidserver)>0):
                frmsrc1=re.compile('clip:\s*{\s*url: "(.+?)",\s*provider: "(.+?)",\s*bufferLength: "(.+?)",\s*type: "(.+?)"\s*}', re.IGNORECASE).findall(link)[0]
