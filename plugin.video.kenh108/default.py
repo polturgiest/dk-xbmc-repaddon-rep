@@ -20,7 +20,7 @@ PATH = "Kenh108"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.2" #<---- PLUGIN VERSION
 
-strdomain ='http://www.lsb-phim.com/kenh108/'
+strdomain ='http://www.lsb-movies.net/kenh108/'
 def HOME():
         addDir('Search',strdomain,8,'')
         addDir('Recently Updated Videos',strdomain+'index.php?do=list&type=recently_updated',2,'')
@@ -62,7 +62,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        link = postContent(strdomain+"index.php?do=timkiem","search_this="+searchText,"http://www.lsb-phim.com/kenh108/index.php")
+        link = postContent(strdomain+"index.php?do=timkiem","search_this="+searchText,"http://www.lsb-movies.net/kenh108/index.php")
         try:
             link =link.encode("UTF-8")
         except: pass
@@ -86,6 +86,7 @@ def GetVideoLinks(url):
                               if(len(frmsrc1) ==0):
                                     frmsrc1=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(link)
                                     if(len(frmsrc1) ==0):
+                                             print link
                                              frmsrc1=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(link)
                                              frmsrc1=re.compile('file=(.+?)&', re.IGNORECASE).findall(frmsrc1[0])
                                              frmsrc1[0]=urllib.unquote_plus(frmsrc1[0])
@@ -333,6 +334,7 @@ def unpackjs(texto):
     return descifrado
 	
 def postContent(url,data,referr):
+    print referr
     opener = urllib2.build_opener()
     opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
                          ('Accept-Encoding','gzip, deflate'),
@@ -341,6 +343,7 @@ def postContent(url,data,referr):
                          ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
                          ('Connection','keep-alive'),
                          ('Accept-Language','en-us,en;q=0.5'),
+                         ('Host','www.lsb-movies.net'),
                          ('Pragma','no-cache')]
     usock=opener.open(url,data)
     response=usock.read()
