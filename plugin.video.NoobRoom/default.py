@@ -30,7 +30,7 @@ cookie_path = os.path.join(datapath, 'cookies')
 cookiefile = os.path.join(cookie_path, "cookiejar.lwp")
 cj = None
 authcode = ADDON.getSetting('authcode')
-reg_list = ["15", "42", "62", "21","10"]
+reg_list = ["15", "42", "62", "21","10", "18", "53", "25","22"]
 if len(authcode) > 0 and authcode != "0":
     location = reg_list[int(ADDON.getSetting('region'))]
     isHD = "1"
@@ -103,16 +103,15 @@ def GetLoginCookie(cj, cookiefile):
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
-        match = re.compile('"streamer": "(.+?)",').findall(link)
+        match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
         if(len(match) ==0):
            cj.load(cookiefile, ignore_discard=True)
            (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
-           print "this lik" + respon
            cj.save(cookiefile, ignore_discard=True)
            link = ''.join(respon.splitlines()).replace('\'', '"')
 
-           match = re.compile('"streamer": "(.+?)",').findall(link)
+           match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
         loginsuc = match[0].split("&")[1]
         matchauth = loginsuc.replace("auth=", "")
         ADDON.setSetting('authcode', matchauth)
@@ -151,14 +150,14 @@ def AutoLogin(url, cj):
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
-        match = re.compile('"streamer": "(.+?)",').findall(link)
+        match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
         loginsuc = match[0].split("&")[1]
       except:
         (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
-        match = re.compile('"streamer": "(.+?)",').findall(link)
+        match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
         loginsuc = match[0].split("&")[1]
       matchauth = loginsuc.replace("auth=", "")
       ADDON.setSetting('authcode', matchauth)
@@ -179,7 +178,7 @@ def GetVideoLink(url, isHD, cj):
         authstring = "&auth=" + authcode
     else:
         isHD = "0"
-    match = re.compile('"streamer": "(.+?)",').findall(link)[
+    match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)[
         0].split("&")[0] + authstring + "&loc=" + location + "&hd=" + isHD
 
     return cj, match
@@ -212,7 +211,7 @@ def SEARCH():
     searchText = ''
     if keyb.isConfirmed():
         searchText = urllib.quote_plus(keyb.getText())
-    SearchXml(searchText)
+    SearchSite(searchText)
 
 
 def renderListingPage(resourceName, url):
@@ -277,8 +276,21 @@ def KidsZone():
         href = href.replace("?", "")
         addLink(urllib.unquote_plus(movieName), href, 6, nooblink + "/2img" + href + ".jpg", False)
 
-
 def SearchXml(SearchText):
+    if os.path.isfile(filename)==False:
+        BuildXMl()
+    f = open(filename, "r")
+    text = f.read()
+    if SearchText=='-1':
+        match=re.compile('<movie name="[^A-Za-z](.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)	
+        SearchText=""
+    else:
+        match=re.compile('<movie name="' + SearchText + '(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
+    for i in range(len(match)):
+        (mName,mNumber,vyear)=match[i]
+        addDir(SearchText+mName,mNumber,6,"")
+
+def SearchSite(SearchText):
     (jc, link) = GetContent(nooblink + "/search.php?q=" + SearchText, "", nooblink, cj)
     match = re.compile(
         '<a class=\'tippable\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>(.+?)<br>'
@@ -350,20 +362,25 @@ def GetDirVideoUrl(url, cj):
     usock = opener.open(url)
     return redirhndler.video_url
 
-
+def TryMP4(noobvideolink,videoId,cj,location):
+    vidlink=GetDirVideoUrl(nooblink + "/"+location+"/"+authcode+"/"+videoId+".mp4", cj)
+    if(vidlink.find(authcode) == -1):
+         vidlink = GetDirVideoUrl(noobvideolink + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
+    return vidlink
+	
 def Episodes(name, videoId,cj):
     # try:
     xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
     (cj, noobvideolink) = GetVideoLink(nooblink + "/login2.php", isHD, cj)
+    if(noobvideolink.find(nooblink) == -1):
+          noobvideolink=nooblink+noobvideolink
     match = re.compile("/(.+?)&sp").findall(videoId + "&sp")
     if len(match) >= 0:
         videoId = match[0]
     try:
-        vidlink = GetDirVideoUrl(
-            noobvideolink + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
+        vidlink=TryMP4(noobvideolink,videoId,cj,location)
     except:
-        vidlink = GetDirVideoUrl(noobvideolink.replace(
-            "&hd=" + isHD, "&hd=0") + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
+        vidlink = GetDirVideoUrl(noobvideolink.replace("&hd=" + isHD, "&hd=0") + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
     cookiestr = ""
     for cookie in cj:
         cookiestr += '%s=%s;' % (cookie.name, cookie.value)
@@ -375,7 +392,9 @@ def Episodes(name, videoId,cj):
         'Title': name,
         'Thumb': nooblink + "/2img" + videoId + ".jpg"
     }
+
     playVideo("noobroom", fullvid, meta)
+
 
 
 def ListTVSeries(cj):
@@ -391,6 +410,8 @@ def ListTVSeries(cj):
 
 def ListEpisodes(name,url, cj):
     (cj, noobvideolink) = GetVideoLink(nooblink + "/login2.php", isHD, cj)
+    if(noobvideolink.find(nooblink) == -1):
+          noobvideolink=nooblink+noobvideolink
     (cj, link) = GetContent(url, "", nooblink, cj)
     link = ''.join(link.splitlines()).replace('\'', '"')
     match = re.compile(
@@ -416,7 +437,10 @@ def playVideo(videoType, link, meta=None):
                  'Title': '',
                  'Thumb': ''
     }
-
+    win = xbmcgui.Window(10000)
+    win.setProperty('1ch.playing.title', meta.get("Title"))
+    win.setProperty('1ch.playing.season', str(3))
+    win.setProperty('1ch.playing.episode', str(4))
     if(link.find(nooblink) > -1):
         tmplink= link.split("|")[0]
         tmplink2=GetDirVideoUrl(tmplink, cj)
