@@ -203,7 +203,7 @@ def getVidPage(url,page):
         url1=strdomain+"/related_videos?container_id="+vcontainerid+"&page=1&type=episodes"
   link = GetContent(url1)
   link = ''.join(link.splitlines()).replace('\'','"')
-  if(len(link) ==0):
+  if(len(link) ==0 or link.find("Oh no! Something went wrong.")!= -1):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
         match=re.compile('<ul class="medias medias-block[^>]*data-slider-items="1">(.+?)</ul>').findall(link)
