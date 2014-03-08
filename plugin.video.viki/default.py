@@ -154,7 +154,7 @@ def UpdatedVideos(url,name):
         vcontent=re.compile('Recently Added\s*</a>\s*</li>\s*</ul>(.+?)</ul>').findall(link)
         if(len(vcontent) ==0):
                vcontent=re.compile('<ul class="medias medias-block medias-wide mbx" id="searchResults">(.+?)</ul>').findall(link)
-        vidlist=re.compile('<li class="media">(.+?)</li>').findall(vcontent[0])
+        vidlist=re.compile('<li [^>]*(.+?)</li>').findall(vcontent[0])
         mode=7
         for licontent in vidlist:
             vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(licontent)
