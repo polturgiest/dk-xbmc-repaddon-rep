@@ -103,7 +103,8 @@ def GetLoginCookie(cj, cookiefile):
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
-        match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
+        match = re.compile('"sources":\s*\[(.+?)\]').findall(link)
+        match = re.compile('"file":\s*"(.+?)"').findall(match[0])
         if(len(match) ==0):
            cj.load(cookiefile, ignore_discard=True)
            (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
@@ -111,7 +112,8 @@ def GetLoginCookie(cj, cookiefile):
            cj.save(cookiefile, ignore_discard=True)
            link = ''.join(respon.splitlines()).replace('\'', '"')
 
-           match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
+           match = re.compile('"sources":\s*\[(.+?)\]').findall(link)
+           match = re.compile('"file":\s*"(.+?)"').findall(match[0])
         loginsuc = match[0].split("&")[1]
         matchauth = loginsuc.replace("auth=", "")
         ADDON.setSetting('authcode', matchauth)
@@ -150,14 +152,16 @@ def AutoLogin(url, cj):
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
-        match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
+        match = re.compile('"sources":\s*\[(.+?)\]').findall(link)
+        match = re.compile('"file":\s*"(.+?)"').findall(match[0])
         loginsuc = match[0].split("&")[1]
       except:
         (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
                                   "&password=" + strpwd + "&remember=on", nooblink + "/login2.php", cj)
         cj.save(cookiefile, ignore_discard=True)
         link = ''.join(respon.splitlines()).replace('\'', '"')
-        match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)
+        match = re.compile('"sources":\s*\[(.+?)\]').findall(link)
+        match = re.compile('"file":\s*"(.+?)"').findall(match[0])
         loginsuc = match[0].split("&")[1]
       matchauth = loginsuc.replace("auth=", "")
       ADDON.setSetting('authcode', matchauth)
@@ -178,8 +182,9 @@ def GetVideoLink(url, isHD, cj):
         authstring = "&auth=" + authcode
     else:
         isHD = "0"
-    match = re.compile('"sources":\s*\[{"file":\s*"(.+?)",').findall(link)[
-        0].split("&")[0] + authstring + "&loc=" + location + "&hd=" + isHD
+    match = re.compile('"sources":\s*\[(.+?)\]').findall(link)
+    match = re.compile('"file":\s*"(.+?)"').findall(match[0])
+    match=match[0].split("&")[0] + authstring + "&loc=" + location + "&hd=" + isHD
 
     return cj, match
 
