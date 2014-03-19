@@ -212,11 +212,18 @@ def getVidPage(url,page):
   try:
         link =link.encode("UTF-8")
   except: pass
-
-  vidcontainer=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json" (.+?) itemtype="http://schema.org/VideoObject">\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-  for vid,vtmp,vurl,vname,vimg in vidcontainer:
-        vurl = vurl.split("/videos/")[0]
-        addDir(vname,vid,4,vimg)
+  vidcontainer=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+  vidnum=re.compile('\/([0-9]*)([a-z]|\s*).json"').findall(link)
+  for x in range(0, len(vidnum)):
+       vid="".join(vidnum[x])
+       if(vidnum[x][1]==""):
+           vid=vidnum[x][0]+"v"
+       (vurl,vname,vimg) = vidcontainer[x]
+       vurl = vurl.split("/videos/")[0]
+       addDir(vname,vid,4,vimg)
+  #for vid,vtmp,vurl,vname,vimg in vidcontainer:
+  #      vurl = vurl.split("/videos/")[0]
+  #      addDir(vname,vid,4,vimg)
   pagelist=re.compile('<a class="btn btn-small btn-wide" href="#">Show more</a>').findall(link)
   if(len(pagelist) > 0):
           pagenum=re.compile('&page=(.+?)&type=episodes').findall(url1)
@@ -275,7 +282,6 @@ def SEARCHChannel():
         SearchChannelresults(searchurl,searchText.lower())
 		
 def getVideoUrl(url,name):
-
    #data = json.load(urllib2.urlopen(url))['streams']
    #for i, item in enumerate(data):
         if(url.find("dailymotion") > -1):
@@ -289,7 +295,7 @@ def getVideoUrl(url,name):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
@@ -297,6 +303,7 @@ def getVideoUrl(url,name):
                 	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
+                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
                 if(len(dm_high) == 0):
                         vidlink = urllib2.unquote(dm_low[0]).decode("utf8")
                 else:
