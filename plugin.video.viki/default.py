@@ -351,7 +351,7 @@ def SEARCHVideos():
         searchText = ''
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        searchurl="http://www.viki.com/search?utf8=%E2%9C%93&q=" + searchText 
+        searchurl="http://www.viki.com/search?q=" + searchText 
         UpdatedVideos(searchurl,searchText.lower())
 
 def SEARCHByID():
