@@ -370,7 +370,7 @@ def GetVideoInfo(vidid):
     
 def expires():
     '''return a UNIX style timestamp representing 5 minutes from now'''
-    return int(time.time()+1)
+    return int(time.time())
 
 def sign_request(vidid,vtype):
     from hashlib import sha1
@@ -705,7 +705,8 @@ try:
         subtitleurl=urllib.unquote_plus(params["suburl"])
 except:
         pass
-		
+
+print "mode is:"+ str(mode)
 sysarg=str(sys.argv[1]) 
 if mode==None or url==None or len(url)<1:
         GA("Home","Home")
