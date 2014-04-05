@@ -265,7 +265,10 @@ def Episodes(url,name):
                             addLink(vname.encode('utf-8'),"http://www.youtube.com/watch?v="+youtubeid[0],3,vimg)
                             videolist=videolist+"http://www.youtube.com/watch?v="+youtubeid[0]+";#"
                     else:
-                            addLink(vname.encode('utf-8'),vurl,3,vimg)
+                            try:
+                                 addLink(vname.encode('utf-8'),vurl,3,vimg)
+                            except: 
+                                 addLink(vname,vurl,3,vimg)
                             videolist=videolist+vurl+";#"
                     if((counter%vidPerGroup==0 or counter==len(linkmatch)) and (len(videolist.split(';#'))-1) > 1):
                             addLink("-------Play the "+ str(len(videolist.split(';#'))-1)+" videos above--------",videolist,8,vimg)
@@ -394,17 +397,21 @@ def loadPlaylist(newlink,name):
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newContent)
                 newlink=titlecontent[0]
+
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
                 if(len(match) == 0):
                         match = re.compile('http://www.dailymotion.com/swf/(.+?)&').findall(newlink)
-                link = 'http://www.dailymotion.com/video/'+str(match[0])
+                if(len(match[0])>1):
+                     link = 'http://www.dailymotion.com/video/'+str(match[0][-1].replace("video/",""))
+                else: 
+                     link = 'http://www.dailymotion.com/video/'+str(match[0])
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
@@ -413,6 +420,13 @@ def loadPlaylist(newlink,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+           elif (newlink.find("docs.google.com") > -1):
+                vidcontent = GetContent(newlink)
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
+                        CreateList('googledocs',vidlink[0])
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
                 glink=""
@@ -465,25 +479,36 @@ def loadVideos(newlink,name):
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newContent)
                 newlink=titlecontent[0]
+                print newlink
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
                 if(len(match) == 0):
                         match = re.compile('http://www.dailymotion.com/swf/(.+?)&').findall(newlink)
-                link = 'http://www.dailymotion.com/video/'+str(match[0])
+                if(len(match[0])>1):
+                     link = 'http://www.dailymotion.com/video/'+str(match[0][-1].replace("video/",""))
+                else: 
+                     link = 'http://www.dailymotion.com/video/'+str(match[0])
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence":"(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
                 	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+           elif (newlink.find("docs.google.com") > -1):
+                vidcontent = GetContent(newlink)
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
+                        playVideo('google',vidlink[0])
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
                 glink=""
@@ -953,6 +978,7 @@ elif mode==2:
         INDEX(url)
 elif mode==3:
         #sysarg="-1"
+        print url
         loadVideos(url,name)
 elif mode==4:
         #sysarg="-1"
