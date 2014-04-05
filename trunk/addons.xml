@@ -294,7 +294,7 @@
 
 <addon
   id="plugin.video.KhmerTv"
-  version="1.0.8"
+  version="1.0.9"
   name="KhmerTv"
   provider-name="Dknight">
   <requires>
@@ -486,7 +486,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.18"
+  version="1.0.19"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
