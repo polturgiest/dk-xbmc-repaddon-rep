@@ -23,7 +23,7 @@ PATH = "PhumiKhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.4" #<---- PLUGIN VERSION
 
-strdomain ='http://www.phumikhmers.blogspot.com/'
+strdomain ='http://www.ph-kh.com/'
 def HOME():
         addDir('Khmer Movies','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Khmer Drama','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
@@ -52,11 +52,12 @@ def getVimeoUrl(videoid):
         collection = {}
         if result["status"] == 200:
             html = result["content"]
-            html = html[html.find(',c={'):]
+            html = html[html.find(',a={'):]
             html = html[:html.find('}};') + 2]
-            html = html.replace(",c={", '{') 
+            html = html.replace(",a={", '{') 
             try:
                   collection = json.loads(html)
+                  print collection
                   codec=collection["request"]["files"]["codecs"][0]
                   filecol = collection["request"]["files"][codec]
                   return filecol["sd"]["url"]
