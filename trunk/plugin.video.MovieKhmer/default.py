@@ -37,14 +37,25 @@ def HOME():
         addDir('Chinese Series',strdomain+'category/chinese/chinese-drama/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
         addDir('Documentaries',strdomain+'category/uncategorized/',2,strdomain+'wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
 		
+def getVimeoUrlDirect(vidid):
+            url="http://vimeo.com/" + vidid
+            result = PostContent(url)
+            match =re.compile('data-config-url="(.+?)"').findall(result)
+            configcontent=PostContent(urllib.unquote_plus(match[0]).replace("&amp;","&"))
+            vidmatch =re.compile('"sd":{(.+?)}').findall(configcontent)
+            vidlink=""
+            if(len(vidmatch)>0):
+                  vidlink =re.compile('"url":"(.+?)"').findall(configcontent)[0]
+            return vidlink
+			
 def getVimeoUrl(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strdomain})
         collection = {}
         if result["status"] == 200:
             html = result["content"]
-            html = html[html.find(',c={'):]
+            html = html[html.find(',a={'):]
             html = html[:html.find('}};') + 2]
-            html = html.replace(",c={", '{') 
+            html = html.replace(",a={", '{') 
             try:
                   collection = json.loads(html)
                   codec=collection["request"]["files"]["codecs"][0]
@@ -52,6 +63,8 @@ def getVimeoUrl(videoid):
                   return filecol["sd"]["url"]
             except:
                   return getVimeoVideourl(videoid)
+        else:
+            return getVimeoUrlDirect(videoid)
 				  
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strdomain})
@@ -123,7 +136,7 @@ def getVimeoVideourl(videoid):
 			
 			
 def INDEX(url):
-    try:
+    #try:
         link = GetContent(url)
         try:
             link =link.encode("UTF-8")
@@ -148,7 +161,7 @@ def INDEX(url):
                 startlen=re.compile("<span class='current'>(.+?)</span>").findall(match5[0][0])
                 url=url.replace("page/"+startlen[0],"")
                 addDir("Next >>",url+'page/' + str(int(startlen[0])+1),2,"")
-    except: pass
+    #except: pass
 			
 def SearchResults(url):
         link = GetContent(url)
@@ -201,7 +214,16 @@ def Episodes(url,name):
                                         hasitem=ParseSeparate(newlink,'title: "(.+?)",','file: "(.+?)",')
                                 else:
                                         hasitem=ParseSeparate(newlink,'{"title":"(.+?)","creator":','"levels":\[{"file":"(.+?)"}')
-										
+        match=re.compile('\).setup\((.+?)\)').findall(newlink)
+        if(len(match) > 0):
+            epimatch =re.compile('urls:\s*\[(.+?)\]').findall(newlink)
+            if(len(epimatch) > 0):
+                epilist = epimatch[0].split(",")
+                counter = 0
+                for mcontent in epilist:
+                     counter += 1
+                     addLink(name.encode("utf-8") + " part " + str(counter),mcontent,3,"")
+ 
  
               
     #except: pass		
@@ -274,32 +296,13 @@ def GetContent(url):
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
 
-def PostContent(formvar,url):
-        try:
-                net = Net()
-                headers = {}
-                headers['Accept']='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-                headers['Accept-Encoding'] = 'gzip, deflate'
-                headers['Accept-Charset']='ISO-8859-1,utf-8;q=0.7,*;q=0.7'
-                headers['Referer'] = 'http://www.khmeraccess.com/video/videolist/videonew.html?cid=1'
-                headers['Content-Type'] = 'application/x-www-form-urlencoded'
-                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0.1) Gecko/20100101 Firefox/5.0.1'
-                headers['Connection'] = 'keep-alive'
-                headers['Host']='www.khmeraccess.com'
-                headers['Accept-Language']='en-us,en;q=0.5'
-                headers['Pragma']='no-cache'
-                formdata={}                      
-                formdata['start']=formvar
-
-
-                #first_response = net.http_Get('http://khmerfever.com/wp-login.php',headers=header_dict)
-                #net.save_cookies('c:\cookies.txt')
-                #net.set_cookies('c:\cookies.txt')
-                second_response = net.http_POST(url,formdata,headers=headers,compression=False)
-                return second_response.content
-        except: 
-                d = xbmcgui.Dialog()
-                d.ok('Time out',"Can't Connect to site",'Try again in a moment')
+def PostContent(url):
+                req = urllib2.Request(url)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                data=response.read()
+                response.close()
+                return data
 	
 def playVideo(videoType,videoId):
     url = ""
@@ -314,6 +317,8 @@ def playVideo(videoType,videoId):
                 xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
     elif (videoType == "vimeo"):
         url = getVimeoUrl(videoId)
+        #url =getVimeoUrlDirect(videoId)
+        print "url back" + str(url)
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(url)
     elif (videoType == "tudou"):
@@ -323,7 +328,7 @@ def playVideo(videoType,videoId):
         xbmcPlayer.play(videoId)
 	
 def loadVideos(url,name):
-        try:
+        #try:
            newlink=url
            xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
            if (newlink.find("dailymotion") > -1):
@@ -350,7 +355,11 @@ def loadVideos(url,name):
            elif (newlink.find("vimeo") > -1):
                 idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
                 if(len(idmatch) > 0):
-                        playVideo('vimeo',idmatch[0])
+                        idmatch=idmatch[0].replace("'","")
+                else:
+                        idmatch =re.compile("//vimeo.com/(.+?)dk").findall(newlink+"dk")
+                        idmatch=idmatch[0].replace("'","")
+                playVideo('vimeo',idmatch)
            else:
                 if (newlink.find("linksend.net") > -1):
                      d = xbmcgui.Dialog()
@@ -367,7 +376,7 @@ def loadVideos(url,name):
                     playVideo('youtube',lastmatch)
                 else:
                     playVideo('moviekhmer',urllib2.unquote(newlink).decode("utf8"))
-        except: pass
+        #except: pass
         
 def OtherContent():
     net = Net()

@@ -161,9 +161,9 @@ def getVimeoUrl(videoid):
         collection = {}
         if result["status"] == 200:
             html = result["content"]
-            html = html[html.find(',c={'):]
+            html = html[html.find(',a={'):]
             html = html[:html.find('}};') + 2]
-            html = html.replace(",c={", '{') 
+            html = html.replace(",a={", '{') 
             try:
                   collection = json.loads(html)
                   codec=collection["request"]["files"]["codecs"][0]
