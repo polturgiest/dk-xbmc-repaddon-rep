@@ -647,6 +647,15 @@ def loadVideos(url,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+           elif (newlink.find("videomega") > -1):
+                refkey= re.compile('\?ref=(.+?)&dk').findall(newlink+"&dk")[0]
+                vidcontent="http://videomega.tv/iframe.php?ref="+refkey
+                pcontent=GetContent(vidcontent)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                urlcode = re.compile('if\s*\(!validstr\){\s*document.write\(unescape\("(.+?)"\)\);\s*}').findall(pcontent)[0]
+                vidcontent=urllib.unquote_plus(urlcode)
+                vidlink = re.compile('file:\s*"(.+?)",').findall(vidcontent)[0]
+
            elif (newlink.find("allmyvideos") > -1):
                 videoid=  re.compile('http://allmyvideos.net/embed-(.+?).html').findall(newlink)
                 if(len(videoid)>0):
@@ -711,26 +720,23 @@ def loadVideos(url,name):
                 vidcontent=GetContent("http://www.nowvideo.sx/api/player.api.php?codes="+urllib.quote_plus(codeid) + "&key="+urllib.quote_plus(keycode) + "&file=" + urllib.quote_plus(fileid))
                 vidlink = re.compile('url=(.+?)\&').findall(vidcontent)[0]
            elif (newlink.find("180upload") > -1):
-                urlnew= re.compile('http://180upload.com/embed-(.+?).html').findall(newlink)
-                if(len(urlnew) == 0):
-                      #newlink="http://180upload.com/" + urlnew[0]
-                      vidlink=resolve_180upload(newlink,None)
-                link = GetContent(newlink)
+                if(newlink.find("embed") == -1):
+                      vidcode = re.compile('180upload.com/(.+?)dk').findall(newlink+"dk")[0] 
+                      newlink= 'http://180upload.com/embed-'+vidcode+'.html'
+                link=GetContent(newlink)
                 file_code = re.compile('<input type="hidden" name="file_code" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
                 op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
                 embed_width = re.compile('<input type="hidden" name="embed_width" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
                 embed_height = re.compile('<input type="hidden" name="embed_height" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
-                test34 = re.compile('<input type="hidden" name="test34" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
-                posdata=urllib.urlencode({"op":op,"file_code":file_code,"referer":url,"embed_width":embed_width,"embed_height":embed_height,"test34":test34})
+                test34 = re.compile('<input type="hidden" name="nwknj3" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":op,"file_code":file_code,"referer":url,"embed_width":embed_width,"embed_height":embed_height,"nwknj3":test34})
                 pcontent=postContent2(newlink,posdata,url)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
                 packed = re.compile('/swfobject.js"></script><script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
-                print packed
                 unpacked = unpackjs4(packed)
                 if unpacked=="":
                         unpacked = unpackjs3(packed,tipoclaves=2)
                 unpacked=unpacked.replace("\\","")
-                print unpacked
                 vidlink = re.compile('addVariable\("file",\s*"(.+?)"\)').findall(unpacked)[0]
            elif (newlink.find("youtube") > -1) and (newlink.find("playlists") > -1):
                 playlistid=re.compile('playlists/(.+?)\?v').findall(newlink)
@@ -778,6 +784,7 @@ def extractFlashVars(data):
                 data = line[p1 + 1:p2]
                 break
     if found:
+            data=data.split(";(function()",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
     return flashvars    
