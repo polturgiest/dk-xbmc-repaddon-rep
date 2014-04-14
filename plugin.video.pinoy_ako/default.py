@@ -647,6 +647,16 @@ def loadVideos(url,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+           elif (newlink.find("cloudy") > -1):
+                pcontent=GetContent(newlink)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                filecode = re.compile('flashvars.file="(.+?)";').findall(pcontent)[0]
+                filekey = re.compile('flashvars.filekey="(.+?)";').findall(pcontent)[0]
+                vidcontent="https://www.cloudy.ec/api/player.api.php?file=%s&key=%s"%(filecode,urllib.quote_plus(filekey))
+                pcontent=GetContent(vidcontent)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                urlcode = re.compile('url=(.+?)&').findall(pcontent)[0]
+                vidlink=urllib.unquote_plus(urlcode)
            elif (newlink.find("videomega") > -1):
                 refkey= re.compile('\?ref=(.+?)&dk').findall(newlink+"&dk")[0]
                 vidcontent="http://videomega.tv/iframe.php?ref="+refkey
