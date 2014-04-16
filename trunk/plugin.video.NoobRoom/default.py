@@ -185,7 +185,6 @@ def GetVideoLink(url, isHD, cj):
     match = re.compile('"sources":\s*\[(.+?)\]').findall(link)
     match = re.compile('"file":\s*"(.+?)"').findall(match[0])
     match=match[0].split("&")[0] + authstring + "&loc=" + location + "&hd=" + isHD
-
     return cj, match
 
 
@@ -371,6 +370,7 @@ def TryMP4(noobvideolink,videoId,cj,location):
     vidlink=GetDirVideoUrl(nooblink + "/"+location+"/"+authcode+"/"+videoId+".mp4", cj)
     if(vidlink.find(authcode) == -1):
          vidlink = GetDirVideoUrl(noobvideolink + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
+    vidlink=vidlink.replace("&hd=0","&hd=" + isHD)
     return vidlink
 	
 def Episodes(name, videoId,cj):
