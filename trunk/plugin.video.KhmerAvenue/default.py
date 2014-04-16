@@ -26,6 +26,7 @@ strDomain ='http://www.merlkon.com/'
 def HOME():
         addDir('Search','http://www.merlkon.com/',4,'http://www.merlkon.com/wp-contents/uploads/logo.jpg')
         addDir('Khmer Videos','http://www.merlkon.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Videos 2','http://www.khmerave.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Thai Lakorns','http://www.merlkon.com/albumcategory/thai-videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         addDir('Korean Videos','http://www.merlkon.com/albumcategory/korean-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/04/lietome.jpg')
         addDir('Chinese Videos','http://www.merlkon.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
@@ -261,6 +262,7 @@ def CreateList(videoType,videoId):
         
 def loadPlaylist(newlink,name):
         #try:
+           print newlink
            if (newlink.find("khmerave") > -1) or (newlink.find("merlkon") > -1):
                 link=GetContent(newlink)
                 newlink = ''.join(link.splitlines()).replace('\t','')
@@ -292,6 +294,13 @@ def loadPlaylist(newlink,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+           elif (newlink.find("docs.google.com") > -1):
+                vidcontent = GetContent(newlink)
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
+                        CreateList('googledocs',vidlink[0])
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
                 glink=""
@@ -349,6 +358,7 @@ def loadVideos(url,name):
                            if(len(match)==0):
                                    match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
            newlink=match[0]
+           print newlink
            #xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
@@ -368,6 +378,13 @@ def loadVideos(url,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+           elif (newlink.find("docs.google.com") > -1):
+                vidcontent = GetContent(newlink)
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
+                        playVideo('google',vidlink[0])
            elif (newlink.find("vimeo") > -1):
                 #
                 print "newlink|" + newlink
