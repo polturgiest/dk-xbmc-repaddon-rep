@@ -103,6 +103,12 @@ def Parts(url,name):
         partlist=re.compile('<li>VIP #1:(.+?)by:').findall(link)
         partctr=0
         if(len(partlist)>0):
+               if(len(partlist) > 1):
+                       partlink=re.compile('<a href="(.+?)">').findall(partlist[1])
+                       if(len(partlink) > 0):
+                          for vlink in partlink:
+                              partctr=partctr+1
+                              addDir(name + " Part " + str(partctr),vlink,3,"")
                partlink=re.compile('<a href="(.+?)">').findall(partlist[0])
                if(len(partlink) > 1):
                        for vlink in partlink:
@@ -206,6 +212,9 @@ def loadVideos(url,name):
            GA("LoadVideo",name)
            link=GetContent(url)
            newlink = ''.join(link.splitlines()).replace('\t','')
+           try:
+               newlink =newlink.encode("UTF-8")
+           except: pass
            match=re.compile('<div id="player" align="center"><iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
            if(len(match) > 0):
                    framecontent = GetContent(match[0])
@@ -214,7 +223,9 @@ def loadVideos(url,name):
                    embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
                    if(len(embedlink)==0):
                          embedlink=re.compile('<param [^>]*value="(.+?)" name="flashvars">').findall(framecontent) 
-                         print embedlink
+                   if(len(embedlink)==0):
+                         vlink=re.compile('streamer:\s*"(.+?)",').findall(framecontent) 
+                         addLink("360p(MP4)",urllib.unquote(vlink[0]),8,"","")
                    for vname in embedlink:
                          vlink=re.compile('streamer=(.+?)\&').findall(vname)
                          if(len(vlink) == 0):
