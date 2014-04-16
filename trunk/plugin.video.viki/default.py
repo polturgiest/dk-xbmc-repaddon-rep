@@ -237,12 +237,12 @@ def getLanguages(url, ltype):
         try:
                 link =link.encode("UTF-8")
         except: pass
-        match = re.compile('<select [^>]*id="language" name="language">(.+?)</select>').findall(link)
+        match = re.compile('<ul [^>]*id="all_language">(.+?)</ul>').findall(link)
         if(len(match)>0):
-                langlist= re.compile('<option value="(.+?)">(.+?)</option>').findall(match[0])
+                langlist= re.compile('<li><a href="(.+?)">(.+?)</a></li>').findall(match[0].replace("&amp;sort=viewed",""))
                 for purl,pname in langlist:
-                       if(pname !="Popular"):
-                             addDir(pname,purl,11,"")
+                       if(pname !="All languages"):
+                             addDir(pname,purl.replace("/tv/browse?language=",""),11,"")
 					   
 def checkLanguage(mediaid):
         data = GetVideoInfo(mediaid)
