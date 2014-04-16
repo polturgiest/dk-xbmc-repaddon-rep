@@ -130,6 +130,7 @@ def extractFlashVars(data):
                 data = line[p1 + 1:p2]
                 break
     if found:
+            data=data.split(";(function()",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
     return flashvars    
@@ -351,7 +352,17 @@ def getYoutubeID(url):
          id = match[0][len(match[0])-1].replace('v/','')
     else:
          match=re.compile('file:\s*"(.+?)"').findall(html)
-         id = loadVideos(match[0],"")
+         if(len(match)==0):
+              match2=re.compile('data-youtube-id="(.+?)"src="(.+?)"controls').findall(html)
+              
+              if(len(match2)==0):
+                  match2=re.compile('src="(.+?)"></iframe>').findall(html)
+                  match=match2[0]
+              else:
+                  match=match2[0][1]
+         else:
+              match=match[0]
+         id = loadVideos(match,"")
     return id
 
 def categoryList():
@@ -605,21 +616,24 @@ checkGA()
 def loadVideos(newlink,name):
         #newlink="http://picasaweb.google.com/lh/photo/L><bkExMzFHWsMxWPnx?qfp0Izq><HmrJ91ZTEDpmIzA@OiJSEGDGufZGHjoj=="
            if (newlink.find("dailymotion") > -1):
-                match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
-                lastmatch = match[0][len(match[0])-1]
-                link = 'http://www.dailymotion.com/'+str(lastmatch)
+                match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(newlink)
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(newlink)
+                link = 'http://www.dailymotion.com/video/'+str(match[0])
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                sequence=re.compile('"sequence",  "(.+?)"').findall(link)
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
                 #print 'in dailymontion:' + str(newseqeunce)
                 imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
                 if(len(imgSrc[0]) == 0):
                 	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
            elif (newlink.find("4shared") > -1):
