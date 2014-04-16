@@ -466,11 +466,11 @@
 
 <addon
   id="plugin.video.sugoideasV2"
-  version="1.0.6"
+  version="1.0.7"
   name="sugoideasV2"
   provider-name="Created by YangSun revised by Dknight">
   <requires>
-        <import addon="xbmc.python" version="2.0" optional="true" />
+        <import addon="xbmc.python" version="2.1.0" optional="true" />
 		<import addon="script.module.simplejson" />
   </requires>
   <extension point="xbmc.python.pluginsource"
