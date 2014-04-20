@@ -19,7 +19,7 @@ if ADDON.getSetting('ga_visitor')=='':
 PATH = "phim47"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.6" #<---- PLUGIN VERSION
-homeLink="http://phim.li/"
+homeLink="http://film.vnzoomin.com/"
 usehd = ADDON.getSetting('use-hd') == 'true'
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
@@ -35,65 +35,44 @@ def RemoveHTML(inputstring):
     return TAG_RE.sub('', inputstring)
 	
 def HOME():
-        addDir('Search','http://phim47.com/',4,'http://yeuphim.net/images/logo.png')
+        addDir('Search','http://film.vnzoomin.com/',4,'')
         link = GetContent(homeLink)
         try:
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<li class="downmenu">(.+?)(</span>|</ul>)</li>').findall(newlink)
-        for vmenu,vtmp in match:
-              maincontent=re.compile('<span><a [^>]*onmouseover=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></span>').findall(vmenu+"</span>")
-              if(len(maincontent) == 0):
-                   maincontent=re.compile('<span><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></span>').findall(vmenu+"</span>")
-              mainurl,mainname=maincontent[0]
-              addDir(mainname,homeLink+mainurl,2,'')
-              submatch=re.compile('<li><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(vmenu)
-              for vsubmenu in submatch:
-                    vLink, vLinkName=vsubmenu
-                    addDir("--- "+ RemoveHTML(vLinkName).strip(),homeLink+vLink,2,'')
-def Countries():
-        addDir('Vietnam','http://phim47.com/phim-viet-nam.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Korea','http://phim47.com/phim-han-quoc.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('China','http://phim47.com/phim-trung-quoc.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Hong Kong','http://phim47.com/phim-hong-kong.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Japan','http://phim47.com/phim-nhat-ban.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Taiwan','http://phim47.com/phim-dai-loan.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Asia','http://phim47.com/phim-chau-a.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('India','http://phim47.com/phim-an-do.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Thailand','http://phim47.com/phim-thai-lan.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('France','http://phim47.com/phim-phap.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('America','http://phim47.com/phim-my---khac.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-		
-def Categories():
-        addDir('Action','http://phim47.com/the-loai-phim-hanh-dong.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Comedy','http://phim47.com/the-loai-phim-hai-huoc.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Animation','http://phim47.com/the-loai-phim-hoat-hinh.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Martial Arts','http://phim47.com/the-loai-phim-vo-thuat.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Psychological','http://phim47.com/the-loai-phim-tam-ly.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Fiction','http://phim47.com/the-loai-phim-vien-tuong.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('War/Combat','http://phim47.com/the-loai-phim-chien-tranh.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Horror/Thriller','http://phim47.com/the-loai-phim-kinh-di.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Adventure','http://phim47.com/the-loai-phim-phieu-luu.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Fantasy','http://phim47.com/the-loai-phim-than-thoai.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('TV','http://phim47.com/the-loai-phim-truyen-hinh.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Sports','http://phim47.com/the-loai-phim-the-thao.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Music/Art','http://phim47.com/the-loai-phim-am-nhac.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Romance','http://phim47.com/the-loai-phim-tinh-cam.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Popular','http://phim47.com/the-loai-phim-da-su---co-trang.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-        addDir('Crime Drama','http://phim47.com/the-loai-phim-hinh-su.html',2,'http://phim47.com/skin/movie/style/images/logo.png')
-		
+        matchmain=re.compile('<ul class="container menu">(.+?)</h3></li></ul>').findall(newlink)
+        if(len(matchmain) > 0):
+			match=re.compile('<li>(.+?)<ul class="sub-menu">(.+?)</ul>').findall(matchmain[0])
+			for vmain,vmenu in match:
+				  mainurl=""
+				  maincontent=re.compile('<a>(.+?)</a>').findall(vmain)
+				  if(len(maincontent) == 0):
+					   maincontent=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vmain)
+					   mainurl,mainname=maincontent[0]
+					   addDir(mainname,homeLink+mainurl,2,'')
+				  else:
+					   mainname=maincontent[0]
+					   addLink(mainname,"",0,'','')
+
+				  submatch=re.compile('<li><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(vmenu)
+				  for vsubmenu in submatch:
+						vLink, vLinkName=vsubmenu
+						addDir("--- "+ RemoveHTML(vLinkName).strip(),homeLink+vLink,2,'')
+			match=re.compile('<li><h3><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h3></li').findall(matchmain[0])
+			for vmainurl,vmenuname in match:
+					addDir(vmenuname,homeLink+vmainurl,2,'')
+
 def INDEX(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
         try:
             link =link.encode("UTF-8")
         except: pass
-        match=re.compile('<div id="list">(.+?)<div class="right box_right">').findall(link)
-        vidlist = re.compile('<li><div class="zitemList"><a [^>]*href="(.+?)" title="(.+?)" [^>]*>(.+?)</a>').findall(match[0])
-        for vurl,vname,vimg in vidlist:
-            vimg=re.compile('<img class="showend" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vimg)[0]
-            addDir(vname,homeLink+vurl,7,vimg)
+        match=re.compile('<ul class="list-film">(.+?)</ul>').findall(link)
+        vidlist = re.compile('<li>\s*<div class="inner">\s*<a title="(.+?)" href="(.+?)"><img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*></a>').findall(match[0])
+        for vname,vurl,vimg in vidlist:
+            addDir(vname,(homeLink+vurl),7,vimg)
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist)>0):
             navmatch=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
@@ -108,7 +87,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://phim.li/tim-kiem/'+searchText+'.html'
+        url = 'http://film.vnzoomin.com/tim-kiem/'+searchText+'/page-1.html'
         INDEX(url)
     except: pass
 
@@ -124,8 +103,8 @@ def Mirrors(url,name):
   try:
             link =link.encode("UTF-8")
   except: pass
-  mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
-  servlist =re.compile('<div class="name left namew">(.+?)&nbsp;&nbsp;&nbsp;').findall(mirmatch[0])
+  mirmatch=re.compile('<div class="serverlist">(.+?)</div>').findall(link)
+  servlist =re.compile('<li class="server_item"><strong>(.+?)</strong><ul class="episode_list">').findall(mirmatch[0])
   for vname in servlist:
          addDir(vname.encode("utf-8"),mirrorlink.encode("utf-8"),5,"")  
 
@@ -158,8 +137,8 @@ def getVidPage(url,name):
   try:
             contentlink =contentlink.encode("UTF-8")
   except: pass
-  mlink=re.compile('<a id="xemphimus" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(contentlink)
-  return mlink[0].replace("title=","")
+  mlink=re.compile('class="btn-watch" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*></a></div>').findall(contentlink)
+  return homeLink+mlink[0].replace("title=","")
 
 
 def Episodes(url,name):
@@ -169,14 +148,10 @@ def Episodes(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        mirmatch=re.compile('<div class="listserver">(.+?)<div id="fb-root">').findall(link)
-        servlist =re.compile('<div class="name left namew">'+name+'&nbsp;&nbsp;&nbsp;(.+?)<div class="clear_td">').findall(mirmatch[0])
+        servlist=re.compile('<li class="server_item"><strong>'+name+'</strong><ul class="episode_list">(.+?)</ul>').findall(link)
         epilist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(servlist[0])
-        curmatch =re.compile('<a class="current"\s*>(.+?)</a>').findall(servlist[0])
-        if(len(curmatch)>0):
-              addLink("part - "+ curmatch[0].strip(),"".join(i for i in url if ord(i)<128),3,'',name)
         for vlink,vLinkName in epilist:
-              addLink("part - "+ vLinkName.strip(),"".join(i for i in vlink if ord(i)<128),3,'',name)
+              addLink("part - "+ RemoveHTML(vLinkName.strip()),homeLink+"".join(i for i in vlink if ord(i)<128),3,'',name)
 
     #except: pass
 
@@ -236,7 +211,7 @@ def playVideo(videoType,videoId):
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
 
-def loadVideos(url,name):
+def loadVideosOld(url,name):
         GA("LoadVideo","NA")
         xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
         link=GetContent(url)
@@ -254,7 +229,7 @@ def loadVideos(url,name):
                vidlink=vidmatch[0]
                playVideo("direct",vidlink)
 		
-def loadVideosold(url,name):
+def loadVideos(url,name):
     #try:
         GA("LoadVideo","NA")
         xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
@@ -263,30 +238,60 @@ def loadVideosold(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        match = re.compile('proxy.link=phim47\*(.+?)&').findall(link)
-        if(len(match)==0):
-              match = re.compile('proxy.link=(.+?)&').findall(link)
-              newlink=match[0]
-        else:
-              newlink =decodeurl(match[0])
-        #newlink="http://picasaweb.google.com/lh/photo/L><bkExMzFHWsMxWPnx?qfp0Izq><HmrJ91ZTEDpmIzA@OiJSEGDGufZGHjoj=="
+        match = re.compile('proxy.link=(.+?)&').findall(link)
+        newlink=match[0]
+        print newlink
         if(newlink.find("cyworld.vn") > 0):
             vidcontent=GetContent(newlink)
             vidmatch=re.compile('<meta property="og:video" content="(.+?)" />').findall(vidcontent)
             vidlink=vidmatch[0]
             playVideo("direct",vidlink)
         elif(newlink.find("picasaweb.google") > 0):
-            vidcontent=postContent("http://player.phim.li/picasaphp/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%20NT%206%2E1%3B%20WOW64%3B%20rv%3A13%2E0%29%20Gecko%2F20100101%20Firefox%2F13%2E0&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
-            #vidcontent=GetContent(newlink)
-            #print vidcontent
-            #data = json.loads('{"'+vidcontent+'}]}')
-            #print data
+            vidcontent=postContent("http://www.kenh88.com/plugins6/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
             vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
             hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
             if(len(hdmatch) > 0) and usehd==True:
                  vidmatch=hdmatch
             vidlink=vidmatch[-1][0]
             playVideo("direct",vidlink)
+        elif (newlink.find("docs.google.com") > -1):
+                vidcontent = GetContent(newlink)
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
+                        playVideo("direct",vidlink[0])
+        if (newlink.find("dailymotion") > -1):
+                match=re.compile('/(.+?)-').findall(newlink)
+                dailyid=""
+                
+                if(len(match)>0):
+                        dailyid=match[0].split("/")[-1]
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
+                        dailyid=match[0]
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(newlink)
+                        dailyid=match[0]
+                if (newlink.find("http://www.dailymotion.com/swf/") > -1):
+                        link=newlink
+                else:
+                        link = 'http://www.dailymotion.com/video/'+str(dailyid)
+                req = urllib2.Request(link)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
+                #print 'in dailymontion:' + str(newseqeunce)
+                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
+                if(len(imgSrc[0]) == 0):
+                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
+                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
+                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+                playVideo("direct",vidlink)
         elif(newlink.find("youtube") > 0):
             vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
             vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
@@ -547,6 +552,7 @@ elif mode==2:
         GA("INDEX",name)
         INDEX(url)
 elif mode==3:
+        #loadVideosold("https://picasaweb.google.com/lh/photo/sOWhi5gJFwS0KcJcBl_v342nq6fsEmAKGpofQBFQnOY","picasa")
         loadVideos(url,mirrorname)
 elif mode==4:
         SEARCH()
