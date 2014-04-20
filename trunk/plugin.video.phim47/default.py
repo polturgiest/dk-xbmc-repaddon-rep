@@ -42,6 +42,7 @@ def HOME():
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         matchmain=re.compile('<ul class="container menu">(.+?)</h3></li></ul>').findall(newlink)
+        print matchmain
         if(len(matchmain) > 0):
 			match=re.compile('<li>(.+?)<ul class="sub-menu">(.+?)</ul>').findall(matchmain[0])
 			for vmain,vmenu in match:
@@ -59,7 +60,7 @@ def HOME():
 				  for vsubmenu in submatch:
 						vLink, vLinkName=vsubmenu
 						addDir("--- "+ RemoveHTML(vLinkName).strip(),homeLink+vLink,2,'')
-			match=re.compile('<li><h3><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h3></li').findall(matchmain[0])
+			match=re.compile('<li><h3><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h3></li>').findall(matchmain[0]+"</h3></li>")
 			for vmainurl,vmenuname in match:
 					addDir(vmenuname,homeLink+vmainurl,2,'')
 
