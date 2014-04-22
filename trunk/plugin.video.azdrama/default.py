@@ -7,7 +7,7 @@ import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import base64
 import xbmc
-
+import urlresolver
 import datetime
 import time
 ADDON = xbmcaddon.Addon(id='plugin.video.azdrama')
@@ -18,7 +18,7 @@ if ADDON.getSetting('ga_visitor')=='':
 PATH = "AzDrama"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.11" #<---- PLUGIN VERSION
-domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net", "azdrama.sx"]
+domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net", "azdrama.se"]
 domain = domainlist[int(ADDON.getSetting('domainurl'))]
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
@@ -65,7 +65,29 @@ def SEARCH():
         url = 'http://yeuphim.net/movie-list.php?str='+ searchText
         INDEX(url)
     except: pass
-
+	
+def decodeurl(encodedurl):
+    tempp9 =""
+    tempp4="100108100114971099749574853495756564852485749575656"
+    strlen = len(encodedurl)
+    temp5=int(encodedurl[strlen-4:strlen],10)
+    encodedurl=encodedurl[0:strlen-4]
+    strlen = len(encodedurl)
+    temp6=""
+    temp7=0
+    temp8=0
+    while temp8 < strlen:
+        temp7=temp7+2
+        temp9=encodedurl[temp8:temp8+4]
+        temp9i=int(temp9,16)
+        partlen = ((temp8 / 4) % len(tempp4))
+        partint=int(tempp4[partlen:partlen+1])
+        temp9i=((((temp9i - temp5) - partint) - (temp7 * temp7)) -16)/3
+        temp9=chr(temp9i)
+        temp6=temp6+temp9
+        temp8=temp8+4
+    return temp6
+	
 def SearchResults(url):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
@@ -100,29 +122,23 @@ def Parts(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        partlist=re.compile('<li>VIP #1:(.+?)by:').findall(link)
-        partctr=0
-        if(len(partlist)>0):
-               if(len(partlist) > 1):
-                       partlink=re.compile('<a href="(.+?)">').findall(partlist[1])
-                       if(len(partlink) > 0):
+        partlist=re.compile('<li>VIP(.+?)by:').findall(link)
+        totalpart=0
+        for partconent in partlist:
+               totalpart=totalpart+1
+               partctr=0
+               partlink=re.compile('<a href="(.+?)">').findall(partconent)
+               mirror=re.compile('#(.+?)<a').findall(partconent)
+               if(len(mirror)>0):
+                    mirrornum=mirror[0]
+               if(len(partlink) > 0):
                           for vlink in partlink:
                               partctr=partctr+1
-                              addDir(name + " Part " + str(partctr),vlink,3,"")
-               partlink=re.compile('<a href="(.+?)">').findall(partlist[0])
-               if(len(partlink) > 1):
-                       for vlink in partlink:
-                              partctr=partctr+1
-                              addDir(name + " Part " + str(partctr),vlink,3,"")
-               else:    
-                       partlist=re.compile('<li>VIP #6:(.+?)by:').findall(link)
-                       if(len(partlist)>0):
-                              partlink=re.compile('<a href="(.+?)">').findall(partlist[0])
-                              if(len(partlink) > 0):
-                                    for vlink in partlink:
-                                         partctr=partctr+1
-                                         addDir(name + " Part " + str(partctr),vlink,3,"")
-        return partctr
+                              if(len(partlist) > 1 and totalpart>1):
+                                     addDir(name +" Mirror# "+mirrornum+ " Part " + str(partctr),vlink,3,"")
+
+
+        return totalpart
 		
 def CheckParts(url,name):
 	if(Parts(url,name) < 2):
@@ -207,7 +223,348 @@ def playVideo(videoType,videoId):
     else:
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
+		
+def postContent(url,data,referr):
+    opener = urllib2.build_opener()
+    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                         ('Accept-Encoding','gzip, deflate'),
+                         ('Referer', referr),
+                         ('Content-Type', 'application/x-www-form-urlencoded'),
+                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+                         ('Connection','keep-alive'),
+                         ('Accept-Language','en-us,en;q=0.5'),
+                         ('Pragma','no-cache'),
+                         ('Host','www.phim.li')]
+    usock=opener.open(url,data)
+    if usock.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO.StringIO(usock.read())
+        f = gzip.GzipFile(fileobj=buf)
+        response = f.read()
+    else:
+        response = usock.read()
+    usock.close()
+    return response
+	
+def Videosresolve(url,name):
+        #try:
+           newlink=url
+           if (newlink.find("dailymotion") > -1):
+                match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(url)
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(url+"&dk;")
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(url)
+                link = 'http://www.dailymotion.com/video/'+str(match[0])
+                req = urllib2.Request(link)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
+                #print 'in dailymontion:' + str(newseqeunce)
+                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
+                if(len(imgSrc[0]) == 0):
+                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
+                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
+                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
+                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+           elif (newlink.find("cloudy") > -1):
+                pcontent=GetContent(newlink)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                filecode = re.compile('flashvars.file="(.+?)";').findall(pcontent)[0]
+                filekey = re.compile('flashvars.filekey="(.+?)";').findall(pcontent)[0]
+                vidcontent="https://www.cloudy.ec/api/player.api.php?file=%s&key=%s"%(filecode,urllib.quote_plus(filekey))
+                pcontent=GetContent(vidcontent)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                urlcode = re.compile('url=(.+?)&').findall(pcontent)[0]
+                vidlink=urllib.unquote_plus(urlcode)
+           elif (newlink.find("videomega") > -1):
+                refkey= re.compile('\?ref=(.+?)&dk').findall(newlink+"&dk")[0]
+                vidcontent="http://videomega.tv/iframe.php?ref="+refkey
+                pcontent=GetContent(vidcontent)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                urlcode = re.compile('if\s*\(!validstr\){\s*document.write\(unescape\("(.+?)"\)\);\s*}').findall(pcontent)[0]
+                vidcontent=urllib.unquote_plus(urlcode)
+                vidlink = re.compile('file:\s*"(.+?)",').findall(vidcontent)[0]
+           elif(newlink.find("picasaweb.google") > 0):
+                vidcontent=postContent("http://cache.dldrama.com/gk/43/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",domain)
+                vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
+                hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
+                if(len(hdmatch) > 0):
+                    vidmatch=hdmatch
+                vidlink=vidmatch[-1][0]
+           elif (newlink.find("docs.google.com") > -1):
+                vidcontent = GetContent(newlink)
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
+           elif (newlink.find("allmyvideos") > -1):
+                videoid=  re.compile('http://allmyvideos.net/embed-(.+?).html').findall(newlink)
+                if(len(videoid)>0):
+                       newlink="http://allmyvideos.net/"+videoid[0]
+                link = GetContent(newlink)
+                idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
+                fname = re.compile('<input type="hidden" name="fname" value="(.+?)">').findall(link)[0]
+                mfree = re.compile('<input type="hidden" name="method_free" value="(.+?)">').findall(link)[0]
+                posdata=urllib.urlencode({"op":op,"usr_login":"","id":idkey,"fname":fname,"referer":url,"method_free":mfree})
+                pcontent=postContent2(newlink,posdata,url)
+                vidlink=re.compile('"file" : "(.+?)",').findall(pcontent)[0]
+           elif (newlink.find("nosvideo") > -1):
+                videoid=  re.compile('http://nosvideo.com/embed/(.+?)/').findall(newlink)
+                if(len(videoid)>0):
+                       newlink="http://nosvideo.com/"+videoid[0]
+                link = GetContent(newlink)
+                idkey = re.compile('<input type="hidden" name="id" value="(.+?)">').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" value="(.+?)">').findall(link)[0]
+                fname = re.compile('<input type="hidden" name="fname" value="(.+?)">').findall(link)[0]
+                posdata=urllib.urlencode({"op":op,"usr_login":"","fname":fname,"rand":"","id":idkey,"referer":url,"method_free":"Continue+to+Video","method_premium":"","down_script":"1"})
+                pcontent=postContent2(newlink,posdata,url)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                scriptcontent=re.compile('<div name="placeholder" id="placeholder">(.+?)</div></div>').findall(pcontent)[0]
+                packed = scriptcontent.split("</script>")[1]
+                unpacked = unpackjs4(packed)
+                if unpacked=="":
+                        unpacked = unpackjs3(packed,tipoclaves=2)
+                        
+                unpacked = unpacked.replace("\\","")
 
+                xmlUrl=re.compile('"playlist=(.+?)&').findall(unpacked)[0]
+                vidcontent = postContent2(xmlUrl,None,url)
+                vidlink=re.compile('<file>(.+?)</file>').findall(vidcontent)[0]
+           elif (newlink.find("uploadpluz") > -1):
+                videoid=  re.compile('http://nosvideo.com/embed/(.+?)/').findall(newlink)
+                if(len(videoid)>0):
+                       newlink="http://nosvideo.com/"+videoid[0]
+                link = GetContent(newlink)
+                pcontent=''.join(link.splitlines()).replace('\'','"')
+                scriptcontent=re.compile('<div id="player_code">(.+?)</div>').findall(pcontent)[0]
+                packed = scriptcontent.split("</script>")[1].replace('<script type="text/javascript">',"")
+                unpacked = unpackjs4(packed)
+                if unpacked=="":
+                        unpacked = unpackjs3(packed,tipoclaves=2)
+                        
+                unpacked = unpacked.replace("\\","")
+
+                vidUrl=re.compile('"file","(.+?)"').findall(unpacked)[0]
+                vidlink=vidUrl+"|Referer=http%3A%2F%2Fuploadpluz.com%3A8080%2Fplayer%2Fplayer.swf"
+           elif (newlink.find("yourupload") > -1):
+                link = GetContent(newlink)
+                link=''.join(link.splitlines()).replace('\'','"')
+                vidlink=re.compile('<a class="btn btn-primary" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                vidlink=vidlink.replace("download.yucache.net","stream.yucache.net")
+           elif (newlink.find("nowvideo") > -1):
+                link = GetContent(newlink)
+                link=''.join(link.splitlines()).replace('\'','"')
+                fileid=re.compile('flashvars.file="(.+?)";').findall(link)[0]
+                codeid=re.compile('flashvars.cid="(.+?)";').findall(link)
+                if(len(codeid) > 0):
+                     codeid=codeid[0]
+                else:
+                     codeid=""
+                keycode=re.compile('flashvars.filekey=(.+?);').findall(link)[0]
+                keycode=re.compile('var\s*'+keycode+'="(.+?)";').findall(link)[0]
+                vidcontent=GetContent("http://www.nowvideo.sx/api/player.api.php?codes="+urllib.quote_plus(codeid) + "&key="+urllib.quote_plus(keycode) + "&file=" + urllib.quote_plus(fileid))
+                vidlink = re.compile('url=(.+?)\&').findall(vidcontent)[0]
+           elif (newlink.find("180upload") > -1):
+                if(newlink.find("embed") == -1):
+                      vidcode = re.compile('180upload.com/(.+?)dk').findall(newlink+"dk")[0] 
+                      newlink= 'http://180upload.com/embed-'+vidcode+'.html'
+                link=GetContent(newlink)
+                file_code = re.compile('<input type="hidden" name="file_code" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                op = re.compile('<input type="hidden" name="op" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                embed_width = re.compile('<input type="hidden" name="embed_width" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                embed_height = re.compile('<input type="hidden" name="embed_height" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                test34 = re.compile('<input type="hidden" name="nwknj3" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
+                posdata=urllib.urlencode({"op":op,"file_code":file_code,"referer":url,"embed_width":embed_width,"embed_height":embed_height,"nwknj3":test34})
+                pcontent=postContent2(newlink,posdata,url)
+                pcontent=''.join(pcontent.splitlines()).replace('\'','"')
+                packed = re.compile('/swfobject.js"></script><script type="text/javascript">(.+?)</script>').findall(pcontent)[0]
+                unpacked = unpackjs4(packed)
+                if unpacked=="":
+                        unpacked = unpackjs3(packed,tipoclaves=2)
+                unpacked=unpacked.replace("\\","")
+                vidlink = re.compile('addVariable\("file",\s*"(.+?)"\)').findall(unpacked)[0]
+           elif (newlink.find("youtube") > -1) and (newlink.find("playlists") > -1):
+                playlistid=re.compile('playlists/(.+?)\?v').findall(newlink)
+                vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]
+           elif (newlink.find("youtube") > -1) and (newlink.find("list=") > -1):
+                playlistid=re.compile('videoseries\?list=(.+?)&').findall(newlink+"&")
+                vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]
+           elif (newlink.find("youtube") > -1) and (newlink.find("/p/") > -1):
+                playlistid=re.compile('/p/(.+?)\?').findall(newlink)
+                vidlink="plugin://plugin.video.youtube?path=/root/video&action=play_all&playlist="+playlistid[0]
+           elif (newlink.find("youtube") > -1) and (newlink.find("/embed/") > -1):
+                playlistid=re.compile('/embed/(.+?)\?').findall(newlink+"?")
+                vidlink=getYoutube(playlistid[0])
+           elif (newlink.find("youtube") > -1):
+                match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink1)
+                if(len(match) == 0):
+                    match=re.compile('http://www.youtube.com/watch\?v=(.+?)&dk;').findall(newlink1)
+                if(len(match) > 0):
+                    lastmatch = match[0][len(match[0])-1].replace('v/','')
+                print "in youtube" + lastmatch[0]
+                vidlink=getYoutube(lastmatch[0])
+           else:
+                sources = []
+                label=name
+                hosted_media = urlresolver.HostedMediaFile(url=url, title=label)
+                sources.append(hosted_media)
+                source = urlresolver.choose_source(sources)
+                print "inresolver=" + url
+                if source:
+                        vidlink = source.resolve()
+                else:
+                        vidlink =""
+           return vidlink
+		   
+def extractFlashVars(data):
+    for line in data.split("\n"):
+            index = line.find("ytplayer.config =")
+            if index != -1:
+                found = True
+                p1 = line.find("=", (index-3))
+                p2 = line.rfind(";")
+                if p1 <= 0 or p2 <= 0:
+                        continue
+                data = line[p1 + 1:p2]
+                break
+    if found:
+            data=data.split(";(function()",1)[0]
+            data = json.loads(data)
+            flashvars = data["args"]
+    return flashvars    
+		
+def selectVideoQuality(links):
+        link = links.get
+        video_url = ""
+        fmt_value = {
+                5: "240p h263 flv container",
+                18: "360p h264 mp4 container | 270 for rtmpe?",
+                22: "720p h264 mp4 container",
+                26: "???",
+                33: "???",
+                34: "360p h264 flv container",
+                35: "480p h264 flv container",
+                37: "1080p h264 mp4 container",
+                38: "720p vp8 webm container",
+                43: "360p h264 flv container",
+                44: "480p vp8 webm container",
+                45: "720p vp8 webm container",
+                46: "520p vp8 webm stereo",
+                59: "480 for rtmpe",
+                78: "seems to be around 400 for rtmpe",
+                82: "360p h264 stereo",
+                83: "240p h264 stereo",
+                84: "720p h264 stereo",
+                85: "520p h264 stereo",
+                100: "360p vp8 webm stereo",
+                101: "480p vp8 webm stereo",
+                102: "720p vp8 webm stereo",
+                120: "hd720",
+                121: "hd1080"
+        }
+        hd_quality = 1
+
+        # SD videos are default, but we go for the highest res
+        #print video_url
+        if (link(35)):
+            video_url = link(35)
+        elif (link(59)):
+            video_url = link(59)
+        elif link(44):
+            video_url = link(44)
+        elif (link(78)):
+            video_url = link(78)
+        elif (link(34)):
+            video_url = link(34)
+        elif (link(43)):
+            video_url = link(43)
+        elif (link(26)):
+            video_url = link(26)
+        elif (link(18)):
+            video_url = link(18)
+        elif (link(33)):
+            video_url = link(33)
+        elif (link(5)):
+            video_url = link(5)
+
+        if hd_quality > 1:  # <-- 720p
+            if (link(22)):
+                video_url = link(22)
+            elif (link(45)):
+                video_url = link(45)
+            elif link(120):
+                video_url = link(120)
+        if hd_quality > 2:
+            if (link(37)):
+                video_url = link(37)
+            elif link(121):
+                video_url = link(121)
+
+        if link(38) and False:
+            video_url = link(38)
+        for fmt_key in links.iterkeys():
+
+            if link(int(fmt_key)):
+                    text = repr(fmt_key) + " - "
+                    if fmt_key in fmt_value:
+                        text += fmt_value[fmt_key]
+                    else:
+                        text += "Unknown"
+
+                    if (link(int(fmt_key)) == video_url):
+                        text += "*"
+            else:
+                    print "- Missing fmt_value: " + repr(fmt_key)
+
+        video_url += " | " + 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+
+
+        return video_url
+
+def getYoutube(videoid):
+
+                code = videoid
+                linkImage = 'http://i.ytimg.com/vi/'+code+'/default.jpg'
+                req = urllib2.Request('http://www.youtube.com/watch?v='+code+'&fmt=18')
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                response = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                
+                if len(re.compile('shortlink" href="http://youtu.be/(.+?)"').findall(link)) == 0:
+                        if len(re.compile('\'VIDEO_ID\': "(.+?)"').findall(link)) == 0:
+                                req = urllib2.Request('http://www.youtube.com/get_video_info?video_id='+code+'&asv=3&el=detailpage&hl=en_US')
+                                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                                response = urllib2.urlopen(req)
+                                link=response.read()
+                                response.close()
+                
+                flashvars = extractFlashVars(link)
+
+                links = {}
+
+                for url_desc in flashvars[u"url_encoded_fmt_stream_map"].split(u","):
+                        url_desc_map = cgi.parse_qs(url_desc)
+                        if not (url_desc_map.has_key(u"url") or url_desc_map.has_key(u"stream")):
+                                continue
+
+                        key = int(url_desc_map[u"itag"][0])
+                        url = u""
+                        if url_desc_map.has_key(u"url"):
+                                url = urllib.unquote(url_desc_map[u"url"][0])
+                        elif url_desc_map.has_key(u"stream"):
+                                url = urllib.unquote(url_desc_map[u"stream"][0])
+
+                        if url_desc_map.has_key(u"sig"):
+                                url = url + u"&signature=" + url_desc_map[u"sig"][0]
+                        links[key] = url
+                highResoVid=selectVideoQuality(links)
+                return highResoVid  
+				
 def loadVideos(url,name):
            GA("LoadVideo",name)
            link=GetContent(url)
@@ -217,31 +574,36 @@ def loadVideos(url,name):
            except: pass
            match=re.compile('<div id="player" align="center"><iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
            if(len(match) > 0):
-                   framecontent = GetContent(match[0])
-                   qualityval = ["240","360p(MP4)","360p(FLV)","480p","720p","HTML5"]
-                   qctr=0
-                   embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
-                   if(len(embedlink)==0):
-                         embedlink=re.compile('<param [^>]*value="(.+?)" name="flashvars">').findall(framecontent) 
-                   if(len(embedlink)==0):
-                         vlink=re.compile('streamer:\s*"(.+?)",').findall(framecontent) 
-                         addLink("360p(MP4)",urllib.unquote(vlink[0]),8,"","")
-                   for vname in embedlink:
-                         vlink=re.compile('streamer=(.+?)\&').findall(vname)
-                         if(len(vlink) == 0):
-                             vlink=re.compile('file=(.+?)\&').findall(vname)
-                         if(len(vlink) > 0):
-                             addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
-                         qctr=qctr+1
+				framecontent = GetContent(match[0])
+				encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(framecontent)
+				if(len(encyptedurl)>0):
+						vidlink=Videosresolve(decodeurl(encyptedurl[0]),name)
+						addLink("Unknown Quality",vidlink,8,"","")
+				else:
+						qualityval = ["240","360p(MP4)","360p(FLV)","480p","720p","HTML5"]
+						qctr=0
+						embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
+						if(len(embedlink)>0 and embedlink[0].find(".swf")> -1):
+							vlink=re.compile('streamer=(.+?)\&').findall(framecontent)
+							if(len(vlink) >0):
+								addLink("360p(MP4)",urllib.unquote(vlink[0]),8,"","")
+						if(len(embedlink)==0):
+							embedlink=re.compile('<param [^>]*value="(.+?)" name="flashvars">').findall(framecontent) 
+						if(len(embedlink)==0):
+							vlink=re.compile('streamer:\s*"(.+?)",').findall(framecontent) 
+							if(len(vlink) >0):
+								addLink("360p(MP4)",urllib.unquote(vlink[0]),8,"","")
+						for vname in embedlink:
+							vlink=re.compile('streamer=(.+?)\&').findall(vname)
+							if(len(vlink) == 0):
+								vlink=re.compile('file=(.+?)\&').findall(vname)
+							if(len(vlink) > 0):
+								addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
+							qctr=qctr+1
            else:
-                   match=re.compile('<li>VIP #1: <a href="(.+?)">').findall(newlink)
-                   if(len(match) == 0):
-                           match=re.compile('<li>VIP #6: <a href="(.+?)">').findall(newlink)
-                   if(len(match) > 0):
-                           loadVideos(match[0],name)
-                   else:  
-                           d = xbmcgui.Dialog()
-                           d.ok('Not Implemented','Sorry this video site is ',' not implemented yet')
+                   encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(newlink)[0]
+                   vidlink=Videosresolve(decodeurl(encyptedurl),name)
+                   addLink("Unknown Quality",vidlink,8,"","")
 
 def parseDate(dateString):
     try:
