@@ -7,7 +7,6 @@ import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import base64
 import xbmc
-import urlresolver
 import datetime
 import time
 ADDON = xbmcaddon.Addon(id='plugin.video.azdrama')
@@ -408,6 +407,7 @@ def Videosresolve(url,name):
                 print "in youtube" + lastmatch[0]
                 vidlink=getYoutube(lastmatch[0])
            else:
+                import urlresolver
                 sources = []
                 label=name
                 hosted_media = urlresolver.HostedMediaFile(url=url, title=label)
