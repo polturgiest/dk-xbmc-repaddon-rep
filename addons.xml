@@ -176,7 +176,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>HDOnline.vn</summary>
-    <description>Watch HDOnline.vn Videos</description>
+    <description>Watch Vietnamese HD videos from HDOnline.vn Videos</description>
     <platform>all</platform>
   </extension>
 </addon>
