@@ -183,7 +183,7 @@
 
 <addon
   id="plugin.video.kenh108"
-  version="1.0.5"
+  version="1.0.6"
   name="kenh108"
   provider-name="Dknight">
   <requires>
@@ -249,7 +249,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.19"
+  version="1.0.20"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -336,7 +336,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.15"
+  version="1.0.16"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
@@ -572,7 +572,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.8"
+  version="1.0.9"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>
