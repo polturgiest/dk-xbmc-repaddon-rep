@@ -161,7 +161,7 @@ def GetDirVideoUrl(url,referr):
 
     redirhndler = MyHTTPRedirectHandler()
 
-    opener = urllib2.build_opener(redirhndler)
+    opener = urllib2.build_opener()
     opener.addheaders = [(
         'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
         ('Accept-Encoding', 'gzip, deflate'),
@@ -174,7 +174,7 @@ def GetDirVideoUrl(url,referr):
         ('Host','www.phimmobile.com')]
     # urllib2.install_opener(opener)
     usock = opener.open(url)
-    return redirhndler.video_url
+    return usock.geturl()
 	
  
 def GetContent(url):
