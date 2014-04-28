@@ -57,7 +57,6 @@ def getVimeoUrl(videoid):
             html = html.replace(",a={", '{') 
             try:
                   collection = json.loads(html)
-                  print collection
                   codec=collection["request"]["files"]["codecs"][0]
                   filecol = collection["request"]["files"][codec]
                   return filecol["sd"]["url"]
@@ -444,6 +443,7 @@ def extractFlashVars(data):
                 data = line[p1 + 1:p2]
                 break
     if found:
+            data=data.split(";(function()",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
     return flashvars    
