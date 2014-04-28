@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon
   id="plugin.video.kenh108"
-  version="1.0.5"
+  version="1.0.6"
   name="kenh108"
   provider-name="Dknight">
   <requires>
