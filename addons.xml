@@ -205,7 +205,7 @@
 
 <addon
   id="plugin.video.kenh88"
-  version="1.0.2"
+  version="1.0.3"
   name="kenh88.com"
   provider-name="Dknight">
   <requires>
