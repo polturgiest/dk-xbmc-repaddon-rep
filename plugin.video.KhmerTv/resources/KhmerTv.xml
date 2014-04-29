@@ -49,18 +49,38 @@
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
 	<item>
+      <title>DMusic</title>
+      <link>rtmp://laxlive02.malimarcdn.com:1935/khorigin00/_definst_/dmusic.sdp</link>
+      <thumbnail>DefaultVideo.png</thumbnail>
+    </item>
+	<item>
       <title>National Tv</title>
       <link>rtmp://72.52.104.21:1935/live/TVKL playpath=TVKL swfUrl=http://www.khiptv.com/Player.swf pageUrl=http://relax.khmer24h.net/channels-national-tv-16.aspx live=true</link>
       <thumbnail>http://khiptv.com/images_tv/nat.png</thumbnail>
     </item>
 	<item>
       <title>Hangmeas</title>
-      <link>http://e-magic.info:44412/HMTV_pub</link>
+      <link>rtmp://laxlive02.malimarcdn.com:1935/khorigin00/_definst_/hvm.sdp</link>
       <thumbnail>http://khmer.be/images/tv/hangmeas-100x70.jpg</thumbnail>
     </item>
     <item>
       <title>Sea TV</title>
       <link>rtmp://live.khmer.be:1935/live/SEATV playpath=SEATV swfUrl=http://khmer.be/KhmerTV/player.swf pageUrl=http://khmer.be/Live-TV/default.aspx?ch=seatv live=1</link>
+      <thumbnail>http://khmer.be/images/tv/seatv.gif</thumbnail>
+    </item>
+    <item>
+      <title>Sea TV News</title>
+      <link>rtsp://203.176.137.164:1935/liveinfo/myStream</link>
+      <thumbnail>http://khmer.be/images/tv/seatv.gif</thumbnail>
+    </item>
+    <item>
+      <title>Sea TV Education</title>
+      <link>rtsp://203.176.137.164:1935/liveedu/myStream</link>
+      <thumbnail>http://khmer.be/images/tv/seatv.gif</thumbnail>
+    </item>
+    <item>
+      <title>Sea TV culture</title>
+      <link>rtsp://203.176.137.164:1935/livecult/myStream</link>
       <thumbnail>http://khmer.be/images/tv/seatv.gif</thumbnail>
     </item>
     <item>
@@ -86,19 +106,24 @@
       http://khiptv.com/images_tv/BayonTV1.png</thumbnail>
     </item>
     <item>
+      <title>NCT</title>
+      <link>rtmp://123.30.134.108/live/nctlive</link>
+      <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
+    </item>
+    <item>
       <title>TV9</title>
       <link>http://e-magic.info:44412/tv9_PF</link>
       <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
     </item>
     <item>
       <title>Apsara</title>
-      <link>rtmp://203.176.130.118:8989/live/?ba8e9397-1374-447c-95ee-63224d8d65fd/apsaratv_480k.stream</link>
+      <link>rtsp://203.176.130.118:8989/live/apsaratv_480k.stream</link>
       <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
     </item>
     <item>
-      <title>KGN_HK</title>
-      <link>http://e-magic.info:44412/KGN_HK</link>
-      <thumbnail>http://khiptv.com/images_tv/KGNCAN.png</thumbnail>
+      <title>Khmer TV</title>
+      <link>http://securemcp.com:1935/8138/8138/playlist.m3u8</link>
+      <thumbnail>DefaultVideo.png</thumbnail>
     </item>
     <item>
       <title>ABC_TV</title>
