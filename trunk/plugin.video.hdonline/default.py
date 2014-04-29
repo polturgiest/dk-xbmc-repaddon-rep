@@ -27,8 +27,9 @@ sublang = ADDON.getSetting('sublang')
 strdomain ="http://hdonline.vn"
 enableSubtitle=ADDON.getSetting('enableSub')
 enableProxy= ADDON.getSetting('enableProxy')
+
 reg_list = ["http://webcache.googleusercontent.com/search?q=cache:*url*"]
-proxyurl = reg_list[int(ADDON.getSetting('region'))]
+proxyurl = ADDON.getSetting('proxyurl')
 
 try: 
         from sqlite3 import dbapi2 as database
@@ -102,17 +103,20 @@ def RemoveHTML(inputstring):
     return TAG_RE.sub('', inputstring)
 	
 def GetContentMob(url):
-    opener = urllib2.build_opener()
+    #url="http://www.ip-adress.com/"
+    proxy = urllib2.ProxyHandler({'http': proxyurl})
+    opener = urllib2.build_opener(proxy)
+    urllib2.install_opener(opener)
     opener.addheaders = [(
         'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
         ('Accept-Encoding', 'gzip, deflate'),
-        ('Referer',"http://m.hdonline.vn/"),
+        ('Referer',"http://hdonline.vn/player/vplayer.swf"),
         #('Content-Type', 'application/x-www-form-urlencoded'),
-        ('User-Agent', 'Mozilla/5.0 (iPad; U; CPU OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5'),
+        ('User-Agent', 'Mozilla/5.0 (Windows NT 5.2; rv:28.0) Gecko/20100101 Firefox/28.0'),
         ('Connection', 'keep-alive'),
         ('Accept-Language', 'en-us,en;q=0.5'),
         ('Pragma', 'no-cache'),
-        ('Host','www.phimmobile.com')]
+        ('Host','hdonline.vn')]
     usock = opener.open(url)
     if usock.info().get('Content-Encoding') == 'gzip':
         buf = StringIO.StringIO(usock.read())
@@ -126,8 +130,7 @@ def GetContentMob(url):
 def GetContent(url, useProxy=False):
     strresult=""
     if useProxy==True:
-        url = proxyurl.replace("*url*",urllib.quote_plus(url))
-        print "use proxy:" + str(useProxy) + url
+        url = "http://webcache.googleusercontent.com/search?q=cache:*url*".replace("*url*",urllib.quote_plus(url))
     try:
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -311,17 +314,25 @@ def Index(url,name):
 
 def Episodes(vidid,name):
         url="http://hdonline.vn/vxml.php?film="+vidid
-        link = GetContent(url,False)
+        if (enableProxy=="true"):
+            link = GetContentMob(url)
+        else:
+            link = GetContent(url,False)
         link = ''.join(link.splitlines()).replace('\'','"')
         try:
             link =link.encode("UTF-8")
         except: pass
         episodelist=re.compile('<item>(.+?)</item>').findall(link)
         epid="0"
+
         for episodecontent in episodelist:
-             vurl=decodevplug(re.compile('<jwplayer:file>(.+?)</jwplayer:file>').findall(episodecontent)[0])
+             vurl=re.compile('<jwplayer:file>(.+?)</jwplayer:file>').findall(episodecontent)[0]
+             if(vurl.find("http") == -1):
+                   vurl=decodevplug(vurl)
              vname=re.compile('<title>(.+?)</title>').findall(episodecontent)[0]
-             vimg=decodevplug(re.compile('<jwplayer:vplugin.image>(.+?)</jwplayer:vplugin.image>').findall(episodecontent)[0])
+             vimg=re.compile('<jwplayer:vplugin.image>(.+?)</jwplayer:vplugin.image>').findall(episodecontent.replace(":image",":vplugin.image"))[0]
+             if(vimg.find("http") == -1):
+                   vimg=decodevplug(re.compile('<jwplayer:vplugin.image>(.+?)</jwplayer:vplugin.image>').findall(episodecontent)[0])
              vsubtitle=re.compile('<jwplayer:vplugin.subfile>(.+?)</jwplayer:vplugin.subfile>').findall(episodecontent)
              epid=re.compile("<jwplayer:vplugin.episodeid>(.+?)</jwplayer:vplugin.episodeid>").findall(episodecontent)
              suburl=""
