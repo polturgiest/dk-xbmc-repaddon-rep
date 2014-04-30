@@ -1,7 +1,7 @@
 <settings>
    <category label="Addon-Settings">
     <setting id="enableProxy" type="bool" label="Enable Proxy" default="true"/>
-    <setting id="proxyurl" type="text" label="Proxy address" default="112.72.64.74:8080" />
+    <setting id="proxyurl" type="text" label="Proxy address" default="183.91.27.133:8080" />
     <setting id="enableSub" type="bool" label="Enable Subtitle" default="true"/>
     <setting id="sublang" type="enum" values="English|Vietnamese" label="Subtitle Language" default="1" enable="true" />
    </category>
