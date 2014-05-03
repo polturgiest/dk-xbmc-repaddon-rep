@@ -6,10 +6,12 @@ from t0mm0.common.net import Net
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import json
+import re
 from xml.dom.minidom import Document
 import datetime
 import HTMLParser
 import itertools
+from textwrap import wrap
 addonid='plugin.video.hdonline'
 ADDON=__settings__ = xbmcaddon.Addon(id=addonid)
 
@@ -33,9 +35,6 @@ translanguage=ADDON.getSetting('translang')
 reg_list = ["http://webcache.googleusercontent.com/search?q=cache:*url*"]
 proxyurl = ADDON.getSetting('proxyurl')
 
-import re
-import json
-from textwrap import wrap
 try:
     import urllib2 as request
     from urllib import quote
@@ -199,12 +198,24 @@ def GetContent(url, useProxy=False):
     if useProxy==True:
         url = "http://webcache.googleusercontent.com/search?q=cache:*url*".replace("*url*",urllib.quote_plus(url))
     try:
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        req.add_header('Referer', 'http://hdonline.vn/')
-        response = urllib2.urlopen(req, timeout=360)
-        strresult=response.read()
-        response.close()
+		opener = urllib2.build_opener()
+		opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+							 ('Accept-Encoding','gzip, deflate'),
+							 ('Referer', "http://hdonline.vn/"),
+							 ('Content-Type', 'application/x-www-form-urlencoded'),
+							 ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+							 ('Connection','keep-alive'),
+							 ('Accept-Language','en-us,en;q=0.5'),
+							 ('Pragma','no-cache'),
+							 ('Host','www.phim.li')]
+		usock=opener.open(url)
+		if usock.info().get('Content-Encoding') == 'gzip':
+			buf = StringIO.StringIO(usock.read())
+			f = gzip.GzipFile(fileobj=buf)
+			strresult = f.read()
+		else:
+			strresult = usock.read()
+		usock.close()
     except Exception, e:
        print str(e)+" |" + url
     return strresult
@@ -224,7 +235,7 @@ def Translate_lrge_str(string):
     checklist=list(chunkstring(string, chunksize))
     for idx in checklist:
         transcontent = translator.translate(idx)
-        totaltext=totaltext+transcontent.replace("- >","-->").replace("< / ","</").replace(" >",">")
+        totaltext=totaltext+transcontent.replace("- >","->").replace(" ->"," -->").replace("< / ","</").replace(" >",">")
         ctr = ctr + 1
         percent = (ctr * 100)/chunksize
         remaining_display = '[B]'+str(percent)+'%[/B] is done'
