@@ -500,6 +500,7 @@ def Episodes(vidid,name):
              suburl=""
              if(len(vsubtitle)>0):
                  suburl=decodevplug(vsubtitle[0])
+                 vname=vname+"(soft sub)"
              if(len(epid)>0):
                  epid=epid[0]
              SaveEpisodes(vname,epid,suburl,vidid)
