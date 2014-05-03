@@ -6,10 +6,19 @@ from t0mm0.common.net import Net
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import json
+import re
 import urlresolver
+import HTMLParser
 from xml.dom.minidom import Document
 import datetime
-
+from textwrap import wrap
+try:
+    import urllib2 as request
+    from urllib import quote
+except:
+    from urllib import request
+    from urllib.parse import quote
+	
 ADDON=__settings__ = xbmcaddon.Addon(id='plugin.video.viki')
 
 if ADDON.getSetting('ga_visitor')=='':
@@ -25,12 +34,59 @@ filename = xbmc.translatePath(os.path.join(home, 'resources', 'sub.srt'))
 langfile = xbmc.translatePath(os.path.join(home, 'resources', 'lang.txt'))
 strdomain ="http://www.viki.com"
 enableProxy= ADDON.getSetting('enableProxy')
+enableTrans= (ADDON.getSetting('enableTrans')=="true")
+translanguage=ADDON.getSetting('translang')
 reg_list = ["https://losangeles-s02-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1", 
             "https://bucharest-s05-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1",
             "https://frankfurt-s02-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1", 
             "https://london-s01-i15-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1"]
 proxyurl = reg_list[int(ADDON.getSetting('region'))]
 
+class Translator:
+    string_pattern = r"\"(([^\"\\]|\\.)*)\""
+    match_string =re.compile(
+                        r"\,?\["
+                           + string_pattern + r"\,"
+                           + string_pattern + r"\,"
+                           + string_pattern + r"\,"
+                           + string_pattern
+                        +r"\]")
+
+    def __init__(self, to_lang, from_lang='en'):
+        self.from_lang = from_lang
+        self.to_lang = to_lang
+
+    def translate(self, source):
+        self.source_list = wrap(source, 1000, replace_whitespace=False)
+        return ' '.join(self._get_translation_from_google(s) for s in self.source_list)
+
+    def _get_translation_from_google(self, source):
+        json5 = self._get_json5_from_google(source)
+        return self._unescape(self._get_translation_from_json5(json5))
+
+    def _get_translation_from_json5(self, content):
+        result = ""
+        pos = 2
+        while True:
+            m = self.match_string.match(content, pos)
+            if not m:
+                break
+            result += m.group(1)
+            pos = m.end()
+        return result
+
+    def _get_json5_from_google(self, source):
+        escaped_source = quote(source, '')
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19'}
+        data="client=t&ie=UTF-8&oe=UTF-8&sl=%s&tl=%s&text=%s" % (self.from_lang, self.to_lang, escaped_source)
+        req = request.Request(url="http://translate.google.com/translate_a/t", headers = headers)
+        r = request.urlopen(req,data)
+        return r.read().decode('utf-8')
+
+    def _unescape(self, text):
+        return json.loads('"%s"' % text)
+
+translator= Translator(from_lang="en", to_lang=translanguage)
 
 def RemoveHTML(inputstring):
     TAG_RE = re.compile(r'<[^>]+>')
@@ -60,6 +116,11 @@ def write2srt(url, fname):
           subcontent=GetContent(url).encode("utf-8")
     except:
           subcontent=GetContent(url)
+    if(enableTrans):
+          subcontent=Translate_lrge_str(subcontent)
+    try:
+          subcontent=subcontent.encode("utf-8")
+    except: pass
     f = open(fname, 'w');f.write(subcontent);f.close()
 
 def json2srt(url, fname):
@@ -81,18 +142,65 @@ def json2srt(url, fname):
                  conv(item['end_time']),
                  item['content'].encode('utf8')))
 
-def HOME():
+def HOME(translator):
         #addDir('Search channel','search',5,'')
-        addDir('Search Videos','search',12,'')
-        addDir('Find Video By Viki ID','search',16,'')
-        addDir('Genres','http://www.viki.com/genres',2,'')
-        addDir('Updated Tv shows','http://www.viki.com/tv/browse?sort=latest',8,'')
-        addDir('Updated Movies','http://www.viki.com/movies/browse?sort=latest',8,'')
-        addDir('Updated Music','http://www.viki.com/music/browse?sort=latest',8,'')
-        addDir('Select Sub Language','http://www.viki.com/tv/browse?sort=viewed',10,'')
+        staticmenu="Choose Translation Language|Search Videos|Find Video By Viki ID|Genres|Updated Tv shows|Updated Movies|Updated Music|Select Subtitle Language"
+        
+        if(enableTrans):
+               transtext=translator.translate(staticmenu).replace(" | ","|")
+               try:
+                        transtext=transtext.encode("UTF-8")
+               except: pass
+               staticlist=transtext.split("|")
+               addDir(staticlist[0],'search',17,'')
+        else:
+               staticlist=staticmenu.split("|")
+
+        addDir(staticlist[1],'search',12,'')
+        addDir(staticlist[2],'search',16,'')
+        addDir(staticlist[3],'http://www.viki.com/genres',2,'')
+        addDir(staticlist[4],'http://www.viki.com/tv/browse?sort=latest',8,'')
+        addDir(staticlist[5],'http://www.viki.com/movies/browse?sort=latest',8,'')
+        addDir(staticlist[6],'http://www.viki.com/music/browse?sort=latest',8,'')
+        if(enableTrans==False):
+               addDir(staticlist[7],'http://www.viki.com/tv/browse?sort=viewed',10,'')
 def LangOption():
         addDir('Show All Languages','All',10,'')
-		
+
+def ShowLangDiag(translator):
+	dialog = xbmcgui.Dialog()
+	langlist ="Afrikaans|Albanian|Arabic|Azerbaijani|Basque|Bengali|Belarusian|Bulgarian|Catalan|Chinese Simplified|Chinese Traditional|Croatian|Czech|Danish|Dutch|English|Esperanto|Estonian|Filipino|Finnish|French|Galician|Georgian|German|Greek|Gujarati|Haitian Creole|Hebrew|Hindi|Hungarian|Icelandic|Indonesian|Irish|Italian|Japanese|Kannada|Khmer|Korean|Latin|Latvian|Lithuanian|Macedonian|Malay|Maltese|Norwegian|Persian|Polish|Portuguese|Romanian|Russian|Serbian|Slovak|Slovenian|Spanish|Swahili|Swedish|Tamil|Telugu|Thai|Turkish|Ukrainian|Urdu|Vietnamese|Welsh|Yiddish".split("|")
+	langcode="af|sq|ar|az|eu|bn|be|bg|ca|zh-CN|zh-TW|hr|cs|da|nl|en|eo|et|tl|fi|fr|gl|ka|de|el|gu|ht|iw|hi|hu|is|id|ga|it|ja|kn|km|ko|la|lv|lt|mk|ms|mt|no|fa|pl|pt|ro|ru|sr|sk|sl|es|sw|sv|ta|te|th|tr|uk|ur|vi|cy|yi".split("|")
+	index = dialog.select('Choose the language to translate to', langlist)
+	win = xbmcgui.Window(10000)
+	ADDON.setSetting('translang', langcode[index])
+	translanguage=langcode[index]
+	translator= Translator(from_lang="vi", to_lang=translanguage)
+	HOME(translator)
+
+def chunkstring(string, length):
+    return (string[0+i:length+i] for i in range(0, len(string), length))
+	
+def Translate_lrge_str(string):
+    totaltext =""
+    chunksize=90000
+    ctr=0
+    pDialog = xbmcgui.DialogProgress()
+    ret = pDialog.create('Please wait while text is being translated')
+    percent = (ctr * 100)/chunksize
+    remaining_display  = '[B]'+str(percent)+'%[/B] is done'
+    pDialog.update(0,'Please wait while text is being translated',remaining_display)
+    checklist=list(chunkstring(string, chunksize))
+    for idx in checklist:
+        transcontent = translator.translate(idx)
+        totaltext=totaltext+transcontent.replace("- >","->").replace(" ->"," -->").replace("< / ","</").replace(" >",">")
+        ctr = ctr + 1
+        percent = (ctr * 100)/chunksize
+        remaining_display = '[B]'+str(percent)+'%[/B] is done'
+        pDialog.update(percent,'Please wait while text is being translated',remaining_display)
+
+    return totaltext
+	
 def ListGenres(url,name):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
@@ -101,8 +209,22 @@ def ListGenres(url,name):
         except: pass
         vidcontent=re.compile('<ul class="thumb-grid">(.+?)</ul>').findall(link)
         vidlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vidcontent[0])
+        transtext=""
+        namelist=[]
+        ctr=0
+        if(enableTrans):
+			for vurl,vname in vidlist:
+				transtext=transtext+RemoveHTML(vname)+"|"
+			transtext=translator.translate(transtext).replace(" | ","|")
+			namelist=transtext.split("|")
         for vurl,vname in vidlist:
+            if(len(namelist)>0):
+				vname=namelist[ctr]
+				try:
+					vname=vname.encode("UTF-8")
+				except:pass
             addDir(RemoveHTML(vname).replace("&amp;","&"),strdomain+vurl+"?sort=latest",8,"")
+            ctr=ctr+1
 			
 def SaveLang(langcode, name):
     f = open(langfile, 'w');f.write(langcode);f.close()   
@@ -119,6 +241,15 @@ def Genre(url,name):
         #vcontent =re.compile('<div class="tab-content">(.+?)</section>').findall(link) 
         vidulist=re.compile('<ul class="thumb-grid mbl">(.+?)</ul>').findall(link)
         vidlist=re.compile('<li[^>]*>(.+?)</li>').findall(vidulist[0])
+        transtext=""
+        namelist=[]
+        ctr=0
+        if(enableTrans):
+			for vlist in vidlist:
+				(vname,vtmp1,vimg,vtmp2)=re.compile('<img alt="(.+?)" height="(.+?)" src="(.+?)" width="(.+?)" />').findall(vlist)[0]
+				transtext=transtext+vname+"|"
+			transtext=translator.translate(transtext).replace(" | ","|")
+			namelist=transtext.split("|")
         for vlist in vidlist:
             vurl=re.compile('<a href="(.+?)" class="thumbnail">').findall(vlist)[0]
             vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(vlist)
@@ -128,6 +259,11 @@ def Genre(url,name):
             #vurl=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(vlist)[0]
             #vname=re.compile('<li class="media">(.+?)</li>').findall(vlist)
             (vname,vtmp1,vimg,vtmp2)=re.compile('<img alt="(.+?)" height="(.+?)" src="(.+?)" width="(.+?)" />').findall(vlist)[0]
+            if(len(namelist)>0):
+				vname=namelist[ctr]
+				try:
+					vname=vname.encode("UTF-8")
+				except:pass
             if(vurl.find("/tv/") > -1):
                     vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                     mode=7
@@ -137,6 +273,7 @@ def Genre(url,name):
                     vlink =vid
                     mode=4
             addDir(vname.decode("UTF-8"),vlink,mode,vimg)
+            ctr=ctr+1
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
@@ -152,11 +289,25 @@ def UpdatedVideos(url,name):
         except: pass
         vcontent=re.compile('Recently Added\s*</a>\s*</li>\s*</ul>(.+?)</ul>').findall(link)
         if(len(vcontent) ==0):
-               vcontent=re.compile('<ul class="medias medias-block medias-wide mbl btz">(.+?)</ul>').findall(link)
+               vcontent=re.compile('<ul class="medias medias-block medias-wide mbl btz"(.+?)</ul>').findall(link)
         if(len(vcontent) ==0):
                vcontent=re.compile('<ul class="medias medias-block medias-wide mbx"(.+?)</ul>').findall(link)
         vidlist=re.compile('<li [^>]*(.+?)</li>').findall(vcontent[0])
         mode=7
+        transtext=""
+        namelist=[]
+        ctr=0
+        if(enableTrans):
+			for licontent in vidlist:
+				vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(licontent)
+				if(len(vid)==0):
+					vid=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json"').findall(licontent)
+				if(len(vid)>0):
+					vurl,vname=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">(.+?)</a>\s*</h2>').findall(licontent)[0]
+					transtext=transtext+vname+"|"
+			transtext=translator.translate(transtext).replace(" | ","|")
+			namelist=transtext.split("|")
+
         for licontent in vidlist:
             vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(licontent)
             if(len(vid)==0):
@@ -165,7 +316,11 @@ def UpdatedVideos(url,name):
                     vid=vid[0]
                     vurl,vname=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">(.+?)</a>\s*</h2>').findall(licontent)[0]
                     vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(licontent)[0]
-            
+                    if(len(namelist)>0):
+						vname=namelist[ctr]
+                    try:
+						vname=vname.encode("UTF-8")
+                    except:pass
                     if(vurl.find("/movies/") > -1):
                          vurlist=re.compile('<a href="(.+?)" class="thumbnail pull-left">').findall(licontent)[0]
                          vurlist=vurlist.split("/")
@@ -179,6 +334,7 @@ def UpdatedVideos(url,name):
                         vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                         mode=7
                     addDir(vname.replace("&amp;","&").replace("&#x27;","'"),vlink,mode,urllib.unquote_plus(vimg))
+                    ctr=ctr+1
         pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
@@ -215,13 +371,28 @@ def getVidPage(url,page):
   except: pass
   vidcontainer=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="thumbnail-small pull-left">\s*<img alt="(.+?)" [^s][^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
   vidnum=re.compile('\/([0-9]*)([a-z]|\s*).json"').findall(link)
+  transtext=""
+  namelist=[]
+  ctr=0
+  if(enableTrans):
+		for y in range(0, len(vidnum)):
+			(vurl,vname,vimg) = vidcontainer[y]
+			transtext=transtext+vname+"|"
+		transtext=translator.translate(transtext).replace(" | ","|")
+		namelist=transtext.split("|")
   for x in range(0, len(vidnum)):
        vid="".join(vidnum[x])
        if(vidnum[x][1]==""):
            vid=vidnum[x][0]+"v"
        (vurl,vname,vimg) = vidcontainer[x]
+       if(len(namelist)>0):
+			vname=namelist[ctr]
+       try:
+			vname=vname.encode("UTF-8")
+       except:pass
        vurl = vurl.split("/videos/")[0]
        addDir(vname,vid,4,vimg)
+       ctr=ctr+1
   #for vid,vtmp,vurl,vname,vimg in vidcontainer:
   #      vurl = vurl.split("/videos/")[0]
   #      addDir(vname,vid,4,vimg)
@@ -419,7 +590,10 @@ def getVidQuality(vidid,name,filename,checkvideo):
   strprot=""
   print vidurl
   try:
-          suburl=sign_request(vidid,"/subtitles/" + langcode + ".srt")
+          if(enableTrans):
+                suburl=sign_request(vidid,"/subtitles/en.srt")
+          else:
+                suburl=sign_request(vidid,"/subtitles/" + langcode + ".srt")
           print suburl
           write2srt(suburl, filename) 
   except:
@@ -711,7 +885,7 @@ print "mode is:"+ str(mode)
 sysarg=str(sys.argv[1]) 
 if mode==None or url==None or len(url)<1:
         GA("Home","Home")
-        HOME()
+        HOME(translator)
 elif mode==2:
         ListGenres(url,name) 
 elif mode==3:
@@ -744,5 +918,7 @@ elif mode==15:
         getVidQuality(url,name,filename,False) 
 elif mode==16:
         SEARCHByID() 
+elif mode==17:
+        ShowLangDiag(translator)
 
 xbmcplugin.endOfDirectory(int(sysarg))
