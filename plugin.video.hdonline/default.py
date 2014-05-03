@@ -9,7 +9,7 @@ import json
 from xml.dom.minidom import Document
 import datetime
 import HTMLParser
-
+import itertools
 addonid='plugin.video.hdonline'
 ADDON=__settings__ = xbmcaddon.Addon(id=addonid)
 
@@ -27,9 +27,66 @@ sublang = ADDON.getSetting('sublang')
 strdomain ="http://hdonline.vn"
 enableSubtitle=ADDON.getSetting('enableSub')
 enableProxy= ADDON.getSetting('enableProxy')
+enableTrans= (ADDON.getSetting('enableTrans')=="true")
+translanguage=ADDON.getSetting('translang')
 
 reg_list = ["http://webcache.googleusercontent.com/search?q=cache:*url*"]
 proxyurl = ADDON.getSetting('proxyurl')
+
+import re
+import json
+from textwrap import wrap
+try:
+    import urllib2 as request
+    from urllib import quote
+except:
+    from urllib import request
+    from urllib.parse import quote
+
+class Translator:
+    string_pattern = r"\"(([^\"\\]|\\.)*)\""
+    match_string =re.compile(
+                        r"\,?\["
+                           + string_pattern + r"\,"
+                           + string_pattern + r"\,"
+                           + string_pattern + r"\,"
+                           + string_pattern
+                        +r"\]")
+
+    def __init__(self, to_lang, from_lang='en'):
+        self.from_lang = from_lang
+        self.to_lang = to_lang
+
+    def translate(self, source):
+        self.source_list = wrap(source, 1000, replace_whitespace=False)
+        return ' '.join(self._get_translation_from_google(s) for s in self.source_list)
+
+    def _get_translation_from_google(self, source):
+        json5 = self._get_json5_from_google(source)
+        return self._unescape(self._get_translation_from_json5(json5))
+
+    def _get_translation_from_json5(self, content):
+        result = ""
+        pos = 2
+        while True:
+            m = self.match_string.match(content, pos)
+            if not m:
+                break
+            result += m.group(1)
+            pos = m.end()
+        return result
+
+    def _get_json5_from_google(self, source):
+        escaped_source = quote(source, '')
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19'}
+        data="client=t&ie=UTF-8&oe=UTF-8&sl=%s&tl=%s&text=%s" % (self.from_lang, self.to_lang, escaped_source)
+        req = request.Request(url="http://translate.google.com/translate_a/t", headers = headers)
+        r = request.urlopen(req,data)
+        return r.read().decode('utf-8')
+
+    def _unescape(self, text):
+        return json.loads('"%s"' % text)
+
 
 try: 
         from sqlite3 import dbapi2 as database
@@ -39,7 +96,7 @@ except:
         addon.log('pysqlite2 as DB engine')
 DB = 'sqlite'
 db_dir = os.path.join(xbmc.translatePath("special://database"), 'hdonline.db')
-
+translator= Translator(from_lang="vi", to_lang=translanguage)
 def initDatabase():
     if DB != 'mysql':
         if not os.path.isdir(os.path.dirname(db_dir)):
@@ -103,7 +160,6 @@ def RemoveHTML(inputstring):
     return TAG_RE.sub('', inputstring)
 	
 def GetContentMob(url):
-    #url="http://www.ip-adress.com/"
     proxy = urllib2.ProxyHandler({'http': proxyurl})
     opener = urllib2.build_opener(proxy)
     urllib2.install_opener(opener)
@@ -126,6 +182,17 @@ def GetContentMob(url):
         response = usock.read()
     usock.close()
     return response
+
+def ShowLangDiag(translator):
+	dialog = xbmcgui.Dialog()
+	langlist ="Afrikaans|Albanian|Arabic|Azerbaijani|Basque|Bengali|Belarusian|Bulgarian|Catalan|Chinese Simplified|Chinese Traditional|Croatian|Czech|Danish|Dutch|English|Esperanto|Estonian|Filipino|Finnish|French|Galician|Georgian|German|Greek|Gujarati|Haitian Creole|Hebrew|Hindi|Hungarian|Icelandic|Indonesian|Irish|Italian|Japanese|Kannada|Khmer|Korean|Latin|Latvian|Lithuanian|Macedonian|Malay|Maltese|Norwegian|Persian|Polish|Portuguese|Romanian|Russian|Serbian|Slovak|Slovenian|Spanish|Swahili|Swedish|Tamil|Telugu|Thai|Turkish|Ukrainian|Urdu|Vietnamese|Welsh|Yiddish".split("|")
+	langcode="af|sq|ar|az|eu|bn|be|bg|ca|zh-CN|zh-TW|hr|cs|da|nl|en|eo|et|tl|fi|fr|gl|ka|de|el|gu|ht|iw|hi|hu|is|id|ga|it|ja|kn|km|ko|la|lv|lt|mk|ms|mt|no|fa|pl|pt|ro|ru|sr|sk|sl|es|sw|sv|ta|te|th|tr|uk|ur|vi|cy|yi".split("|")
+	index = dialog.select('Choose the language to translate to', langlist)
+	win = xbmcgui.Window(10000)
+	ADDON.setSetting('translang', langcode[index])
+	translanguage=langcode[index]
+	translator= Translator(from_lang="vi", to_lang=translanguage)
+	HOME(translator)
 	
 def GetContent(url, useProxy=False):
     strresult=""
@@ -142,6 +209,29 @@ def GetContent(url, useProxy=False):
        print str(e)+" |" + url
     return strresult
 
+def chunkstring(string, length):
+    return (string[0+i:length+i] for i in range(0, len(string), length))
+	
+def Translate_lrge_str(string):
+    totaltext =""
+    chunksize=90000
+    ctr=0
+    pDialog = xbmcgui.DialogProgress()
+    ret = pDialog.create('Please wait while text is being translated')
+    percent = (ctr * 100)/chunksize
+    remaining_display  = '[B]'+str(percent)+'%[/B] is done'
+    pDialog.update(0,'Please wait while text is being translated',remaining_display)
+    checklist=list(chunkstring(string, chunksize))
+    for idx in checklist:
+        transcontent = translator.translate(idx)
+        totaltext=totaltext+transcontent.replace("- >","-->").replace("< / ","</").replace(" >",">")
+        ctr = ctr + 1
+        percent = (ctr * 100)/chunksize
+        remaining_display = '[B]'+str(percent)+'%[/B] is done'
+        pDialog.update(percent,'Please wait while text is being translated',remaining_display)
+
+    return totaltext
+
 def write2srt(url, fname):
     try:
           subcontent=GetContent(url).encode("utf-8")
@@ -150,6 +240,12 @@ def write2srt(url, fname):
     subcon=re.compile('vplugin\*\*\*(.+?)&').findall(subcontent+"&")
     if(len(subcon)>0):
           subcontent=decodevplug(subcon[0]).decode('base-64')
+    if(enableTrans):
+          subcontent=Translate_lrge_str(subcontent)
+    try:
+          subcontent=subcontent.encode("utf-8")
+    except: pass
+
     f = open(fname, 'w');f.write(subcontent);f.close()
 
 def json2srt(url, fname):
@@ -170,7 +266,7 @@ def json2srt(url, fname):
                  conv(item['start_time']),
                  conv(item['end_time']),
                  item['content'].encode('utf8')))
-def HOME():
+def HOME(translator):
         #addDir('Search channel','search',5,'')
 
         useProxy=(enableProxy=="true")
@@ -179,15 +275,44 @@ def HOME():
         try:
             link =link.encode("UTF-8")
         except: pass
-        addDir("Search","http://hdonline.vn/tim-kiem/superman.html",5,"")
-        addDir("View Cached Videos","http://hdonline.vn/",7,"")
-        addDir("New Movies","http://hdonline.vn/danh-sach/phim-moi.html",2,"")
+        staticmenu="Choose Translation Language|Search|View Cached Videos|New Movies"
+        staticlist=staticmenu.split("|")
+        if(enableTrans):
+               transtext=translator.translate(staticmenu).replace(" | ","|")
+               try:
+                        transtext=transtext.encode("UTF-8")
+               except: pass
+               staticlist=transtext.split("|")
+               addDir(staticlist[0],"http://hdonline.vn/",9,"")
+        addDir(staticlist[1],"http://hdonline.vn/tim-kiem/superman.html",5,"")
+        addDir(staticlist[2],"http://hdonline.vn/",7,"")
+        addDir(staticlist[3],"http://hdonline.vn/danh-sach/phim-moi.html",2,"")
         vidcontentlist=re.compile('<div class="menus">\s*<span class="title">(.+?)</span>\s*<ul class="mn mnfl">(.+?)</ul>').findall(link)
         for mainname,vidcontent in vidcontentlist:
-            addLink(mainname,"",0,'')
+            splitcat=""
             vidlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vidcontent)
+            if(enableTrans):
+                  transtext=mainname+"|"
+                  for vurl,vname in vidlist:
+                       transtext=transtext+"|"+vname
+                  transtext=translator.translate(transtext).replace("| |","||")
+                  try:
+                        transtext=transtext.encode("UTF-8")
+                  except: pass
+                  splitcat=transtext.split("||")
+                  mainname=splitcat[0]
+            addLink(mainname,"",0,'')
+            if(len(splitcat)>1):
+				tranlist=splitcat[1].split("|")
+            ctr=0
             for vurl,vname in vidlist:
-                 addDir("--"+vname,vurl,2,"")
+				if(enableTrans):
+					vname=tranlist[ctr]
+					try:
+						vname=vname.encode("UTF-8")
+					except:pass
+				ctr=ctr+1
+				addDir("--"+vname,vurl,2,"")
 
 if os.path.exists(db_dir)==False:
 	initDatabase()
@@ -298,9 +423,24 @@ def Index(url,name):
             link =link.encode("UTF-8")
         except: pass
         vidcontentlist=re.compile('<ul class="clearfix listmovie">(.+?)</ul>').findall(link)
+        #trancontent=translator.translate(vidcontentlist[0]).replace(" = ","=").replace("< img","<img")
         if(len(vidcontentlist)>0):
 			movielist=re.compile('<img [^>]*data-original=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="meta_block_spec" style="bottom:10px">\s*<h1 class="title"><a href="(.+?)" title="(.+?)">').findall(vidcontentlist[0])
-			for vimg,vurl,vname in movielist:
+			#tranlist=re.compile('[^>]*alt=["\']?([^>^"^\']+)["\']?[^>]*>').findall(trancontent)
+			transtext=""
+			namelist=[]
+			if(enableTrans):
+				for (vimg,vurl,vname) in movielist:
+					transtext=transtext+vname+"|"
+				transtext=translator.translate(transtext).replace("| |","||")
+				namelist=transtext.split("|")
+			for idx in range(len(movielist)):
+				(vimg,vurl,vname) = movielist[idx]
+				if(len(namelist)>0):
+					vname=namelist[idx]
+				try:
+					vname=vname.encode("UTF-8")
+				except:pass
 				vidid=vurl.split("-")[-1].replace('.html','')
 				SaveMovieTVshow(vname,vidid,vimg,"")
 				addDir(vname,vidid,4,vimg)
@@ -314,6 +454,7 @@ def Index(url,name):
 
 def Episodes(vidid,name):
         url="http://hdonline.vn/vxml.php?film="+vidid
+        print url
         if (enableProxy=="true"):
             link = GetContentMob(url)
         else:
@@ -324,27 +465,47 @@ def Episodes(vidid,name):
         except: pass
         episodelist=re.compile('<item>(.+?)</item>').findall(link)
         epid="0"
-
+        transtext=""
+        namelist=[]
+        ctr=0
+        h = HTMLParser.HTMLParser()
+        if(enableTrans):
+			for episodecontent in episodelist:
+				vname=re.compile('<title>(.+?)</title>').findall(episodecontent)[0]
+				transtext=transtext+h.unescape(vname)+"|"
+			try:
+				transtext=transtext.encode("UTF-8")
+			except: pass
+			transtext=translator.translate(transtext).replace("| |","||")
+			namelist=transtext.split("|")
+        #innerlink=GetContentMob("http://hdonline.vn/vxml.php?episode=31501")
+        #print decodevplug(str(innerlink).strip())
         for episodecontent in episodelist:
              vurl=re.compile('<jwplayer:file>(.+?)</jwplayer:file>').findall(episodecontent)[0]
              if(vurl.find("http") == -1):
                    vurl=decodevplug(vurl)
-             vname=re.compile('<title>(.+?)</title>').findall(episodecontent)[0]
+             if(len(namelist)>0):
+                    vname=namelist[ctr]
+             else:
+                    vname=re.compile('<title>(.+?)</title>').findall(episodecontent)[0]
+             try:
+                    vname=h.unescape(vname).encode("UTF-8")
+             except:
+                    vname=h.unescape(vname)
              vimg=re.compile('<jwplayer:vplugin.image>(.+?)</jwplayer:vplugin.image>').findall(episodecontent.replace(":image",":vplugin.image"))[0]
              if(vimg.find("http") == -1):
                    vimg=decodevplug(re.compile('<jwplayer:vplugin.image>(.+?)</jwplayer:vplugin.image>').findall(episodecontent)[0])
              vsubtitle=re.compile('<jwplayer:vplugin.subfile>(.+?)</jwplayer:vplugin.subfile>').findall(episodecontent)
              epid=re.compile("<jwplayer:vplugin.episodeid>(.+?)</jwplayer:vplugin.episodeid>").findall(episodecontent)
              suburl=""
-             h = HTMLParser.HTMLParser()
-             #print h.unescape(vname.encode("UTF-8"))
              if(len(vsubtitle)>0):
                  suburl=decodevplug(vsubtitle[0])
              if(len(epid)>0):
                  epid=epid[0]
-             SaveEpisodes(h.unescape(vname).encode("UTF-8"),epid,suburl,vidid)
-             SaveVideoLink(h.unescape(vname).encode("UTF-8"),vurl,vimg,epid)
-             addLinkSub(h.unescape(vname).encode("UTF-8"),vurl,3,vimg,suburl)
+             SaveEpisodes(vname,epid,suburl,vidid)
+             SaveVideoLink(vname,vurl,vimg,epid)
+             addLinkSub(vname,vurl,3,vimg,suburl)
+             ctr=ctr+1
 
 
 
@@ -630,7 +791,7 @@ print "mode is:"+ str(mode)
 sysarg=str(sys.argv[1]) 
 if mode==None or url==None or len(url)<1:
         GA("Home","Home")
-        HOME()
+        HOME(translator)
 elif mode==2:
         Index(url,name) 
 elif mode==3:
@@ -655,7 +816,8 @@ elif mode==7:
         INDEXCache()
 elif mode==8:
         EpisodesCache(url,name)
-
+elif mode==9:
+        ShowLangDiag(translator)
 
 
 xbmcplugin.endOfDirectory(int(sysarg))
