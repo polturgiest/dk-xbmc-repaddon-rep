@@ -362,6 +362,10 @@ def PostContent(formvar,url):
 def playVideo(videoType,videoId):
     url = ""
     print videoType + '=' + videoId
+    win = xbmcgui.Window(10000)
+    win.setProperty('1ch.playing.title', videoId)
+    win.setProperty('1ch.playing.season', str(3))
+    win.setProperty('1ch.playing.episode', str(4))
     if (videoType == "youtube"):
         try:
                 url = getYoutube(videoId)
