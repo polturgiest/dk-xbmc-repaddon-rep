@@ -97,6 +97,7 @@ def GetLoginCookie(cj, cookiefile):
     strUsername = urllib.quote_plus(
         GetInput("Please enter your username", "Username", False))
     respon = ""
+    match=[]
     if strUsername is not None and strUsername != "":
         strpwd = urllib.quote_plus(GetInput("Please enter your password", "Password", True))
         (cj, respon) = GetContent(nooblink + "/login2.php", "email=" + strUsername +
@@ -397,8 +398,10 @@ def Episodes(name, videoId,cj):
         'Title': name,
         'Thumb': nooblink + "/2img" + videoId + ".jpg"
     }
-
-    playVideo("noobroom", fullvid, meta)
+    try:
+         playVideo("noobroom", fullvid, meta)
+    except:
+         playVideo("noobroom", fullvid.replace("&hd=" + isHD, "&hd=0") , meta)
 
 
 
