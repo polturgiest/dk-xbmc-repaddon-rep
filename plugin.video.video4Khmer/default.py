@@ -55,7 +55,7 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div id="list_subcats"><ul>(.+?)</ul>').findall(newlink)
+        match=re.compile('<div id="list_subcats">(.+?)</div></div></div>').findall(newlink)
         listcontent=re.compile('<a href="(.+?)">(.+?)</a>').findall(match[0])
         vimage=""
         for vcontent in listcontent:
