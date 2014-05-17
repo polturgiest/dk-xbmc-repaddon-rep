@@ -274,7 +274,6 @@
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
-        <import addon="xbmc.python" version="2.0" optional="true" />
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
@@ -340,7 +339,6 @@
   name="KhmerTv"
   provider-name="Dknight">
   <requires>
-        <import addon="xbmc.python" version="2.0" optional="true" />
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
@@ -361,7 +359,6 @@
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
-        <import addon="xbmc.python" version="2.0" optional="true" />
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.urlresolver"  version="0.0.1"/>
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
@@ -469,7 +466,6 @@
   name="PhumiKhmer"
   provider-name="Dknight">
   <requires>
-        <import addon="xbmc.python" version="2.0" optional="true" />
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.urlresolver"  version="0.0.1"/>
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
@@ -554,7 +550,6 @@
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
-        <import addon="xbmc.python" version="2.0" optional="true"/>
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
