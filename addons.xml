@@ -90,7 +90,7 @@
 
 <addon
   id="plugin.video.DKEvents"
-  version="1.0.3"
+  version="1.0.4"
   name="DKEvents"
   provider-name="Dknight">
   <requires>
