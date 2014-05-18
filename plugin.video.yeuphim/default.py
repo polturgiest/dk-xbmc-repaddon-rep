@@ -275,6 +275,7 @@ def loadVideos(url,name):
                            match=re.compile("proxy.link=phim10\*(.+?)&").findall(newlink)
                            if(len(match) > 0):
                                  newlink=decrypt(match[0])
+           print newlink
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('http://www.dailymotion.com/swf/(.+?)&dk').findall(newlink)
                 if(len(match) == 0):
@@ -304,11 +305,26 @@ def loadVideos(url,name):
                         playVideo("direct",vidlink[0])
            elif(newlink.find("picasaweb.google") > 0):
                  vidcontent=postContent("http://phim10.com/player2n/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
-                 vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
-                 hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
-                 if(len(hdmatch) > 0):
-                        vidmatch=hdmatch
-                 vidlink=vidmatch[-1][0]
+                 vidid=vidlink=re.compile('#(.+?)&').findall(newlink+"&")
+                 if(len(vidid)>0):
+					vidmatch=re.compile('feedPreload:(.+?)}}},').findall(vidcontent)[0]+"}}"
+					data = json.loads(vidmatch)
+					vidlink=""
+					for currententry in data["feed"]["entry"]:
+						if(currententry["streamIds"][0].find(vidid[0]) > 0):
+								for currentmedia in currententry["media"]["content"]:
+									if(currentmedia["type"]=="video/mpeg4"):
+										vidlink=currentmedia["url"]
+										break
+								if(vidlink==""):
+									vidlink=currententry["media"]["content"][0]["url"]
+									break
+                 else:
+						vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
+						hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
+						if(len(hdmatch) > 0):
+							vidmatch=hdmatch
+						vidlink=vidmatch[-1][0]
                  playVideo("direct",vidlink)
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
