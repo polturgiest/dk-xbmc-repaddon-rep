@@ -25,6 +25,7 @@ VERSION = "1.0.4" #<---- PLUGIN VERSION
 
 strdomain ='http://www.ph-kh.com/'
 def HOME():
+        addDir('Search','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Movies?&max-results=18',4,'')
         addDir('Khmer Movies','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Khmer Drama','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Filipino Drama','http://www.phumikhmers.blogspot.com/search/label/Philippine%20Movie?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
@@ -131,7 +132,17 @@ def getVimeoVideourl(videoid):
             common.log("Got apierror: " + video['apierror'])
             return ""
 			
-			
+def SEARCH():
+    try:
+        keyb = xbmc.Keyboard('', 'Enter search text')
+        keyb.doModal()
+        #searchText = '01'
+        if (keyb.isConfirmed()):
+                searchText = urllib.quote_plus(keyb.getText())
+        url = 'http://www.ph-kh.com/search?q='+searchText
+        INDEX(url)
+    except: pass
+	
 def INDEX(url):
     #try:
         link = GetContent(url)
@@ -824,6 +835,8 @@ elif mode==2:
 elif mode==3:
         #sysarg="-1"
         loadVideos(url,name)
+elif mode==4:
+        SEARCH()
 elif mode==5:
        GA("episode",name)
        Episodes(url,name)
