@@ -157,10 +157,11 @@ def INDEX(url):
                             #(vurl, vimage, vname)=match1[0]
                             addDir(vname.encode("utf-8").replace("Thai Lakorn &#8211;",""),vurl,5,vimage)
         match5=re.compile("<div class='wp-pagenavi'>((.|\s)*?)</div>").findall(newlink)
-        if(len(match5) >= 1 and len(match5[0]) >= 1 and newlink.find("class='nextpostslink'") > -1 ):
-                startlen=re.compile("<span class='current'>(.+?)</span>").findall(match5[0][0])
-                url=url.replace("page/"+startlen[0],"")
-                addDir("Next >>",url+'page/' + str(int(startlen[0])+1),2,"")
+        if(len(match5) >= 1 and len(match5[0]) >= 1 ):
+                pagelist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match5[0][0])
+                for pageurl,pagenum in pagelist:
+					addDir("page " + pagenum.replace('Last \xc2\xbb','Last >>').replace('\xc2\xab',"Prev <<").replace('\xc2\xbb',"Next >>"),pageurl,2,"")
+
     #except: pass
 			
 def SearchResults(url):
