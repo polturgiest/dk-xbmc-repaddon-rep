@@ -1,7 +1,8 @@
 <settings>
    <category label="Addon-Settings">
   	<setting id="use-hd" type="bool" label="Enable HD" default="true"/>
-    <setting id="region" type="enum" values="Amsterdam(Free)|Washington(Premium)|Los Angeles(Premium)|Frankfurt(Premium)|London(Premium )|Amsterdam(Premium)|Dallas(Premium)|Vienna(Premium)|Dallas(Free)" label="Region" default="0" enable="true" />
+    	<setting id="region" type="enum" values="Amsterdam(Free)|Washington(Premium)|Los Angeles(Premium)|Frankfurt(Premium)|London(Premium )|Amsterdam(Premium)|Dallas(Premium)|Vienna(Premium)|Dallas(Free)" label="Region" default="0" enable="true" />
+	<setting id="latest" type="enum" values="25|50|100|500|All|" label="Latest Added" default="1" enable="true" />
    </category>
    <category label="Login">
   <setting id="Username" type="text" label="Username" default="" visible="true"/>

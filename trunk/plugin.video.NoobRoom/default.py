@@ -40,6 +40,10 @@ else:
 if ADDON.getSetting('use-hd') != 'true':
     isHD = "0"
 
+latest = ADDON.getSetting('latest')
+lst_list = [" 25 Added", " 50 Added", " 100 Added", " 500 Added", " All"]
+latest = lst_list[int(ADDON.getSetting('latest'))]
+
 strUsername = ADDON.getSetting('Username')
 strpwd = ADDON.getSetting('Password').replace("@","%40")
 
@@ -195,7 +199,7 @@ def HOME():
     addDir('Search', 'search', 5, '')
     addDir('TV Shows', 'TV', 9, '')
     addDir('Movies A-Z', 'Movies', 2, '')
-    addDir('Last 50 Added', 'Latest', 8, '')
+    addDir('Latest' + latest, 'Latest', 8, '')
     addDir('by Genre', 'GenreList', 14, '')
     addDir('by Release date', 'Released', 12, '')
     addDir('by IMDB Rating', 'ImdbRating', 13, '')
@@ -205,9 +209,10 @@ def HOME():
 
 
 def INDEXAZ():
+    addDir('*', '+', 4, '')
+    addDir('?', '-1', 4, '')
     for one in string.ascii_uppercase:
         addDir(one, one, 4, '')
-    addDir('Others', '-1', 4, '')
 
 
 def SEARCH():
@@ -228,9 +233,15 @@ def renderListingPage(resourceName, url):
     text = f.read()
     match = re.compile(
         '<movie name="(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
-    for i in range(50):
+    if latest == " All":
+        len_latest = len(match)
+    else:
+        len_latest = int(latest.replace(" ", "").replace("Added", ""))
+        if len_latest > len(match):
+           len_latest = len(match)
+    for i in range(len_latest):
         (mName, mNumber, vyear) = match[i]
-        addLink(urllib.unquote_plus(mName).replace("&amp;","&"), mNumber, 6, nooblink + "/2img" + mNumber + ".jpg")
+        addLink(urllib.unquote_plus(mName).replace("&amp;","&") + " (" + vyear + ")", mNumber, 6, nooblink + "/2img" + mNumber + ".jpg")
 
 
 def Released():
@@ -286,20 +297,28 @@ def SearchXml(SearchText):
         BuildXMl()
     f = open(filename, "r")
     text = f.read()
+
+    matchAll=re.compile('<movie name="(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
+    matchAll.sort(key=lambda tup: tup[0]) # sort by mName normal for Movie [A-Z]
+
     if SearchText=='-1':
-        match=re.compile('<movie name="[^A-Za-z](.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)	
-        SearchText=""
+        matchSearch=re.compile('<movie name="[^A-Za-z](.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
     else:
-        match=re.compile('<movie name="' + SearchText + '(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
-    for i in range(len(match)):
-        (mName,mNumber,vyear)=match[i]
-        addDir(SearchText+mName,mNumber,6,"")
+        matchSearch=re.compile('<movie name="' + SearchText + '(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
+
+    for j in range(len(matchAll)):
+        (mName,mNumber,vyear)=matchAll[j]
+        for i in range(len(matchSearch)):
+            (smName,smNumber,svyear)=matchSearch[i]
+            if smNumber == mNumber:
+                addLink(urllib.unquote_plus(mName).replace("&amp;","&") + " (" + vyear + ")", mNumber, 6, nooblink + "/2img" + mNumber + ".jpg")
 
 def SearchSite(SearchText):
     (jc, link) = GetContent(nooblink + "/search.php?q=" + SearchText, "", nooblink, cj)
     match = re.compile(
         '<a class=\'tippable\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>(.+?)<br>'
-    ).findall(link)
+    ).findall(link.replace("\n",""))
+    print match
     for i in range(len(match)):
         ( moviehref, movieName,movieYear) = match[i]
         href = moviehref.replace("?", "")
