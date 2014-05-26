@@ -418,7 +418,7 @@
 
 <addon
   id="plugin.video.NoobRoom"
-  version="1.0.25"
+  version="1.0.26"
   name="NoobRoom"
   provider-name="Dknight">
   <requires>
@@ -439,7 +439,7 @@
 
 <addon
   id="plugin.video.phim47"
-  version="1.0.13"
+  version="1.0.14"
   name="phim47"
   provider-name="Dknight">
   <requires>
