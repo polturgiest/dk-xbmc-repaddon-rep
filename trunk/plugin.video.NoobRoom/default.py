@@ -1,6 +1,7 @@
 import json
 import urllib
 import urllib2
+import requests
 import re
 import sys
 import cookielib
@@ -318,7 +319,6 @@ def SearchSite(SearchText):
     match = re.compile(
         '<a class=\'tippable\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>(.+?)<br>'
     ).findall(link.replace("\n",""))
-    print match
     for i in range(len(match)):
         ( moviehref, movieName,movieYear) = match[i]
         href = moviehref.replace("?", "")
@@ -386,11 +386,16 @@ def GetDirVideoUrl(url, cj):
     usock = opener.open(url)
     return redirhndler.video_url
 
+def exists(path):
+    r = requests.head(path)
+    return r.status_code == requests.codes.ok
+
 def TryMP4(noobvideolink,videoId,cj,location):
     vidlink=GetDirVideoUrl(nooblink + "/"+location+"/"+authcode+"/"+videoId+".mp4", cj)
     if(vidlink.find(authcode) == -1):
          vidlink = GetDirVideoUrl(noobvideolink + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
     vidlink=vidlink.replace("&hd=0","&hd=" + isHD)
+    #print "exist nor not:" + str(exists(vidlink))
     return vidlink
 	
 def Episodes(name, videoId,cj):
@@ -407,6 +412,7 @@ def Episodes(name, videoId,cj):
     except:
         vidlink = GetDirVideoUrl(noobvideolink.replace("&hd=" + isHD, "&hd=0") + "&tv=0" + "&start=0&file=" + videoId, cj) + "&loc=" + location
     cookiestr = ""
+
     for cookie in cj:
         cookiestr += '%s=%s;' % (cookie.name, cookie.value)
     fullvid = ('%s|Cookie="%s"' % (vidlink, cookiestr + "save=1"))
@@ -417,10 +423,7 @@ def Episodes(name, videoId,cj):
         'Title': name,
         'Thumb': nooblink + "/2img" + videoId + ".jpg"
     }
-    try:
-         playVideo("noobroom", fullvid, meta)
-    except:
-         playVideo("noobroom", fullvid.replace("&hd=" + isHD, "&hd=0") , meta)
+    playVideo("noobroom", fullvid, meta)
 
 
 
@@ -457,6 +460,40 @@ def ListEpisodes(name,url, cj):
             movieFree = " [COLOR yellow](free)[/COLOR]"
         addTVLink(match[i][0] + match[i][3] + movieFree, fullvid, 3, name)
 
+		
+def PlayAgain(url):
+        win = xbmcgui.Window(10000)
+        meta = {
+                 'Title': win.getProperty('1ch.playing.title'),
+                 'Thumb': ''
+        }
+        listitem = xbmcgui.ListItem(meta.get("Title"))
+        listitem.setInfo('video', meta)
+        listitem.setProperty('IsPlayable', 'true')
+        xbmcPlayer  = xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER)
+        link=url.replace("&hd=" + isHD, "&hd=0")
+        xbmcPlayer.play(link, listitem)
+		
+class MyPlayer(xbmc.Player):
+
+    def __init__(self):
+        xbmc.Player.__init__(self)
+        self._totalTime = 999999
+        self._lastPos = 0
+        self.currentfile=""
+    def setfile(self,url):
+         self.currentfile=url
+    def onPlayBackStarted(self):
+        self._totalTime = self.getTotalTime()
+        while not xbmc.abortRequested and self.isPlaying():
+            self._lastPos = self.getTime()
+            xbmc.sleep(500)
+
+    def onPlayBackStopped(self):
+        playedTime = int(self._lastPos)
+        if playedTime == 0 and self._totalTime == 999999:
+            PlayAgain(self.currentfile)
+
 
 def playVideo(videoType, link, meta=None):
     if(meta==None):
@@ -480,9 +517,16 @@ def playVideo(videoType, link, meta=None):
 
         listitem = xbmcgui.ListItem(meta.get("Title"))
         listitem.setInfo('video', meta)
-        xbmcPlayer = xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER)
+        listitem.setProperty('IsPlayable', 'true')
+        xbmcPlayer  = MyPlayer() #xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER)
+        xbmcPlayer.setfile(link)
         xbmcPlayer.play(link, listitem)
-
+        ctr=0
+        while(not xbmc.abortRequested):
+             ctr=ctr+1
+             if(ctr==10):
+				break
+             xbmc.sleep(1000)
 
 def parseDate(dateString):
     try:
