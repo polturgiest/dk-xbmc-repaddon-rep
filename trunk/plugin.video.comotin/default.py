@@ -12,6 +12,8 @@ import json
 import datetime
 import cgi
 
+
+
 ADDON = xbmcaddon.Addon(id='plugin.video.comotin')
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
@@ -19,8 +21,8 @@ if ADDON.getSetting('ga_visitor')=='':
     
 PATH = "comotin"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.0" #<---- PLUGIN VERSION
-homeLink="http://phimsot.com/"
+VERSION = "1.0.6" #<---- PLUGIN VERSION
+homeLink="http://comotin.com/"
 usehd = ADDON.getSetting('use-hd') == 'true'
 def __init__(self): 
     self.playlist=sys.modules["__main__"].playlist
@@ -36,95 +38,35 @@ def RemoveHTML(inputstring):
     return TAG_RE.sub('', inputstring)
 	
 def HOME():
-        addDir('Search','http://film.vnzoomin.com/',4,'')
-        link = GetContent(homeLink+"phim-ts-q6p1/")
-        try:
-            link =link.encode("UTF-8")
-        except: pass
-        newlink = ''.join(link.splitlines()).replace('\t','')
-        matchmain=re.compile('<ul class="root wrapper">(.+?)</ul></nav>').findall(newlink) 
-        if(len(matchmain) > 0):
-			match=re.compile('<li>\s*<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>\s*<ul[^>]*(.+?)</ul>').findall(matchmain[0])
-			for mainurl,vmain,vmenu in match:
-				  maincontent=re.compile('<a>(.+?)</a>').findall(vmenu)
-				  vmain1=re.compile('title="(.+?)"').findall(vmain)
-				  if(len(vmain1)>0):
-					vmain=vmain1[0]
-				  addLink(vmain,mainurl,0,'','')
-
-				  submatch=re.compile('<li><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(vmenu)
-				  for vsubmenu in submatch:
-						vLink, vLinkName=vsubmenu
-						addDir("--- "+ RemoveHTML(vLinkName).strip(),vLink,2,'')
-
-
+        addDir("Indonesian Videos","http://www.comotin.com/feeds/posts/default/-/indonesia?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
+        addDir("Barat/Hollywood","http://www.comotin.com/feeds/posts/default/-/barat?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
+        addDir("Asian","http://www.comotin.com/feeds/posts/default/-/asia?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
+        addDir("Other","http://www.comotin.com/feeds/posts/default/-/global?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
+  
 def INDEX(url):
         link = GetContent(url)
-        link = ''.join(link.splitlines()).replace('\'','"')
+        link = ''.join(link.splitlines())
         try:
             link =link.encode("UTF-8")
         except: pass
+        pagedata=link.replace("// API callback1(","").replace("});","}")#.replace("\u003E","").replace("\u003C","").replace("\u0026","").decode('utf-8')
+        pagedata=json.loads(pagedata)
         vidlist = re.compile('<div class="film_short">(.+?)</a></div>\s*</div>').findall(link)
-        for videocotent in vidlist:
-            vimg= re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(videocotent)[0]
-            vurl,vname= re.compile('<a class="thumbnail" href="(.+?)" title="(.+?)">').findall(videocotent)[0]
-            addDir(vname,vurl,7,vimg)
-        pagelist=re.compile('<div class="paging">(.+?)</div>').findall(link)
-        if(len(pagelist)>0):
-            navmatch=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
-            for vurl,vname in navmatch:
-                addDir("page " + vname.replace("&laquo;","<<").replace("&raquo;",">>"),vurl,2,"")
+        for videocotent in pagedata["feed"]["entry"]:
+            vimg= re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(videocotent["content"]["$t"])[0]
+            vname= videocotent["title"]["$t"]
+            vurl=re.compile('proxy.link=(.+?)&').findall(videocotent["content"]["$t"])
+            vsuburl=""
+            if(len(vurl)==0):
+                vurl=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(videocotent["content"]["$t"])
+            if(len(vurl)==0):
+                vurl=re.compile("str='(.+?)';\s*document.write").findall(videocotent["content"]["$t"])
+            vsub=re.compile('captions.file=(.+?)&').findall(videocotent["content"]["$t"])
+            if(len(vsub)>0):
+				vsuburl=vsub[0]
+            addLinkSub(vname,vurl[0],3,"",vsuburl)
 
 
-def SEARCH():
-    try:
-        keyb = xbmc.Keyboard('', 'Enter search text')
-        keyb.doModal()
-        #searchText = '01'
-        if (keyb.isConfirmed()):
-                searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://phimsot.com/phim-hay-p1/?keyword='+searchText
-        INDEX(url)
-    except: pass
-
-def Mirrors(url,name):
-  try:
-      mirrorlink =getVidPage(url,name)
-      link = GetContent(mirrorlink)
-      link=''.join(link.splitlines()).replace('\'','"')
-  except Exception as e:
-      d = xbmcgui.Dialog()
-      d.ok(name,"no video","can't find video link")
-      print "mirror error:" + str(e)
-  try:
-            link =link.encode("UTF-8")
-  except: pass
-  servlist =re.compile('<h4 class="server_name">(.+?)</h4>').findall(link)
-  for vname in servlist:
-         addDir(vname.encode("utf-8"),mirrorlink.encode("utf-8"),5,"")  
-
-			
-def decodeurl(encodedurl):
-    tempp9 =""
-    tempp4="1071045098811121041051095255102103119"
-    strlen = len(encodedurl)
-    temp5=int(encodedurl[strlen-4:strlen],10)
-    encodedurl=encodedurl[0:strlen-4]
-    strlen = len(encodedurl)
-    temp6=""
-    temp7=0
-    temp8=0
-    while temp8 < strlen:
-        temp7=temp7+2
-        temp9=encodedurl[temp8:temp8+4]
-        temp9i=int(temp9,16)
-        partlen = ((temp8 / 4) % len(tempp4))
-        partint=int(tempp4[partlen:partlen+1])
-        temp9i=((((temp9i - temp5) - partint) - (temp7 * temp7)) -16)/3
-        temp9=chr(temp9i)
-        temp6=temp6+temp9
-        temp8=temp8+4
-    return temp6
 
 #----------------------------------------decryption code--------------------------------------------------------
 Rcon = [1,2,4,8,16,32,64,128,27,54,108,216,171,77,154,47,94,188,99,198,151,53,106,212,179,125,250,239,197,145];
@@ -142,7 +84,7 @@ def decrypt(param1):
 	_loc5_ = []
 	_loc6_ = hexToChars(param1);
 	_loc7_ = 16;
-	_loc8_ = [1801675112,2036491365,1835624560,779382643,7171939,0,134218250,1902274159,470486559,847208812,840044047,840044047,2116275107,255962572,323658707,557171391,321375408,557171391,1994284418,2040524878,1792365469,1273008418,1489460626,2045943597,-1368861615,-671669217,-1121814654,-154999136,-1375356110,-671669217,1852226679,-1181640600,78901226,-227473078,1551151736,-1954310553,-346337081,1389021359,1450780485,-1542967793,-126051209,1946094096,567559904,1931382351,627550474,-2123397371,2031295346,183243106,-1951168286,-122878291,-573919321,1554327714]
+	_loc8_ = [1849252152, 1951094370, 1162557538, 2000770928, 1115308622, 0, 224016986L, 2031184952L, 1012552794L, 1260061482L, 157368676L, 157368676L, 1314641371L, 927644131L, 185658809L, 1074523795L, 1231728631L, 1074523795L, -1840054537L, -1525135596L, -1375163731L, -301775810L, -1486230583L, -413006502L, 751195284L, -1981934720L, 668383533L, -908722925L, 1857820378L, -1981934720L, -513717767L, 1757371001L, 1332339540L, -2034491833L, -402650979L, 1641945885L, 1166955638L, 758189583L, 1649995099L, -454757604L, 216333185L, 1832575132L, -1682778921L, -1232872744L, -723830909L, 809485471L, 1021001502L, 1373757314L, -2006766391L, 1054930449L, -365182574L, -637270771L]
 
 	_loc9_ = (len(_loc6_) / _loc7_)-1;
 
@@ -427,42 +369,6 @@ def arrNametoString(param1):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def getVidPage(url,name):
-  contentlink = GetContent(url)
-  contentlink = ''.join(contentlink.splitlines()).replace('\'','"')
-  try:
-            contentlink =contentlink.encode("UTF-8")
-  except: pass
-  mlink=re.compile('<div class="toolbar_right">\s*<a class="button button_20px" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(contentlink)
-  return mlink[0].replace("title=","")
-
-
-def Episodes(url,name):
-    #try:
-        link = GetContent(url)
-        link=''.join(link.splitlines()).replace('\'','"')
-        try:
-            link =link.encode("UTF-8")
-        except: pass
-        servlist=re.compile('<h4 class="server_name">'+name.replace("+","\+")+'</h4>(.+?)<h4 class="server_name">').findall(link)
-        if(len(servlist)==0):
-            servlist=re.compile('<h4 class="server_name">'+name+'</h4>(.+?)<div class="clear">').findall(link)
-
-        epilist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(servlist[0])
-        for vlink,vLinkName in epilist:
-              if(vLinkName.find("Xem Full")==-1):
-					addLink("part - "+ RemoveHTML(vLinkName.strip()),"".join(i for i in vlink if ord(i)<128),3,'',name)
-
-    #except: pass
-
-def Geturl(strToken):
-        for i in range(20):
-                try:
-                        strToken=strToken.decode('base-64')
-                except:
-                        return strToken
-                if strToken.find("http") != -1:
-                        return strToken
 	   
 def GetContent(url):
     try:
@@ -642,59 +548,37 @@ def getYoutube(videoid):
                 highResoVid=selectVideoQuality(links)
                 return highResoVid    
 				
-def playVideo(videoType,videoId):
-    url = ""
-    print videoType + '=' + videoId
-    if (videoType == "youtube"):
-        try:
-                url = getYoutube(videoId.strip())
-                xbmcPlayer = xbmc.Player()
-                xbmcPlayer.play(url)
-        except:
-                url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.strip().replace('?','')
-                xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
-    else:
+def playVideo(videoId,suburl):
+        print videoId
+        vidinfo = videoId.split("_")[0]
+        win = xbmcgui.Window(10000)
+        win.setProperty('1ch.playing.title', vidinfo)
+        win.setProperty('1ch.playing.season', str(3))
+        win.setProperty('1ch.playing.episode', str(4))
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
+        xbmcPlayer.setSubtitles(suburl) 
 		
 
-def loadVideosOld(url,name):
-        GA("LoadVideo","NA")
-        xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
-        link=GetContent(url)
-        link = ''.join(link.splitlines()).replace('\t','').replace('\'','"').replace('\\','')
-        try:
-            link =link.encode("UTF-8")
-        except: pass
-        match = re.compile('so.addVariable\("file",\s*"(.+?)"\)').findall(link)
-        if(len(match)>0):
-               vidcontent=GetContent(match[0])
-               vidmatch = re.compile('<jwplayer:file>(.+?)</jwplayer:file>').findall(vidcontent)
-               hdmatch = re.compile('<jwplayer:hd.file>(.+?)</jwplayer:hd.file>').findall(vidcontent)
-               if(len(hdmatch) > 0) and usehd==True:
-                   vidmatch=hdmatch
-               vidlink=vidmatch[0]
-               playVideo("direct",vidlink)
-		
-def loadVideos(url,name):
+def loadVideos(url,name,suburl):
     #try:
         GA("LoadVideo","NA")
         xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
-        link=GetContent(url)
-        link = ''.join(link.splitlines()).replace('\t','').replace('\'','"')
-        try:
-            link =link.encode("UTF-8")
-        except: pass
-        match=re.compile('proxy.link=phimsot\*(.+?)&').findall(link)
-        newlink=decrypt(match[0])
+        if(url.find("sembunyi*") > -1):
+              newlink=decrypt(url.replace("sembunyi*",""))
+        elif(url.find("//")==-1):
+			newlink=urllib.unquote_plus(url.replace("@","%"))
+			newlink=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)[0]
+        else:
+			newlink=url
         print newlink
         if(newlink.find("cyworld.vn") > 0):
             vidcontent=GetContent(newlink)
             vidmatch=re.compile('<meta property="og:video" content="(.+?)" />').findall(vidcontent)
             vidlink=vidmatch[0]
-            playVideo("direct",vidlink)
+            playVideo(vidlink,suburl)
         elif(newlink.find("picasaweb.google") > 0):
-                 vidcontent=postContent("http://phimsot.com/default/player/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+                 vidcontent=postContent("http://www.cdn.comotin.com/www/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
                  vidid=vidlink=re.compile('#(.+?)&').findall(newlink+"&")
                  if(len(vidid)>0):
 					vidmatch=re.compile('feedPreload:(.+?)}}},').findall(vidcontent)[0]+"}}"
@@ -715,14 +599,14 @@ def loadVideos(url,name):
 						if(len(hdmatch) > 0):
 							vidmatch=hdmatch
 						vidlink=vidmatch[-1][0]
-                 playVideo("direct",vidlink)
+                 playVideo(vidlink,suburl)
         elif (newlink.find("docs.google.com") > -1):
                 vidcontent = GetContent(newlink)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
                         vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
-                        playVideo("direct",vidlink[0])
+                        playVideo(vidlink[0],suburl)
         if (newlink.find("dailymotion") > -1):
                 match=re.compile('/(.+?)-').findall(newlink)
                 dailyid=""
@@ -753,11 +637,11 @@ def loadVideos(url,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
-                playVideo("direct",vidlink)
+                playVideo(vidlink,suburl)
         elif(newlink.find("youtube") > 0):
             vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
             vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
-            playVideo("youtube",vidlink)
+            playVideo(getYoutube(vidlink),suburl)
         else:
             sources = []
             label=name
@@ -769,7 +653,7 @@ def loadVideos(url,name):
                 vidlink = source.resolve()
             else:
                 vidlink =""
-            playVideo("direct",vidlink)
+            playVideo(vidlink,suburl)
     #except:
        #d = xbmcgui.Dialog()
        #d.ok(url,"Can't play video",'Try another link')
@@ -945,7 +829,17 @@ def addLink(name,url,mode,iconimage,mirrorname):
         liz.addContextMenuItems(contextMenuItems, replaceItems=True)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
         return ok
-
+		
+def addLinkSub(name,url,mode,iconimage,suburl):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&suburl="+urllib.quote_plus(suburl)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
+        contextMenuItems = []
+        liz.addContextMenuItems(contextMenuItems, replaceItems=True)
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
+        return ok
+		
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
@@ -1004,7 +898,11 @@ try:
         mirrorname=urllib.unquote_plus(params["mirrorname"])
 except:
         pass
-
+try:
+        subtitleurl=urllib.unquote_plus(params["suburl"])
+except:
+        pass
+		
 sysarg=str(sys.argv[1])
 print "mode is:" + str(mode)
 if mode==None or url==None or len(url)<1:
@@ -1014,16 +912,5 @@ elif mode==2:
         GA("INDEX",name)
         INDEX(url)
 elif mode==3:
-        #loadVideosold("https://picasaweb.google.com/lh/photo/sOWhi5gJFwS0KcJcBl_v342nq6fsEmAKGpofQBFQnOY","picasa")
-        loadVideos(url,mirrorname)
-elif mode==4:
-        SEARCH()
-elif mode==5:
-       Episodes(url,name)
-elif mode==7:
-       Mirrors(url,name)
-elif mode==8:
-       Countries()
-elif mode==9:
-       Categories()
+        loadVideos(url,mirrorname,subtitleurl)
 xbmcplugin.endOfDirectory(int(sysarg))
