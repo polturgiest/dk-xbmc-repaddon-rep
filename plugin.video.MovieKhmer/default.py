@@ -152,7 +152,11 @@ def INDEX(url):
                             #match1=re.compile('<a href="(.+?)" rel="bookmark"><img [^>]*src="(.+?)" class="attachment-thumbnail wp-post-image" alt="(.+?)"').findall(vcontent[0])
                             vlink=re.compile('<h4 class="post-tit"><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vcontent[0])
                             vurl=vlink[0][0]
-                            vimage=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])[0]
+                            vimage=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent[0])
+                            if(len(vimage)>0):
+                                vimage=vimage[0]
+                            else:
+                                vimage=""
                             vname=vlink[0][1]
                             #(vurl, vimage, vname)=match1[0]
                             addDir(vname.encode("utf-8").replace("Thai Lakorn &#8211;",""),vurl,5,vimage)
@@ -160,7 +164,7 @@ def INDEX(url):
         if(len(match5) >= 1 and len(match5[0]) >= 1 ):
                 pagelist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match5[0][0])
                 for pageurl,pagenum in pagelist:
-					addDir("page " + pagenum.replace('Last \xc2\xbb','Last >>').replace('\xc2\xab',"Prev <<").replace('\xc2\xbb',"Next >>"),pageurl,2,"")
+					addDir("page " + pagenum.replace('Last \xc2\xbb','Last >>').replace('\xc2\xab',"Prev <<").replace("Prev << First","<< First").replace('\xc2\xbb',"Next >>"),pageurl,2,"")
 
     #except: pass
 			
@@ -180,6 +184,13 @@ def Episodes(url,name):
     #try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
+
+        match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(newlink)
+        if(len(match1) > 0):
+				match1=re.compile('data-vid="(.+?)"><img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*><span class="v-title">(.+?)</span>').findall(match1[0])
+				for mcontent in match1:
+					vLink,vimage,vLinkName=mcontent
+					addLink(vLinkName.encode("utf-8"),"https://docs.google.com/file/d/"+vLink+"/preview",3,vimage)
         match=re.compile('\{\s*"file":\s*"(.+?)",\s*"title":\s*"(.+?)",\s*"description":').findall(link)
         if(len(match) >= 1):
                 for mcontent in match:
@@ -215,6 +226,10 @@ def Episodes(url,name):
                                         hasitem=ParseSeparate(newlink,'title: "(.+?)",','file: "(.+?)",')
                                 else:
                                         hasitem=ParseSeparate(newlink,'{"title":"(.+?)","creator":','"levels":\[{"file":"(.+?)"}')
+        if(len(match1) ==0):
+			match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+			if(len(match) >= 1):
+				addLink(name.encode("utf-8"),match[0],3,"")
         match=re.compile('\).setup\((.+?)\)').findall(newlink)
         if(len(match) > 0):
             epimatch =re.compile('urls:\s*\[(.+?)\]').findall(newlink)
@@ -350,6 +365,13 @@ def loadVideos(url,name):
                 dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+           elif (newlink.find("docs.google.com") > -1):
+                vidcontent = GetContent(newlink)
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
+                        playVideo("direct",vidlink[0])
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
