@@ -286,6 +286,50 @@ def Videosresolve(url,name):
                 urlcode = re.compile('if\s*\(!validstr\){\s*document.write\(unescape\("(.+?)"\)\);\s*}').findall(pcontent)[0]
                 vidcontent=urllib.unquote_plus(urlcode)
                 vidlink = re.compile('file:\s*"(.+?)",').findall(vidcontent)[0]
+           elif (newlink.find("video44") > -1):
+                link=GetContent(newlink)
+                link=''.join(link.splitlines()).replace('\'','"')
+                media_url= ""
+                media_url = re.compile('file:\s*"(.+?)"').findall(link)
+                if(len(media_url)==0):
+                     media_url = re.compile('url:\s*"(.+?)"').findall(link)
+                vidlink = media_url[0]
+           elif (newlink.find("videobug") > -1):
+                link=urllib.unquote_plus(GetContent(newlink))
+                link=''.join(link.splitlines()).replace('\'','"')
+                media_url= ""
+                media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)
+                if(len(media_url)==0):
+                    media_url = re.compile('{file:\s*"(.+?)"').findall(link)
+
+                vidlink = urllib.unquote(media_url[0])
+           elif (newlink.find("play44") > -1):
+                link=GetContent(newlink)
+                link=''.join(link.splitlines()).replace('\'','"')
+                media_url= ""
+                media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
+                vidlink = urllib.unquote(media_url)
+           elif (newlink.find("byzoo") > -1):
+                link=GetContent(newlink)
+                link=''.join(link.splitlines()).replace('\'','"')
+                media_url= ""
+                media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
+                vidlink = urllib.unquote(media_url)
+           elif (newlink.find("vidzur") > -1 or newlink.find("videofun") > -1 or newlink.find("auengine") > -1):
+                link=GetContent(newlink)
+                link=''.join(link.splitlines()).replace('\'','"')
+                media_url= ""
+                op = re.compile('playlist:\s*\[(.+?)\]').findall(link)[0]
+                urls=op.split("{")
+                for rows in urls:
+                     if(rows.find("url") > -1):
+                          murl= re.compile('url:\s*"(.+?)"').findall(rows)[0]
+                          media_url=urllib.unquote_plus(murl)
+                vidlink = media_url
+           elif (newlink.find("cheesestream") > -1 or newlink.find("yucache") > -1):
+                link=GetContent(newlink)
+                link=''.join(pcontent.splitlines()).replace('\'','"')
+                vidlink = re.compile('<meta property="og:video" content="(.+?)"/>').findall(link)[0]
            elif(newlink.find("picasaweb.google") > 0):
                 vidcontent=postContent("http://cache.dldrama.com/gk/43/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",domain)
                 vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
@@ -574,8 +618,14 @@ def loadVideos(url,name):
            except: pass
            match=re.compile('<div id="player" align="center"><iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
            if(len(match) > 0):
-				framecontent = GetContent(match[0])
-				encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(framecontent)
+				if(match[0].find("dldrama.com")>-1):
+					framecontent = GetContent(match[0])
+					encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(framecontent)
+				else:
+					vidlink=Videosresolve(match[0],name)
+					addLink("Unknown Quality",vidlink,8,"","")
+					encyptedurl=[]
+					framecontent=""
 				if(len(encyptedurl)>0):
 						vidlink=Videosresolve(decodeurl(encyptedurl[0]),name)
 						addLink("Unknown Quality",vidlink,8,"","")
