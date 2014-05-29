@@ -1,7 +1,6 @@
 import json
 import urllib
 import urllib2
-import requests
 import re
 import sys
 import cookielib

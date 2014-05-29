@@ -1,6 +1,27 @@
 <?xml version="1.0" ?>
 <movielist>
-	<movie name="Non-Stop" url="/3943" year="2014 "/>
+	<movie name="The Lego Movie" url="/3965" year="2014 "/>
+	<movie name="Taps" url="/3964" year="1981 "/>
+	<movie name="Thief" url="/3963" year="1981 "/>
+	<movie name="The Undefeated" url="/3962" year="1969 "/>
+	<movie name="The Quatermass Xperiment" url="/3961" year="1956 "/>
+	<movie name="Revolver" url="/3960" year="2005 "/>
+	<movie name="Killing Zoe" url="/3959" year="1994 "/>
+	<movie name="Julia%27s Eyes" url="/3958" year="2010 "/>
+	<movie name="Powder" url="/3957" year="1995 "/>
+	<movie name="Talk to Her" url="/3956" year="2002 "/>
+	<movie name="Non-Stop" url="/3955" year="2014 "/>
+	<movie name="Devil%27s Knot" url="/3954" year="2014 "/>
+	<movie name="13%2F13%2F13" url="/3953" year="2013 "/>
+	<movie name="Contract Killers" url="/3952" year="2014 "/>
+	<movie name="Airplane vs Volcano" url="/3951" year="2014 "/>
+	<movie name="Cocaine Cowboys" url="/3950" year="2007 "/>
+	<movie name="Another Cinderella Story" url="/3949" year="2008 "/>
+	<movie name="A Cinderella Story" url="/3948" year="2004 "/>
+	<movie name="Powder Room" url="/3947" year="2013 "/>
+	<movie name="Hannibal Rising" url="/3946" year="2007 "/>
+	<movie name="Blue Exorcist%3A The Movie" url="/3945" year="2013 "/>
+	<movie name="Shinjuku Incident" url="/3944" year="2009 "/>
 	<movie name="Frantic" url="/3942" year="1988 "/>
 	<movie name="High Crimes" url="/3941" year="2002 "/>
 	<movie name="Buffalo %2766" url="/3940" year="1998 "/>
@@ -39,7 +60,6 @@
 	<movie name="Son of God" url="/3905" year="2014 "/>
 	<movie name="Amazonia" url="/3904" year="2013 "/>
 	<movie name="The Amazing Spider-Man 2 %28Webrip%2C to be replaced%29" url="/3903" year="2014 "/>
-	<movie name="The Lego Movie %28Webrip%29" url="/3901" year="2014 "/>
 	<movie name="Born %26 Raised" url="/3900" year="2013 "/>
 	<movie name="DisOrientation" url="/3899" year="2013 "/>
 	<movie name="Overlord %28m%29" url="/3898" year="1978 "/>
