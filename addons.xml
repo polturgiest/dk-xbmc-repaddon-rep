@@ -90,7 +90,7 @@
 
 <addon
   id="plugin.video.comotin"
-  version="1.0.0"
+  version="1.0.1"
   name="comotin"
   provider-name="Dknight">
   <requires>

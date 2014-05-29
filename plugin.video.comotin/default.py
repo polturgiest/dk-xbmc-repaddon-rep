@@ -23,6 +23,8 @@ PATH = "comotin"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.6" #<---- PLUGIN VERSION
 homeLink="http://comotin.com/"
+home = ADDON.getAddonInfo('path')
+filename = xbmc.translatePath(os.path.join(home, 'resources', 'streams.xml'))
 usehd = ADDON.getSetting('use-hd') == 'true'
 def __init__(self): 
     self.playlist=sys.modules["__main__"].playlist
@@ -42,7 +44,39 @@ def HOME():
         addDir("Barat/Hollywood","http://www.comotin.com/feeds/posts/default/-/barat?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
         addDir("Asian","http://www.comotin.com/feeds/posts/default/-/asia?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
         addDir("Other","http://www.comotin.com/feeds/posts/default/-/global?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
-  
+        addDir("Live TV","http://www.comotin.com",5,'')
+
+def SearchXml(SearchText):
+    if os.path.isfile(filename)==False:
+        BuildXMl()
+    f = open(filename, "r")
+    text = f.read()
+    if SearchText=='-1':
+        match=re.compile('<movie name="[^A-Za-z](.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)	
+        SearchText=""
+    else:
+        match=re.compile('<movie name="' + SearchText + '(.+?)" url="(.+?)" year="(.+?)"/>', re.IGNORECASE).findall(text)
+    for i in range(len(match)):
+        (mName,mNumber,vyear)=match[i]
+        addDir(SearchText+mName,mNumber,6,"")
+		
+def ParseXml(tagname):
+        f = open(filename, "r")
+        text = f.read()
+        xmlcontent=xml.dom.minidom.parseString(text)
+        items=xmlcontent.getElementsByTagName('channel')
+        print "calling " + tagname
+        for channelitem in items:
+                if(len(channelitem.getElementsByTagName('item'))>=1 and channelitem.getElementsByTagName('name')[0].childNodes[0].data==tagname):
+                        chitems = channelitem.getElementsByTagName('item')
+                        for itemXML in chitems:
+                                vname=itemXML.getElementsByTagName('title')[0].childNodes[0].data.strip()
+                                vurl=itemXML.getElementsByTagName('link')[0].childNodes[0].data.strip()
+                                vimg=itemXML.getElementsByTagName('thumbnail')[0].childNodes[0].data.strip()
+                                addLink(vname,vurl,6,vimg,"")
+	
+
+				
 def INDEX(url):
         link = GetContent(url)
         link = ''.join(link.splitlines())
@@ -913,4 +947,9 @@ elif mode==2:
         INDEX(url)
 elif mode==3:
         loadVideos(url,mirrorname,subtitleurl)
+elif mode==5:
+        ParseXml(name) 
+elif mode==6:
+        GA("PlayVideo",name)
+        playVideo(url,"")
 xbmcplugin.endOfDirectory(int(sysarg))
