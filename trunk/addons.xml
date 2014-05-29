@@ -377,7 +377,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.17"
+  version="1.0.18"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
