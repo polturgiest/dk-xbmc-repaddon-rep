@@ -25,22 +25,13 @@ VERSION = "1.0.4" #<---- PLUGIN VERSION
 
 strdomain ='http://www.ph-kh.com/'
 def HOME():
-        addDir('Search','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Movies?&max-results=18',4,'')
-        addDir('Khmer Movies','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Drama','http://www.phumikhmers.blogspot.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Filipino Drama','http://www.phumikhmers.blogspot.com/search/label/Philippine%20Movie?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Movies','http://www.phumikhmers.blogspot.com/search/label/Thai%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Lakorns','http://www.phumikhmers.blogspot.com/search/label/Thai%20Lakorn?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Drama','http://www.phumikhmers.blogspot.com/search/label/Korean%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Korean Movies','http://www.phumikhmers.blogspot.com/search/label/Korean%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Hong Kong Drama','http://www.phumikhmers.blogspot.com/search/label/Hong%20Kong%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Hong Kong Movies','http://www.phumikhmers.blogspot.com/search/label/Hong%20Kong%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Taiwanese Drama','http://www.phumikhmers.blogspot.com/search/label/Taiwan%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Taiwanese Movies','http://www.phumikhmers.blogspot.com/search/label/Taiwan%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Movies','http://www.phumikhmers.blogspot.com/search/label/Chinese%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Series','http://www.phumikhmers.blogspot.com/search/label/Chinese%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Documentaries','http://www.phumikhmers.blogspot.com/search/label/Documentary?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
-        addDir('Other Shows','http://www.phumikhmers.blogspot.com/search/label/Hong%20Kong%20Drama?&max-results=18',6,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Thai Lakorn','http://www.hotkhmer.com/feeds/posts/default/-/Thai%20Parts_Khmer?start-index=1&alt=json-in-script&callback=1&max-results=32',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Thai Movies','http://www.hotkhmer.com/feeds/posts/default/-/Thai%20Movies_Khmer?start-index=1&alt=json-in-script&callback=1&max-results=32',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Khmer Drama','http://www.hotkhmer.com/feeds/posts/default/-/Khmer%20Parts?start-index=1&alt=json-in-script&callback=1&max-results=32',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Movies','http://www.hotkhmer.com/feeds/posts/default/-/Khmer%20Short?start-index=1&alt=json-in-script&callback=1&max-results=32',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Chinese Movies','http://www.hotkhmer.com/feeds/posts/default/-/Chinese%20Movies_Khmer?start-index=1&alt=json-in-script&callback=1&max-results=32',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Chinese Series','http://www.hotkhmer.com/feeds/posts/default/-/Chinese%20Parts_Khmer?start-index=1&alt=json-in-script&callback=1&max-results=32',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+
 
 		
 def Shows():
@@ -144,77 +135,33 @@ def SEARCH():
     except: pass
 	
 def INDEX(url):
-    #try:
         link = GetContent(url)
+        link = ''.join(link.splitlines())
         try:
             link =link.encode("UTF-8")
         except: pass
-        newlink = ''.join(link.splitlines()).replace('\t','')
+        pagedata=link.replace("// API callback1(","").replace("});","}")#.replace("\u003E","").replace("\u003C","").replace("\u0026","").decode('utf-8')
+        pagedata=json.loads(pagedata)
+        vidlist = re.compile('<div class="film_short">(.+?)</a></div>\s*</div>').findall(link)
+        for videocotent in pagedata["feed"]["entry"]:
+            vimg=""
+            try:
+				vimg=  videocotent["media$thumbnail"]["url"]
+            except: pass
+            vname= videocotent["title"]["$t"]
+            vurl=""
+            for vurlitem in videocotent["link"]:
+                if(vurlitem["rel"]=="self"):
+                    vurl=vurlitem["href"]
+            try:
+                vname=vname.encode("UTF-8")
+            except: pass
+            addDir(vname,vurl+"?alt=json-in-script&callback=1",5,vimg)
+        staridx= re.compile('start-index=(.+?)&').findall(url)
+        newstart=int(staridx[0])+33
+        addDir("Next>>",url.replace("start-index="+staridx[0]+"&","start-index="+str(newstart)+"&"),2,vimg)
 
-        #print newlink
-        #start=newlink.index('<div id="main">')
-        #end=newlink.index('<!-- main -->')
-        match=re.compile("<div class='cutter'>(.+?)<script type='text/javascript'>\s*createSummaryAndThumb").findall(newlink)
-        for vcontent in match:
-                vurl=re.compile("<a href='(.+?)'>").findall(vcontent)[0]
-                match1=re.compile('bp_thumbnail_resize\("(.+?)","(.+?)"\)').findall(vcontent)
-                if(len(match1) > 0):
-                     (vimage,vname)=match1[0]
-                vimage1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]* imageanchor="1">').findall(vcontent)
-                if(len(vimage1)>0):
-                      vimage=vimage1[0]
-                addDir(vname,vurl,5,vimage)
-        #match5=re.compile("<a class='blog-pager-newer-link' href='(.+?)' id='Blog1_blog-pager-newer-link' title='Newer Posts'>Newer Posts</a>").findall(newlink)
-        #print match5
-        #if(len(match5) >= 1):
-        #        url=match5[0]
-        #        addDir("<< Previous",url,2,"")
-        #match5=re.compile("<a class='blog-pager-older-link' href='(.+?)' id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>").findall(newlink)
-        #if(len(match5) >= 1 and len(match) > 17):
-        #        url=match5[0]
-        #        addDir("Next >>",buildNextPage(pagenum,label)url,2,"")
-        label=re.compile("/label/(.+?)\?").findall(url)[0]
-        pagenum=re.compile("PageNo=(.+?)").findall(url)
-        prev="0"
-        if(len(pagenum)>0):
-              prev=str(int(pagenum[0])-1)
-              pagenum=str(int(pagenum[0])+1)
 
-        else:
-              pagenum="2"
-        nexurl=buildNextPage(pagenum,label)
-
-        if(int(pagenum)>2 and prev=="1"):
-              urlhome=url.split("?")[0]+"?"
-              addDir("<< Previous",urlhome,2,"")
-        elif(int(pagenum)>2):
-              addDir("<< Previous",buildNextPage(prev,label),2,"")
-        if(nexurl!=""):
-              addDir("Next >>",nexurl,2,"")
-    #except: pass
-
-def buildNextPage(pagenum,label):
-	pagecount=str((int(pagenum) - 1) * 18)
-	url="http://www.phumikhmers.blogspot.com/feeds/posts/summary/-/"+label+"?start-index="+pagecount+"&max-results=1&alt=json-in-script&callback=finddatepost"
-	link = GetContent(url)
-	try:
-		link =link.encode("UTF-8")
-	except: pass
-	match=re.compile('"published":\{"\$t":"(.+?)"\}').findall(link)
-	if(len(match)>0):
-		tsvalue=urllib.quote_plus(match[0][0:19]+match[0][23:29])
-		newurl="http://www.phumikhmers.blogspot.com/search/label/"+label+"?updated-max="+tsvalue+"&max-results=18#PageNo="+pagenum
-	else:
-		newurl=""
-	return newurl
-	
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-		
 def SearchResults(url):
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
@@ -228,69 +175,39 @@ def SearchResults(url):
             addDir('Next>',nexurl,6,'')			
 			
 def Episodes(url,name):
-    #try:
+        print url
         link = GetContent(url)
+        link = ''.join(link.splitlines())
         try:
             link =link.encode("UTF-8")
         except: pass
-        newlink = ''.join(link.splitlines()).replace('\t','')
-        match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(newlink)
+        pagedata=link.replace("// API callback1(","").replace("});","}")#.replace("\u003E","").replace("\u003C","").replace("\u0026","").decode('utf-8')
+        pagedata=json.loads(pagedata)
+        pagecontent=pagedata["entry"]["content"]["$t"]
+        match1=re.compile('"playlist":\s*\[(.+?)\]').findall(pagecontent.replace("[END]","(END)"))
+        print match1[0].strip()[-1:]
+        print match1[0].strip()[:-1]
         if(len(match1) > 0):
-			for mvcontent in match1:
-				print mvcontent
-				match2=re.compile('data-vid="(.+?)"><img /><span class="v-title">(.+?)</span>').findall(mvcontent.replace("data-vido=","data-vid="))
-				for mcontent in match2:
-					vLink,vLinkName=mcontent
-					if(is_number(vLink)):
-						fullLink="http://player.vimeo.com/video/"+vLink
-					else:
-						fullLink="http://docs.google.com/file/d/"+vLink+"/preview"
-					addLink(vLinkName.encode("utf-8"),fullLink,3,"")
-        match=re.compile('{\s*"file":\s*"(.+?)",\s*"title":\s*"(.+?)",\s*"description":\s*"').findall(link)
-        if(len(match) >= 1):
-                for mcontent in match:
-                    vLink, vLinkName=mcontent
-                    addLink(vLinkName.encode("utf-8"),vLink,3,'')
-        else:
-                match=re.compile('"file": "(.+?)",').findall(link)
-                if(len(match) >= 1):
-                        if(".xml" in match[0]):
-                                newcontent=GetContent("http://moviekhmer.com"+match[0])
-                                ParseXml(newcontent)
-                        elif (len(match) > 1):
-                                counter = 0
-                                for mcontent in match:
-                                        counter += 1
-                                        addLink(name.encode("utf-8") + " part " + str(counter),mcontent,3,"")
-                        else:
-                                addLink(name.encode("utf-8"),match[0],3,"")
-                else:
-                        match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                        if(len(match) ==0):
-                                match=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                        if(len(match) >= 1):
-                                if(match[0].find(".swf") > -1):
-                                        match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                                        if(len(match) >= 1):
-                                              addLink(name.encode("utf-8"),match[0],3,"")
-                                else:
-                                        addLink(name.encode("utf-8"),match[0],3,"")
-                        else:
-                                match=re.compile("'flashvars','&#038;file=(.+?)'").findall(link)
-                                if(len(match) >= 1):
-                                        ParseXml(GetContent(match[0]).encode("utf-8"))
-                                elif(len(re.compile('file: "(.+?)",').findall(link)) >=1):
-                                        hasitem=ParseSeparate(newlink,'title: "(.+?)",','file: "(.+?)",')
-                                else:
-                                        hasitem=ParseSeparate(newlink,'{"title":"(.+?)","creator":','"levels":\[{"file":"(.+?)"}')
+				if(match1[0].strip()[-1:]==","):
+					urlcontent=match1[0].strip()[:-1]
+				else:
+					urlcontent=match1[0].strip()
+				epList=json.loads("["+urlcontent.replace('"+sitename+"','')+"]")
+				for episodeitem in epList:
+					vLinkName=episodeitem["title"]
+					vLink=episodeitem["file"]
+					vimg=episodeitem["image"]
+					try:
+						vLinkName=vLinkName.encode("UTF-8")
+					except: pass
+					addLink(vLinkName.encode("utf-8"),vLink,3,vimg)
+        match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(pagecontent)
+        if(len(match1) > 0):
+				match1=re.compile('data-vid="(.+?)">\s*<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>\s*<span class="v-title">(.+?)</span>').findall(match1[0])
+				for mcontent in match1:
+					vLink,vimage,vLinkName=mcontent
+					addLink(vLinkName.encode("utf-8"),"http://docs.google.com/file/d/"+vLink+"/preview",3,vimage)
         
-        match=re.compile('<div class="drama-info">(.+?)</div>').findall(newlink)
-        if(len(match) >= 1):
-                match=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match[0])
-                if(len(match) >= 1):
-                    for mcontent in match:
-                        vLink, vLinkName=mcontent
-                        addLink(vLinkName.encode("utf-8"),vLink,3,'')
  
               
     #except: pass		
@@ -438,9 +355,6 @@ def loadVideos(url,name):
                 dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
-           elif (newlink.find("4shared") > -1):
-                d = xbmcgui.Dialog()
-                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
            elif (newlink.find("docs.google.com") > -1):
                 vidcontent = GetContent(newlink)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
@@ -448,6 +362,9 @@ def loadVideos(url,name):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
                         vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
                         playVideo("direct",vidlink[0])
+           elif (newlink.find("4shared") > -1):
+                d = xbmcgui.Dialog()
+                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
            elif (newlink.find("vimeo") > -1):
                 idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
                 if(len(idmatch) > 0):
