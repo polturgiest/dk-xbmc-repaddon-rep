@@ -12,14 +12,14 @@ import json
 import datetime
 import cgi
 
-ADDON = xbmcaddon.Addon(id='plugin.video.comotin')
+ADDON = xbmcaddon.Addon(id='plugin.video.phim47')
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
     ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
     
-PATH = "comotin"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
+PATH = "phim47"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.0" #<---- PLUGIN VERSION
+VERSION = "1.0.6" #<---- PLUGIN VERSION
 homeLink="http://phimsot.com/"
 usehd = ADDON.getSetting('use-hd') == 'true'
 def __init__(self): 
@@ -64,7 +64,7 @@ def INDEX(url):
         try:
             link =link.encode("UTF-8")
         except: pass
-        vidlist = re.compile('<div class="film_short">(.+?)</a></div>\s*</div>').findall(link)
+        vidlist = re.compile('<div class="film_short">(.+?)</div>\s*</div>').findall(link)
         for videocotent in vidlist:
             vimg= re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(videocotent)[0]
             vurl,vname= re.compile('<a class="thumbnail" href="(.+?)" title="(.+?)">').findall(videocotent)[0]
@@ -101,7 +101,13 @@ def Mirrors(url,name):
   except: pass
   servlist =re.compile('<h4 class="server_name">(.+?)</h4>').findall(link)
   for vname in servlist:
-         addDir(vname.encode("utf-8"),mirrorlink.encode("utf-8"),5,"")  
+         try:
+			vname=vname.encode("utf-8")
+         except: pass
+         try:
+			mirrorlink=mirrorlink.encode("utf-8")
+         except: pass
+         addDir(vname,mirrorlink,5,"")  
 
 			
 def decodeurl(encodedurl):
