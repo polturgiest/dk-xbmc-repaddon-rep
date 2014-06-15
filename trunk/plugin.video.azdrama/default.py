@@ -123,8 +123,8 @@ def Parts(url,name):
         except: pass
         partlist=re.compile('<li>VIP(.+?)by:').findall(link)
         totalpart=0
+        totalpart=len(partlist)
         for partconent in partlist:
-               totalpart=totalpart+1
                partctr=0
                partlink=re.compile('<a href="(.+?)">').findall(partconent)
                mirror=re.compile('#(.+?)<a').findall(partconent)
@@ -247,6 +247,7 @@ def postContent(url,data,referr):
 def Videosresolve(url,name):
         #try:
            newlink=url
+           print newlink
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(url)
                 if(len(match) == 0):
@@ -300,8 +301,9 @@ def Videosresolve(url,name):
                 media_url= ""
                 media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)
                 if(len(media_url)==0):
-                    media_url = re.compile('{file:\s*"(.+?)"').findall(link)
-
+                    media_url = re.compile('file:\s*"(.+?)"').findall(link)
+                if(len(media_url)==0):
+                    media_url = re.compile('file=(.+?)?"').findall(link)
                 vidlink = urllib.unquote(media_url[0])
            elif (newlink.find("play44") > -1):
                 link=GetContent(newlink)

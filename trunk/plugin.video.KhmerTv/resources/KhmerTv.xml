@@ -5,7 +5,7 @@
     <info>Khmer channels from khiptv</info>
 	<item>
       <title>CTN</title>
-      <link>http://globecast.gcctn.cshls.lldns.net/gcctn/globecast/globecast/globecast_1500.m3u8?wowzasessionid=1391934041 live=true</link>
+      <link>http://gcasialive-i.akamaihd.net/hls/live/218647/CTN-HLS-stream/master_01.m3u8?wowzasessionid=1391934041 live=true</link>
       <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
     </item>
 	<item>
@@ -60,7 +60,7 @@
     </item>
 	<item>
       <title>Hangmeas</title>
-      <link>rtmp://laxlive02.malimarcdn.com:1935/khorigin00/_definst_/hvm.sdp</link>
+      <link>mmsh://184.105.192.5:44412/HMTV_pub?MSWMExt=.asf</link>
       <thumbnail>http://khmer.be/images/tv/hangmeas-100x70.jpg</thumbnail>
     </item>
     <item>
