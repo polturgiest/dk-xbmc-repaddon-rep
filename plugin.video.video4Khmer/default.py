@@ -251,7 +251,7 @@ def Episodes(url,name):
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile('<div id="list_subcats"(.+?)<ul>(.+?)</ul></div>').findall(newlink)
         if(len(match) >= 1):
-                linkmatch=re.compile('<li class="video"><div class="video_i">(.+?)</div></li>').findall(match[0][1])
+                linkmatch=re.compile('<li class="video(.+?)</div></li>').findall(match[0][1])
                 counter = 0
                 videolist =""
                 vidPerGroup = 5
