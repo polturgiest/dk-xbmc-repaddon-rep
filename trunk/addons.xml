@@ -69,7 +69,7 @@
 
 <addon
   id="plugin.video.azdrama"
-  version="1.0.16"
+  version="1.0.18.1"
   name="azdrama.net"
   provider-name="Dknight">
   <requires>
@@ -151,7 +151,7 @@
 
 <addon
   id="plugin.video.dramago"
-  version="1.0.0"
+  version="1.0.1"
   name="DramaGo"
   provider-name="Dknight">
   <requires>
@@ -669,11 +669,11 @@
   </extension>
 </addon>
 
-<addon id="repository.dk-xbmc-repaddon" name="dk-xbmc-repaddon Add-on Repository" version="1.0.2" provider-name="dk-xbmc-repaddon">
+<addon id="repository.dk-xbmc-repaddon" name="dk-xbmc-repaddon Add-on Repository" version="1.0.1" provider-name="dk-xbmc-repaddon">
 	<extension point="xbmc.addon.repository" name="dk-xbmc-repaddon Add-on Repository">
-		<info compressed="false">http://dk-xbmc-repaddon-rep.googlecode.com/svn/trunk/addons.xml</info>
-		<checksum>http://dk-xbmc-repaddon-rep.googlecode.com/svn/trunk/addons.xml.md5</checksum>
-		<datadir zip="false">http://dk-xbmc-repaddon-rep.googlecode.com/svn/trunk/</datadir>
+		<info compressed="false">http://162.248.143.235/xbmc/addons.xml</info>
+		<checksum>http://162.248.143.235/xbmc/addons.xml.md5</checksum>
+		<datadir zip="false">http://162.248.143.235/xbmc/</datadir>
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary>Install Add-ons from dk Add-on Repository</summary>

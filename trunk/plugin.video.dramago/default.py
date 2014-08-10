@@ -197,18 +197,19 @@ def HOME():
 
 
 def GetJSON(url,data,referr):
-    opener = urllib2.build_opener()
-    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
-                         ('Accept-Encoding','gzip, deflate'),
-                         ('Referer', referr),
-                         ('Content-Type', 'application/x-www-form-urlencoded'),
-                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
-                         ('Connection','keep-alive'),
-                         ('Accept-Language','en-us,en;q=0.5'),
-                         ('Pragma','no-cache')]
-    usock=opener.open(url,data)
-    data = json.load(usock)
-    usock.close()
+    #opener = urllib2.build_opener()
+    #opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+    #                     ('Accept-Encoding','gzip, deflate'),
+    #                     ('Referer', referr),
+    #                     ('Content-Type', 'application/x-www-form-urlencoded'),
+    #                     ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+    #                     ('Connection','keep-alive'),
+    #                     ('Accept-Language','en-us,en;q=0.5'),
+    #                     ('Pragma','no-cache')]
+    #usock=opener.open(url,data)
+    resp=GetContent(url)
+    data = json.loads(resp)
+    #usock.close()
     return data
 
 def CreateList(videoLink):
@@ -963,6 +964,7 @@ def ParseVideoLink(url,name,movieinfo):
     return vidlink
 
 def ListShows(filter,type,url,fvalue,mode):
+    print url
     ShowCollection = GetJSON(url,"","")
     for Media in ShowCollection:
 		if((fvalue in Media[filter]) or Media[filter]==fvalue or (filter=="name" and Media[filter][0]==fvalue)) or fvalue =="":
