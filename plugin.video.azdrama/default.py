@@ -9,28 +9,40 @@ import base64
 import xbmc
 import datetime
 import time
+
 ADDON = xbmcaddon.Addon(id='plugin.video.azdrama')
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
     ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
-    
+GA_PRIVACY = ADDON.getSetting('ga_privacy') == "true"
+DISPLAY_MIRRORS = ADDON.getSetting('display_mirrors') == "true"
+
+UASTR = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0"
 PATH = "AzDrama"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.11" #<---- PLUGIN VERSION
-domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net", "azdrama.se"]
+VERSION = "1.0.18.1" #<---- PLUGIN VERSION
+domainlist = ["azdrama.net", "www.azdrama.info", "www1.azdrama.net", "icdrama.se", "azdrama.se"]
 domain = domainlist[int(ADDON.getSetting('domainurl'))]
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
 def HOME():
         #addDir('Search','http://www.khmeravenue.com/',4,'http://yeuphim.net/images/logo.png')
-        addDir('Recent Updates','http://'+domain+'/recently-updated/',2,'')
-        addDir('English Subtitles','http://'+domain+'/english/&sort=date',7,'')
-        addDir('HK Dramas','http://'+domain+'/hk-drama/',2,'')
-        addDir('HK Movies','http://'+domain+'/hk-movie/',2,'')
-        addDir('HK Shows','http://'+domain+'/hk-show/',2,'')
-        addDir('Korean Dramas','http://'+domain+'/korean-drama/',2,'')
-        addDir('Mainland Chinese Dramas','http://'+domain+'/chinese-drama/',2,'')
-        addDir('Taiwanese Dramas','http://'+domain+'/taiwanese-drama/',2,'')
+        if ADDON.getSetting('list_recent_updates') == "true":
+            addDir('Recent Updates','http://'+domain+'/recently-updated/',2,'')
+        if ADDON.getSetting('list_english_subtitles') == "true":
+            addDir('English Subtitles','http://'+domain+'/english/&sort=date',7,'')
+        if ADDON.getSetting('list_hk_dramas') == "true":
+            addDir('HK Dramas','http://'+domain+'/hk-drama/',2,'')
+        if ADDON.getSetting('list_hk_movies') == "true":
+            addDir('HK Movies','http://'+domain+'/hk-movie/',2,'')
+        if ADDON.getSetting('list_hk_shows') == "true":
+            addDir('HK Shows','http://'+domain+'/hk-show/',2,'')
+        if ADDON.getSetting('list_korean_dramas') == "true":
+            addDir('Korean Dramas','http://'+domain+'/korean-drama/',2,'')
+        if ADDON.getSetting('list_mainlan_dramas') == "true":
+            addDir('Mainland Chinese Dramas','http://'+domain+'/chinese-drama/',2,'')
+        if ADDON.getSetting('list_taiwanese_dramas') == "true":
+            addDir('Taiwanese Dramas','http://'+domain+'/taiwanese-drama/',2,'')
 
 def INDEX(url):
     #try:
@@ -50,7 +62,7 @@ def INDEX(url):
         if(len(pagecontent)>0):
                 match5=re.compile('<a href="(.+?)" class="(.+?)" title="(.+?)">(.+?)</a>').findall(pagecontent[0])
                 for vurl,vtmp,vname,vtmp2 in match5:
-                    addDir("page: " + vname,vurl,2,"")
+                    addDir(cleanPage(vname),vurl,2,"")
     #except: pass
 
 
@@ -111,7 +123,10 @@ def Mirrors(url,name):
                 mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">(.+?)</div>').findall(match[0])
                 if(len(mirrors) >= 1):
                         for vLinkName in mirrors:
-                            addDir(vLinkName.encode("utf-8"),url,5,'')
+                            if DISPLAY_MIRRORS:
+                                addDir(vLinkName.encode("utf-8"),url,5,'')
+                            else:
+                               loadVideos(url, vLinkName.encode("utf-8")) 
 
     except: pass
 	
@@ -121,20 +136,32 @@ def Parts(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        partlist=re.compile('<li>VIP(.+?)by:').findall(link)
+        partlist=re.compile('<ul class="listew">(.+?)</ul>').findall(link)
+        partlist=re.compile('<li>(.+?)<\/li>').findall(partlist[0])
         totalpart=0
-        totalpart=len(partlist)
         for partconent in partlist:
+               print "partconent", partconent
+               totalpart=totalpart+1
                partctr=0
-               partlink=re.compile('<a href="(.+?)">').findall(partconent)
-               mirror=re.compile('#(.+?)<a').findall(partconent)
-               if(len(mirror)>0):
-                    mirrornum=mirror[0]
+               partlink=re.compile('<a href="(.+?html)">').findall(partconent)
+               mirror=re.compile('^(.+?): .*').findall(partconent)
+               full=re.compile('<b.+?(Full).+?/b>').findall(partconent) 
                if(len(partlink) > 0):
+                          mirrorname="Unknown"
+                          partname = ""
+                          if(len(mirror)>0):
+                              mirrorname=mirror[0]
                           for vlink in partlink:
                               partctr=partctr+1
-                              if(len(partlist) > 1 and totalpart>1):
-                                     addDir(name +" Mirror# "+mirrornum+ " Part " + str(partctr),vlink,3,"")
+                              if len(full)<1:
+                                     partname = " Part " + str(partctr) +"/" + str(len(partlink))
+
+                              mirrortitle = mirrorname+" "+partname
+                              if(len(partlist) > 1 and totalpart>0):
+                                     if DISPLAY_MIRRORS:
+                                         addDir(name +"@"+mirrortitle,vlink,3,"")
+                                     else:
+                                         loadVideos(vlink,"@" + mirrortitle + " " + name)
 
 
         return totalpart
@@ -164,7 +191,7 @@ def Episodes(url,name,newmode):
         if(len(pagecontent)>0):
                 match5=re.compile('<a href="(.+?)" class="(.+?)" title="(.+?)">(.+?)</a>').findall(pagecontent[0])
                 for vurl,vtmp,vname,vtmp2 in match5:
-                    addDir("page: " + vname,vurl,newmode,"")
+                    addDir(cleanPage(vname),vurl,newmode,"")
 
     #except: pass
 
@@ -229,7 +256,7 @@ def postContent(url,data,referr):
                          ('Accept-Encoding','gzip, deflate'),
                          ('Referer', referr),
                          ('Content-Type', 'application/x-www-form-urlencoded'),
-                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+                         ('User-Agent', UASTR),
                          ('Connection','keep-alive'),
                          ('Accept-Language','en-us,en;q=0.5'),
                          ('Pragma','no-cache'),
@@ -247,7 +274,6 @@ def postContent(url,data,referr):
 def Videosresolve(url,name):
         #try:
            newlink=url
-           print newlink
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(url)
                 if(len(match) == 0):
@@ -256,7 +282,7 @@ def Videosresolve(url,name):
                         match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(url)
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
                 req = urllib2.Request(link)
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                req.add_header('User-Agent', UASTR)
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
@@ -301,10 +327,18 @@ def Videosresolve(url,name):
                 media_url= ""
                 media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)
                 if(len(media_url)==0):
+                    media_url = re.compile('{file:\s*"(.+?)"').findall(link)
+                if(len(media_url)==0):
                     media_url = re.compile('file:\s*"(.+?)"').findall(link)
                 if(len(media_url)==0):
-                    media_url = re.compile('file=(.+?)?"').findall(link)
-                vidlink = urllib.unquote(media_url[0])
+                    media_url = re.compile('dll:\s*"(.+?)"').findall(link)
+                    if len(media_url) > 0 and "http" not in media_url[0]:
+                        media_url[0] = "http://videobug.se" + media_url[0]
+                if(len(media_url)==0):
+                    media_url = re.compile('link:\s*"([^"]+?//[^"]+?/[^"]+?)"').findall(link)
+                    if("http://" in Geturl(media_url[0])):
+                       media_url[0] = Geturl(media_url[0])
+                vidlink = urllib.unquote(media_url[0].replace(' ', '+'))
            elif (newlink.find("play44") > -1):
                 link=GetContent(newlink)
                 link=''.join(link.splitlines()).replace('\'','"')
@@ -333,7 +367,8 @@ def Videosresolve(url,name):
                 link=''.join(pcontent.splitlines()).replace('\'','"')
                 vidlink = re.compile('<meta property="og:video" content="(.+?)"/>').findall(link)[0]
            elif(newlink.find("picasaweb.google") > 0):
-                vidcontent=postContent("http://cache.dldrama.com/gk/43/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",domain)
+                ua = urllib.urlencode({'iagent' : UASTR})
+                vidcontent=postContent("http://cache.dldrama.com/gk/43/plugins_player.php",ua+"&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",domain)
                 vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
                 hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
                 if(len(hdmatch) > 0):
@@ -566,7 +601,7 @@ def selectVideoQuality(links):
             else:
                     print "- Missing fmt_value: " + repr(fmt_key)
 
-        video_url += " | " + 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+        video_url += " | " + UASTR
 
 
         return video_url
@@ -576,7 +611,7 @@ def getYoutube(videoid):
                 code = videoid
                 linkImage = 'http://i.ytimg.com/vi/'+code+'/default.jpg'
                 req = urllib2.Request('http://www.youtube.com/watch?v='+code+'&fmt=18')
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                req.add_header('User-Agent', UASTR)
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
@@ -584,7 +619,7 @@ def getYoutube(videoid):
                 if len(re.compile('shortlink" href="http://youtu.be/(.+?)"').findall(link)) == 0:
                         if len(re.compile('\'VIDEO_ID\': "(.+?)"').findall(link)) == 0:
                                 req = urllib2.Request('http://www.youtube.com/get_video_info?video_id='+code+'&asv=3&el=detailpage&hl=en_US')
-                                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                                req.add_header('User-Agent', UASTR)
                                 response = urllib2.urlopen(req)
                                 link=response.read()
                                 response.close()
@@ -612,50 +647,55 @@ def getYoutube(videoid):
                 return highResoVid  
 				
 def loadVideos(url,name):
-           GA("LoadVideo",name)
-           link=GetContent(url)
-           newlink = ''.join(link.splitlines()).replace('\t','')
-           try:
-               newlink =newlink.encode("UTF-8")
-           except: pass
-           match=re.compile('<div id="player" align="center"><iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
-           if(len(match) > 0):
-				if(match[0].find("dldrama.com")>-1):
-					framecontent = GetContent(match[0])
-					encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(framecontent)
-				else:
-					vidlink=Videosresolve(match[0],name)
-					addLink("Unknown Quality",vidlink,8,"","")
-					encyptedurl=[]
-					framecontent=""
-				if(len(encyptedurl)>0):
-						vidlink=Videosresolve(decodeurl(encyptedurl[0]),name)
-						addLink("Unknown Quality",vidlink,8,"","")
-				else:
-						qualityval = ["240","360p(MP4)","360p(FLV)","480p","720p","HTML5"]
-						qctr=0
-						embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
-						if(len(embedlink)>0 and embedlink[0].find(".swf")> -1):
-							vlink=re.compile('streamer=(.+?)\&').findall(framecontent)
-							if(len(vlink) >0):
-								addLink("360p(MP4)",urllib.unquote(vlink[0]),8,"","")
-						if(len(embedlink)==0):
-							embedlink=re.compile('<param [^>]*value="(.+?)" name="flashvars">').findall(framecontent) 
-						if(len(embedlink)==0):
-							vlink=re.compile('streamer:\s*"(.+?)",').findall(framecontent) 
-							if(len(vlink) >0):
-								addLink("360p(MP4)",urllib.unquote(vlink[0]),8,"","")
-						for vname in embedlink:
-							vlink=re.compile('streamer=(.+?)\&').findall(vname)
-							if(len(vlink) == 0):
-								vlink=re.compile('file=(.+?)\&').findall(vname)
-							if(len(vlink) > 0):
-								addLink(qualityval[qctr],urllib.unquote(vlink[0]),8,"","")
-							qctr=qctr+1
-           else:
-                   encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(newlink)[0]
-                   vidlink=Videosresolve(decodeurl(encyptedurl),name)
-                   addLink("Unknown Quality",vidlink,8,"","")
+		GA("LoadVideo",name)
+		episode_name = ""
+		if DISPLAY_MIRRORS == False:
+			episode_name = name
+		link=GetContent(url)
+		newlink = ''.join(link.splitlines()).replace('\t','')
+		try:
+			newlink =newlink.encode("UTF-8")
+		except: pass
+		match=re.compile('<div id="player" align="center"><iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
+		if(len(match) > 0):
+				try:
+					if(match[0].find("dldrama.com")>-1):
+						framecontent = GetContent(match[0])
+						encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(framecontent)
+					else:
+						vidlink=Videosresolve(match[0],name)
+						addLink("Unknown Quality "+episode_name,vidlink,8,"","")
+						encyptedurl=[]
+						framecontent=""
+					if(len(encyptedurl)>0):
+							vidlink=Videosresolve(decodeurl(encyptedurl[0]),name)
+							addLink("Unknown Quality",vidlink,8,"","")
+					else:
+							qualityval = ["240","360p(MP4)","360p(FLV)","480p","720p","HTML5"]
+							qctr=0
+							embedlink=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(framecontent)
+							if(len(embedlink)>0 and embedlink[0].find(".swf")> -1):
+								vlink=re.compile('streamer=(.+?)\&').findall(framecontent)
+								if(len(vlink) >0):
+									addLink("360p(MP4) "+episode_name,urllib.unquote(vlink[0]),8,"","")
+							if(len(embedlink)==0):
+								embedlink=re.compile('<param [^>]*value="(.+?)" name="flashvars">').findall(framecontent) 
+							if(len(embedlink)==0):
+								vlink=re.compile('streamer:\s*"(.+?)",').findall(framecontent) 
+								if(len(vlink) >0):
+									addLink("360p(MP4) "+episode_name,urllib.unquote(vlink[0]),8,"","")
+							for vname in embedlink:
+								vlink=re.compile('streamer=(.+?)\&').findall(vname)
+								if(len(vlink) == 0):
+									vlink=re.compile('file=(.+?)\&').findall(vname)
+								if(len(vlink) > 0):
+									addLink(qualityval[qctr] +episode_name,urllib.unquote(vlink[0]),8,"","")
+								qctr=qctr+1
+				except: pass
+		else:
+				encyptedurl=re.compile('dl.link=dll\*(.+?)&').findall(newlink)[0]
+				vidlink=Videosresolve(decodeurl(encyptedurl),name)
+				addLink("Unknown Quality "+episode_name,vidlink,8,"","")
 
 def parseDate(dateString):
     try:
@@ -665,7 +705,8 @@ def parseDate(dateString):
 
 
 def checkGA():
-
+    if GA_PRIVACY == True:
+        return
     secsInHour = 60 * 60
     threshold  = 2 * secsInHour
 
@@ -684,11 +725,12 @@ def checkGA():
     
                     
 def send_request_to_google_analytics(utm_url):
-    ua='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+    if GA_PRIVACY == True:
+        return
     import urllib2
     try:
         req = urllib2.Request(utm_url, None,
-                                    {'User-Agent':ua}
+                                    {'User-Agent':UASTR}
                                      )
         response = urllib2.urlopen(req).read()
     except:
@@ -696,6 +738,8 @@ def send_request_to_google_analytics(utm_url):
     return response
        
 def GA(group,name):
+        if GA_PRIVACY == True:
+            return
         try:
             try:
                 from hashlib import md5
@@ -820,6 +864,7 @@ def APP_LAUNCH():
 checkGA()
 
 def addLink(name,url,mode,iconimage,mirrorname):
+        name = cleanName(name)
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode('utf-8'))+"&mirrorname="+urllib.quote_plus(mirrorname)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -838,6 +883,7 @@ def addNext(formvar,url,mode,iconimage):
         return ok
 
 def addDir(name,url,mode,iconimage):
+        name = cleanName(name)
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name.encode('utf-8'))
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -845,6 +891,17 @@ def addDir(name,url,mode,iconimage):
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 
+def cleanName(name):
+        strireplace = re.compile(re.escape('Watch Online '), re.IGNORECASE)
+        return strireplace.sub('',name)
+
+def cleanPage(name):
+        strireplace = re.compile(re.escape('&raquo;'), re.IGNORECASE)
+        name = strireplace.sub('Last',name)
+        strireplace = re.compile(re.escape('&laquo; First'), re.IGNORECASE)
+        name = strireplace.sub('First Page',name)
+        return name
+        
 def get_params():
         param=[]
         paramstring=sys.argv[2]
