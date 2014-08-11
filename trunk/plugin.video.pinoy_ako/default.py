@@ -22,25 +22,30 @@ PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.9" #<---- PLUGIN VERSION
 
-strdomain ='http://www.pinoy-ako.info'
+strdomain ='http://www.pinoy-ako.re'
 def HOME():
-        addDir('Search','http://www.pinoy-ako.info',8,'')
-        addDir('Latest Videos','http://www.pinoy-ako.info',7,'')
-        addDir('Pinoy Movies','http://www.pinoy-ako.info/movies/pinoy-movies-uploaded.html',6,'')
-        addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
+        addDir('Search','http://www.pinoy-ako.re',8,'')
+        addDir('Latest Videos','http://www.pinoy-ako.re',7,'')
+        addDir('Pinoy Movies','http://www.pinoy-ako.re/category/pinoy-movies',6,'')
+        ###addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
         #addDir('Pinoy Box Office','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         #addDir('Cinema One','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
-        addDir('Sports & Others','http://www.pinoy-ako.info/movies/sports-a-other-videos.html',5,'')
-        addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
-        addDir('ABS-CBN Shows','http://www.pinoy-ako.info/tv-show-replay/abs-cbn-2-tv-shows.html',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('ABS-CBN Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11672:watch-old-abscbn-2-kapamilya-tv-shows',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('GMA 7 Shows','http://www.pinoy-ako.info/tv-show-replay/gma-7-tv-shows.html',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
-        addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
-        addDir('TV5 Shows','http://www.pinoy-ako.info/tv-show-replay/tv5-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
-        addDir('TV5 Old Shows','http://www.pinoy-ako.info/tv-show-replay/94-tv-guide/59771-watch-old-tv5-kapatid-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
-        addDir('TV Specials','http://www.pinoy-ako.info/tv-show-replay/tv-specials.html',5,'http://img857.imageshack.us/img857/8424/tvspecials.jpg')
-        addLink('ABS-CBN live','rtmp://tko.og.abscbn.streamguys.com:1935/abs/_definst_/abs live=true',11,'')
-        addLink('GMA live','rtmp://live.iguide.to/edge playpath=tj6zegfdas16p08 swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl=http://www.ilive.to/embedplayer.php?width=630&height=360&channel=44090&autoplay=true token=#e87JDUJD264YED687 swfVfy=1 live=1 timeout=15',12,'')
+        addDir('Sports','http://www.pinoy-ako.re/category/sports',6,'')
+        addDir('Sports by category','52',2,'')
+        ###addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
+        addDir('ABS-CBN Episode List','http://www.pinoy-ako.re/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        addDir('ABS-CBN by Shows','2',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        addDir('GMA 7 Episode List','http://www.pinoy-ako.re/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        addDir('GMA 7 by Shows','11',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        addDir('TV5 Episode List','http://www.pinoy-ako.re/category/tv-5',6,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
+        addDir('TV5 by Shows','60',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
+        addDir('Livestream','http://www.pinoy-ako.re/category/livestream',6,'')
+        addDir('Uncategorized','http://www.pinoy-ako.re/category/uncategorized',6,'')
+        ###addDir('TV5 Old Shows','http://www.pinoy-ako.info/tv-show-replay/94-tv-guide/59771-watch-old-tv5-kapatid-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
+        ###addDir('TV Specials','http://www.pinoy-ako.info/tv-show-replay/tv-specials.html',5,'http://img857.imageshack.us/img857/8424/tvspecials.jpg')
+        ###addLink('ABS-CBN live','rtmp://tko.og.abscbn.streamguys.com:1935/abs/_definst_/abs live=true',11,'')
+        ###addLink('GMA live','rtmp://live.iguide.to/edge playpath=tj6zegfdas16p08 swfUrl=http://player.ilive.to/player_ilive_2.swf pageUrl=http://www.ilive.to/embedplayer.php?width=630&height=360&channel=44090&autoplay=true token=#e87JDUJD264YED687 swfVfy=1 live=1 timeout=15',12,'')
 def AllTV(url):
         link = GetContent(url)
         link=link.encode("UTF-8")
@@ -51,37 +56,45 @@ def AllTV(url):
             vurlc=re.compile('<a href="(.+?)" class="category">(.+?)</a>').findall(moviecontent)
             (vurl,vname)=vurlc[0]
             addDir(vname,strdomain+vurl,5,"")
-def INDEX(url):
-        link = GetContent(url)
+def INDEX(itemnum):
+        link = GetContent("http://www.pinoy-ako.re/category/uncategorized/")
+        try:
+            link=link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        vidcontent=re.compile('</table><table class="contentpaneopen">(.+?)<span class="article_separator">').findall(newlink)
-        tblecontent=re.compile('<tbody>(.+?)</tbody>').findall(vidcontent[0])
-        showlist=re.compile('<a [^s][^>]*href=["\']?([^>^"^\']+)["\']?[^>]*><img alt="(.+?)" src="(.+?)" /></a>').findall(tblecontent[0])
-        for (vlink,vname,vimg) in showlist:
-                addDir(vname.replace("&amp;","&"),vlink.replace("&amp;amp;","&amp;"),5,vimg)
+        vidcontent=re.compile('<li class="cat-item cat-item-'+itemnum+'">(.+?)</ul></li>').findall(newlink)
+        tblecontent=re.compile("<ul class='children'>(.+?)</ul>").findall(vidcontent[0]+'</ul>')
+        showlist=re.compile('<a href="(.+?)" title="(.+?)">(.+?)</a>').findall(tblecontent[0])
+        for (vlink,vtmp,vname) in showlist:
+                addDir(vname.replace("&amp;","&").replace("&#8211;","-").replace("&#8217;","'"),vlink.replace("&amp;amp;","&amp;"),6,"")
 def INDEX2(url):
         link = GetContent(url)
         link=link.encode("UTF-8")
         link = ''.join(link.splitlines()).replace('\t','')
-        vidcontent=re.compile('<div id="content">(.+?)<div class="clr"></div>').findall(link)
-        movielist=re.compile('<table class="contentpaneopen">(.+?)<span class="article_separator">').findall(vidcontent[0])
+        vidcontent=re.compile('<div id="content".+?>(.+?)<div id="primary"').findall(link)
+        movielist=re.compile('<li class="post.+?">(.+?)</li>').findall(vidcontent[0])
         for moviecontent in movielist:
             vimg=""
-            vimgc=re.compile('<img style="margin: 5px; float: left;" alt="(.+?)" src="(.+?)" height="100"').findall(moviecontent)
+            vimgc=re.compile('<img src="(.+?)" alt="(.+?)".+?').findall(moviecontent)
             if(len(vimgc) > 0):
                     (vtmp,vimg)=vimgc[0]
-            vurlc=re.compile('<a href="(.+?)" class="contentpagetitle">(.+?)</a>').findall(moviecontent)
+            vurlc=re.compile('<a href="(.+?)" rel="bookmark">(.+?)</a>').findall(moviecontent)
             if(len(vurlc) > 0):
                     (vurl,vname)=vurlc[0]
-                    addDir(vname,strdomain+vurl,4,vimg)	
+                    addDir(vname.replace("&#8211;","-").replace("&#8217;","'"),vurl,4,vimg)	
+        pagenavcontent=re.compile("<div class='wp-pagenavi'>(.+?)</div>").findall(link)
+        if(len(pagenavcontent)>0):
+			pagelist=re.compile('<a class="(page larger|nextpostslink|last)" href="(.+?)">(.+?)</a>').findall(pagenavcontent[0])
+			for classtype,pageurl,pagenum in pagelist:
+				addDir('page '+ pagenum.replace("&raquo;",">>"),pageurl,6,'')
 def SEARCH():
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.pinoy-ako.info/component/search/?searchword='+ searchText +'&ordering=newest&searchphrase=all&limit=20'
-        SearchResults(url)
+        url = 'http://www.pinoy-ako.re/?s='+ searchText +'&ordering=newest&searchphrase=all&limit=20'
+        INDEX2(url)
 
 
 				
@@ -89,32 +102,32 @@ def SearchResults(url):
         link = GetContent(url)
         link=link.encode("UTF-8")
         link = ''.join(link.splitlines()).replace('\t','')
-        vidcontent=re.compile('<div id="content">(.+?)<div class="clr"></div>').findall(link)
-        movielist=re.compile('<fieldset>(.+?)</fieldset>').findall(vidcontent[0])
+        vidcontent=re.compile('<div class="search-results">(.+?)<div id="primary"').findall(link)
+        movielist=re.compile('<h3 class="entry-title">(.+?)</h3>').findall(vidcontent[0])
         for moviecontent in movielist:
-            vurlc=re.compile('<a href="(.+?)">(.+?)</a>').findall(moviecontent)
+            vurlc=re.compile('<a href="(.+?)" rel="bookmark">(.+?)</a>').findall(moviecontent)
             (vurl,vname)=vurlc[0]
-            addDir(vname,strdomain+vurl,4,"")	
-        pagin=re.compile('<ul class="pagination">(.+?)</li></ul>').findall(vidcontent[0])
+            addDir(vname,vurl,4,"")	
+        pagin=re.compile('<span class="pages">(.+?)</div>').findall(vidcontent[0])
         if(len(pagin) > 0):
              pagelist=re.compile('<a href="(.+?)" title="(.+?)">').findall(pagin[0])
              for (vlink,vname) in pagelist:
-                  addDir("page - " + vname,strdomain+vlink,9,"")
+                  addDir("page - " + vname,vlink,9,"")
 
 def GetLatest(url):
         link = GetContent(url)
         link = link.encode("UTF-8")
         link = ''.join(link.splitlines()).replace('\t','')
         CategoryList = ["Latest TV shows", "Latest Pinoy Movies", "Latest Sports & Other videos","Latest Foreign Films"]
-        vidcontent=re.compile('<div id="sidebar2">(.+?)<div class="clr">').findall(link)
-        latestUl=re.compile('<ul class="latestnews">(.+?)</ul></div>').findall(vidcontent[0])
+        vidcontent=re.compile('<div id="primary" class="aside main-aside sidebar"(.+?)<div class="textwidget">').findall(link)
+        latestUl=re.compile('<ul class="xoxo">(.+?)</ul></li>').findall(vidcontent[0])
         Catcount=0
         for content in latestUl:
                 if(Catcount < len(CategoryList)):
                         addLink("--------"+CategoryList[Catcount]+"--------","",0,"")
-                latestVideos=re.compile('<li class="latestnews"><a href="(.+?)" class="latestnews">(.+?)</a></li>').findall(content)
+                latestVideos=re.compile('<li><a href="(.+?)">(.+?)</a></li>').findall(content)
                 for (vlink,vname) in latestVideos:
-                        addDir(vname,strdomain+vlink,4,"")	
+                        addDir(vname,vlink,4,"")	
                 Catcount=Catcount+1
 				
 def GetXmlPlaylist(url, name):
@@ -130,9 +143,9 @@ def GetXmlPlaylist(url, name):
 def GetVideoLinks(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
-        vidcontent=re.compile('</table><table class="contentpaneopen">(.+?)<span class="article_separator">').findall(link)
-        tabvids=re.compile('<div class="(blitzer|tabbertab|jwts_tabber|smoothness)">(.+?)</div></div>').findall(vidcontent[0])
-        singlevids=re.compile('<p style="text-align:\s*center;">(.+?)</p>').findall(vidcontent[0])
+        vidcontent=re.compile('<div class="entry-content clearfix">(.+?)<div class="tags">').findall(link)
+        tabvids=re.compile('<div class="(blitzer|tabbertab|jwts_tabber|smoothness)">(.+?)</div>').findall(vidcontent[0])
+        singlevids=re.compile('<p style="text-align:\s*center;">(.+?)<div class=').findall(vidcontent[0])
         singledivs=re.compile('<div style="text-align:\s*center;">(.+?)</div>').findall(vidcontent[0])
         singlevids.extend(singledivs)
         mirrorcnt = 0
@@ -186,6 +199,7 @@ def GetVideoLinks(url):
                                       vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
                                 else:
                                       vname="mirror "+str(mirrorcnt)+" "+ vname + " part " + str(partcnt)
+
                                 addLink(vname,frmvid,3,"")
                         if partcnt==0:
                                 mirrorcnt=mirrorcnt-1
@@ -213,10 +227,10 @@ def GetVideoLinks(url):
                         else:
                                       vname=vname[1]
                         partcnt=partcnt+1
-                        if(len(frmsrc) == 1):
-                                      vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+                        if(len(tabvids) == 1):
+                                      vname="mirror "+ vname + " full "
                         else:
-                                      vname="mirror "+str(mirrorcnt)+" "+ vname + " part " + str(partcnt)
+                                      vname="mirror "+ vname + " part " + str(mirrorcnt)
                         addLink(vname,frmvid,3,"")
                 objsrc=re.compile('<object [^>]*data=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(divcotent)
                 for objvid in objsrc:
@@ -296,7 +310,7 @@ def ParseSeparate(vcontent,namesearch,urlsearch):
         return False
 					
 def GetContent2(url):
-    conn = httplib.HTTPConnection(host="pinoy-ako.info",timeout=30)
+    conn = httplib.HTTPConnection(host="pinoy-ako.re",timeout=30)
     req = url
     try:
         conn.request('GET',req)
@@ -624,7 +638,11 @@ def loadVideos(url,name):
         #try:
            GA("LoadVideo",name)
            newlink=url
-           xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
+	   __addon__ = xbmcaddon.Addon()
+	   __addonname__ = __addon__.getAddonInfo('name')
+	   __icon__ = __addon__.getAddonInfo('icon')
+	   line1 = "Please Wait!  Loading selected video."
+           xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(__addonname__,line1,3000,__icon__))
            print "newlink=" + newlink
            if (newlink.find("dailymotion") > -1):
                 match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(url)
@@ -632,6 +650,8 @@ def loadVideos(url,name):
                         match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(url+"&dk;")
                 if(len(match) == 0):
                         match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(url)
+                if(len(match) == 0):
+                	match=re.compile('http://www.dailymotion.com/embed/video/(.+?)$').findall(url)
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
                 req = urllib2.Request(link)
                 req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
