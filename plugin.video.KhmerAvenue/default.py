@@ -40,14 +40,17 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div id="content" class="clearfix">(.+?)<div id="sidebar">').findall(newlink)
-        match=re.compile('<a class="video_thumb" href="(.+?)" rel="bookmark" title="(.+?)">             <img src="(.+?)"').findall(match[0])
-        for vcontent in match:
-            (vurl,vname, vimage)=vcontent
+        match=re.compile('<div class="widget-background-wrapper" id="enhancedtextwidget-17-background-wrapper">(.+?)<div class=\'loop\'>').findall(newlink)
+        match=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match[0])
+        for vurl,vcontent in match:
+            imgmatch=re.compile('<img src="(.+?)" alt="(.+?)"').findall(vcontent)[0]
+            (vimage,vname)=imgmatch
             addDir(vname,vurl,5,vimage)
-        match5=re.compile("<a href='([^>]+)' class='nextpostslink'>([^>]+)</a>").findall(newlink)
+        match5=re.compile("<div class='wp-pagenavi'>(.+?)</div>").findall(newlink)
         if(len(match5)):
-                addDir("Next >>",match5[0][0],2,"")
+			pagelist=re.compile('<a class="page larger" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match5[0]) 
+			for vurl,vcontent in pagelist:
+				addDir("page "+vcontent,vurl,2,"")
     #except: pass
 			
 def SEARCH():
@@ -65,13 +68,14 @@ def SearchResults(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<a class="widget-title" href="(.+?)"><img src="(.+?)" alt="(.+?)"').findall(newlink)
-        if(len(match) >= 1):
-                for vLink,vpic,vLinkName in match:
-                    addDir(vLinkName,vLink,5,vpic)
-        match=re.compile("<a href='([^>]+)' class='nextpostslink'>([^>]+)</a>").findall(link)
-        if(len(match) >= 1):
-            url=match[0][0]
+        match=re.compile('<div class="loop-content">(.+?)<div class="loop-footer">').findall(newlink)
+        match=re.compile('<h3 class="entry-title"><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h3>').findall(match[0])
+        if(len(match) > 0):
+                for vLink,vLinkName in match:
+                    addDir(vLinkName,vLink,5,"")
+        match=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>Next Page').findall(link)
+        if(len(match) > 0):
+            url=match[0]
             addDir("Next >>",url,6,"")
 			
 def getVimeoUrl(videoid):
@@ -169,14 +173,14 @@ def Episodes(url,name):
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         addLink(name.encode("utf-8"),url,3,'')
-        match=re.compile('<div class="episodebox">(.+?)<div id="comments" class="clearfix">').findall(newlink)
-        match=re.compile('<a href="(.+?)"><span class="part">(.+?)</span></a>').findall(match[0])
+        match=re.compile('>Related Videos</h4>(.+?)</div>').findall(newlink)
+        match=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match[0])
         counter = 1
         videolist =url+";#"
         vidPerGroup = 5
         if(len(match) >= 1):
-                for mcontent in match:
-                    vLink, vLinkName=mcontent
+                for vLink,mcontent in match:
+                    vLinkName=re.compile('<span [^>]*style=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</span>').findall(mcontent)[0][1]
                     counter += 1
                     addLink(vLinkName.encode("utf-8"),vLink,3,'')
                     videolist=videolist+vLink+";#"

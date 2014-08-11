@@ -312,7 +312,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.20"
+  version="1.0.21"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
