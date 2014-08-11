@@ -176,7 +176,7 @@
 	<requires>
 		<import addon="script.module.simplejson" version="2.0.10" />
 		<import addon="script.module.beautifulsoup" version="3.2.0" />
-		<import addon="script.module.turtlex" version="1.0.0" />
+		<import addon="script.module.turtle" version="1.1.9" />
 	</requires>
 	<extension point="xbmc.python.pluginsource" library="TurtleMain.py">
 		<provides>video</provides>
