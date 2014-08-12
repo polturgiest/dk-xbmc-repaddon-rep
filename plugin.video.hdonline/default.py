@@ -453,7 +453,7 @@ def Index(url,name):
 					vname=vname.encode("UTF-8")
 				except:pass
 				vidid=vurl.split("-")[-1].replace('.html','')
-				SaveMovieTVshow(vname,vidid,vimg,"")
+				SaveMovieTVshow(vname.replace('"',"'"),vidid,vimg,"")
 				addDir(vname,vidid,4,vimg)
         pagecontent=re.compile('<div class="load-more">(.+?)</div>').findall(link)
         if(len(pagecontent)>0):
