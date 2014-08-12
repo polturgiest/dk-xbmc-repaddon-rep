@@ -184,9 +184,10 @@ def Episodes(url,name):
         pagedata=link.replace("// API callback1(","").replace("});","}")#.replace("\u003E","").replace("\u003C","").replace("\u0026","").decode('utf-8')
         pagedata=json.loads(pagedata)
         pagecontent=pagedata["entry"]["content"]["$t"]
+        print pagecontent.encode("utf-8")
         match1=re.compile('"playlist":\s*\[(.+?)\]').findall(pagecontent.replace("[END]","(END)"))
-        print match1[0].strip()[-1:]
-        print match1[0].strip()[:-1]
+        #print match1[0].strip()[-1:]
+        #print match1[0].strip()[:-1]
         if(len(match1) > 0):
 				if(match1[0].strip()[-1:]==","):
 					urlcontent=match1[0].strip()[:-1]
@@ -201,13 +202,56 @@ def Episodes(url,name):
 						vLinkName=vLinkName.encode("UTF-8")
 					except: pass
 					addLink(vLinkName.encode("utf-8"),vLink,3,vimg)
+        matchcontent=re.compile('<div class="drama-info">(.+?)</div>').findall(pagecontent.replace("[END]","(END)"))
+        if(len(matchcontent) > 0):
+				match1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(matchcontent[0])
+				for vLink,vLinkName in match1:
+					try:
+						vLinkName=vLinkName.encode("UTF-8")
+					except: pass
+					addLink(vLinkName.encode("utf-8"),vLink,3,"")
+        match1=re.compile('var list\s*=\s*\[(.+?)\];').findall(pagecontent.replace("[END]","(END)"))
+        if(len(match1) > 0):
+				strList= "["+match1[0]+"]"
+				epList=json.loads(strList.replace(", ]","]").replace(",]","]"))
+				if(len(epList) > 0  and epList[0].has_key('idGD')):
+					ctr=0
+
+					vidhost=re.compile('selectedPlayAllVideo\(list,"(.+?)"\)').findall(pagecontent)
+					if(len(vidhost) > 0):
+						vidhost=vidhost[0]
+					else:
+						vidhost="vimeo"
+					if(vidhost=="YT"):
+						vLinkroot="http://www.youtube.com/watch?v=%s"
+						epList=epList[0]["idGD"].split("0!?^0!?")
+					elif(vidhost=="GD"):
+						vLinkroot="http://docs.google.com/file/d/%s/preview"
+						epList=epList[0]["idGD"].split("0!?^0!?A")
+					elif(vidhost=="vimeo"):
+						vLinkroot="%s"
+						epList=epList[0]["idGD"].split("0!?^0!?")
+					for episodeitem in epList:
+						ctr=ctr+1
+						vLinkName="part " + str(ctr)
+						vLink=vLinkroot%episodeitem
+						vimg=""
+						addLink(vLinkName.encode("utf-8"),vLink,3,vimg)
+				else:
+					for episodeitem in epList:
+						vLinkName=episodeitem["title"]
+						vLink=episodeitem["file"]
+						vimg=episodeitem["image"]
+						addLink(vLinkName.encode("utf-8"),vLink,3,vimg)
         match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(pagecontent)
         if(len(match1) > 0):
 				match1=re.compile('data-vid="(.+?)">\s*<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>\s*<span class="v-title">(.+?)</span>').findall(match1[0])
 				for mcontent in match1:
 					vLink,vimage,vLinkName=mcontent
 					addLink(vLinkName.encode("utf-8"),"http://docs.google.com/file/d/"+vLink+"/preview",3,vimage)
-        
+        match1=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(pagecontent)
+        if(len(match1) > 0):
+				addLink(name,match1[0],3,"")
  
               
     #except: pass		
@@ -367,6 +411,8 @@ def loadVideos(url,name):
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
            elif (newlink.find("vimeo") > -1):
                 idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
+                if(len(idmatch) == 0):
+                        idmatch =re.compile("//vimeo.com/([^\?&\"\'>]+)").findall(newlink)
                 if(len(idmatch) > 0):
                         playVideo('vimeo',idmatch[0])
            else:
