@@ -204,7 +204,7 @@
 
 <addon
   id="plugin.video.hdonline"
-  version="1.0.2"
+  version="1.0.3"
   name="HDOnline"
   provider-name="Dknight">
   <requires>
