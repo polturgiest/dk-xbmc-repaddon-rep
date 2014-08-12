@@ -184,13 +184,22 @@ def Episodes(url,name):
     #try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-
+        framesrc=re.compile('<iframe id="gdVideoIframe" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
+        if(len(framesrc)==0):
+			framesrc=re.compile('<video id="html5Video" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
         match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(newlink)
         if(len(match1) > 0):
-				match1=re.compile('data-vid="(.+?)"><img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*><span class="v-title">(.+?)</span>').findall(match1[0])
+				match1=re.compile('data-vid="(.+?)" data-source="(.+?)"><img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*><span class="v-title">(.+?)</span>').findall(match1[0])
+				if(len(framesrc)>0 and framesrc[0].find("vimeo") > -1):
+					vidurl="http://player.vimeo.com/video/%s"
+				elif(len(framesrc)>0 and framesrc[0].find("totptnt") > -1):
+					vidurl=framesrc[0].replace(framesrc[0].split("/")[-1],"")+"%s"
+				else:
+					vidurl="https://docs.google.com/file/d/%s/preview"
 				for mcontent in match1:
-					vLink,vimage,vLinkName=mcontent
-					addLink(vLinkName.encode("utf-8"),"https://docs.google.com/file/d/"+vLink+"/preview",3,vimage)
+					vLink,vtype,vimage,vLinkName=mcontent
+					print vidurl%vLink
+					addLink(vLinkName.encode("utf-8"),vidurl%vLink,3,vimage)
         match=re.compile('\{\s*"file":\s*"(.+?)",\s*"title":\s*"(.+?)",\s*"description":').findall(link)
         if(len(match) >= 1):
                 for mcontent in match:
