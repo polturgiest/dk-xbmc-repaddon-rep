@@ -334,6 +334,8 @@ def getVideos(url):
     videos = []
     match = re.compile('<aclass="contentlist"href="([^"]+)">([^<]+)</a>').findall(html)
     index = 0;   
+    #if(len(match) ==0):
+	#	match = re.compile('<aclass="contentlist"href="([^"]+)">([^<]+)</a>').findall(html)
     videos.append(Video('Part1',url))
     while index < len(match):                
         video = Video(match[index][1], match[index][0])    
@@ -636,6 +638,17 @@ def loadVideos(newlink,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+           elif (newlink.find("docs.google.com") > -1):
+                
+                req = urllib2.Request(newlink)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+                vidcontent = urllib2.urlopen(req)
+                link=response.read()
+                response.close()
+                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
+                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
@@ -645,6 +658,7 @@ def loadVideos(newlink,name):
                         vidlink=idmatch[0]
            else:
                 vidlink=newlink
+           print vidlink
            return vidlink
     #except:
        #d = xbmcgui.Dialog()
@@ -722,7 +736,7 @@ elif mode == '3':
 elif mode == '4':
     #try:
         id = getYoutubeID(url)
-        if(id.find("http:") < 0):
+        if(id.find("http") < 0):
            type="youtube"
         else:
            type="direct"
