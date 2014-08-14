@@ -8,37 +8,26 @@
       <link>http://gcasialive-i.akamaihd.net/hls/live/218647/CTN-HLS-stream/master.m3u8?wowzasessionid=1391934041 live=true</link>
       <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
     </item>
-	<item>
-<title>CTV8</title>
-<link>rtmp://122.252.178.139/live_ctv8/ctv8.stream_720p swfUrl=http://ctv8.com.kh/public/js/live.swf pageUrl=http://ctv8.com.kh/?page=livetv live=1 app=live_ctv8</link>
-<thumbnail>http://ctv8.com.kh/public/images/ctv8_logo/CTV8_LOGO.png</thumbnail>
-</item>
-<item>
-<title>KWorld</title>
-<link>rtmp://122.252.178.139/live_kworld/kworld.stream_720p swfUrl=http://ctv8.com.kh/public/js/kworld/live.swf pageUrl=http://ctv8.com.kh/?page=livetv/kworld live=1 app=live_kworld</link>
-<thumbnail>http://ctv8.com.kh/public/images/ctv8_logo/CTV8_LOGO.png</thumbnail>
-</item>
+
 	<item>
       <title>KhipTV</title>
       <link>http://e-magic.info:44412/KhipTV</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
-	 <item>
-      <title>Movie 10</title>
-      <link>http://e-magic.info:44412/Movie10</link>
-      <thumbnail>
-      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    <item>
+      <title>MediaBiz</title>
+      <link>http://live.wmncdn.net/medibiztv/d0dbe915091d400bd8ee7f27f0791303.sdp/playlist.m3u8</link>
+      <thumbnail>http://khiptv.com/images_tv/TV.png</thumbnail>
+    </item>
+    <item>
+      <title>TV9</title>
+      <link>mms://203.176.130.123/ctv9_480k?7397427b-838f-4fa7-812c-f4fe391beb6f</link>
+      <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
     </item>
 	<item>
-      <title>Movie 17</title>
-      <link>http://e-magic.info:44412/Movies17</link>
-      <thumbnail>
-      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
-    </item>
-	<item>
-      <title>Movie 9</title>
-      <link>http://e-magic.info:44412/Movie9</link>
+      <title>TV3</title>
+      <link>http://live.khmer.be:1935/live/TV3/playlist.m3u8</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
@@ -60,7 +49,7 @@
     </item>
 	<item>
       <title>Hangmeas</title>
-      <link>mmsh://184.105.192.5:44412/HMTV_pub?MSWMExt=.asf</link>
+      <link>rtmp://111.92.240.134:1935/live/livestream</link>
       <thumbnail>http://khmer.be/images/tv/hangmeas-100x70.jpg</thumbnail>
     </item>
     <item>
@@ -96,7 +85,7 @@
     </item>
     <item>
       <title>TV5</title>
-      <link>http://e-magic.info:44412/tv5_Pub</link>
+      <link>mms://203.176.130.123/tv5_480k?c10ac12a-0507-4fa4-a5da-75bbc1ad8967</link>
       <thumbnail>http://khiptv.com/images_tv/TV5.png</thumbnail>
     </item>
     <item>
@@ -111,11 +100,6 @@
       <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
     </item>
     <item>
-      <title>TV9</title>
-      <link>http://e-magic.info:44412/tv9_PF</link>
-      <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
-    </item>
-    <item>
       <title>Apsara</title>
       <link>rtsp://203.176.130.118:8989/live/apsaratv_480k.stream</link>
       <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
@@ -127,7 +111,7 @@
     </item>
     <item>
       <title>ABC_TV</title>
-      <link>http://e-magic.info:44412/ABC_TV</link>
+      <link>mmsh://184.105.192.5:44412/ABC_TV?MSWMExt=.asf</link>
       <thumbnail>http://khiptv.com/images_tv/ABC.png</thumbnail>
     </item>
     <item>
