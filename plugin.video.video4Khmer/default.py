@@ -328,14 +328,21 @@ def GetContent(url):
 def playVideo(videoType,videoId):
     url = videoId
     if (videoType == "youtube"):
-        url = getYoutube(videoId)
-        print "myvideoyou"+url
+        try:
+                url = getYoutube(videoId)
+                xbmcPlayer = xbmc.Player()
+                xbmcPlayer.play(url)
+        except:
+                url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+                xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
     elif (videoType == "vimeo"):
         url = getVimeoUrl(videoId)
+        xbmcPlayer = xbmc.Player()
+        xbmcPlayer.play(url)
     elif (videoType == "tudou"):
         url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
-    xbmcPlayer = xbmc.Player()
-    xbmcPlayer.play(url)
+        xbmcPlayer = xbmc.Player()
+        xbmcPlayer.play(url)
 		
 def PLAYLIST_VIDEOLINKS(url,name):
         ok=True
@@ -556,8 +563,10 @@ def extractFlashVars(data):
                         continue
                 data = line[p1 + 1:p2]
                 break
+    
     if found:
             data=data.split(";(function()",1)[0]
+            data=data.split(";ytplayer.load",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
     return flashvars 
