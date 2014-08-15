@@ -487,6 +487,7 @@ def extractFlashVars(data):
                 break
     if found:
             data=data.split(";(function()",1)[0]
+            data=data.split(";ytplayer.load",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
     return flashvars    
