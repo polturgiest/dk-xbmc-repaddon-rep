@@ -225,7 +225,7 @@
 
 <addon
   id="plugin.video.hotkhmer"
-  version="1.0.1"
+  version="1.0.2"
   name="hotkhmer"
   provider-name="Dknight">
   <requires>
@@ -246,7 +246,7 @@
 
 <addon
   id="plugin.video.kenh108"
-  version="1.0.7"
+  version="1.0.8"
   name="kenh108"
   provider-name="Dknight">
   <requires>
@@ -268,7 +268,7 @@
 
 <addon
   id="plugin.video.kenh88"
-  version="1.0.3"
+  version="1.0.4"
   name="kenh88.com"
   provider-name="Dknight">
   <requires>
@@ -312,7 +312,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.21"
+  version="1.0.22"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -523,7 +523,7 @@
 
 <addon
   id="plugin.video.pinoy_ako"
-  version="1.0.15"
+  version="1.0.16"
   name="pinoy_ako"
   provider-name="Dknight">
   <requires>
@@ -566,7 +566,7 @@
 
 <addon
   id="plugin.video.sugoideasV2"
-  version="1.0.8"
+  version="1.0.9"
   name="sugoideasV2"
   provider-name="Created by YangSun revised by Dknight">
   <requires>

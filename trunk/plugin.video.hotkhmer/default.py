@@ -11,15 +11,15 @@ import cgi
 import CommonFunctions
 import datetime
 common = CommonFunctions
-common.plugin = "plugin.video.PhumiKhmer"
+common.plugin = "plugin.video.hotkhmer"
 
 import time
-ADDON = xbmcaddon.Addon(id='plugin.video.PhumiKhmer')
+ADDON = xbmcaddon.Addon(id='plugin.video.hotkhmer')
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
     ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
     
-PATH = "PhumiKhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
+PATH = "hotkhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.4" #<---- PLUGIN VERSION
 
@@ -184,7 +184,6 @@ def Episodes(url,name):
         pagedata=link.replace("// API callback1(","").replace("});","}")#.replace("\u003E","").replace("\u003C","").replace("\u0026","").decode('utf-8')
         pagedata=json.loads(pagedata)
         pagecontent=pagedata["entry"]["content"]["$t"]
-        print pagecontent.encode("utf-8")
         match1=re.compile('"playlist":\s*\[(.+?)\]').findall(pagecontent.replace("[END]","(END)"))
         #print match1[0].strip()[-1:]
         #print match1[0].strip()[:-1]
@@ -256,7 +255,31 @@ def Episodes(url,name):
               
     #except: pass		
 
-
+def getDailyMotionUrl(id):
+    maxVideoQuality="720p"
+    content = GetContent("http://www.dailymotion.com/embed/video/"+id)
+    if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
+        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+        return ""
+    else:
+        matchFullHD = re.compile('"stream_h264_hd1080_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHD = re.compile('"stream_h264_hd_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHQ = re.compile('"stream_h264_hq_url":"(.+?)"', re.DOTALL).findall(content)
+        matchSD = re.compile('"stream_h264_url":"(.+?)"', re.DOTALL).findall(content)
+        matchLD = re.compile('"stream_h264_ld_url":"(.+?)"', re.DOTALL).findall(content)
+        url = ""
+        if matchFullHD and maxVideoQuality == "1080p":
+            url = urllib.unquote_plus(matchFullHD[0]).replace("\\", "")
+        elif matchHD and (maxVideoQuality == "720p" or maxVideoQuality == "1080p"):
+            url = urllib.unquote_plus(matchHD[0]).replace("\\", "")
+        elif matchHQ:
+            url = urllib.unquote_plus(matchHQ[0]).replace("\\", "")
+        elif matchSD:
+            url = urllib.unquote_plus(matchSD[0]).replace("\\", "")
+        elif matchLD:
+            url = urllib.unquote_plus(matchLD[0]).replace("\\", "")
+        return url
+		
 def ParseXml(newcontent):
         try:
                 xmlcontent=xml.dom.minidom.parseString(newcontent)
@@ -385,20 +408,8 @@ def loadVideos(url,name):
                 match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
                 lastmatch = match[0][len(match[0])-1]
                 link = 'http://www.dailymotion.com/'+str(lastmatch)
-                req = urllib2.Request(link)
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-                response = urllib2.urlopen(req)
-                link=response.read()
-                response.close()
-                sequence=re.compile('"sequence",  "(.+?)"').findall(link)
-                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
-                #print 'in dailymontion:' + str(newseqeunce)
-                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
-                if(len(imgSrc[0]) == 0):
-                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
-                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
-                playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+                vidlink=getDailyMotionUrl(lastmatch)
+                playVideo('dailymontion',vidlink)
            elif (newlink.find("docs.google.com") > -1):
                 vidcontent = GetContent(newlink)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
@@ -450,6 +461,7 @@ def extractFlashVars(data):
                 break
     if found:
             data=data.split(";(function()",1)[0]
+            data=data.split(";ytplayer.load",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
     return flashvars    
