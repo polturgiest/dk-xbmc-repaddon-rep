@@ -33,8 +33,8 @@ def HOME():
         addDir('Sports','http://www.pinoy-ako.re/category/sports',6,'')
         addDir('Sports by category','52',2,'')
         ###addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
-        addDir('ABS-CBN Episode List','http://www.pinoy-ako.re/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('ABS-CBN by Shows','2',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        #addDir('ABS-CBN Episode List','http://www.pinoy-ako.re/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        #addDir('ABS-CBN by Shows','2',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('GMA 7 Episode List','http://www.pinoy-ako.re/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('GMA 7 by Shows','11',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
@@ -652,21 +652,7 @@ def loadVideos(url,name):
                         match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(url)
                 if(len(match) == 0):
                 	match=re.compile('http://www.dailymotion.com/embed/video/(.+?)$').findall(url)
-                link = 'http://www.dailymotion.com/video/'+str(match[0])
-                req = urllib2.Request(link)
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-                response = urllib2.urlopen(req)
-                link=response.read()
-                response.close()
-                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
-                #print 'in dailymontion:' + str(newseqeunce)
-                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
-                if(len(imgSrc[0]) == 0):
-                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
-                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
-                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+                vidlink=getDailyMotionUrl(match[0])
            elif (newlink.find("cloudy") > -1):
                 pcontent=GetContent(newlink)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
@@ -801,7 +787,32 @@ def loadVideos(url,name):
                         vidlink =""
            playVideo("pinoy",vidlink)
         #except: pass
-        
+		
+def getDailyMotionUrl(id):
+    maxVideoQuality="720p"
+    content = GetContent("http://www.dailymotion.com/embed/video/"+id)
+    if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
+        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+        return ""
+    else:
+        matchFullHD = re.compile('"stream_h264_hd1080_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHD = re.compile('"stream_h264_hd_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHQ = re.compile('"stream_h264_hq_url":"(.+?)"', re.DOTALL).findall(content)
+        matchSD = re.compile('"stream_h264_url":"(.+?)"', re.DOTALL).findall(content)
+        matchLD = re.compile('"stream_h264_ld_url":"(.+?)"', re.DOTALL).findall(content)
+        url = ""
+        if matchFullHD and maxVideoQuality == "1080p":
+            url = urllib.unquote_plus(matchFullHD[0]).replace("\\", "")
+        elif matchHD and (maxVideoQuality == "720p" or maxVideoQuality == "1080p"):
+            url = urllib.unquote_plus(matchHD[0]).replace("\\", "")
+        elif matchHQ:
+            url = urllib.unquote_plus(matchHQ[0]).replace("\\", "")
+        elif matchSD:
+            url = urllib.unquote_plus(matchSD[0]).replace("\\", "")
+        elif matchLD:
+            url = urllib.unquote_plus(matchLD[0]).replace("\\", "")
+        return url
+		
 def extractFlashVars(data):
     for line in data.split("\n"):
             index = line.find("ytplayer.config =")
@@ -815,6 +826,7 @@ def extractFlashVars(data):
                 break
     if found:
             data=data.split(";(function()",1)[0]
+            data=data.split(";ytplayer.load",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
     return flashvars    
