@@ -163,7 +163,7 @@ def HOME(translator):
         addDir(staticlist[5],'http://www.viki.com/movies/browse?sort=latest',8,'')
         addDir(staticlist[6],'http://www.viki.com/music/browse?sort=latest',8,'')
         if(enableTrans==False):
-               addDir(staticlist[7],'http://www.viki.com/tv/browse?sort=viewed',10,'')
+               addDir(staticlist[7],'http://www.viki.com/tv/browse',10,'')
 def LangOption():
         addDir('Show All Languages','All',10,'')
 
@@ -412,7 +412,7 @@ def getLanguages(url, ltype):
         except: pass
         match = re.compile('<ul [^>]*id="all_language">(.+?)</ul>').findall(link)
         if(len(match)>0):
-                langlist= re.compile('<li><a href="(.+?)">(.+?)</a></li>').findall(match[0].replace("&amp;sort=viewed",""))
+                langlist= re.compile('<li title=""><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(match[0].replace("/tv/browse?language=",""))
                 for purl,pname in langlist:
                        if(pname !="All languages"):
                              addDir(pname,purl.replace("/tv/browse?language=",""),11,"")
@@ -463,24 +463,7 @@ def getVideoUrl(url,name):
                 if(len(match) == 0):
                         match=re.compile('/video/(.+?)&dk;').findall(dailylink)
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
-                req = urllib2.Request(link)
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-                response = urllib2.urlopen(req)
-                link=response.read()
-                response.close()
-                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
-                #print 'in dailymontion:' + str(newseqeunce)
-                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
-                if(len(imgSrc[0]) == 0):
-                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
-                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
-                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
-                if(len(dm_high) == 0):
-                        vidlink = urllib2.unquote(dm_low[0]).decode("utf8")
-                else:
-                        vidlink = urllib2.unquote(dm_high[0]).decode("utf8")
+                vidlink=getDailyMotionUrl(str(match[0]))
         elif(url.find("google") > -1):
             vidcontent=GetContent(url)
             vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
@@ -501,7 +484,32 @@ def getVideoUrl(url,name):
             else:
                 vidlink =""
         return vidlink
-   
+		
+def getDailyMotionUrl(id):
+    maxVideoQuality="720p"
+    content = GetContent("http://www.dailymotion.com/embed/video/"+id)
+    if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
+        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+        return ""
+    else:
+        matchFullHD = re.compile('"stream_h264_hd1080_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHD = re.compile('"stream_h264_hd_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHQ = re.compile('"stream_h264_hq_url":"(.+?)"', re.DOTALL).findall(content)
+        matchSD = re.compile('"stream_h264_url":"(.+?)"', re.DOTALL).findall(content)
+        matchLD = re.compile('"stream_h264_ld_url":"(.+?)"', re.DOTALL).findall(content)
+        url = ""
+        if matchFullHD and maxVideoQuality == "1080p":
+            url = urllib.unquote_plus(matchFullHD[0]).replace("\\", "")
+        elif matchHD and (maxVideoQuality == "720p" or maxVideoQuality == "1080p"):
+            url = urllib.unquote_plus(matchHD[0]).replace("\\", "")
+        elif matchHQ:
+            url = urllib.unquote_plus(matchHQ[0]).replace("\\", "")
+        elif matchSD:
+            url = urllib.unquote_plus(matchSD[0]).replace("\\", "")
+        elif matchLD:
+            url = urllib.unquote_plus(matchLD[0]).replace("\\", "")
+        return url
+		
 def SearchVideoresults(url,searchtext=""):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
