@@ -189,13 +189,16 @@ def Episodes(url,name):
 			framesrc=re.compile('<video id="html5Video" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
         match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(newlink)
         if(len(match1) > 0):
+
 				match1=re.compile('data-vid="(.+?)" data-source="(.+?)"><img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*><span class="v-title">(.+?)</span>').findall(match1[0])
 				if(len(framesrc)>0 and framesrc[0].find("vimeo") > -1):
 					vidurl="http://player.vimeo.com/video/%s"
 				elif(len(framesrc)>0 and framesrc[0].find("totptnt") > -1):
 					vidurl=framesrc[0].replace(framesrc[0].split("/")[-1],"")+"%s"
-				else:
+				elif(len(framesrc)>0 and framesrc[0].find("docs.google") > -1):
 					vidurl="https://docs.google.com/file/d/%s/preview"
+				else:
+					vidurl=framesrc[0].replace(framesrc[0].split("/")[-1],"%s")
 				for mcontent in match1:
 					vLink,vtype,vimage,vLinkName=mcontent
 					print vidurl%vLink
