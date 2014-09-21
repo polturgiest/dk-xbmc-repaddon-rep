@@ -681,6 +681,30 @@ def loadVideosOld(url,name):
                    vidmatch=hdmatch
                vidlink=vidmatch[0]
                playVideo("direct",vidlink)
+def getDailyMotionUrl(id):
+    maxVideoQuality="720p"
+    content = GetContent("http://www.dailymotion.com/embed/video/"+id)
+    if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
+        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+        return ""
+    else:
+        matchFullHD = re.compile('"stream_h264_hd1080_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHD = re.compile('"stream_h264_hd_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHQ = re.compile('"stream_h264_hq_url":"(.+?)"', re.DOTALL).findall(content)
+        matchSD = re.compile('"stream_h264_url":"(.+?)"', re.DOTALL).findall(content)
+        matchLD = re.compile('"stream_h264_ld_url":"(.+?)"', re.DOTALL).findall(content)
+        url = ""
+        if matchFullHD and maxVideoQuality == "1080p":
+            url = urllib.unquote_plus(matchFullHD[0]).replace("\\", "")
+        elif matchHD and (maxVideoQuality == "720p" or maxVideoQuality == "1080p"):
+            url = urllib.unquote_plus(matchHD[0]).replace("\\", "")
+        elif matchHQ:
+            url = urllib.unquote_plus(matchHQ[0]).replace("\\", "")
+        elif matchSD:
+            url = urllib.unquote_plus(matchSD[0]).replace("\\", "")
+        elif matchLD:
+            url = urllib.unquote_plus(matchLD[0]).replace("\\", "")
+        return url
 		
 def loadVideos(url,name):
     #try:
@@ -691,23 +715,33 @@ def loadVideos(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        match=re.compile('proxy.link=phimsot\*(.+?)&').findall(link)
-        newlink=decrypt(match[0])
-        print newlink
+        match=re.compile('flashvars="fmt_list=(.+?)">').findall(link)
+        if(len(match)>0):
+              newlink=urllib.unquote_plus(re.compile('fmt_stream_map=(.+?)&').findall(match[0])[0]).split("|")[-1]
+        else:
+              try: 
+                  match=re.compile('proxy.link=(.+?)&').findall(link)
+                  newlink=decrypt(match[0].replace("phimsot*",""))
+              except:
+                  newlink=match[0]
+        print "final"+newlink
         if(newlink.find("cyworld.vn") > 0):
             vidcontent=GetContent(newlink)
             vidmatch=re.compile('<meta property="og:video" content="(.+?)" />').findall(vidcontent)
             vidlink=vidmatch[0]
             playVideo("direct",vidlink)
+        elif(newlink.find("redirector.googlevideo.com") > 0):
+              playVideo("direct",newlink)
         elif(newlink.find("picasaweb.google") > 0):
-                 vidcontent=postContent("http://player.phimsot.com/default/phimsot/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+                 #vidcontent=postContent("http://player.phimsot.com/default/phimsot/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+                 vidcontent=GetContent(newlink)
                  vidid=vidlink=re.compile('#(.+?)&').findall(newlink+"&")
                  if(len(vidid)>0):
 					vidmatch=re.compile('feedPreload:(.+?)}}},').findall(vidcontent)[0]+"}}"
 					data = json.loads(vidmatch)
 					vidlink=""
 					for currententry in data["feed"]["entry"]:
-						if(currententry["streamIds"][0].find(vidid[0]) > 0):
+						#if(currententry["streamIds"][0].find(vidid[0]) > 0):
 								for currentmedia in currententry["media"]["content"]:
 									if(currentmedia["type"]=="video/mpeg4"):
 										vidlink=currentmedia["url"]
@@ -716,11 +750,18 @@ def loadVideos(url,name):
 									vidlink=currententry["media"]["content"][0]["url"]
 									break
                  else:
-						vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
-						hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
-						if(len(hdmatch) > 0):
-							vidmatch=hdmatch
-						vidlink=vidmatch[-1][0]
+					vidmatch=re.compile('feedPreload:(.+?)}}},').findall(vidcontent)[0]+"}}"
+					data = json.loads(vidmatch)
+					vidlink=""
+					for currententry in data["feed"]["entry"]:
+						#if(currententry["streamIds"][0].find(vidid[0]) > 0):
+								for currentmedia in currententry["media"]["content"]:
+									if(currentmedia["type"]=="video/mpeg4"):
+										vidlink=currentmedia["url"]
+										break
+								if(vidlink==""):
+									vidlink=currententry["media"]["content"][0]["url"]
+									break
                  playVideo("direct",vidlink)
         elif (newlink.find("docs.google.com") > -1):
                 vidcontent = GetContent(newlink)
@@ -730,35 +771,14 @@ def loadVideos(url,name):
                         vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
                         playVideo("direct",vidlink[0])
         if (newlink.find("dailymotion") > -1):
-                match=re.compile('/(.+?)-').findall(newlink)
-                dailyid=""
-                
-                if(len(match)>0):
-                        dailyid=match[0].split("/")[-1]
+                match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(newlink)
                 if(len(match) == 0):
                         match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
-                        dailyid=match[0]
                 if(len(match) == 0):
                         match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(newlink)
-                        dailyid=match[0]
-                if (newlink.find("http://www.dailymotion.com/swf/") > -1):
-                        link=newlink
-                else:
-                        link = 'http://www.dailymotion.com/video/'+str(dailyid)
-                req = urllib2.Request(link)
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-                response = urllib2.urlopen(req)
-                link=response.read()
-                response.close()
-                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
-                #print 'in dailymontion:' + str(newseqeunce)
-                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
-                if(len(imgSrc[0]) == 0):
-                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
-                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
-                vidlink=urllib2.unquote(dm_low[0]).decode("utf8")
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/embed/video/(.+?)$').findall(newlink)
+                vidlink=getDailyMotionUrl(match[0])
                 playVideo("direct",vidlink)
         elif(newlink.find("youtube") > 0):
             vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
