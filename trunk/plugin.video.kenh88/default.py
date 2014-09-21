@@ -275,13 +275,18 @@ def loadVideos(url,name):
                         vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
                         playVideo("direct",vidlink[0])
            elif(newlink.find("picasaweb.google") > 0):
-                 vidcontent=postContent("http://www.kenh88.com/plugins6/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
-                 vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
-                 hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
-                 if(len(hdmatch) > 0) and usehd==True:
-                        vidmatch=hdmatch
-                 vidlink=vidmatch[-1][0]
-                 playVideo("direct",vidlink)
+                vidcontent=postContent("http://www.kenh88.com/plugins6/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DU?S%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+                vidlink=""
+                vidmatch=re.compile('\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
+                if(len(vidmatch) > 0):
+                      hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
+                      if(len(hdmatch) > 0):
+                           vidmatch=hdmatch
+                           vidlink=vidmatch[-1][0]
+                      else:
+                           vidmatch=re.compile('"image/gif"},{"url":"(.+?)",.+?,.+?,"type":"video/mpeg4"}').findall(vidcontent)
+                           vidlink=vidmatch[0]
+                playVideo("direct",vidlink) 
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
                 glink=""

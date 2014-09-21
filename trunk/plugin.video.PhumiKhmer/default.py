@@ -246,6 +246,12 @@ def Episodes(url,name):
 					else:
 						fullLink="http://docs.google.com/file/d/"+vLink+"/preview"
 					addLink(vLinkName.encode("utf-8"),fullLink,3,"")
+        match1=re.compile('<ul id="rp_playlist">(.+?)</ul>').findall(newlink)
+        if(len(match1) > 0):
+				match2=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match1[0])
+				for mcontent in match2:
+					vLink,vLinkName=mcontent
+					addLink(vLinkName.encode("utf-8"),vLink,3,"")
         match=re.compile('{\s*"file":\s*"(.+?)",\s*"title":\s*"(.+?)",\s*"description":\s*"').findall(link)
         if(len(match) >= 1):
                 for mcontent in match:
@@ -452,6 +458,9 @@ def loadVideos(url,name):
                 idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)
                 if(len(idmatch) > 0):
                         playVideo('vimeo',idmatch[0])
+                else:
+						idmatch =re.compile("vimeo.com/(.+?)&").findall(newlink + "&")
+						playVideo('vimeo',idmatch[0])
            else:
                 if (newlink.find("linksend.net") > -1):
                      d = xbmcgui.Dialog()
