@@ -502,7 +502,7 @@
 
 <addon
   id="plugin.video.PhumiKhmer"
-  version="1.0.16"
+  version="1.0.17"
   name="PhumiKhmer"
   provider-name="Dknight">
   <requires>
