@@ -225,7 +225,7 @@
 
 <addon
   id="plugin.video.hotkhmer"
-  version="1.0.2"
+  version="1.0.3"
   name="hotkhmer"
   provider-name="Dknight">
   <requires>
@@ -459,7 +459,7 @@
 
 <addon
   id="plugin.video.NoobRoom"
-  version="1.0.28"
+  version="1.0.29"
   name="NoobRoom"
   provider-name="Dknight">
   <requires>
@@ -586,7 +586,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.24"
+  version="1.0.25"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
