@@ -211,7 +211,7 @@ def Episodes(url,name):
 					addLink(vLinkName.encode("utf-8"),vLink,3,"")
         match1=re.compile('var list\s*=\s*\[(.+?)\];').findall(pagecontent.replace("[END]","(END)"))
         if(len(match1) > 0):
-				strList= "["+match1[0]+"]"
+				strList= "["+match1[0].strip()+"]"
 				epList=json.loads(strList.replace(", ]","]").replace(",]","]"))
 				if(len(epList) > 0  and epList[0].has_key('idGD')):
 					ctr=0
