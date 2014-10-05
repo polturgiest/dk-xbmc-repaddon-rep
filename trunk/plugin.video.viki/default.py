@@ -9,6 +9,7 @@ import json
 import re
 import urlresolver
 import HTMLParser
+import urlparse
 from xml.dom.minidom import Document
 import datetime
 from textwrap import wrap
@@ -93,8 +94,22 @@ def RemoveHTML(inputstring):
     return TAG_RE.sub('', inputstring)
 	
 def GetContent(url, useProxy=False):
+    if useProxy==True:
+        return GetContent2(url, useProxy)
+    hostn= urlparse.urlparse(url).hostname
+    conn = httplib.HTTPConnection(host=hostn,timeout=30)
+    req = url.replace(url.split(hostn)[0]+hostn,'')
+    try:
+        conn.request('GET',req)
+    except:
+        print 'echec de connexion'
+    content = conn.getresponse().read()
+    conn.close()
+    return content
+	
+def GetContent2(url, useProxy=False):
     strresult=""
-
+    response=None
     if useProxy==True:
         url = proxyurl.replace("*url*",urllib.quote_plus(url))
         #proxy_handler = urllib2.ProxyHandler({'http':us_proxy})
@@ -102,13 +117,17 @@ def GetContent(url, useProxy=False):
         #urllib2.install_opener(opener)
         print "use proxy:" + str(useProxy) + url
     try:
+        if(response!=None):
+           connection.close()
         req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)')
+        req.add_unredirected_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)')
         response = urllib2.urlopen(req)
         strresult=response.read()
         response.close()
     except Exception, e:
        print str(e)+" |" + url
+       if(response!=None):
+           connection.close()
     return strresult
 
 def write2srt(url, fname):
@@ -410,7 +429,7 @@ def getLanguages(url, ltype):
         try:
                 link =link.encode("UTF-8")
         except: pass
-        match = re.compile('<ul [^>]*id="all_language">(.+?)</ul>').findall(link)
+        match = re.compile('>All</h3>(.+?)</ul>').findall(link)
         if(len(match)>0):
                 langlist= re.compile('<li title=""><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(match[0].replace("/tv/browse?language=",""))
                 for purl,pname in langlist:
