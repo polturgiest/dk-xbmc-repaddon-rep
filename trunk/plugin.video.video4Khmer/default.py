@@ -95,7 +95,7 @@ def RadioList(url):
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile("\{\s*title:\s*'(.+?)'\s*,\s*mp3:\s*'(.+?)'\}").findall(newlink)
         for vcontent in match:
-              addSong(vcontent[0],vcontent[1],"","","", 1)
+              addSong(vcontent[0],vcontent[1],"","",[], 1)
 def SEARCH():
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
@@ -268,8 +268,11 @@ def Episodes(url,name):
                          vname=vname[0]
                     counter += 1
                     youtubeid = re.compile('/vi/(.+?)/').findall(vimg)
+                    try:
+                         vname=vname.encode('utf-8')
+                    except: pass
                     if(len(youtubeid)):
-                            addLink(vname.encode('utf-8'),"http://www.youtube.com/watch?v="+youtubeid[0],3,vimg)
+                            addLink(vname,"http://www.youtube.com/watch?v="+youtubeid[0],3,vimg)
                             videolist=videolist+"http://www.youtube.com/watch?v="+youtubeid[0]+";#"
                     else:
 
@@ -311,7 +314,27 @@ def ParseXml(url):
                 vidseries =""
         return vidseries
 
-
+def postContent(url,data,referr):
+    opener = urllib2.build_opener()
+    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                         ('Accept-Encoding','gzip, deflate'),
+                         ('Referer', referr),
+                         ('Content-Type', 'application/x-www-form-urlencoded'),
+                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+                         ('Connection','keep-alive'),
+                         ('Accept-Language','en-us,en;q=0.5'),
+                         ('Pragma','no-cache'),
+                         ('Host','www.phim.li')]
+    usock=opener.open(url,data)
+    if usock.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO.StringIO(usock.read())
+        f = gzip.GzipFile(fileobj=buf)
+        response = f.read()
+    else:
+        response = usock.read()
+    usock.close()
+    return response
+	
 def GetContent(url):
     #try:
        net = Net()
@@ -528,7 +551,7 @@ def loadVideos(newlink,name):
                 vidlink=getDailyMotionUrl(match[0])
                 playVideo('dailymontion',vidlink)
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent = GetContent(newlink)
+                vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
@@ -882,7 +905,7 @@ checkGA()
 def addSong(songname,songurl,songImg,album,artist, totalsong):
         cm = []
 
-        trackLabel = artist + " - " + album + " - " + songname
+        trackLabel =   album + " - " + songname
         item = xbmcgui.ListItem(label = trackLabel, thumbnailImage=songImg, iconImage=songImg)
         item.setPath(songurl)
         item.setInfo( type="Video", infoLabels={ "title": name, "album": album, "artist": artist} )
@@ -890,7 +913,6 @@ def addSong(songname,songurl,songImg,album,artist, totalsong):
         item.setProperty("IsPlayable", "true")
         item.setProperty('title', songname)
         item.setProperty('album', album)
-        item.setProperty('artist', artist)
         item.addContextMenuItems(cm, replaceItems=False)
         u=sys.argv[0]+"?url="+urllib.quote_plus(songurl)+"&mode=3&name="+urllib.quote_plus(songname)
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=songurl,listitem=item,isFolder=False, totalItems=totalsong)
