@@ -26,7 +26,7 @@ strdomain ='http://www.pinoy-ako.re'
 def HOME():
         addDir('Search','http://www.pinoy-ako.re',8,'')
         addDir('Latest Videos','http://www.pinoy-ako.re',7,'')
-        addDir('Pinoy Movies','http://www.pinoy-ako.re/category/pinoy-movies',6,'')
+        addDir('Pinoy Movies','http://www.lambingan.tk/pinoy-movies/',13,'')
         ###addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
         #addDir('Pinoy Box Office','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         #addDir('Cinema One','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
@@ -34,7 +34,7 @@ def HOME():
         addDir('Sports by category','52',2,'')
         ###addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
         #addDir('ABS-CBN Episode List','http://www.pinoy-ako.re/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        #addDir('ABS-CBN by Shows','2',2,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        addDir('ABS-CBN by Shows','http://www.lambingan.tk/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('GMA 7 Episode List','http://www.pinoy-ako.re/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('GMA 7 by Shows','11',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
@@ -56,16 +56,44 @@ def AllTV(url):
             vurlc=re.compile('<a href="(.+?)" class="category">(.+?)</a>').findall(moviecontent)
             (vurl,vname)=vurlc[0]
             addDir(vname,strdomain+vurl,5,"")
+
+def INDEXlamb(url):
+        link = GetContent(url)
+        try:
+            link=link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        vidcontent=re.compile('<div class="review-box-container">(.+?)<div class="clear"></div><div class="clear"></div>').findall(newlink)
+        tblecontent=re.compile('<div class="post-thumbnail">(.+?)</div>').findall(vidcontent[0])
+        for vcontent in tblecontent:
+                (vlink,imgcontent)=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vcontent)[0]
+                vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
+                if(len(vimg)>0):
+					vimg=vimg[0]
+                else:
+					vimg=""
+                vname=re.compile('<img [^>]*alt=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
+                if(len(vname)>0):
+					vname=vname[0]
+                try:
+                    vname=vname.encode("UTF-8")
+                except: pass
+                addDir(vname.replace("&amp;","&").replace("&#8211;","-").replace("&#8217;","'"),vlink.replace("&amp;amp;","&amp;"),14,vimg)
+        pagenavcontent=re.compile("<div class='wp-pagenavi cat-navi'>(.+?)</div>").findall(newlink)
+        if(len(pagenavcontent)>0):
+			pagelist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagenavcontent[0])
+			for pageurl,pagenum in pagelist:
+				addDir('page '+ pagenum.replace("&raquo;",">>").replace("&rsaquo;",">"),pageurl,13,'')
 def INDEX(itemnum):
-        link = GetContent("http://www.pinoy-ako.re/category/uncategorized/")
+        link = GetContent("http://www.pinoy-ako.re/")
         try:
             link=link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         vidcontent=re.compile('<li class="cat-item cat-item-'+itemnum+'">(.+?)</ul></li>').findall(newlink)
         tblecontent=re.compile("<ul class='children'>(.+?)</ul>").findall(vidcontent[0]+'</ul>')
-        showlist=re.compile('<a href="(.+?)" title="(.+?)">(.+?)</a>').findall(tblecontent[0])
-        for (vlink,vtmp,vname) in showlist:
+        showlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(tblecontent[0])
+        for (vlink,vname) in showlist:
                 addDir(vname.replace("&amp;","&").replace("&#8211;","-").replace("&#8217;","'"),vlink.replace("&amp;amp;","&amp;"),6,"")
 def INDEX2(url):
         link = GetContent(url)
@@ -81,7 +109,7 @@ def INDEX2(url):
             vurlc=re.compile('<a href="(.+?)" rel="bookmark">(.+?)</a>').findall(moviecontent)
             if(len(vurlc) > 0):
                     (vurl,vname)=vurlc[0]
-                    addDir(vname.replace("&#8211;","-").replace("&#8217;","'"),vurl,4,vimg)	
+                    addDir(vname.replace("&#8211;","-").replace("&#8217;","'"),vurl,4,vimg)
         pagenavcontent=re.compile("<div class='wp-pagenavi'>(.+?)</div>").findall(link)
         if(len(pagenavcontent)>0):
 			pagelist=re.compile('<a class="(page larger|nextpostslink|last)" href="(.+?)">(.+?)</a>').findall(pagenavcontent[0])
@@ -140,13 +168,48 @@ def GetXmlPlaylist(url, name):
                 partcnt=partcnt+1
                 addLink(name+ " youtube part " + str(partcnt),embvid,3,"")
 				
+def GetVideoLinkslamb(url):
+        link = GetContent(url)
+        link = ''.join(link.splitlines()).replace('\'','"')
+        try:
+            link=link.encode("UTF-8")
+        except: pass
+        vidcontent=re.compile('<span class="st_sharethis_vcount" displaytext="ShareThis">(.+?)<h3>Comments</h3').findall(link)
+        frmsrc1=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(vidcontent[0])
+        lnksrc1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(vidcontent[0])
+        mirrorcnt = 0
+        partcnt=0
+        for frmvid in frmsrc1:
+			vname = frmvid.replace("http://","").replace("https://","").split(".")
+			mirrorcnt=mirrorcnt+1
+			if(vname[1].find("/") > -1):
+				  vname=vname[0]
+			else:
+				  vname=vname[1]
+			#partcnt=partcnt+1
+			vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+			addLink(vname,frmvid,3,"")
+        for frmvid2 in lnksrc1:
+			vname = frmvid2.replace("http://","").replace("https://","").split(".")
+			mirrorcnt=mirrorcnt+1
+			if(vname[1].find("/") > -1):
+				  vname=vname[0]
+			else:
+				  vname=vname[1]
+			#partcnt=partcnt+1
+			vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+			addLink(vname,frmvid2,3,"")
 def GetVideoLinks(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
+        try:
+            link=link.encode("UTF-8")
+        except: pass
         vidcontent=re.compile('<div class="entry-content clearfix">(.+?)<div class="tags">').findall(link)
         tabvids=re.compile('<div class="(blitzer|tabbertab|jwts_tabber|smoothness)">(.+?)</div>').findall(vidcontent[0])
-        singlevids=re.compile('<p style="text-align:\s*center;">(.+?)<div class=').findall(vidcontent[0])
+        singlevids=re.compile('<p style="text-align:(.+?)<div class=').findall(vidcontent[0])
         singledivs=re.compile('<div style="text-align:\s*center;">(.+?)</div>').findall(vidcontent[0])
+        #singleiframe=re.compile('<div style="text-align:\s*center;">(.+?)</div>').findall(vidcontent[0])
         singlevids.extend(singledivs)
         mirrorcnt = 0
         for spancontent in singlevids:
@@ -651,7 +714,8 @@ def loadVideos(url,name):
                 if(len(match) == 0):
                         match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(url)
                 if(len(match) == 0):
-                	match=re.compile('http://www.dailymotion.com/embed/video/(.+?)$').findall(url)
+                	match=re.compile('www.dailymotion.com/embed/video/(.+?)\?').findall(url.replace("$","?"))
+                print match
                 vidlink=getDailyMotionUrl(match[0])
            elif (newlink.find("cloudy") > -1):
                 pcontent=GetContent(newlink)
@@ -668,10 +732,9 @@ def loadVideos(url,name):
                 vidcontent="http://videomega.tv/iframe.php?ref="+refkey
                 pcontent=GetContent(vidcontent)
                 pcontent=''.join(pcontent.splitlines()).replace('\'','"')
-                urlcode = re.compile('if\s*\(!validstr\){\s*document.write\(unescape\("(.+?)"\)\);\s*}').findall(pcontent)[0]
+                urlcode = re.compile('else{\s*document.write\(unescape\("(.+?)"\)').findall(pcontent)[0]
                 vidcontent=urllib.unquote_plus(urlcode)
-                vidlink = re.compile('file:\s*"(.+?)",').findall(vidcontent)[0]
-
+                vidlink = re.compile('file:\s*"(.+?)"\s*,').findall(vidcontent)[0]
            elif (newlink.find("allmyvideos") > -1):
                 videoid=  re.compile('http://allmyvideos.net/embed-(.+?).html').findall(newlink)
                 if(len(videoid)>0):
@@ -1219,4 +1282,8 @@ elif mode==9:
        SearchResults(url)
 elif mode==10:
        AllTV(url)
+elif mode==13:
+       INDEXlamb(url)   
+elif mode==14:
+       GetVideoLinkslamb(url)
 xbmcplugin.endOfDirectory(int(sysarg))
