@@ -15,9 +15,9 @@ ADDON = xbmcaddon.Addon(id='plugin.video.KhmerAvenue')
 if ADDON.getSetting('ga_visitor')=='':
     from random import randint
     ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
-    
-PATH = "KhmerAvenue"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
-UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
+
+PATH = "KhmerAvenue"  #<---- PLUGIN NAME MINUS THE "plugin.video"
+UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER
 VERSION = "1.0.16" #<---- PLUGIN VERSION
 
 common = CommonFunctions
@@ -25,12 +25,12 @@ common.plugin = "plugin.video.KhmerAvenue"
 strDomain ='http://www.merlkon.com/'
 def HOME():
         addDir('Search','http://www.merlkon.com/',4,'http://www.merlkon.com/wp-contents/uploads/logo.jpg')
-        addDir('Khmer Videos','http://www.merlkon.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Videos 2','http://www.khmerave.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Video','http://www.merlkon.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Thai Lakorns','http://www.merlkon.com/albumcategory/thai-videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         addDir('Korean Videos','http://www.merlkon.com/albumcategory/korean-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Chinese Videos','http://www.merlkon.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Chinese Videos 2','http://www.khmerave.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Chinese Merlkon','http://www.merlkon.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Chinese KhmerAve','http://www.khmeravenue.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
+        addDir('Chinese KhmerStream','http://www.khmerstream.com/albumcategory/chinese-videos/',2,'http://www.khmeravenue.com/poster-images/legendofmermaid-poster.jpg')
         addDir('Bollywood Videos','http://www.merlkon.com/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2013/01/santosima.jpg')
         addDir('Philippines Videos','http://www.merlkon.com/albumcategory/philippines-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
@@ -48,11 +48,11 @@ def INDEX(url):
             addDir(vname,vurl,5,vimage)
         match5=re.compile("<div class='wp-pagenavi'>(.+?)</div>").findall(newlink)
         if(len(match5)):
-			pagelist=re.compile('<a class="page larger" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match5[0]) 
+			pagelist=re.compile('<a class="page larger" [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match5[0])
 			for vurl,vcontent in pagelist:
 				addDir("page "+vcontent,vurl,2,"")
     #except: pass
-			
+
 def SEARCH():
         keyb = xbmc.Keyboard('', 'Enter search text')
         keyb.doModal()
@@ -61,7 +61,7 @@ def SEARCH():
                 searchText = urllib.quote_plus(keyb.getText())
         url = 'http://www.merlkon.com/page/1/?s='+ searchText +'&x=4&y=6'
         SearchResults(url)
-        
+
 def SearchResults(url):
         link = GetContent(url)
         try:
@@ -77,7 +77,7 @@ def SearchResults(url):
         if(len(match) > 0):
             url=match[0]
             addDir("Next >>",url,6,"")
-			
+
 def getVimeoUrl(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
         collection = {}
@@ -85,7 +85,7 @@ def getVimeoUrl(videoid):
             html = result["content"]
             html = html[html.find(',a={'):]
             html = html[:html.find('}};') + 2]
-            html = html.replace(",a={", '{') 
+            html = html.replace(",a={", '{')
             try:
                   collection = json.loads(html)
                   codec=collection["request"]["files"]["codecs"][0]
@@ -93,7 +93,7 @@ def getVimeoUrl(videoid):
                   return filecol["sd"]["url"]
             except:
                   return getVimeoVideourl(videoid)
-			
+
 def scrapeVideoInfo(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
         collection = {}
@@ -141,7 +141,7 @@ def getVideoInfo(videoid):
 
 def getVimeoVideourl(videoid):
         common.log("")
-        
+
         (video, status) = getVideoInfo(videoid)
 
 
@@ -153,18 +153,18 @@ def getVimeoVideourl(videoid):
             return ""
 
         quality = "sd"
-        
+
         if ('apierror' not in video):
             video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
             result = common.fetchPage({"link": video_url, "no-content": "true"})
             video['video_url'] = result["new_url"]
 
             common.log("Done")
-            return video['video_url'] 
+            return video['video_url']
         else:
             common.log("Got apierror: " + video['apierror'])
             return ""
-        
+
 def Episodes(url,name):
     #try:
         link = GetContent(url)
@@ -188,15 +188,35 @@ def Episodes(url,name):
                             addLink("-------Play the "+ str(len(videolist.split(';#'))-1)+" videos above--------",videolist,8,"")
                             videolist =""
 
-    #except: pass	
+    #except: pass
 
-
+def postContent(url,data,referr):
+    opener = urllib2.build_opener()
+    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                         ('Accept-Encoding','gzip, deflate'),
+                         ('Referer', referr),
+                         ('Content-Type', 'application/x-www-form-urlencoded'),
+                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+                         ('Connection','keep-alive'),
+                         ('Accept-Language','en-us,en;q=0.5'),
+                         ('Pragma','no-cache'),
+                         ('Host','www.phim.li')]
+    usock=opener.open(url,data)
+    if usock.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO.StringIO(usock.read())
+        f = gzip.GzipFile(fileobj=buf)
+        response = f.read()
+    else:
+        response = usock.read()
+    usock.close()
+    return response
+	
 def GetContent(url):
     try:
        net = Net()
        second_response = net.http_GET(url)
        return second_response.content
-    except:	
+    except:
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
 
@@ -210,7 +230,7 @@ def playVideo(videoType,videoId):
     elif (videoType == "vimeo"):
         url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
-        url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
+        url = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId
 
     xbmcPlayer = xbmc.Player()
     xbmcPlayer.play(url)
@@ -228,23 +248,23 @@ def PLAYLIST_VIDEOLINKS(url,name):
         loadedLinks = 0
         remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
         pDialog.update(0,'Please wait for the process to retrieve video link.',remaining_display)
-        
         for videoLink in links:
+             if(len(videoLink)>2):
                 loadPlaylist(videoLink,name)
-                loadedLinks = loadedLinks 
+                loadedLinks = loadedLinks
                 percent = (loadedLinks * 100)/totalLinks
                 #print percent
                 remaining_display = 'Videos loaded :: [B]'+str(loadedLinks)+' / '+str(totalLinks)+'[/B] into XBMC player playlist.'
                 pDialog.update(percent,'Please wait for the process to retrieve video link.',remaining_display)
                 if (pDialog.iscanceled()):
-                        return False   
+                        return False
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(playList)
         if not xbmcPlayer.isPlayingVideo():
                 d = xbmcgui.Dialog()
                 d.ok('videourl: ' + str(playList), 'One or more of the playlist items','Check links individually.')
         return ok
-
+		
 def CreateList(videoType,videoId):
     url1 = ""
     if (videoType == "youtube"):
@@ -255,7 +275,7 @@ def CreateList(videoType,videoId):
     elif (videoType == "vimeo"):
         url1 = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
-        url1 = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId	
+        url1 = 'plugin://plugin.video.tudou/?mode=3&url=' + videoId
     else:
         url1=videoId
     print "addingplay" + url1
@@ -263,43 +283,33 @@ def CreateList(videoType,videoId):
         liz = xbmcgui.ListItem('[B]PLAY VIDEO[/B]', thumbnailImage="")
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.add(url=url1, listitem=liz)
-        
+
 def loadPlaylist(newlink,name):
         #try:
-           print newlink
-           if (newlink.find("khmerave") > -1) or (newlink.find("merlkon") > -1):
-                link=GetContent(newlink)
-                newlink = ''.join(link.splitlines()).replace('\t','')
-
-                match=re.compile("'file': '(.+?)',").findall(newlink)
-                if(len(match) == 0):
+           link=GetContent(newlink)
+           newlink = ''.join(link.encode("utf-8").splitlines()).replace('\t','')
+           vidurl=""
+           match=re.compile("'file': '(.+?)',").findall(newlink)
+           if(len(match) == 0):
                    match=re.compile('<div class="video_main">\s*<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
                    if(len(match)==0):
                            match=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
                            if(len(match)==0):
-                                    match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
-                newlink=match[0]
-
+                                   match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
+           newlink=match[0]
            if (newlink.find("dailymotion") > -1):
-                match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
-                lastmatch = match[0][len(match[0])-1]
-                link = 'http://www.dailymotion.com/'+str(lastmatch)
-                req = urllib2.Request(link)
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-                response = urllib2.urlopen(req)
-                link=response.read()
-                response.close()
-                sequence=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/','/')
-                #print 'in dailymontion:' + str(newseqeunce)
-                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
-                if(len(imgSrc[0]) == 0):
-                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
-                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
-                CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+                match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(newlink)
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(newlink)
+                if(len(match) == 0):
+                	match=re.compile('www.dailymotion.com/embed/video/(.+?)\?').findall(newlink.replace("$","?"))
+                print match
+                vidlink=getDailyMotionUrl(match[0])
+                CreateList('dailymontion',vidlink)
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent = GetContent(newlink)
+                vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
@@ -322,6 +332,14 @@ def loadPlaylist(newlink,name):
                 idmatch =re.compile("http://player.vimeo.com/video/(.+?)\?").findall(newlink+"?")
                 vidurl=getVimeoUrl(idmatch[0])
                 CreateList("other",vidurl)
+           elif (newlink.find("vid.me") > -1):
+                link=GetContent(newlink)
+                link = ''.join(link.splitlines()).replace('\'','"')
+                match=re.compile('<meta property="og:video:url" [^>]*content=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+                for vbam in match:
+                     if(vbam.find(newlink) == -1):
+                          vidurl=vbam
+                CreateList('khmeravenue',vidurl)
            elif (newlink.find("videobam") > -1):
                 link=GetContent(newlink)
                 link = ''.join(link.splitlines()).replace('\'','"')
@@ -332,11 +350,11 @@ def loadPlaylist(newlink,name):
                 CreateList("other",vidurl)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
-                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
+                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')
            else:
                 if (newlink.find("linksend.net") > -1):
                      d = xbmcgui.Dialog()
-                     d.ok('Not Implemented','Sorry videos on linksend.net does not work','Site seem to not exist')		
+                     d.ok('Not Implemented','Sorry videos on linksend.net does not work','Site seem to not exist')
                 newlink1 = urllib2.unquote(newlink).decode("utf8")+'&dk;'
                 print 'NEW url = '+ newlink1
                 match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink1)
@@ -348,12 +366,13 @@ def loadPlaylist(newlink,name):
                 else:
                     CreateList("other",urllib2.unquote(newlink).decode("utf8"))
         #except: pass
-		
+
 def loadVideos(url,name):
         #try:
            GA("LoadVideos",name)
            link=GetContent(url)
            newlink = ''.join(link.encode("utf-8").splitlines()).replace('\t','')
+           vidurl=""
            match=re.compile("'file': '(.+?)',").findall(newlink)
            if(len(match) == 0):
                    match=re.compile('<div class="video_main">\s*<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)
@@ -371,7 +390,7 @@ def loadVideos(url,name):
                 vidlink=getDailyMotionUrl(str(lastmatch))
                 playVideo('dailymontion',vidlink)
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent = GetContent(newlink)
+                vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
@@ -384,6 +403,14 @@ def loadVideos(url,name):
                 print idmatch
                 vidurl=getVimeoUrl(idmatch[0])
                 playVideo('khmeravenue',vidurl)
+           elif (newlink.find("vid.me") > -1):
+                link=GetContent(newlink)
+                link = ''.join(link.splitlines()).replace('\'','"')
+                match=re.compile('<meta property="og:video:url" [^>]*content=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+                for vbam in match:
+                     if(vbam.find(newlink) == -1):
+                          vidurl=vbam
+                playVideo('khmeravenue',vidurl)
            elif (newlink.find("videobam") > -1):
                 link=GetContent(newlink)
                 link = ''.join(link.splitlines()).replace('\'','"')
@@ -392,25 +419,13 @@ def loadVideos(url,name):
                      if(vbam.find("mp4") > -1):
                           vidurl=vbam.replace("\\","")
                 playVideo('khmeravenue',vidurl)
-           elif (newlink.find("docs.google.com") > -1):
-                link=GetContent(newlink)
-                link = ''.join(link.splitlines()).replace('\'','"')
-                match= re.compile('url_encoded_fmt_stream_map\":\"(.+?),\"').findall(link)
-                stream_url=""
-                if match:
-                    streams_map = str(match)
-                    stream= re.compile('url=(.+?)&type=.+?&quality=(.+?)[,\"]{1}').findall(streams_map)
-                    for group1,group2 in stream:
-                         stream_url = str(group1)
-                         stream_url = unescape(stream_url)
-                playVideo('khmeravenue',stream_url)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
-                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
+                d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')
            else:
                 if (newlink.find("linksend.net") > -1):
                      d = xbmcgui.Dialog()
-                     d.ok('Not Implemented','Sorry videos on linksend.net does not work','Site seem to not exist')		
+                     d.ok('Not Implemented','Sorry videos on linksend.net does not work','Site seem to not exist')
                 newlink1 = urllib2.unquote(newlink).decode("utf8")+'&dk;'
                 print 'NEW url = '+ newlink1
                 match=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink1)
@@ -424,7 +439,7 @@ def loadVideos(url,name):
                 else:
                     playVideo('moviekhmer',urllib2.unquote(newlink).decode("utf8"))
         #except: pass
-		
+
 def getDailyMotionUrl(id):
     maxVideoQuality="720p"
     content = GetContent("http://www.dailymotion.com/embed/video/"+id)
@@ -449,7 +464,7 @@ def getDailyMotionUrl(id):
         elif matchLD:
             url = urllib.unquote_plus(matchLD[0]).replace("\\", "")
         return url
-		
+
 def extractFlashVars(data):
     for line in data.split("\n"):
             index = line.find("ytplayer.config =")
@@ -466,8 +481,8 @@ def extractFlashVars(data):
             data=data.split(";ytplayer.load",1)[0]
             data = json.loads(data)
             flashvars = data["args"]
-    return flashvars   
-		
+    return flashvars
+
 def selectVideoQuality(links):
         link = links.get
         video_url = ""
@@ -565,7 +580,7 @@ def getYoutube(videoid):
                 response = urllib2.urlopen(req)
                 link=response.read()
                 response.close()
-                
+
                 if len(re.compile('shortlink" href="http://youtu.be/(.+?)"').findall(link)) == 0:
                         if len(re.compile('\'VIDEO_ID\': "(.+?)"').findall(link)) == 0:
                                 req = urllib2.Request('http://www.youtube.com/get_video_info?video_id='+code+'&asv=3&el=detailpage&hl=en_US')
@@ -573,7 +588,7 @@ def getYoutube(videoid):
                                 response = urllib2.urlopen(req)
                                 link=response.read()
                                 response.close()
-                
+
                 flashvars = extractFlashVars(link)
 
                 links = {}
@@ -594,7 +609,7 @@ def getYoutube(videoid):
                                 url = url + u"&signature=" + url_desc_map[u"sig"][0]
                         links[key] = url
                 highResoVid=selectVideoQuality(links)
-                return highResoVid  
+                return highResoVid
 
 def parseDate(dateString):
     try:
@@ -619,9 +634,9 @@ def checkGA():
         return
 
     ADDON.setSetting('ga_time', str(now).split('.')[0])
-    APP_LAUNCH()    
-    
-                    
+    APP_LAUNCH()
+
+
 def send_request_to_google_analytics(utm_url):
     ua='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
     import urllib2
@@ -631,9 +646,9 @@ def send_request_to_google_analytics(utm_url):
                                      )
         response = urllib2.urlopen(req).read()
     except:
-        print ("GA fail: %s" % utm_url)         
+        print ("GA fail: %s" % utm_url)
     return response
-       
+
 def GA(group,name):
         try:
             try:
@@ -660,7 +675,7 @@ def GA(group,name):
                         print "============================ POSTING TRACK EVENT ============================"
                         send_request_to_google_analytics(utm_track)
                     except:
-                        print "============================  CANNOT POST TRACK EVENT ============================" 
+                        print "============================  CANNOT POST TRACK EVENT ============================"
             if name=="None":
                     utm_url = utm_gif_location + "?" + \
                             "utmwv=" + VERSION + \
@@ -683,14 +698,14 @@ def GA(group,name):
                                 "&utmp=" + quote(PATH+"/"+group+"/"+name) + \
                                 "&utmac=" + UATRACK + \
                                 "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR, VISITOR,"2"])
-                                
+
             print "============================ POSTING ANALYTICS ============================"
             send_request_to_google_analytics(utm_url)
-            
+
         except:
-            print "================  CANNOT POST TO ANALYTICS  ================" 
-            
-            
+            print "================  CANNOT POST TO ANALYTICS  ================"
+
+
 def APP_LAUNCH():
         versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
         if versionNumber < 12:
@@ -734,12 +749,12 @@ def APP_LAUNCH():
         import platform
         VISITOR = ADDON.getSetting('ga_visitor')
         for build, PLATFORM in match:
-            if re.search('12',build[0:2],re.IGNORECASE): 
-                build="Frodo" 
-            if re.search('11',build[0:2],re.IGNORECASE): 
-                build="Eden" 
-            if re.search('13',build[0:2],re.IGNORECASE): 
-                build="Gotham" 
+            if re.search('12',build[0:2],re.IGNORECASE):
+                build="Frodo"
+            if re.search('11',build[0:2],re.IGNORECASE):
+                build="Eden"
+            if re.search('13',build[0:2],re.IGNORECASE):
+                build="Gotham"
             print build
             print PLATFORM
             utm_gif_location = "http://www.google-analytics.com/__utm.gif"
@@ -755,7 +770,7 @@ def APP_LAUNCH():
                 print "============================ POSTING APP LAUNCH TRACK EVENT ============================"
                 send_request_to_google_analytics(utm_track)
             except:
-                print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
+                print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================"
 checkGA()
 
 def addLink(name,url,mode,iconimage):
@@ -767,7 +782,7 @@ def addLink(name,url,mode,iconimage):
         liz.addContextMenuItems(contextMenuItems, replaceItems=True)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
         return ok
-		
+
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
@@ -775,7 +790,7 @@ def addNext(formvar,url,mode,iconimage):
         liz.setInfo( type="Video", infoLabels={ "Title": 'Next >' } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
-		
+
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
@@ -799,8 +814,8 @@ def get_params():
                         splitparams=pairsofparams[i].split('=')
                         if (len(splitparams))==2:
                                 param[splitparams[0]]=splitparams[1]
-                                
-        return param    
+
+        return param
 
 
 
@@ -824,14 +839,14 @@ except:
 try:
         formvar=int(params["formvar"])
 except:
-        pass		
+        pass
 
-#url='http://www.khmeraccess.com/video/viewvideo/6604/31end.html'		
-sysarg=str(sys.argv[1]) 
+#url='http://www.khmeraccess.com/video/viewvideo/6604/31end.html'
+sysarg=str(sys.argv[1])
 if mode==None or url==None or len(url)<1:
         #OtherContent()
         HOME()
-       
+
 elif mode==2:
         #d = xbmcgui.Dialog()
         #d.ok('mode 2',str(url),' ingore errors lol')
@@ -850,5 +865,5 @@ elif mode==6:
        SearchResults(url)
 elif mode==8:
        PLAYLIST_VIDEOLINKS(url,name)
-	   
+
 xbmcplugin.endOfDirectory(int(sysarg))

@@ -363,32 +363,27 @@ def GetContent(url):
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
 
-def PostContent(formvar,url):
-        try:
-                net = Net()
-                headers = {}
-                headers['Accept']='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-                headers['Accept-Encoding'] = 'gzip, deflate'
-                headers['Accept-Charset']='ISO-8859-1,utf-8;q=0.7,*;q=0.7'
-                headers['Referer'] = 'http://www.khmeraccess.com/video/videolist/videonew.html?cid=1'
-                headers['Content-Type'] = 'application/x-www-form-urlencoded'
-                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0.1) Gecko/20100101 Firefox/5.0.1'
-                headers['Connection'] = 'keep-alive'
-                headers['Host']='www.khmeraccess.com'
-                headers['Accept-Language']='en-us,en;q=0.5'
-                headers['Pragma']='no-cache'
-                formdata={}                      
-                formdata['start']=formvar
+def postContent(url,data,referr):
+    opener = urllib2.build_opener()
+    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+                         ('Accept-Encoding','gzip, deflate'),
+                         ('Referer', referr),
+                         ('Content-Type', 'application/x-www-form-urlencoded'),
+                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+                         ('Connection','keep-alive'),
+                         ('Accept-Language','en-us,en;q=0.5'),
+                         ('Pragma','no-cache'),
+                         ('Host','www.phim.li')]
+    usock=opener.open(url,data)
+    if usock.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO.StringIO(usock.read())
+        f = gzip.GzipFile(fileobj=buf)
+        response = f.read()
+    else:
+        response = usock.read()
+    usock.close()
+    return response
 
-
-                #first_response = net.http_Get('http://khmerfever.com/wp-login.php',headers=header_dict)
-                #net.save_cookies('c:\cookies.txt')
-                #net.set_cookies('c:\cookies.txt')
-                second_response = net.http_POST(url,formdata,headers=headers,compression=False)
-                return second_response.content
-        except: 
-                d = xbmcgui.Dialog()
-                d.ok('Time out',"Can't Connect to site",'Try again in a moment')
 	
 def playVideo(videoType,videoId):
     url = ""
@@ -442,7 +437,7 @@ def loadVideos(url,name):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent = GetContent(newlink)
+                vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")

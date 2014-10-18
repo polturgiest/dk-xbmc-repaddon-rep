@@ -55,7 +55,7 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div class="blog-content">(.+?)<!-- End Center Container -->').findall(newlink)
+        match=re.compile('<div class="blog-content">(.+?)<div class="sidebar blue-ads">').findall(newlink)
         listcontent=re.compile('<a href="(.+?)">(.+?)</a>').findall(match[0])
         vimage=""
         for vcontent in listcontent:
@@ -249,7 +249,7 @@ def Episodes(url,name):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div class="blog-content">(.+?)<!-- End Center Container -->').findall(newlink)
+        match=re.compile('<div class="blog-content">(.+?)<div class="sidebar blue-ads">').findall(newlink)
         if(len(match) >= 1):
                 linkmatch=re.compile('<a href="(.+?)"><img(.+?)</a>').findall(match[0]) 
                 counter = 0
@@ -460,7 +460,7 @@ def loadPlaylist(newlink,name):
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent = GetContent(newlink)
+                vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
