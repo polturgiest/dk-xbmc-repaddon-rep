@@ -233,12 +233,12 @@ def playVideo(videoType,videoId):
     url = ""
     if (videoType == "youtube"):
         try:
+                url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
+                xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
+        except:
                 url = getYoutube(videoId)
                 xbmcPlayer = xbmc.Player()
                 xbmcPlayer.play(url)
-        except:
-                url = 'plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid=' + videoId.replace('?','')
-                xbmc.executebuiltin("xbmc.PlayMedia("+url+")")
     elif (videoType == "vimeo"):
         url = 'plugin://plugin.video.vimeo/?action=play_video&videoID=' + videoId
     elif (videoType == "tudou"):
@@ -547,7 +547,7 @@ def getYoutube(videoid):
                         if url_desc_map.has_key(u"sig"):
                                 url = url + u"&signature=" + url_desc_map[u"sig"][0]
                         links[key] = url
-                highResoVid=selectVideoQuality(links)
+                highResoVid=selectVideoQuality(links)+"|Referer=https://www.youtube.com|Host=www.youtube.com"
                 return highResoVid    
 
 				

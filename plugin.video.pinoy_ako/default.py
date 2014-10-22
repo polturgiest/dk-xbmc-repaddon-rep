@@ -174,31 +174,33 @@ def GetVideoLinkslamb(url):
         try:
             link=link.encode("UTF-8")
         except: pass
-        vidcontent=re.compile('<span class="st_sharethis_vcount" displaytext="ShareThis">(.+?)<h3>Comments</h3').findall(link)
+        vidcontent=re.compile('<span class="st_sharethis_vcount" displaytext="ShareThis">(.+?)<div id="sidebar">').findall(link)
         frmsrc1=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(vidcontent[0])
         lnksrc1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(vidcontent[0])
         mirrorcnt = 0
         partcnt=0
         for frmvid in frmsrc1:
-			vname = frmvid.replace("http://","").replace("https://","").split(".")
-			mirrorcnt=mirrorcnt+1
-			if(vname[1].find("/") > -1):
-				  vname=vname[0]
-			else:
-				  vname=vname[1]
-			#partcnt=partcnt+1
-			vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
-			addLink(vname,frmvid,3,"")
+			if(frmvid.find("http") >-1 and frmvid.find("lambingantv")==-1 ):
+				vname = frmvid.replace("http://","").replace("https://","").split(".")
+				mirrorcnt=mirrorcnt+1
+				if(vname[1].find("/") > -1):
+					  vname=vname[0]
+				else:
+					  vname=vname[1]
+				#partcnt=partcnt+1
+				vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+				addLink(vname,frmvid,3,"")
         for frmvid2 in lnksrc1:
-			vname = frmvid2.replace("http://","").replace("https://","").split(".")
-			mirrorcnt=mirrorcnt+1
-			if(vname[1].find("/") > -1):
-				  vname=vname[0]
-			else:
-				  vname=vname[1]
-			#partcnt=partcnt+1
-			vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
-			addLink(vname,frmvid2,3,"")
+			if(frmvid2.find("http") >-1 and frmvid2.find("lambingantv")==-1 ):
+				vname = frmvid2.replace("http://","").replace("https://","").split(".")
+				mirrorcnt=mirrorcnt+1
+				if(vname[1].find("/") > -1):
+					  vname=vname[0]
+				else:
+					  vname=vname[1]
+				#partcnt=partcnt+1
+				vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+				addLink(vname,frmvid2,3,"")
 def GetVideoLinks(url):
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
@@ -855,7 +857,7 @@ def getDailyMotionUrl(id):
     maxVideoQuality="720p"
     content = GetContent("http://www.dailymotion.com/embed/video/"+id)
     if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
-        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+        xbmc.executebuiltin('XBMC.Notification(Info:, (DailyMotion)!,5000)')
         return ""
     else:
         matchFullHD = re.compile('"stream_h264_hd1080_url":"(.+?)"', re.DOTALL).findall(content)

@@ -28,7 +28,7 @@ def HOME():
         #addDir('Khmer Comedy',strdomain+'category/khmer/khmer-comedy/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         #addDir('Khmer Movies',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         #addDir('Khmer Song',strdomain+'category/khmer/khmer-songs/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer TV Show',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer TV drama',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Thai Movies',strdomain+'category/thai/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         addDir('Thai Lakorns',strdomain+'category/thai/thai-lakorn/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         #addDir('Korean Drama',strdomain+'category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
@@ -159,7 +159,10 @@ def INDEX(url):
                                 vimage=""
                             vname=vlink[0][1]
                             #(vurl, vimage, vname)=match1[0]
-                            addDir(vname.encode("utf-8").replace("Thai Lakorn &#8211;",""),vurl,5,vimage)
+                            try:
+								vname=vname.encode("utf-8")
+                            except:pass
+                            addDir(vname.replace("Thai Lakorn &#8211;",""),vurl,5,vimage)
         match5=re.compile("<div class='wp-pagenavi'>((.|\s)*?)</div>").findall(newlink)
         if(len(match5) >= 1 and len(match5[0]) >= 1 ):
                 pagelist =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match5[0][0])

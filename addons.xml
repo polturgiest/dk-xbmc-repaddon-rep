@@ -268,7 +268,7 @@
 
 <addon
   id="plugin.video.kenh88"
-  version="1.0.5"
+  version="1.0.6"
   name="kenh88.com"
   provider-name="Dknight">
   <requires>
@@ -312,7 +312,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.23"
+  version="1.0.27"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -397,7 +397,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.20"
+  version="1.0.21"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
@@ -502,7 +502,7 @@
 
 <addon
   id="plugin.video.PhumiKhmer"
-  version="1.0.18"
+  version="1.0.19"
   name="PhumiKhmer"
   provider-name="Dknight">
   <requires>
@@ -523,7 +523,7 @@
 
 <addon
   id="plugin.video.pinoy_ako"
-  version="1.0.17"
+  version="1.0.18"
   name="pinoy_ako"
   provider-name="Dknight">
   <requires>
@@ -586,7 +586,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.27"
+  version="1.0.28"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
@@ -650,7 +650,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.10"
+  version="1.0.11"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>

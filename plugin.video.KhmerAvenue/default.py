@@ -25,13 +25,12 @@ common.plugin = "plugin.video.KhmerAvenue"
 strDomain ='http://www.merlkon.com/'
 def HOME():
         addDir('Search','http://www.merlkon.com/',4,'http://www.merlkon.com/wp-contents/uploads/logo.jpg')
-        addDir('Khmer Video','http://www.merlkon.com/albumcategory/khmer-media/',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Lakorns','http://www.merlkon.com/albumcategory/thai-videos/',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Khmer Video','http://www.merlkon.com/albumcategory/khmer-media/',2,'http://www.merlkon.com/wp-content/uploads/2013/03/snep-150x150.jpg')
+        addDir('Thai Lakorns','http://www.merlkon.com/albumcategory/thai-videos/',2,'http://www.merlkon.com/wp-content/uploads/2014/10/kew-150x150.jpg')
         addDir('Korean Videos','http://www.merlkon.com/albumcategory/korean-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/04/lietome.jpg')
-        addDir('Chinese Merlkon','http://www.merlkon.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Chinese KhmerAve','http://www.khmeravenue.com/albumcategory/chinese-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/05/rosemartial.jpg')
-        addDir('Chinese KhmerStream','http://www.khmerstream.com/albumcategory/chinese-videos/',2,'http://www.khmeravenue.com/poster-images/legendofmermaid-poster.jpg')
-        addDir('Bollywood Videos','http://www.merlkon.com/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2013/01/santosima.jpg')
+        addDir('Chinese KhmerAve','http://www.khmeravenue.com/albumcategory/chinese-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2014/09/a-150x150.png')
+        addDir('Chinese KhmerStream','http://www.khmerstream.com/albumcategory/chinese-videos/',2,'http://www.khmerstream.com/wp-content/uploads/2014/10/d-150x150.png')
+        addDir('Bollywood Videos','http://www.merlkon.com/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/10/bol-150x150.jpg')
         addDir('Philippines Videos','http://www.merlkon.com/albumcategory/philippines-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
     #try:
@@ -202,6 +201,7 @@ def postContent(url,data,referr):
                          ('Pragma','no-cache'),
                          ('Host','www.phim.li')]
     usock=opener.open(url,data)
+    print usock
     if usock.info().get('Content-Encoding') == 'gzip':
         buf = StringIO.StringIO(usock.read())
         f = gzip.GzipFile(fileobj=buf)
@@ -210,7 +210,7 @@ def postContent(url,data,referr):
         response = usock.read()
     usock.close()
     return response
-	
+
 def GetContent(url):
     try:
        net = Net()
@@ -264,7 +264,7 @@ def PLAYLIST_VIDEOLINKS(url,name):
                 d = xbmcgui.Dialog()
                 d.ok('videourl: ' + str(playList), 'One or more of the playlist items','Check links individually.')
         return ok
-		
+
 def CreateList(videoType,videoId):
     url1 = ""
     if (videoType == "youtube"):
@@ -298,11 +298,11 @@ def loadPlaylist(newlink,name):
                                    match=re.compile("<param name='flashvars' value='file=(.+?)&").findall(newlink)
            newlink=match[0]
            if (newlink.find("dailymotion") > -1):
-                match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(newlink)
+                match=re.compile('www.dailymotion.com/embed/video/(.+?)\?').findall(newlink+"?")
                 if(len(match) == 0):
-                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
+                        match=re.compile('www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
                 if(len(match) == 0):
-                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(newlink)
+                        match=re.compile('www.dailymotion.com/swf/(.+?)\?').findall(newlink)
                 if(len(match) == 0):
                 	match=re.compile('www.dailymotion.com/embed/video/(.+?)\?').findall(newlink.replace("$","?"))
                 print match
@@ -311,6 +311,7 @@ def loadPlaylist(newlink,name):
            elif (newlink.find("docs.google.com") > -1):
                 vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
+
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
                         vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
@@ -384,13 +385,19 @@ def loadVideos(url,name):
            print newlink
            #xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
            if (newlink.find("dailymotion") > -1):
-                match=re.compile('(dailymotion\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(newlink)
-                lastmatch = match[0][len(match[0])-1]
-                link = 'http://www.dailymotion.com/'+str(lastmatch)
-                vidlink=getDailyMotionUrl(str(lastmatch))
+                match=re.compile('www.dailymotion.com/embed/video/(.+?)\?').findall(newlink+"?")
+                if(len(match) == 0):
+                        match=re.compile('www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
+                if(len(match) == 0):
+                        match=re.compile('www.dailymotion.com/swf/(.+?)\?').findall(newlink)
+                if(len(match) == 0):
+                	match=re.compile('www.dailymotion.com/embed/video/(.+?)\?').findall(newlink.replace("$","?"))
+                vidlink=getDailyMotionUrl(match[0])
                 playVideo('dailymontion',vidlink)
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
+                vidcontent = postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
+                if(len(vidcontent.strip())==0):
+                     vidcontent = GetContent(newlink)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
@@ -444,7 +451,7 @@ def getDailyMotionUrl(id):
     maxVideoQuality="720p"
     content = GetContent("http://www.dailymotion.com/embed/video/"+id)
     if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
-        xbmc.executebuiltin('XBMC.Notification(Info:,'+translation(30022)+' (DailyMotion)!,5000)')
+        xbmc.executebuiltin('XBMC.Notification(Info:, (DailyMotion)!,5000)')
         return ""
     else:
         matchFullHD = re.compile('"stream_h264_hd1080_url":"(.+?)"', re.DOTALL).findall(content)
@@ -786,7 +793,7 @@ def addLink(name,url,mode,iconimage):
 def addNext(formvar,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&formvar="+str(formvar)+"&name="+urllib.quote_plus('Next >')
         ok=True
-        liz=xbmcgui.ListItem('Next >', iconImage="http://i42.tinypic.com/4uz9lc.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem('Next >', iconImage="http://i61.tinypic.com/24e2khl.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": 'Next >' } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
@@ -794,7 +801,7 @@ def addNext(formvar,url,mode,iconimage):
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
-        liz=xbmcgui.ListItem(name, iconImage="http://i42.tinypic.com/4uz9lc.png", thumbnailImage=iconimage)
+        liz=xbmcgui.ListItem(name, iconImage="http://i61.tinypic.com/24e2khl.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
