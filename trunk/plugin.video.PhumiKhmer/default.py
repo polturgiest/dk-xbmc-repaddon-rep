@@ -437,7 +437,9 @@ def loadVideos(url,name):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent =postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
+                vidcontent = postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
+                if(len(vidcontent.strip())==0):
+                     vidcontent = GetContent(newlink)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
