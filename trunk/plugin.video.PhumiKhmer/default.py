@@ -139,7 +139,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.ph-kh.com/search?q='+searchText
+        url = 'http://www.phumidrama.com/search?q='+searchText
         INDEX(url)
     except: pass
 	
