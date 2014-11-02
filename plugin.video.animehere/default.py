@@ -286,6 +286,10 @@ def ParseVideoLink(url,name):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
                 vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
                 vidlink='plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid='+vidlink
+        elif (redirlink.find(".me/embed") > -1 or redirlink.find(".net/embed") > -1 or redirlink.find(".me/gogo") > -1):
+                media_url= ""
+                media_url = re.compile('_url\s*=\s*"(.+?)";').findall(link)[0]
+                vidlink = media_url
         elif (redirlink.find("vidzur") > -1 or redirlink.find("videofun") > -1 or redirlink.find("auengine") > -1):
                 media_url= ""
                 op = re.compile('playlist:\s*\[(.+?)\]').findall(link)[0]
