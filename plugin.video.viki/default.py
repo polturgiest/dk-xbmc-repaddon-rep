@@ -249,7 +249,7 @@ def SaveLang(langcode, name):
     f = open(langfile, 'w');f.write(langcode);f.close()   
     d = xbmcgui.Dialog()
     d.ok(name,"Language Saved",'')
-    HOME()
+    HOME(translator)
 
 def Genre(url,name):
         link = GetContent(url,False)
@@ -429,12 +429,13 @@ def getLanguages(url, ltype):
         try:
                 link =link.encode("UTF-8")
         except: pass
-        match = re.compile('>All</h3>(.+?)</ul>').findall(link)
+        match = re.compile('<li>\s*<span class="filter-title">Subtitled in</span>(.+?)lolspeak</a></li>').findall(link)
+        match = re.compile('<h3 class="nav-heading">All</h3>(.+?)lolspeak</a></li>').findall(match[0]+"lolspeak</a></li>")
         if(len(match)>0):
                 langlist= re.compile('<li title=""><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(match[0].replace("/tv/browse?language=",""))
                 for purl,pname in langlist:
                        if(pname !="All languages"):
-                             addDir(pname,purl.replace("/tv/browse?language=",""),11,"")
+                             addDir(pname,purl.replace("/tv/browse?country=",""),11,"")
 					   
 def checkLanguage(mediaid):
         data = GetVideoInfo(mediaid)

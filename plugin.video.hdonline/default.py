@@ -201,13 +201,13 @@ def GetContent(url, useProxy=False):
 		opener = urllib2.build_opener()
 		opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
 							 ('Accept-Encoding','gzip, deflate'),
-							 ('Referer', "http://hdonline.vn/"),
+							 ('Referer', "http://hdonline.vn/player/vplayer.swf"),
 							 ('Content-Type', 'application/x-www-form-urlencoded'),
 							 ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
 							 ('Connection','keep-alive'),
 							 ('Accept-Language','en-us,en;q=0.5'),
 							 ('Pragma','no-cache'),
-							 ('Host','www.phim.li')]
+							 ('Host','hdonline.vn')]
 		usock=opener.open(url)
 		if usock.info().get('Content-Encoding') == 'gzip':
 			buf = StringIO.StringIO(usock.read())
@@ -298,10 +298,15 @@ def HOME(translator):
         addDir(staticlist[1],"http://hdonline.vn/tim-kiem/superman.html",5,"")
         addDir(staticlist[2],"http://hdonline.vn/",7,"")
         addDir(staticlist[3],"http://hdonline.vn/danh-sach/phim-moi.html",2,"")
-        vidcontentlist=re.compile('<div class="menus">\s*<span class="title">(.+?)</span>\s*<ul class="mn mnfl">(.+?)</ul>').findall(link)
-        for mainname,vidcontent in vidcontentlist:
+        vidcontent=re.compile('<nav class="tn-gnav">(.+?)</nav> ').findall(link)
+        vidcontentlist=[]
+        if(len(vidcontent)>0):
+			vidcontentlist=re.compile('<li>(.+?)</div>\s*</div>\s*</li>').findall(vidcontent[0])
+        for vidcontent in vidcontentlist:
+            mainpart=re.compile('<a href="(.+?)"> <span class="tnico-(.+?)"></span>(.+?)</a>').findall(vidcontent)
+            mainname=mainpart[0][2]
             splitcat=""
-            vidlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vidcontent)
+            vidlist=re.compile('<li><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(vidcontent)
             if(enableTrans):
                   transtext=mainname+"|"
                   for vurl,vname in vidlist:
@@ -323,7 +328,8 @@ def HOME(translator):
 						vname=vname.encode("UTF-8")
 					except:pass
 				ctr=ctr+1
-				addDir("--"+vname,vurl,2,"")
+				if(vurl.find("javascript:") ==-1 and len(vurl) > 3):
+					addDir("--"+vname,strdomain+vurl,2,"")
 
 if os.path.exists(db_dir)==False:
 	initDatabase()
@@ -433,20 +439,30 @@ def Index(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        vidcontentlist=re.compile('<ul class="clearfix listmovie">(.+?)</ul>').findall(link)
+        vidcontentlist=re.compile('<ul id="cat_tatca"(.+?)</section>').findall(link)
         #trancontent=translator.translate(vidcontentlist[0]).replace(" = ","=").replace("< img","<img")
         if(len(vidcontentlist)>0):
-			movielist=re.compile('<img [^>]*data-original=["\']?([^>^"^\']+)["\']?[^>]*>\s*<div class="meta_block_spec" style="bottom:10px">\s*<h1 class="title"><a href="(.+?)" title="(.+?)">').findall(vidcontentlist[0])
+			movielist=re.compile('<li>\s*<div class="tn-bxitem">(.+?)</li>').findall(vidcontentlist[0])
 			#tranlist=re.compile('[^>]*alt=["\']?([^>^"^\']+)["\']?[^>]*>').findall(trancontent)
 			transtext=""
 			namelist=[]
 			if(enableTrans):
-				for (vimg,vurl,vname) in movielist:
+				for vcontent in movielist:
+					vname=re.compile('<h1 class="bxitem-txt">(.+?)</h1>').findall(vcontent)
+					if(len(vname)>0):
+						vname=vname[0]
+					else:
+						vname=re.compile('<p class="bxitem-txt">(.+?)</p>').findall(vcontent)[0]
 					transtext=transtext+vname+"|"
 				transtext=translator.translate(transtext).replace("| |","||")
 				namelist=transtext.split("|")
 			for idx in range(len(movielist)):
-				(vimg,vurl,vname) = movielist[idx]
+				vcontent = movielist[idx]
+				vurl=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent)[0]
+				vimgl=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent)
+				vimg=""
+				if(len(vimgl)>0):
+					vimg=vimgl[0]
 				if(len(namelist)>0):
 					vname=namelist[idx]
 				try:
@@ -455,16 +471,14 @@ def Index(url,name):
 				vidid=vurl.split("-")[-1].replace('.html','')
 				SaveMovieTVshow(vname.replace('"',"'"),vidid,vimg,"")
 				addDir(vname,vidid,4,vimg)
-        pagecontent=re.compile('<div class="load-more">(.+?)</div>').findall(link)
+        pagecontent=re.compile('<ul class="pagination">(.+?)</ul>').findall(link)
         if(len(pagecontent)>0):
-			pagelist=re.compile('<span><a class="pagelink" href="(.+?)" >(.+?)</a></span>').findall(pagecontent[0])
+			pagelist=re.compile('<li><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></li>').findall(pagecontent[0])
 			for vurl,vname in pagelist:
 				addDir("page "+vname,vurl,2,"")
 
-
-
 def Episodes(vidid,name):
-        url="http://hdonline.vn/vxml.php?film="+vidid
+        url="http://hdonline.vn/episode/vxml?film="+vidid
         print url
         if (enableProxy=="true"):
             link = GetContentMob(url)
@@ -495,6 +509,10 @@ def Episodes(vidid,name):
              vurl=re.compile('<jwplayer:file>(.+?)</jwplayer:file>').findall(episodecontent)[0]
              if(vurl.find("http") == -1):
                    vurl=decodevplug(vurl)
+             if(vurl.find("xmlconfig") > -1):
+				vurl=re.compile('<jwplayer:backuplink>(.+?)</jwplayer:backuplink>').findall(episodecontent)[0]
+				if(vurl.find("http") == -1):
+					vurl=decodevplug(vurl)
              if(len(namelist)>0):
                     vname=namelist[ctr]
              else:
@@ -509,7 +527,10 @@ def Episodes(vidid,name):
              vsubtitle=re.compile('<jwplayer:vplugin.subfile>(.+?)</jwplayer:vplugin.subfile>').findall(episodecontent)
              epid=re.compile("<jwplayer:vplugin.episodeid>(.+?)</jwplayer:vplugin.episodeid>").findall(episodecontent)
              suburl=""
-             if(len(vsubtitle)>0):
+             if(len(vsubtitle)>0 and vsubtitle[0].find("http")>-1):
+                 suburl=vsubtitle[0]
+                 vname=vname+"(soft sub)"
+             elif(len(vsubtitle)>0):
                  suburl=decodevplug(vsubtitle[0])
                  vname=vname+"(soft sub)"
              if(len(epid)>0):
