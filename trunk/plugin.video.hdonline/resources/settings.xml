@@ -1,6 +1,6 @@
 <settings>
    <category label="Addon-Settings">
-    <setting id="enableProxy" type="bool" label="Enable Proxy" default="true"/>
+    <setting id="enableProxy" type="bool" label="Enable Proxy" default="false"/>
     <setting id="proxyurl" type="text" label="Proxy address" default="183.91.27.133:8080" />
     <setting id="enableSub" type="bool" label="Enable Subtitle" default="true"/>
     <setting id="enableTrans" type="bool" label="Enable Translation" default="false"/>

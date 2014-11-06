@@ -298,7 +298,34 @@ def add_contextsearchmenu(title, video_type):
             'plugin://plugin.video.solarmovie/', section, title)))
 
     return contextmenuitems
+	
+def GetDirVideoUrl(url):
 
+    cj = cookielib.LWPCookieJar()
+
+    class MyHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
+
+        def http_error_302(self, req, fp, code, msg, headers):
+            self.video_url = headers['Location']
+            return urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
+
+        http_error_301 = http_error_303 = http_error_307 = http_error_302
+
+    redirhndler = MyHTTPRedirectHandler()
+
+    opener = urllib2.build_opener(redirhndler, urllib2.HTTPCookieProcessor(cj))
+    opener.addheaders = [(
+        'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+        ('Accept-Encoding', 'gzip, deflate'),
+        ('Referer', url),
+        ('Content-Type', 'application/x-www-form-urlencoded'),
+        ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+        ('Connection', 'keep-alive'),
+        ('Accept-Language', 'en-us,en;q=0.5'),
+        ('Pragma', 'no-cache')]
+    # urllib2.install_opener(opener)
+    usock = opener.open(url)
+    return redirhndler.video_url
 
 def ParseVideoLink(url,name,movieinfo):
     dialog = xbmcgui.DialogProgress()
@@ -315,14 +342,17 @@ def ParseVideoLink(url,name,movieinfo):
     redirlink=url
     try:
     #if True:
-
         if (redirlink.find("youtube") > -1):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
                 vidlink=vidmatch[0][len(vidmatch[0])-1].replace('v/','')
                 vidlink='plugin://plugin.video.youtube?path=/root/video&action=play_video&videoid='+vidlink
-        elif (redirlink.find("yourupload") > -1):
+        elif (redirlink.find(".me/embed") > -1 or redirlink.find(".net/embed") > -1 or redirlink.find(".me/gogo") > -1 or redirlink.find("embed.php?") > -1):
                 media_url= ""
-                media_url = re.compile('<meta property="og:video" content="(.+?)"/>').findall(link)[0]
+                media_url = re.compile('_url\s*=\s*"(.+?)";').findall(link)[0]
+                vidlink = urllib.unquote_plus(media_url) #GetDirVideoUrl(media_url)
+        elif (redirlink.find("yourupload") > -1 or redirlink.find("oose.io") > -1):
+                media_url= ""
+                media_url = re.compile('<meta property="og:video" [^>]*content=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)[0]
                 vidlink = media_url
         elif (redirlink.find("video44") > -1):
                 media_url= ""
