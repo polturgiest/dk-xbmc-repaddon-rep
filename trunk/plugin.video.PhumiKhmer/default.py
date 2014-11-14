@@ -25,28 +25,28 @@ VERSION = "1.0.4" #<---- PLUGIN VERSION
 
 strdomain ='http://www.ph-kh.com/'
 def HOME():
-        addDir('Search','http://www.phumidrama.com/search/label/Khmer%20Movies?&max-results=18',4,'')
-        addDir('Khmer Movies','http://www.phumidrama.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Drama','http://www.phumidrama.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Filipino Drama','http://www.phumidrama.com/search/label/Philippine%20Movie?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Thai Movies','http://www.phumidrama.com/search/label/Thai%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Lakorns','http://www.phumidrama.com/search/label/Thai%20Lakorn?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Drama','http://www.phumidrama.com/search/label/Korean%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Korean Movies','http://www.phumidrama.com/search/label/Korean%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        addDir('Hong Kong Drama','http://www.phumidrama.com/search/label/Hong%20Kong%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Hong Kong Movies','http://www.phumidrama.com/search/label/Hong%20Kong%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Taiwanese Drama','http://www.phumidrama.com/search/label/Taiwan%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Taiwanese Movies','http://www.phumidrama.com/search/label/Taiwan%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Movies','http://www.phumidrama.com/search/label/Chinese%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Series','http://www.phumidrama.com/search/label/Chinese%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Documentaries','http://www.phumidrama.com/search/label/Documentary?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
-        addDir('Other Shows','http://www.phumidrama.com/search/label/Hong%20Kong%20Drama?&max-results=18',6,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Search','http://www.dramakhmer.com/search/label/Khmer%20Movies?&max-results=18',4,'')
+        #addDir('Khmer Movies','http://www.dramakhmer.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer Drama','http://www.dramakhmer.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        #addDir('Filipino Drama','http://www.dramakhmer.com/search/label/Philippine%20Movie?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        #addDir('Thai Movies','http://www.dramakhmer.com/search/label/Thai%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Thai Lakorns','http://www.dramakhmer.com/search/label/Thai%20Lakorn?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
+        addDir('Korean Drama','http://www.dramakhmer.com/search/label/Korean%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        #addDir('Korean Movies','http://www.dramakhmer.com/search/label/Korean%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
+        #addDir('Hong Kong Drama','http://www.dramakhmer.com/search/label/Hong%20Kong%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        #addDir('Hong Kong Movies','http://www.dramakhmer.com/search/label/Hong%20Kong%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        #addDir('Taiwanese Drama','http://www.dramakhmer.com/search/label/Taiwan%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        #addDir('Taiwanese Movies','http://www.dramakhmer.com/search/label/Taiwan%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        #addDir('Chinese Movies','http://www.dramakhmer.com/search/label/Chinese%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        addDir('Chinese Series','http://www.dramakhmer.com/search/label/Chinese%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
+        #addDir('Documentaries','http://www.dramakhmer.com/search/label/Documentary?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
+        #addDir('Other Shows','http://www.dramakhmer.com/search/label/Hong%20Kong%20Drama?&max-results=18',6,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
 
 		
 def Shows():
-        addDir('Pak Mee','http://www.phumidrama.com/search/label/Parkmi%20%28%E1%9E%96%E1%9E%B6%E1%9E%80%E1%9F%8B%E1%9E%98%E1%9E%B8%29?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Cartoon','http://www.phumidrama.com/search/label/Cartoon%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('TV program','http://www.phumidrama.com/search/label/TV%20Programe?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Pak Mee','http://www.dramakhmer.com/search/label/Parkmi%20%28%E1%9E%96%E1%9E%B6%E1%9E%80%E1%9F%8B%E1%9E%98%E1%9E%B8%29?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Cartoon','http://www.dramakhmer.com/search/label/Cartoon%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('TV program','http://www.dramakhmer.com/search/label/TV%20Programe?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
 
 def getVimeoUrl(videoid):
         result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strdomain})
@@ -139,7 +139,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.phumidrama.com/search?q='+searchText
+        url = 'http://www.dramakhmer.com/search?q='+searchText
         INDEX(url)
     except: pass
 	
@@ -150,19 +150,16 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-
         #print newlink
         #start=newlink.index('<div id="main">')
         #end=newlink.index('<!-- main -->')
-        match=re.compile("<div class='cutter'>(.+?)<script type='text/javascript'>\s*createSummaryAndThumb").findall(newlink)
-        for vcontent in match:
-                vurl=re.compile("<a href='(.+?)'>").findall(vcontent)[0]
-                match1=re.compile('bp_thumbnail_resize\("(.+?)","(.+?)"\)').findall(vcontent)
+        match=re.compile("<div class='main section' id='main'>(.+?)<!-- google_ad_section_end -->").findall(newlink)
+        match=re.compile('<a class=\'thumbx\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match[0])
+        for vurl,vcontent in match:
+                match1=re.compile('<img alt=\'(.+?)\' [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent)
+                vimage=""
                 if(len(match1) > 0):
-                     (vimage,vname)=match1[0]
-                vimage1=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]* imageanchor="1">').findall(vcontent)
-                if(len(vimage1)>0):
-                      vimage=vimage1[0]
+                     (vname,vimage)=match1[0]
                 addDir(vname,vurl,5,vimage)
         #match5=re.compile("<a class='blog-pager-newer-link' href='(.+?)' id='Blog1_blog-pager-newer-link' title='Newer Posts'>Newer Posts</a>").findall(newlink)
         #print match5
@@ -195,7 +192,7 @@ def INDEX(url):
 
 def buildNextPage(pagenum,label):
 	pagecount=str((int(pagenum) - 1) * 18)
-	url="http://www.phumidrama.com/feeds/posts/summary/-/"+label+"?start-index="+pagecount+"&max-results=1&alt=json-in-script&callback=finddatepost"
+	url="http://www.dramakhmer.com/feeds/posts/summary/-/"+label+"?start-index="+pagecount+"&max-results=1&alt=json-in-script&callback=finddatepost"
 	link = GetContent(url)
 	try:
 		link =link.encode("UTF-8")
@@ -203,7 +200,7 @@ def buildNextPage(pagenum,label):
 	match=re.compile('"published":\{"\$t":"(.+?)"\}').findall(link)
 	if(len(match)>0):
 		tsvalue=urllib.quote_plus(match[0][0:19]+match[0][23:29])
-		newurl="http://www.phumidrama.com/search/label/"+label+"?updated-max="+tsvalue+"&max-results=18#PageNo="+pagenum
+		newurl="http://www.dramakhmer.com/search/label/"+label+"?updated-max="+tsvalue+"&max-results=18#PageNo="+pagenum
 	else:
 		newurl=""
 	return newurl
