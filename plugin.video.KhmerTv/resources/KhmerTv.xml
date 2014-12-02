@@ -5,13 +5,12 @@
     <info>Khmer channels from khiptv</info>
 	<item>
       <title>CTN</title>
-      <link>http://gcasialive-i.akamaihd.net/hls/live/218647/CTN-HLS-stream/master.m3u8?wowzasessionid=1391934041 live=true</link>
+      <link>http://gcasialive-i.akamaihd.net/hls/live/218647/CTN-HLS-stream/master.m3u8?wowzasessionid=1391934041</link>
       <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
     </item>
-
 	<item>
       <title>KhipTV</title>
-      <link>http://e-magic.info:44412/KhipTV</link>
+      <link>http://securemcp.com:1935/8138/8138/playlist.m3u8</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
@@ -22,20 +21,19 @@
     </item>
     <item>
       <title>TV9</title>
-      <link>mms://203.176.130.123/ctv9_480k?7397427b-838f-4fa7-812c-f4fe391beb6f</link>
+      <link>mms://203.176.130.123/ctv9_480k?3e4a8a89-1640-48f1-ad30-a6fb35cd3c2f</link>
       <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
     </item>
 	<item>
       <title>TV3</title>
-      <link>http://live.khmer.be:1935/live/TV3/playlist.m3u8</link>
+      <link>mmsh://199.189.105.148:80/tvk?MSWMExt=.asf</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
 	<item>
-      <title>Kok</title>
-      <link>http://e-magic.info:44412/Movie9</link>
-      <thumbnail>
-      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+      <title>CTV8</title>
+      <link>http://liveplay3.malimarcdn.com/hdliveedge00/ctv8hd.stream/playlist.m3u8?token=ctv8hd.stream-1415504557000-7-12778982cf0467e3e984ed898b4a7000</link>
+      <thumbnail>https://aseaniptv2.s3.amazonaws.com/images/channel/429/image/sd_tv81HDHD.jpg</thumbnail>
     </item>
 	<item>
       <title>DMusic</title>
@@ -43,9 +41,9 @@
       <thumbnail>DefaultVideo.png</thumbnail>
     </item>
 	<item>
-      <title>National Tv</title>
+      <title>ETV</title>
       <link>rtmp://72.52.104.21:1935/live/TVKL playpath=TVKL swfUrl=http://www.khiptv.com/Player.swf pageUrl=http://relax.khmer24h.net/channels-national-tv-16.aspx live=true</link>
-      <thumbnail>http://khiptv.com/images_tv/nat.png</thumbnail>
+      <thumbnail>https://aseaniptv2.s3.amazonaws.com/images/channel/428/image/etvHD.jpg</thumbnail>
     </item>
 	<item>
       <title>Hangmeas</title>
@@ -85,7 +83,7 @@
     </item>
     <item>
       <title>TV5</title>
-      <link>mms://203.176.130.123/tv5_480k?c10ac12a-0507-4fa4-a5da-75bbc1ad8967</link>
+      <link>http://liveplay3.malimarcdn.com/khliveedge00/tv5.stream/playlist.m3u8?token=tv5.stream-1415502796000-38c-a5b5d9e0fce71f7c7a3b3662eafafa01</link>
       <thumbnail>http://khiptv.com/images_tv/TV5.png</thumbnail>
     </item>
     <item>
@@ -101,23 +99,23 @@
     </item>
     <item>
       <title>Apsara</title>
-      <link>rtsp://203.176.130.118:8989/live/apsaratv_480k.stream</link>
+      <link>mmsh://199.189.108.12/FAPSARA?MSWMExt=.asf</link>
       <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
     </item>
     <item>
       <title>Khmer TV</title>
-      <link>http://securemcp.com:1935/8138/8138/playlist.m3u8</link>
+      <link>mmsh://184.105.192.5:44412/ABC_TV?MSWMExt=.asf</link>
       <thumbnail>DefaultVideo.png</thumbnail>
     </item>
     <item>
-      <title>ABC_TV</title>
-      <link>mmsh://184.105.192.5:44412/ABC_TV?MSWMExt=.asf</link>
-      <thumbnail>http://khiptv.com/images_tv/ABC.png</thumbnail>
+      <title>DMusic</title>
+      <link>http://liveplay3.malimarcdn.com/khliveedge00/dmusic.stream/playlist.m3u8?token=dmusic.stream-1415504898000-14ehcf3ie26bacj8358-3b203d6f53bce733319fdf3ffdab3584</link>
+      <thumbnail>https://aseaniptv2.s3.amazonaws.com/images/channel/407/image/sd_dmcHD.jpg</thumbnail>
     </item>
     <item>
-      <title>NAT_TV</title>
-      <link>http://e-magic.info:44412/NAT_TV</link>
-      <thumbnail>http://khiptv.com/images_tv/nat.png</thumbnail>
+      <title>B_TV</title>
+      <link>mmsh://199.189.105.148:80/bayonnews?MSWMExt=.asf</link>
+      <thumbnail> </thumbnail>
     </item>
     <item>
       <title>MeKong_TV</title>
@@ -132,7 +130,7 @@
     </item>
     <item>
       <title>knn_TV</title>
-      <link>http://e-magic.info:44412/knn_TV</link>
+      <link>mmsh://e-magic.info:44412/KGN_HK?MSWMExt=.asf</link>
       <thumbnail>http://khiptv.com/images_tv/KNN.PNG</thumbnail>
     </item>
     <item>
