@@ -23,7 +23,7 @@
 
 <addon
   id="plugin.video.animego"
-  version="1.0.0"
+  version="1.0.1"
   name="animego"
   provider-name="Dknight">
   <requires>
@@ -134,7 +134,7 @@
 
 <addon
   id="plugin.video.cartoongo"
-  version="1.0.0"
+  version="1.0.1"
   name="cartoongo"
   provider-name="Dknight">
   <requires>
@@ -485,7 +485,7 @@
 
 <addon
   id="plugin.video.movierulz"
-  version="1.0.1"
+  version="1.0.2"
   name="movierulz"
   provider-name="Dknight">
   <requires>

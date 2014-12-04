@@ -252,17 +252,17 @@ def PLAYLIST_VIDEOLINKS(vidlist,name):
         return ok
 		
 def Mirrors(EpisodeID,name):
-	MirrorList=GetJSON("http://api.animetoon.tv/GetVideos/"+EpisodeID,"","")
+	MirrorList=GetJSON("http://api.animeplus.tv/GetVideos/"+EpisodeID,"","")
 	mctr=1
 	for vidgroup in MirrorList:
 		ctr=1
-		mirrorname=vidgroup[0].split("/")[2]
+		mirrorname=vidgroup["url"].split("/")[2]
 		for vidurl in vidgroup:
-			
-			addLink(mirrorname + " Mirror " +str(mctr) + " part " + str(ctr),vidurl,3,"",name) 
+			addLink(mirrorname + " Mirror " +str(mctr) + " part " + str(ctr),vidgroup[vidurl],3,"",name) 
 			ctr=ctr+1
-		vurllist=",".join(vidgroup)
-		addLink("-----Play all "+ str(ctr-1)+ " "+ mirrorname + " parts ------",vurllist,28,"",name) 
+		if(ctr>2):
+			vurllist=",".join(vidgroup)
+			addLink("-----Play all "+ str(ctr-1)+ " "+ mirrorname + " parts ------",vurllist,28,"",name) 
 		mctr=mctr+1
 
 def add_contextsearchmenu(title, video_type):

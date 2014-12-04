@@ -131,20 +131,22 @@ def ListMovies(url):
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         soup = BeautifulSoup(newlink)
-        for item in soup.findAll('div', {"class" : re.compile('post-.*')}):
-			divcontent=str(item)
-			if(len(divcontent) > 0 and divcontent.find('<div class="post-wrap clearfix">') !=0 and divcontent.find("gallery-icon portrait") ==-1  ):
-				(vlink,vname) = re.compile('<h2 class="title"><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h2>').findall(divcontent)[0]
-				vimg = re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(divcontent)[0]
+        for item in soup.findAll('div', {"class" : "cont_display"}):
+			if(item.a != None):
+				vlink=item.a["href"] 
+				vimg = ""
+				if(item.a.img !=None):
+					vimg = item.a.img["src"]
+					vname=item.a.img["alt"]
 				addDir(vname,vlink,8,vimg)
         for item in soup.findAll('dt', {"class" : "gallery-icon portrait"}):
 			vlink=item.a['href']
 			vimg=item.a.img["src"]
 			vname=item.a.img["alt"]
 			addDir(vname,vlink,8,vimg)
-        navigation = soup.findAll('div', {"class" : "navigation clearfix"})
+        navigation = soup.findAll('nav', {"id" : "posts-nav"})
         for item in navigation[0].findAll('a'):
-			addDir((str(item.contents[0])+str(item.contents[1])).replace("<span>&raquo;</span>","<<").replace("<span>&laquo;</span>",">>"),item["href"],6,"")
+			addDir(item.contents[0].replace("Newer Entries &rarr;","Newer Entries <<").replace("&larr; Older Entries"," Older Entries >>"),item["href"],6,"")
 
 def ListMirrors(url):
         link = GetContent(url)
@@ -165,10 +167,12 @@ def GetMenu(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        menuhead = SoupStrainer('div', {"class" : "menu-secondary-container"})
+        menuhead = SoupStrainer('nav', {"id" : "menu"})
         soup = BeautifulStoneSoup(newlink, parseOnlyThese=menuhead,convertEntities=BeautifulSoup.XML_ENTITIES)
         for item in soup.findAll('li'):
-			link = item.a['href'].encode('utf-8', 'ignore')
+			link=""
+			if(item.a.has_key("href")):
+				link = item.a['href'].encode('utf-8', 'ignore')
 
 			if(item.ul==None):
 				vname="---"+str(item.a.contents[0]).strip()
@@ -532,7 +536,6 @@ def resolve(url):
             for idx in range(len(data)):
                 post_data[ data[idx][0] ] = data[idx][1]
             data =  postContent("http://hqq.tv/sec/player/embed_player.php",urllib.urlencode(post_data),"http://fullmovie-hd.com") #util.post(player_url, post_data, headers)
-            print data
             b64enc= re.search('base64([^\"]+)',data, re.DOTALL)
             b64dec = b64enc and base64.decodestring(b64enc.group(1))
             hash = b64dec and re.search("\'([^']+)\'", b64dec).group(1)

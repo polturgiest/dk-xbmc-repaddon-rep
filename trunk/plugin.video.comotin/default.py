@@ -98,7 +98,8 @@ def INDEX(url):
             vsub=re.compile('captions.file=(.+?)&').findall(videocotent["content"]["$t"])
             if(len(vsub)>0):
 				vsuburl=vsub[0]
-            addLinkSub(vname,vurl[0],3,"",vsuburl)
+            if(len(vurl)>0):
+				addLinkSub(vname.encode('utf-8', 'ignore'),vurl[0],3,"",vsuburl)
 
 
 
@@ -613,13 +614,13 @@ def loadVideos(url,name,suburl):
             playVideo(vidlink,suburl)
         elif(newlink.find("picasaweb.google") > 0):
                  vidcontent=postContent("http://www.cdn.comotin.com/www/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
-                 vidid=vidlink=re.compile('#(.+?)&').findall(newlink+"&")
-                 if(len(vidid)>0):
+				 
+                 vidid=vidlink=re.compile('picasaweb.google.com/(.+?)/').findall(newlink+"&")
+                 if(len(vidid)>0 and vidcontent.find("<H1>Moved Temporarily</H1>") == -1):
 					vidmatch=re.compile('feedPreload:(.+?)}}},').findall(vidcontent)[0]+"}}"
 					data = json.loads(vidmatch)
 					vidlink=""
 					for currententry in data["feed"]["entry"]:
-						if(currententry["streamIds"][0].find(vidid[0]) > 0):
 								for currentmedia in currententry["media"]["content"]:
 									if(currentmedia["type"]=="video/mpeg4"):
 										vidlink=currentmedia["url"]
@@ -628,6 +629,9 @@ def loadVideos(url,name,suburl):
 									vidlink=currententry["media"]["content"][0]["url"]
 									break
                  else:
+						if(vidcontent.find("<H1>Moved Temporarily</H1>") > -1):
+							newcontent =re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vidcontent.lower())[0]
+							vidcontent=GetContent(newcontent)
 						vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
 						hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
 						if(len(hdmatch) > 0):
@@ -635,7 +639,9 @@ def loadVideos(url,name,suburl):
 						vidlink=vidmatch[-1][0]
                  playVideo(vidlink,suburl)
         elif (newlink.find("docs.google.com") > -1):
-                vidcontent = GetContent(newlink)
+                vidcontent = postContent("http://www.cdn.comotin.com/www/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+                if(len(vidcontent.strip())==0):
+                     vidcontent = GetContent(newlink)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
                 if(len(vidmatch) > 0):
                         vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
