@@ -416,7 +416,7 @@ def loadVideos(url,name):
                 match=re.compile('<meta property="og:video:url" [^>]*content=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
                 for vbam in match:
                      if(vbam.find(newlink) == -1):
-                          vidurl=vbam
+                          vidurl=urllib2.unquote(vbam).replace("&amp;","&") 
                 playVideo('khmeravenue',vidurl)
            elif (newlink.find("videobam") > -1):
                 link=GetContent(newlink)
