@@ -9,6 +9,8 @@ import base64
 import xbmc
 try: import simplejson as json
 except ImportError: import json
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import SoupStrainer
 import cgi
 import datetime
 
@@ -20,7 +22,7 @@ if ADDON.getSetting('ga_visitor')=='':
 PATH = "kenh88"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.1" #<---- PLUGIN VERSION
-homeLink="http://www.kenh88.com"
+homeLink="http://www.superphim.com"
 viddomain="http://www.phimmobile.com"
 Rcon = [1,2,4,8,16,32,64,128,27,54,108,216,171,77,154,47,94,188,99,198,151,53,106,212,179,125,250,239,197,145];
 SBox = [99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,118,202,130,201,125,250,89,71,240,173,212,162,175,156,164,114,192,183,253,147,38,54,63,247,204,52,165,229,241,113,216,49,21,4,199,35,195,24,150,5,154,7,18,128,226,235,39,178,117,9,131,44,26,27,110,90,160,82,59,214,179,41,227,47,132,83,209,0,237,32,252,177,91,106,203,190,57,74,76,88,207,208,239,170,251,67,77,51,133,69,249,2,127,80,60,159,168,81,163,64,143,146,157,56,245,188,182,218,33,16,255,243,210,205,12,19,236,95,151,68,23,196,167,126,61,100,93,25,115,96,129,79,220,34,42,144,136,70,238,184,20,222,94,11,219,224,50,58,10,73,6,36,92,194,211,172,98,145,149,228,121,231,200,55,109,141,213,78,169,108,86,244,234,101,122,174,8,186,120,37,46,28,166,180,198,232,221,116,31,75,189,139,138,112,62,181,102,72,3,246,14,97,53,87,185,134,193,29,158,225,248,152,17,105,217,142,148,155,30,135,233,206,85,40,223,140,161,137,13,191,230,66,104,65,153,45,15,176,84,187,22];
@@ -32,7 +34,7 @@ Nr = 12;
 def __init__(self):
     playlist=sys.modules["__main__"].playlist
 def HOME():
-        addDir('Search',homeLink,4,'http://www.kenh88.com/image/logo4.jpg')
+        addDir('Search',homeLink,4,'http://www.superphim.com/image/logo4.jpg')
         link = GetContent(homeLink)
         try:
             link =link.encode("UTF-8")
@@ -54,21 +56,22 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div id="makers">(.+?)</div>').findall(newlink)
-        for vcontent in match:
-            vimage=urllib.quote(re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent)[0])
-            if(vimage.find("http://") == -1):
-                  vimage=homeLink+vimage
-            vurl=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent)[0]
-            vidid=re.compile('/xem-phim-(.+?)/').findall(vurl)[0] 
-            vname=re.compile('<strong >(.+?)</strong>').findall(vcontent)[0]
-            addDir(vname,vidid,7,vimage)
-        pagecontent=re.compile('<span class=pagecur>(.+?)</table>').findall(newlink)
-        if(len(pagecontent) >0):
-             match5=re.compile("<a class='pagelink' href='(.+?)'>(.+?)</a>").findall(pagecontent[0])
-             for vpage in match5:
-                    (vurl,vname)=vpage
-                    addDir("page: " + vname.encode("utf-8"),homeLink+vurl,2,"")
+        soup = BeautifulSoup(newlink)
+        for item in soup.findAll('div', {"id" : "makers"}):
+			vlink=homeLink+item.a["href"].replace("./","/")
+			vimg=""
+			vname=""
+			if(item.a.img!=None):
+				vimg=homeLink+item.a.img["src"].strip().replace(" ","%20")
+				vname=item.a.img["alt"]
+				addDir(vname.encode('utf-8', 'ignore'),vlink,7,vimg)
+        for item in soup.findAll('a', {"class" : "pagelink"}):
+			vlink=homeLink+item["href"]
+			if(item.b!=None):
+				vname=item.b.font.contents[0]
+			else:
+				vname=item.contents[0].encode('utf-8', 'ignore')
+			addDir("Page "+vname.strip(),vlink,2,'')
     #except: pass
 
 	
@@ -83,7 +86,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.kenh88.com/search.php?q='+searchText+'&btnSort=Search'
+        url = 'http://www.superphim.com/search.php?q='+searchText+'&btnSort=Search'
         INDEX(url)
     except: pass
 
@@ -96,18 +99,23 @@ def getVidPage(url,name):
   mlink=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*><img src="/image/watch_new.png"></a>').findall(contentlink)
   return mlink[0]
   
-def Mirrors(vidid,name):
-        MirrorsMob(vidid,name)
-        url=homeLink+"/xem-phim-"+vidid+"/page1.html"
-        url=getVidPage(url,name)
+def Mirrors(url,name):
         link = GetContent(url)
         try:
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<div class="part2"><a name="(.+?)"><strong>(.+?)</strong></a></div>').findall(newlink)
-        for vtmp,vname in match:
-            addDir(vname,url,5,"")
+        soup = BeautifulSoup(newlink)
+        serverlist=soup.findAll('td', {"class" : "movieepisode"})
+        for epserver in serverlist:
+			if(len(serverlist)<2):
+				for item in epserver.findAll('a'):
+					vlink=homeLink+item["href"]
+					vname=item.b.contents[0]
+					addLink(vname,vlink,3,"","")
+			elif(epserver.a!=None):
+				servername=epserver.strong.contents[0]
+				addDir(servername,url,5,"")
         
 			
 def MirrorsMob(vidid,name):
@@ -126,15 +134,20 @@ def MirrorsMob(vidid,name):
     #except: pass
 			
 def Episodes(url,name):
-    #try:
         link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<tr><td><div class="part2"><a name="(.+?)"><strong>'+name+'</strong></a></div>(.+?)</td></tr>').findall(newlink)
-        mirrors=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match[0][1])
-        if(len(mirrors) >= 1):
-                for mcontent in mirrors:
-                    vLink, vLinkName=mcontent
-                    addLink("part - "+ RemoveHTML(vLinkName).strip(),homeLink+vLink,3,'',"")
+        soup = BeautifulSoup(newlink)
+        serverlist=soup.findAll('td', {"class" : "movieepisode"})
+        for epserver in serverlist:
+			servername=epserver.strong.contents[0]
+			if(servername==name):
+				for item in epserver.findAll('a'):
+					vlink=homeLink+item["href"]
+					vname=item.b.contents[0]
+					addLink(vname,vlink,3,"","")
 					
 def EpisodesMob(url,name):
     #try:
@@ -276,7 +289,7 @@ def loadVideos(url,name):
                         vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
                         playVideo("direct",vidlink[0])
            elif(newlink.find("picasaweb.google") > 0):
-                 vidcontent=postContent("http://www.kenh88.com/plugins6/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+                 vidcontent=postContent("http://s1.kenh88.com/plugins8/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
                  vidid=vidlink=re.compile('#(.+?)&').findall(newlink+"&")
                  if(len(vidid)>0):
 					vidmatch=re.compile('feedPreload:(.+?)}}},').findall(vidcontent)[0]+"}}"
@@ -331,7 +344,6 @@ def loadVideos(url,name):
 def getDailyMotionUrl(id):
     maxVideoQuality="720p"
     content = GetContent("http://www.dailymotion.com/embed/video/"+id)
-    print content
     if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
         xbmc.executebuiltin('XBMC.Notification(Info:,(DailyMotion)!,5000)')
         return ""
@@ -1080,6 +1092,7 @@ sysarg=str(sys.argv[1])
 if mode==None or url==None or len(url)<1:
         GA("HOME","home")
         HOME()
+        print decrypt("2cddae1888c28d038b1e4e19cc0fa0ebc3c9f1af13cc3e6827d2cf7d0a6350ce2fa402735dfc451dd9bc870d8d3c3248c9bcbf3d84ef9699bb467cd87363a10df298e548e0d743e41b539f79e778cdc8813b3ec9c1450561fa585fbf743011e8c5846ad3e9be61f03262385bc432d981ace49e6c2d7fbe1658da9a882719592b")
 elif mode==2:
         GA("INDEX",name)
         INDEX(url)
