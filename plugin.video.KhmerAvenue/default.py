@@ -24,14 +24,14 @@ common = CommonFunctions
 common.plugin = "plugin.video.KhmerAvenue"
 strDomain ='http://www.merlkon.com/'
 def HOME():
-        addDir('Search','http://www.merlkon.com/',4,'http://www.merlkon.com/wp-contents/uploads/logo.jpg')
-        addDir('Khmer Video','http://www.merlkon.com/albumcategory/khmer-media/',2,'http://www.merlkon.com/wp-content/uploads/2013/03/snep-150x150.jpg')
-        addDir('Thai Lakorns','http://www.merlkon.com/albumcategory/thai-videos/',2,'http://www.merlkon.com/wp-content/uploads/2014/10/kew-150x150.jpg')
-        addDir('Korean Videos','http://www.merlkon.com/albumcategory/korean-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/04/lietome.jpg')
+        addDir('Search','http://www.merlkon.net/',4,'http://www.merlkon.com/wp-contents/uploads/logo.jpg')
+        addDir('Khmer Video','http://www.merlkon.net/albumcategory/khmer-media/',2,'http://www.merlkon.com/wp-content/uploads/2013/03/snep-150x150.jpg')
+        addDir('Thai Lakorns','http://www.merlkon.net/albumcategory/thai-videos/',2,'http://www.merlkon.com/wp-content/uploads/2014/10/kew-150x150.jpg')
+        addDir('Korean Videos','http://www.merlkon.net/albumcategory/korean-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/04/lietome.jpg')
         addDir('Chinese KhmerAve','http://www.khmeravenue.com/albumcategory/chinese-videos/',2,'http://www.khmeravenue.com/wp-content/uploads/2014/09/a-150x150.png')
         addDir('Chinese KhmerStream','http://www.khmerstream.com/albumcategory/chinese-videos/',2,'http://www.khmerstream.com/wp-content/uploads/2014/10/d-150x150.png')
-        addDir('Bollywood Videos','http://www.merlkon.com/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/10/bol-150x150.jpg')
-        addDir('Philippines Videos','http://www.merlkon.com/albumcategory/philippines-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/09/dyesebel.jpg')
+        addDir('Bollywood Videos','http://www.merlkon.net/albumcategory/bollywood-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/10/bol-150x150.jpg')
+        addDir('Philippines Videos','http://www.merlkon.net/albumcategory/philippines-videos/',2,'http://www.merlkon.com/wp-content/uploads/2012/09/dyesebel.jpg')
 def INDEX(url):
     #try:
         link = GetContent(url)
@@ -395,7 +395,7 @@ def loadVideos(url,name):
                 vidlink=getDailyMotionUrl(match[0])
                 playVideo('dailymontion',vidlink)
            elif (newlink.find("docs.google.com") > -1):
-                vidcontent = postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
+                vidcontent = postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true","http://www.superphim.com")
                 if(len(vidcontent.strip())==0):
                      vidcontent = GetContent(newlink)
                 vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)

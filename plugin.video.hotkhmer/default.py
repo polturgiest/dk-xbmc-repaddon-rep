@@ -426,13 +426,16 @@ def loadVideos(url,name):
                 link = 'http://www.dailymotion.com/'+str(lastmatch)
                 vidlink=getDailyMotionUrl(lastmatch)
                 playVideo('dailymontion',vidlink)
-           elif (newlink.find("docs.google.com") > -1):
+           elif (newlink.find("docs.google.com") > -1):  
                 vidcontent = GetContent(newlink)
-                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
-                if(len(vidmatch) > 0):
-                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
-                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
-                        playVideo("direct",vidlink[0])
+                html = vidcontent.decode('utf8')
+                stream_map = re.compile('fmt_stream_map","(.+?)"').findall(html)[0].replace("\/", "/")
+                formatArray = stream_map.split(',')
+                for formatContent in formatArray:
+                     formatContentInfo = formatContent.split('|')
+                     qual = formatContentInfo[0]
+                     url = (formatContentInfo[1]).decode('unicode-escape')
+                playVideo("direct",url)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
