@@ -1379,7 +1379,7 @@ def ParseVideoLink(url):
 def loadVideos(url,name):
         #try:
            xbmc.executebuiltin("XBMC.Notification(Please Wait!,Loading selected video)")
-           if(url.find("http://fullmovie-hd.com") > -1):
+           if(url.find("http://fullmovie-hd.com") > -1 or url.find("http://movembed.com") > -1):
 			   link = GetContent(url)
 			   try:
 				   link =link.encode("UTF-8")
