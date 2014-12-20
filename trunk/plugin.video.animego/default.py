@@ -368,9 +368,11 @@ def ParseVideoLink(url,name,movieinfo):
                 media_url= ""
                 media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
                 vidlink = urllib.unquote(media_url)
-        elif (redirlink.find("byzoo") > -1):
+        elif (redirlink.find("byzoo") > -1 or redirlink.find("videozoo") > -1):
                 media_url= ""
                 media_url = re.compile('playlist:\s*\[\s*\{\s*url:\s*"(.+?)",').findall(link)[0]
+                if(media_url.find("http") ==-1):
+					media_url="http://byzoo.org/"+media_url
                 vidlink = urllib.unquote(media_url)
         elif (redirlink.find("vidzur") > -1 or redirlink.find("videofun") > -1 or redirlink.find("auengine") > -1):
                 media_url= ""
