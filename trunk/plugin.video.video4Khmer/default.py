@@ -251,7 +251,7 @@ def Episodes(url,name):
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile('<div class="blog-content">(.+?)<div class="sidebar blue-ads">').findall(newlink)
         if(len(match) >= 1):
-                linkmatch=re.compile('<a href="(.+?)"><img(.+?)</a>').findall(match[0]) 
+                linkmatch=re.compile('<a href="(.+?)">(.+?)</a>').findall(match[0]) 
                 counter = 0
                 videolist =""
                 vidPerGroup = 5
@@ -266,21 +266,23 @@ def Episodes(url,name):
                          vname=""
                     else:
                          vname=vname[0]
-                    counter += 1
+
                     youtubeid = re.compile('/vi/(.+?)/').findall(vimg)
                     try:
                          vname=vname.encode('utf-8')
                     except: pass
-                    if(len(youtubeid)):
-                            addLink(vname,"http://www.youtube.com/watch?v="+youtubeid[0],3,vimg)
-                            videolist=videolist+"http://www.youtube.com/watch?v="+youtubeid[0]+";#"
-                    else:
+                    if(len(vname) > 0):
+						counter += 1
+						if(len(youtubeid)):
+								addLink(vname,"http://www.youtube.com/watch?v="+youtubeid[0],3,vimg)
+								videolist=videolist+"http://www.youtube.com/watch?v="+youtubeid[0]+";#"
+						else:
 
-                            try:
-                                 addLink(vname.encode('utf-8'),vurl,3,vimg)
-                            except: 
-                                 addLink(vname,vurl,3,vimg)
-                            videolist=videolist+vurl+";#"
+								try:
+									 addLink(vname.encode('utf-8'),vurl,3,vimg)
+								except: 
+									 addLink(vname,vurl,3,vimg)
+								videolist=videolist+vurl+";#"
                     if((counter%vidPerGroup==0 or counter==len(linkmatch)) and (len(videolist.split(';#'))-1) > 1):
                             addLink("-------Play the "+ str(len(videolist.split(';#'))-1)+" videos above--------",videolist,8,vimg)
                             videolist =""
@@ -430,6 +432,8 @@ def loadPlaylist(newlink,name):
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
                 titlecontent = re.compile("var flashvars = {file: '(.+?)',").findall(newContent)
                 if(len(titlecontent) == 0):
+                        titlecontent = re.compile('<source type="video/mp4" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newContent)
+                if(len(titlecontent) == 0):
                         titlecontent = re.compile('swfobject\.embedSWF\("(.+?)",').findall(newContent)
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile("'file':\s*'(.+?)'").findall(newContent)
@@ -459,15 +463,16 @@ def loadPlaylist(newlink,name):
                 dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 CreateList('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
-           elif (newlink.find("docs.google.com") > -1):
-                vidcontent = postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
-                if(len(vidcontent.strip())==0):
-                     vidcontent = GetContent(newlink)
-                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
-                if(len(vidmatch) > 0):
-                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
-                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
-                        CreateList('googledocs',vidlink[0])
+           elif (newlink.find("docs.google.com") > -1):  
+                vidcontent = GetContent(newlink)
+                html = vidcontent.decode('utf8')
+                stream_map = re.compile('fmt_stream_map","(.+?)"').findall(html)[0].replace("\/", "/")
+                formatArray = stream_map.split(',')
+                for formatContent in formatArray:
+                     formatContentInfo = formatContent.split('|')
+                     qual = formatContentInfo[0]
+                     url = (formatContentInfo[1]).decode('unicode-escape')
+                     CreateList('googledocs',url)
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
                 glink=""
@@ -537,6 +542,8 @@ def loadVideos(newlink,name):
                 newContent = ''.join(linkcontent.splitlines()).replace('\t','')
                 titlecontent = re.compile("var flashvars = {file: '(.+?)',").findall(newContent)
                 if(len(titlecontent) == 0):
+                        titlecontent = re.compile('<source type="video/mp4" [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newContent)
+                if(len(titlecontent) == 0):
                         titlecontent = re.compile('swfobject\.embedSWF\("(.+?)",').findall(newContent)
                 if(len(titlecontent) == 0):
                         titlecontent = re.compile("'file':\s*'(.+?)'").findall(newContent)
@@ -552,15 +559,16 @@ def loadVideos(newlink,name):
                 link = 'http://www.dailymotion.com/video/'+str(match[0])
                 vidlink=getDailyMotionUrl(match[0])
                 playVideo('dailymontion',vidlink)
-           elif (newlink.find("docs.google.com") > -1):
-                vidcontent = postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
-                if(len(vidcontent.strip())==0):
-                     vidcontent = GetContent(newlink)
-                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
-                if(len(vidmatch) > 0):
-                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
-                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
-                        playVideo('google',vidlink[0])
+           elif (newlink.find("docs.google.com") > -1):  
+                vidcontent = GetContent(newlink)
+                html = vidcontent.decode('utf8')
+                stream_map = re.compile('fmt_stream_map","(.+?)"').findall(html)[0].replace("\/", "/")
+                formatArray = stream_map.split(',')
+                for formatContent in formatArray:
+                     formatContentInfo = formatContent.split('|')
+                     qual = formatContentInfo[0]
+                     url = (formatContentInfo[1]).decode('unicode-escape')
+                     playVideo('google',url)
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
                 glink=""

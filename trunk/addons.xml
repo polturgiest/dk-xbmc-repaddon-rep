@@ -23,7 +23,7 @@
 
 <addon
   id="plugin.video.animego"
-  version="1.0.1"
+  version="1.0.2"
   name="animego"
   provider-name="Dknight">
   <requires>
@@ -380,7 +380,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.29"
+  version="1.0.30"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -465,11 +465,12 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.21"
+  version="1.0.22"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
 		<import addon="script.module.simplejson" />
+		<import addon="script.module.beautifulsoup" version="3.0.8"/>
 		<import addon="script.module.urlresolver"  version="0.0.1"/>
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
@@ -592,7 +593,7 @@
 
 <addon
   id="plugin.video.PhumiKhmer"
-  version="1.0.22"
+  version="1.0.23"
   name="PhumiKhmer"
   provider-name="Dknight">
   <requires>
@@ -676,11 +677,12 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.28"
+  version="1.0.29"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
 		<import addon="script.module.simplejson" />
+		<import addon="script.module.beautifulsoup" version="3.0.8"/>
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource"

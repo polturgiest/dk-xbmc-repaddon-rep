@@ -28,7 +28,7 @@ def HOME():
         #addDir('Khmer Comedy',strdomain+'category/khmer/khmer-comedy/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         #addDir('Khmer Movies',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         #addDir('Khmer Song',strdomain+'category/khmer/khmer-songs/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer TV show',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        addDir('Khmer TV drama',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Thai Movies',strdomain+'category/thai/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         addDir('Thai Lakorns',strdomain+'category/thai/thai-lakorn/',2,strdomain+'wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
         #addDir('Korean Drama',strdomain+'category/korean/korean-dramas/',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
@@ -193,7 +193,7 @@ def Episodes(url,name):
         match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(newlink)
         if(len(match1) > 0):
 
-				match1=re.compile('data-vid="(.+?)" data-source="(.+?)"><img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*><span class="v-title">(.+?)</span>').findall(match1[0])
+				match1=re.compile('data-vid="(.+?)" data-source="(.+?)">\s*<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>\s*<span class="v-title">(.+?)</span>').findall(match1[0])
 				if(len(framesrc)>0 and framesrc[0].find("vimeo") > -1):
 					vidurl="http://player.vimeo.com/video/%s"
 				elif(len(framesrc)>0 and framesrc[0].find("totptnt") > -1):
@@ -380,13 +380,16 @@ def loadVideos(url,name):
                 dm_low=re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
                 dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
                 playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
-           elif (newlink.find("docs.google.com") > -1):
+           elif (newlink.find("docs.google.com") > -1):  
                 vidcontent = GetContent(newlink)
-                vidmatch=re.compile('"url_encoded_fmt_stream_map":"(.+?)",').findall(vidcontent)
-                if(len(vidmatch) > 0):
-                        vidparam=urllib.unquote_plus(vidmatch[0]).replace("\u003d","=")
-                        vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
-                        playVideo("direct",vidlink[0])
+                html = vidcontent.decode('utf8')
+                stream_map = re.compile('fmt_stream_map","(.+?)"').findall(html)[0].replace("\/", "/")
+                formatArray = stream_map.split(',')
+                for formatContent in formatArray:
+                     formatContentInfo = formatContent.split('|')
+                     qual = formatContentInfo[0]
+                     url = (formatContentInfo[1]).decode('unicode-escape')
+                     playVideo("direct",url)
            elif (newlink.find("4shared") > -1):
                 d = xbmcgui.Dialog()
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		

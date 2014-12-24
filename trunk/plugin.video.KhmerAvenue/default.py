@@ -77,8 +77,10 @@ def SearchResults(url):
             url=match[0]
             addDir("Next >>",url,6,"")
 
-def getVimeoUrl(videoid):
-        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
+def getVimeoUrl(videoid,currentdomain):
+        #currentdomain="http://www.khmeravenue.com"
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
+        print currentdomain
         collection = {}
         if result["status"] == 200:
             html = result["content"]
@@ -91,10 +93,10 @@ def getVimeoUrl(videoid):
                   filecol = collection["request"]["files"][codec]
                   return filecol["sd"]["url"]
             except:
-                  return getVimeoVideourl(videoid)
+                  return getVimeoVideourl(videoid,currentdomain)
 
-def scrapeVideoInfo(videoid):
-        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strDomain})
+def scrapeVideoInfo(videoid,currentdomain):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
         collection = {}
         if result["status"] == 200:
             html = result["content"]
@@ -104,7 +106,7 @@ def scrapeVideoInfo(videoid):
             collection = json.loads(html)
         return collection
 
-def getVideoInfo(videoid):
+def getVideoInfo(videoid,currentdomain):
         common.log("")
 
 
@@ -138,10 +140,10 @@ def getVideoInfo(videoid):
         common.log("Done")
         return (video, 200)
 
-def getVimeoVideourl(videoid):
+def getVimeoVideourl(videoid,currentdomain):
         common.log("")
 
-        (video, status) = getVideoInfo(videoid)
+        (video, status) = getVideoInfo(videoid,currentdomain)
 
 
         urlstream="http://player.vimeo.com/play_redirect?clip_id=%s&sig=%s&time=%s&quality=%s&codecs=H264,VP8,VP6&type=moogaloop_local&embed_location="
@@ -284,9 +286,9 @@ def CreateList(videoType,videoId):
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.add(url=url1, listitem=liz)
 
-def loadPlaylist(newlink,name):
+def loadPlaylist(url,name):
         #try:
-           link=GetContent(newlink)
+           link=GetContent(url)
            newlink = ''.join(link.encode("utf-8").splitlines()).replace('\t','')
            vidurl=""
            match=re.compile("'file': '(.+?)',").findall(newlink)
@@ -330,8 +332,9 @@ def loadPlaylist(newlink,name):
                         CreateList('google',gcontent[0])
            elif (newlink.find("vimeo") > -1):
                 print "newlink|" + newlink
-                idmatch =re.compile("http://player.vimeo.com/video/(.+?)\?").findall(newlink+"?")
-                vidurl=getVimeoUrl(idmatch[0])
+                idmatch =re.compile("//player.vimeo.com/video/(.+?)\?").findall(newlink+"?")
+                print idmatch
+                vidurl=getVimeoUrl(idmatch[0],"http://"+url.split('/')[2])
                 CreateList("other",vidurl)
            elif (newlink.find("vid.me") > -1):
                 link=GetContent(newlink)
@@ -408,7 +411,7 @@ def loadVideos(url,name):
                 print "newlink|" + newlink
                 idmatch =re.compile("//player.vimeo.com/video/(.+?)\?").findall(newlink+"?")
                 print idmatch
-                vidurl=getVimeoUrl(idmatch[0])
+                vidurl=getVimeoUrl(idmatch[0],"http://"+url.split('/')[2])
                 playVideo('khmeravenue',vidurl)
            elif (newlink.find("vid.me") > -1):
                 link=GetContent(newlink)
