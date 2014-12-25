@@ -8,7 +8,6 @@ import xbmcaddon,xbmcplugin,xbmcgui
 try: import simplejson as json
 except ImportError: import json
 import cgi
-import CommonFunctions
 import datetime
 
 ADDON = xbmcaddon.Addon(id='plugin.video.KhmerAvenue')
@@ -20,8 +19,7 @@ PATH = "KhmerAvenue"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER
 VERSION = "1.0.16" #<---- PLUGIN VERSION
 
-common = CommonFunctions
-common.plugin = "plugin.video.KhmerAvenue"
+
 strDomain ='http://www.merlkon.com/'
 def HOME():
         addDir('Search','http://www.merlkon.net/',4,'http://www.merlkon.com/wp-contents/uploads/logo.jpg')
@@ -76,11 +74,93 @@ def SearchResults(url):
         if(len(match) > 0):
             url=match[0]
             addDir("Next >>",url,6,"")
+			
+def log(description, level=0):
+    print description
 
-def getVimeoUrl(videoid,currentdomain):
+def fetchPage(params={}):
+    get = params.get
+    link = get("link")
+    ret_obj = {}
+    if get("post_data"):
+        log("called for : " + repr(params['link']))
+    else:
+        log("called for : " + repr(params))
+
+    if not link or int(get("error", "0")) > 2:
+        log("giving up")
+        ret_obj["status"] = 500
+        return ret_obj
+
+    if get("post_data"):
+        if get("hide_post_data"):
+            log("Posting data", 2)
+        else:
+            log("Posting data: " + urllib.urlencode(get("post_data")), 2)
+
+        request = urllib2.Request(link, urllib.urlencode(get("post_data")))
+        request.add_header('Content-Type', 'application/x-www-form-urlencoded')
+    else:
+        log("Got request", 2)
+        request = urllib2.Request(link)
+
+    if get("headers"):
+        for head in get("headers"):
+            request.add_header(head[0], head[1])
+
+    request.add_header('User-Agent', "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1")
+
+    if get("cookie"):
+        request.add_header('Cookie', get("cookie"))
+
+    if get("refering"):
+        request.add_header('Referer', get("refering"))
+
+    try:
+        log("connecting to server...", 1)
+
+        con = urllib2.urlopen(request)
+        ret_obj["header"] = con.info()
+        ret_obj["new_url"] = con.geturl()
+        if get("no-content", "false") == u"false" or get("no-content", "false") == "false":
+            inputdata = con.read()
+            #data_type = chardet.detect(inputdata)
+            #inputdata = inputdata.decode(data_type["encoding"])
+            ret_obj["content"] = inputdata.decode("utf-8")
+
+        con.close()
+
+        log("Done")
+        ret_obj["status"] = 200
+        return ret_obj
+
+    except urllib2.HTTPError, e:
+        err = str(e)
+        log("HTTPError : " + err)
+        log("HTTPError - Headers: " + str(e.headers) + " - Content: " + e.fp.read())
+
+        params["error"] = str(int(get("error", "0")) + 1)
+        ret = fetchPage(params)
+
+        if not "content" in ret and e.fp:
+            ret["content"] = e.fp.read()
+            return ret
+
+        ret_obj["status"] = 500
+        return ret_obj
+
+    except urllib2.URLError, e:
+        err = str(e)
+        log("URLError : " + err)
+
+        time.sleep(3)
+        params["error"] = str(int(get("error", "0")) + 1)
+        ret_obj = fetchPage(params)
+        return ret_obj
+		
+def getVimeoUrl(videoid,currentdomain=""):
         #currentdomain="http://www.khmeravenue.com"
-        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
-        print currentdomain
+        result = fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
         collection = {}
         if result["status"] == 200:
             html = result["content"]
@@ -96,7 +176,7 @@ def getVimeoUrl(videoid,currentdomain):
                   return getVimeoVideourl(videoid,currentdomain)
 
 def scrapeVideoInfo(videoid,currentdomain):
-        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
+        result = fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
         collection = {}
         if result["status"] == 200:
             html = result["content"]
@@ -107,8 +187,6 @@ def scrapeVideoInfo(videoid,currentdomain):
         return collection
 
 def getVideoInfo(videoid,currentdomain):
-        common.log("")
-
 
         collection = scrapeVideoInfo(videoid)
 
@@ -118,7 +196,7 @@ def getVideoInfo(videoid,currentdomain):
             title = collection["config"]["video"]["title"]
             if len(title) == 0:
                 title = "No Title"
-            title = common.replaceHTMLCodes(title)
+            #title = common.replaceHTMLCodes(title)
             video['Title'] = title
             video['Duration'] = collection["config"]["video"]["duration"]
             video['thumbnail'] = collection["config"]["video"]["thumbnail"]
@@ -132,16 +210,15 @@ def getVideoInfo(videoid,currentdomain):
 
 
         if len(video) == 0:
-            common.log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
+            log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
             video = {}
             video["apierror"] = ""
             return (video, 303)
 
-        common.log("Done")
+        log("Done")
         return (video, 200)
 
 def getVimeoVideourl(videoid,currentdomain):
-        common.log("")
 
         (video, status) = getVideoInfo(videoid,currentdomain)
 
@@ -150,20 +227,20 @@ def getVimeoVideourl(videoid,currentdomain):
         get = video.get
         if not video:
             # we need a scrape the homepage fallback when the api doesn't want to give us the URL
-            common.log("getVideoObject failed because of missing video from getVideoInfo")
+            log("getVideoObject failed because of missing video from getVideoInfo")
             return ""
 
         quality = "sd"
 
         if ('apierror' not in video):
             video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
-            result = common.fetchPage({"link": video_url, "no-content": "true"})
+            result = fetchPage({"link": video_url, "no-content": "true"})
             video['video_url'] = result["new_url"]
 
-            common.log("Done")
+            log("Done")
             return video['video_url']
         else:
-            common.log("Got apierror: " + video['apierror'])
+            log("Got apierror: " + video['apierror'])
             return ""
 
 def Episodes(url,name):
@@ -718,6 +795,10 @@ def GA(group,name):
 
 def APP_LAUNCH():
         versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
+        if versionNumber > 13:
+			logname="kodi.log"
+        else:
+			logname="xbmc.log"
         if versionNumber < 12:
             if xbmc.getCondVisibility('system.platform.osx'):
                 if xbmc.getCondVisibility('system.platform.atv2'):
@@ -728,19 +809,19 @@ def APP_LAUNCH():
                 log_path = '/var/mobile/Library/Preferences'
             elif xbmc.getCondVisibility('system.platform.windows'):
                 log_path = xbmc.translatePath('special://home')
-                log = os.path.join(log_path, 'xbmc.log')
+                log = os.path.join(log_path, logname)
                 logfile = open(log, 'r').read()
             elif xbmc.getCondVisibility('system.platform.linux'):
                 log_path = xbmc.translatePath('special://home/temp')
             else:
                 log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         elif versionNumber > 11:
             print '======================= more than ===================='
             log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         else:
@@ -759,12 +840,12 @@ def APP_LAUNCH():
         import platform
         VISITOR = ADDON.getSetting('ga_visitor')
         for build, PLATFORM in match:
-            if re.search('12',build[0:2],re.IGNORECASE):
-                build="Frodo"
-            if re.search('11',build[0:2],re.IGNORECASE):
-                build="Eden"
-            if re.search('13',build[0:2],re.IGNORECASE):
-                build="Gotham"
+            if re.search('12',build[0:2],re.IGNORECASE): 
+                build="Frodo" 
+            if re.search('11',build[0:2],re.IGNORECASE): 
+                build="Eden" 
+            if re.search('13',build[0:2],re.IGNORECASE): 
+                build="Gotham" 
             print build
             print PLATFORM
             utm_gif_location = "http://www.google-analytics.com/__utm.gif"
@@ -780,7 +861,8 @@ def APP_LAUNCH():
                 print "============================ POSTING APP LAUNCH TRACK EVENT ============================"
                 send_request_to_google_analytics(utm_track)
             except:
-                print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================"
+                print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
+				
 checkGA()
 
 def addLink(name,url,mode,iconimage):

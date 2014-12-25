@@ -23,7 +23,7 @@
 
 <addon
   id="plugin.video.animego"
-  version="1.0.2"
+  version="1.0.3"
   name="animego"
   provider-name="Dknight">
   <requires>
@@ -291,7 +291,7 @@
 
 <addon
   id="plugin.video.hotkhmer"
-  version="1.0.5"
+  version="1.0.6"
   name="hotkhmer"
   provider-name="Dknight">
   <requires>
@@ -380,7 +380,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.30"
+  version="1.0.31"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -445,7 +445,7 @@
 
 <addon
   id="plugin.video.KhmerTv"
-  version="1.0.14"
+  version="1.0.15"
   name="KhmerTv"
   provider-name="Dknight">
   <requires>
@@ -465,7 +465,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.22"
+  version="1.0.23"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>
@@ -487,7 +487,7 @@
 
 <addon
   id="plugin.video.movierulz"
-  version="1.0.3"
+  version="1.0.4"
   name="movierulz"
   provider-name="Dknight">
   <requires>
@@ -593,7 +593,7 @@
 
 <addon
   id="plugin.video.PhumiKhmer"
-  version="1.0.23"
+  version="1.0.24"
   name="PhumiKhmer"
   provider-name="Dknight">
   <requires>
@@ -677,7 +677,7 @@
 
 <addon
   id="plugin.video.video4Khmer"
-  version="1.0.29"
+  version="1.0.30"
   name="video4Khmer"
   provider-name="Dknight">
   <requires>
