@@ -133,7 +133,7 @@ def ListMovies(url):
 			vlink=item.a['href']
 			vimg=item.a.img["src"]
 			vname=item.a.img["alt"]
-			addDir(vname,vlink,8,vimg)
+			addDir(vname.encode("utf-8","ignore"),vlink,8,vimg)
         navigation = soup.findAll('nav', {"id" : "posts-nav"})
         for item in navigation[0].findAll('a'):
 			addDir((str(item.contents[0])).replace("&larr;","<<").replace("&rarr;",">>"),item["href"],6,"")
