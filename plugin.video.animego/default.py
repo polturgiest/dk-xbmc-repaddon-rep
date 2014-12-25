@@ -251,7 +251,7 @@ def Mirrors(EpisodeID,name):
 	mctr=1
 	for vidgroup in MirrorList:
 		ctr=1
-		if(type(vidgroup) is tuple):
+		if(type(vidgroup) is dict):
 			mirrorname=vidgroup["url"].split("/")[2]
 			for vidurl in vidgroup:
 				addLink(mirrorname + " Mirror " +str(mctr) + " part " + str(ctr),vidgroup[vidurl],3,"",name) 

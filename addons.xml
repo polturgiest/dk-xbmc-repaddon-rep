@@ -23,7 +23,7 @@
 
 <addon
   id="plugin.video.animego"
-  version="1.0.3"
+  version="1.0.4"
   name="animego"
   provider-name="Dknight">
   <requires>
