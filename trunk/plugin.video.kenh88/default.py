@@ -35,23 +35,23 @@ def __init__(self):
     playlist=sys.modules["__main__"].playlist
 def HOME():
         addDir('Search',homeLink,4,'http://www.superphim.com/image/logo4.jpg')
-        link = GetContent(homeLink)
+        link = GetContentMob("http://www.phimmobile.com/categories.php")
         try:
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile('<li class="child">(.+?)</ul>').findall(newlink)
-        for vmenu in match:
-              mainurl,mainname=re.compile('<h2><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h2>').findall(vmenu)[0]
-              addDir(mainname,mainurl,2,'')
-              submatch=re.compile('<li><h3><a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a></h3></li>').findall(vmenu)
-              for vsubmenu in submatch:
-                    vLink, vLinkName=vsubmenu
-                    if(vLinkName.find("Danh Sach Phim") ==-1):
-                          addDir("--- "+ RemoveHTML(vLinkName).strip(),vLink,2,'')
+        soup = BeautifulSoup(newlink)
+        for item in soup.findAll('div', {"class" : re.compile('menu*')}):
+			vname=item.a["title"]
+			vlink=viddomain+item.a["href"]
+			if(item["class"].find("menu1a") == -1):
+				vname="--- "+ RemoveHTML(vname).strip()
+			addDir(vname,vlink,2,'')
+			
 def INDEX(url):
     #try:
-        link = GetContent(url)
+        link = GetContentMob(url)
         try:
             link =link.encode("UTF-8")
         except: pass
@@ -61,12 +61,13 @@ def INDEX(url):
 			vlink=homeLink+item.a["href"].replace("./","/")
 			vimg=""
 			vname=""
+			print item
 			if(item.a.img!=None):
 				vimg=homeLink+item.a.img["src"].strip().replace(" ","%20")
 				vname=item.a.img["alt"]
 				addDir(vname.encode('utf-8', 'ignore'),vlink,7,vimg)
         for item in soup.findAll('a', {"class" : "pagelink"}):
-			vlink=homeLink+item["href"]
+			vlink=viddomain+'/'+item["href"]+'&sa=Search'
 			if(item.b!=None):
 				vname=item.b.font.contents[0]
 			else:
@@ -86,7 +87,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.superphim.com/search.php?q='+searchText+'&btnSort=Search'
+        url = 'http://www.phimmobile.com/search.php?q='+searchText+'&sort=id&thutu=DESC&sa=Search'
         INDEX(url)
     except: pass
 
@@ -199,13 +200,19 @@ def GetContent(url):
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
 	   
-def GetContentMob(url):
-    opener = urllib2.build_opener()
+
+	
+def GetContentMob(url,cj=None):
+    if cj==None:
+        cj = cookielib.LWPCookieJar()
+    #newcookie=cookielib.Cookie(version=0,name="location.href", value="1",port=None,port_specified=False,domain="m.phim14.net", domain_specified=True,domain_initial_dot=False,path="/", path_specified=True,secure=False,expires=None,discard=False,comment=None,comment_url=None,rest=None)
+		
+    #cj.set_cookie(newcookie)
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     opener.addheaders = [(
         'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
         ('Accept-Encoding', 'gzip, deflate'),
         ('Referer',"http://www.phimmobile.com/index.php"),
-        #('Content-Type', 'application/x-www-form-urlencoded'),
         ('User-Agent', 'Mozilla/5.0 (iPad; U; CPU OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5'),
         ('Connection', 'keep-alive'),
         ('Accept-Language', 'en-us,en;q=0.5'),
@@ -1092,7 +1099,7 @@ sysarg=str(sys.argv[1])
 if mode==None or url==None or len(url)<1:
         GA("HOME","home")
         HOME()
-        print decrypt("2cddae1888c28d038b1e4e19cc0fa0ebc3c9f1af13cc3e6827d2cf7d0a6350ce2fa402735dfc451dd9bc870d8d3c3248c9bcbf3d84ef9699bb467cd87363a10df298e548e0d743e41b539f79e778cdc8813b3ec9c1450561fa585fbf743011e8c5846ad3e9be61f03262385bc432d981ace49e6c2d7fbe1658da9a882719592b")
+        print decrypt("a84b8e35342948100f3a59528696d557a6b1bfd4cb0d83b9c0357bbbb15ecc469294f428d52ab07d93da1f8feb95d686c41ea9f5f211aa7df6833b0fdcbb9ed7547c8570c14f0e5952d019c5407a7e495097e9fb9e4bce4902cd296ce419f54d9c518ac00a4513b7e545ff2778ad49096ace9d372df787c44488926d5b75a289")
 elif mode==2:
         GA("INDEX",name)
         INDEX(url)
@@ -1106,7 +1113,7 @@ elif mode==5:
 elif mode==6:
        SearchResults(url)
 elif mode==7:
-       Mirrors(url,name)
+       MirrorsMob(url,name)
 elif mode==8:
         MirrorsThe(name,url)
 elif mode==9:

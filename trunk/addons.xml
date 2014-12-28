@@ -156,7 +156,7 @@
 
 <addon
   id="plugin.video.comotin"
-  version="1.0.1"
+  version="1.0.2"
   name="comotin"
   provider-name="Dknight">
   <requires>
@@ -335,7 +335,7 @@
 
 <addon
   id="plugin.video.kenh88"
-  version="1.0.7"
+  version="1.0.8"
   name="kenh88.com"
   provider-name="Dknight">
   <requires>
