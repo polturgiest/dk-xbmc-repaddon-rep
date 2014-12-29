@@ -9,6 +9,9 @@ try: import simplejson as json
 except ImportError: import json
 import cgi
 import datetime
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulStoneSoup
+from BeautifulSoup import SoupStrainer
 
 import time
 ADDON = xbmcaddon.Addon(id='plugin.video.PhumiKhmer')
@@ -20,26 +23,30 @@ PATH = "PhumiKhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.4" #<---- PLUGIN VERSION
 
-strdomain ='http://www.ph-kh.com/'
+strdomain ='http://www.phumi-kh.com/'
 def HOME():
         addDir('Search','http://www.dramakhmer.com/search/label/Khmer%20Movies?&max-results=18',4,'')
-        #addDir('Khmer Movies','http://www.dramakhmer.com/search/label/Khmer%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        addDir('Khmer Drama','http://www.dramakhmer.com/search/label/Khmer%20Drama?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        #addDir('Filipino Drama','http://www.dramakhmer.com/search/label/Philippine%20Movie?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
-        #addDir('Thai Movies','http://www.dramakhmer.com/search/label/Thai%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Thai Lakorns','http://www.dramakhmer.com/search/label/Thai%20Lakorn?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/03/lbach-sneah-prea-kai-180x135.jpg')
-        addDir('Korean Drama','http://www.dramakhmer.com/search/label/Korean%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        #addDir('Korean Movies','http://www.dramakhmer.com/search/label/Korean%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category21.jpg')
-        #addDir('Hong Kong Drama','http://www.dramakhmer.com/search/label/Hong%20Kong%20Drama?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        #addDir('Hong Kong Movies','http://www.dramakhmer.com/search/label/Hong%20Kong%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        #addDir('Taiwanese Drama','http://www.dramakhmer.com/search/label/Taiwan%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        #addDir('Taiwanese Movies','http://www.dramakhmer.com/search/label/Taiwan%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        #addDir('Chinese Movies','http://www.dramakhmer.com/search/label/Chinese%20Movies?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        addDir('Chinese Series','http://www.dramakhmer.com/search/label/Chinese%20Series?&max-results=18',2,'http://d3v6rrmlq7x1jk.cloudfront.net/hwdvideos/thumbs/category29.jpg')
-        #addDir('Documentaries','http://www.dramakhmer.com/search/label/Documentary?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2011/04/vlcsnap-2011-04-04-21h01m29s71-180x135.jpg')
-        #addDir('Other Shows','http://www.dramakhmer.com/search/label/Hong%20Kong%20Drama?&max-results=18',6,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
+        GetMenu(strdomain)
 
-		
+			
+def GetMenu(url):
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        menuhead = SoupStrainer('nav', {"class" : "nav"})
+        soup = BeautifulStoneSoup(newlink, parseOnlyThese=menuhead,convertEntities=BeautifulSoup.XML_ENTITIES)
+        for item in soup.findAll('li'):
+			if(item.a.has_key("href")):
+				link = item.a['href'].encode('utf-8', 'ignore')
+				if(item.ul==None):
+					vname="---"+str(item.a.contents[0]).strip()
+				else:
+					vname=str(item.a.contents[0]).strip()
+				if(vname.strip().find("</i>") == -1):
+					addDir(vname,strdomain+link+"&PageNo=1",2,"")
+				
 def Shows():
         addDir('Pak Mee','http://www.dramakhmer.com/search/label/Parkmi%20%28%E1%9E%96%E1%9E%B6%E1%9E%80%E1%9F%8B%E1%9E%98%E1%9E%B8%29?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         addDir('Cartoon','http://www.dramakhmer.com/search/label/Cartoon%20Movies?&max-results=18',2,'http://moviekhmer.com/wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
@@ -219,7 +226,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.dramakhmer.com/search?q='+searchText
+        url = 'http://www.phumi-kh.com/search?q='+searchText
         INDEX(url)
     except: pass
 	
@@ -230,26 +237,14 @@ def INDEX(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        #print newlink
-        #start=newlink.index('<div id="main">')
-        #end=newlink.index('<!-- main -->')
-        match=re.compile("<div class='main section' id='main'>(.+?)<!-- google_ad_section_end -->").findall(newlink)
-        match=re.compile('<a class=\'thumbx\' [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(match[0])
-        for vurl,vcontent in match:
-                match1=re.compile('<img alt=\'(.+?)\' [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vcontent)
-                vimage=""
-                if(len(match1) > 0):
-                     (vname,vimage)=match1[0]
-                addDir(vname,vurl,5,vimage)
-        #match5=re.compile("<a class='blog-pager-newer-link' href='(.+?)' id='Blog1_blog-pager-newer-link' title='Newer Posts'>Newer Posts</a>").findall(newlink)
-        #print match5
-        #if(len(match5) >= 1):
-        #        url=match5[0]
-        #        addDir("<< Previous",url,2,"")
-        #match5=re.compile("<a class='blog-pager-older-link' href='(.+?)' id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>").findall(newlink)
-        #if(len(match5) >= 1 and len(match) > 17):
-        #        url=match5[0]
-        #        addDir("Next >>",buildNextPage(pagenum,label)url,2,"")
+        match=re.compile("<!-- google_ad_section_start\(name=default\) -->(.+?)<!-- google_ad_section_end -->").findall(newlink)
+        soup = BeautifulSoup(match[0])
+        listcontent=soup.findAll('div', {"class" : "cutter"})
+        for item in listcontent:
+			vname=item.a["title"]
+			vurl=item.a["href"]
+			vimg=item.a.img["src"]
+			addDir(vname.encode('utf-8', 'ignore'),vurl,5,vimg)
         label=re.compile("/label/(.+?)\?").findall(url)[0]
         pagenum=re.compile("PageNo=(.+?)").findall(url)
         prev="0"
@@ -272,7 +267,7 @@ def INDEX(url):
 
 def buildNextPage(pagenum,label):
 	pagecount=str((int(pagenum) - 1) * 18)
-	url="http://www.dramakhmer.com/feeds/posts/summary/-/"+label+"?start-index="+pagecount+"&max-results=1&alt=json-in-script&callback=finddatepost"
+	url="http://www.phumi-kh.com/feeds/posts/summary/-/"+label+"?start-index="+pagecount+"&max-results=1&alt=json-in-script&callback=finddatepost"
 	link = GetContent(url)
 	try:
 		link =link.encode("UTF-8")
@@ -280,7 +275,7 @@ def buildNextPage(pagenum,label):
 	match=re.compile('"published":\{"\$t":"(.+?)"\}').findall(link)
 	if(len(match)>0):
 		tsvalue=urllib.quote_plus(match[0][0:19]+match[0][23:29])
-		newurl="http://www.dramakhmer.com/search/label/"+label+"?updated-max="+tsvalue+"&max-results=18#PageNo="+pagenum
+		newurl="http://www.phumi-kh.com/search/label/"+label+"?updated-max="+tsvalue+"&max-results=18#PageNo="+pagenum
 	else:
 		newurl=""
 	return newurl
@@ -314,7 +309,6 @@ def Episodes(url,name):
         match1=re.compile('<ul class="v-list" id="vList">(.+?)</ul>').findall(newlink)
         if(len(match1) > 0):
 			for mvcontent in match1:
-				print mvcontent
 				match2=re.compile('data-vid="(.+?)"><img /><span class="v-title">(.+?)</span>').findall(mvcontent.replace("data-vido=","data-vid="))
 				for mcontent in match2:
 					vLink,vLinkName=mcontent
