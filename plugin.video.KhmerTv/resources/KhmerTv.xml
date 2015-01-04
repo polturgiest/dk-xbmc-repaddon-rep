@@ -5,7 +5,12 @@
     <info>Khmer channels from khiptv</info>
 	<item>
       <title>CTN</title>
-      <link>http://gcasialive-i.akamaihd.net/hls/live/218647/CTN-HLS-stream/master.m3u8?wowzasessionid=1391934041</link>
+      <link>http://gcasialive-i.akamaihd.net/hls/live/218647/CTN-HLS-stream/master_04.m3u8?wowzasessionid=1391934041 live=true</link>
+      <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
+    </item>
+	<item>
+      <title>CTN 2</title>
+      <link>http://laxlive01.malimarcdn.com/khorigin00/_definst_/ctn.stream/playlist.m3u8 live=true</link>
       <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
     </item>
 	<item>
@@ -15,18 +20,29 @@
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
     <item>
+      <title>Khmer TV</title>
+      <link>http://securemcp.com:1935/8138/8138/playlist.m3u8</link>
+      <thumbnail>Default.png</thumbnail>
+    </item>
+    <item>
       <title>MediaBiz</title>
       <link>http://live.wmncdn.net/medibiztv/d0dbe915091d400bd8ee7f27f0791303.sdp/playlist.m3u8</link>
       <thumbnail>http://khiptv.com/images_tv/TV.png</thumbnail>
     </item>
     <item>
       <title>TV9</title>
-      <link>mms://203.176.130.123/ctv9_480k?3e4a8a89-1640-48f1-ad30-a6fb35cd3c2f</link>
+      <link>http://laxlive01.malimarcdn.com/khorigin00/_definst_/tv9.stream/playlist.m3u8</link>
       <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
     </item>
 	<item>
+      <title>TV5</title>
+      <link>http://laxlive01.malimarcdn.com/khorigin00/_definst_/tv5.stream/playlist.m3u8</link>
+      <thumbnail>
+      http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
+    </item>
+	<item>
       <title>TV3</title>
-      <link>mmsh://199.189.105.148:80/tvk?MSWMExt=.asf</link>
+      <link>http://live.khmer.be:1935/live/TV3/playlist.m3u8</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
@@ -47,7 +63,7 @@
     </item>
 	<item>
       <title>Hangmeas</title>
-      <link>rtmp://111.92.240.134:1935/live/livestream</link>
+      <link>http://199.189.108.12/FHM live=true</link>
       <thumbnail>http://khmer.be/images/tv/hangmeas-100x70.jpg</thumbnail>
     </item>
     <item>
@@ -82,9 +98,9 @@
       http://khiptv.com/images_tv/bayon-tv.png</thumbnail>
     </item>
     <item>
-      <title>TV5</title>
-      <link>http://liveplay3.malimarcdn.com/khliveedge00/tv5.stream/playlist.m3u8?token=tv5.stream-1415502796000-38c-a5b5d9e0fce71f7c7a3b3662eafafa01</link>
-      <thumbnail>http://khiptv.com/images_tv/TV5.png</thumbnail>
+      <title>BTV News</title>
+      <link>http://svr-live.khmerlive.tv/bayonnews/playlist.m3u8</link>
+      <thumbnail>Default.png</thumbnail>
     </item>
     <item>
       <title>bayon_NEWS</title>
@@ -99,12 +115,12 @@
     </item>
     <item>
       <title>Apsara</title>
-      <link>mmsh://199.189.108.12/FAPSARA?MSWMExt=.asf</link>
+      <link>http://199.189.108.12/FAPSARA/playlist.m3u8</link>
       <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
     </item>
     <item>
-      <title>Khmer TV</title>
-      <link>mmsh://184.105.192.5:44412/ABC_TV?MSWMExt=.asf</link>
+      <title>2KPTV</title>
+      <link>http://khiptv.org/abc/playlist.m3u8</link>
       <thumbnail>DefaultVideo.png</thumbnail>
     </item>
     <item>
