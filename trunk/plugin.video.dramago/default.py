@@ -8,6 +8,9 @@ import xbmcaddon,xbmcplugin,xbmcgui
 import json
 import urlresolver
 import time,datetime
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulStoneSoup
+from BeautifulSoup import SoupStrainer
 import core
 from xml.dom.minidom import Document
 from t0mm0.common.addon import Addon
@@ -194,7 +197,83 @@ def HOME():
         addDir('TV Show Genres','http://api.dramago.com/GetAllShows',6,'')
         addDir('Top Movies','http://api.dramago.com/GetPopularMovies',20,'')
         addDir('Top TV Shows','http://api.dramago.com/GetPopularShows',21,'')
+        addDir('Korean Drama HD','http://api.dramago.com/GetPopularShows',29,'')
 
+def SenSenMenu():
+        addDir('Drama List','http://sensen.tv/drama-list/',30,'')
+        addDir('Latest Episodes','http://sensen.tv/',33,'')
+		
+def SensenIndex(url):
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        soup = BeautifulSoup(newlink)
+        vidcontent=soup.findAll('div', {"class" : "dramalist"})
+        for item in vidcontent:
+			vname=item.findAll('span', {"class" : "dramalist_text"})[0].contents[0]
+			vurl=item.a["href"]
+			vimg=item.a.img["src"]
+			addDir(vname,vurl,31,vimg)
+			
+def SensenLatestIndex(url):
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        soup = BeautifulSoup(newlink)
+        vidcontent=soup.findAll('div', {"class" : "row-fluid"})
+        if(len(vidcontent) > 1):
+			vidcontent=vidcontent[1]
+        else:
+			vidcontent=vidcontent[0]
+        for item in vidcontent.findAll('div', {"class" : "thumb-wrap"}):
+			vname=item.a.img["title"].encode('utf-8', 'ignore')
+			vurl=item.a["href"]
+			vimg=item.a.img["src"]
+			addDir(vname,vurl,32,vimg)
+        vidcontent=soup.findAll('div', {"class" : "page-nav"})
+        for item in vidcontent[0].findAll('a'):
+			try:
+				vname=item.contents[0].encode('utf-8', 'ignore')
+			except:
+				vname=item.contents[1].encode('utf-8', 'ignore')
+			vurl=item["href"]
+			addDir("page " +vname,vurl,33,vimg)
+
+				
+def SensenEpisode(url):
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        soup = BeautifulSoup(newlink)
+        vidcontent=soup.findAll('div', {"class" : "list_episode_entry"})
+        for item in vidcontent:
+			vlink = item.a['href'].encode('utf-8', 'ignore')
+			vname=str(item.a.contents[0]).strip()
+			addDir(vname,vlink,32,"")
+			
+def SensenGetVideo(url):
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        soup = BeautifulSoup(newlink)
+        for item in soup.findAll('source'):
+			vname=item["data-res"]
+			vlink=item["src"]
+			addLink(vname,vlink,3,"","direct")
+        ctr=0
+        for item in soup.findAll('iframe'):
+			ctr=ctr+1
+			vlink=item["src"]
+			vname=vlink.split("/")[2] 
+			addLink(vname+" part " +str(ctr),vlink,3,"")
 
 def GetJSON(url,data,referr):
     #opener = urllib2.build_opener()
@@ -331,6 +410,8 @@ def ParseVideoLink(url,name,movieinfo):
     dialog = xbmcgui.DialogProgress()
     dialog.create('Resolving', 'Resolving video Link...')       
     dialog.update(0)
+    if movieinfo=="direct":
+		return url
     link =GetContent(url)
     link = ''.join(link.splitlines()).replace('\'','"')
     # borrow from 1channel requires you to have 1channel
@@ -2032,5 +2113,14 @@ elif mode==27:
         ListShows("name","tv",url,name,8)
 elif mode==28:
         PLAYLIST_VIDEOLINKS(url,name)
-
+elif mode==29:
+		SenSenMenu()
+elif mode==30:
+		SensenIndex(url)
+elif mode==31:
+		SensenEpisode(url)
+elif mode==32:
+		SensenGetVideo(url)
+elif mode==33:
+		SensenLatestIndex(url)
 xbmcplugin.endOfDirectory(int(sysarg))

@@ -61,7 +61,6 @@ def INDEX(url):
 			vlink=homeLink+item.a["href"].replace("./","/")
 			vimg=""
 			vname=""
-			print item
 			if(item.a.img!=None):
 				vimg=homeLink+item.a.img["src"].strip().replace(" ","%20")
 				vname=item.a.img["alt"]
