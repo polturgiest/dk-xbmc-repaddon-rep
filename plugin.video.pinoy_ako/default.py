@@ -11,6 +11,10 @@ import cgi
 import urlresolver
 from t0mm0.common.addon import Addon
 import datetime
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulStoneSoup
+from BeautifulSoup import SoupStrainer
+
 ADDON = xbmcaddon.Addon(id='plugin.video.pinoy_ako')
 addon = Addon('plugin.video.pinoy_ako')
 datapath = addon.get_profile()
@@ -22,26 +26,28 @@ PATH = "pinoy_ako"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.9" #<---- PLUGIN VERSION
 
-strdomain ='http://www.pinoy-ako.re'
+strdomain ='http://www.pinoy-ako.ws/'
 def HOME():
-        addDir('Search','http://www.pinoy-ako.re',8,'')
-        addDir('Latest Videos','http://www.pinoy-ako.re',7,'')
-        addDir('Pinoy Movies','http://www.lambingan.tk/pinoy-movies/',13,'')
+        addDir('Search','http://www.pinoy-ako.ws',8,'')
+        addDir('Latest Videos','http://www.pinoy-ako.ws',7,'')
+        addDir('Pinoy Movies','http://www.lambingan.tk/category/pinoy-movies',13,'')
         ###addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
         #addDir('Pinoy Box Office','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         #addDir('Cinema One','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
-        addDir('Sports','http://www.pinoy-ako.re/category/sports',6,'')
+        addDir('Sports','http://www.pinoy-ako.ws/category/sports',6,'')
         addDir('Sports by category','52',2,'')
         ###addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
-        #addDir('ABS-CBN Episode List','http://www.pinoy-ako.re/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('ABS-CBN by Shows','http://www.lambingan.tk/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('GMA 7 Episode List','http://www.pinoy-ako.re/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        #addDir('ABS-CBN Episode List','http://www.pinoy-ako.ws/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        addDir('ABS-CBN by Shows','http://www.lambingan.tk/category/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        addDir('GMA 7 shows on lambingan','http://www.lambingan.tk/category/Gma7/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        addDir('TV5 shows on lambingan','http://www.lambingan.tk/category/tv5/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        addDir('GMA 7 Episode List','http://www.pinoy-ako.ws/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('GMA 7 by Shows','11',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
-        addDir('TV5 Episode List','http://www.pinoy-ako.re/category/tv-5',6,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
+        addDir('TV5 Episode List','http://www.pinoy-ako.ws/category/tv-5',6,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         addDir('TV5 by Shows','60',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
-        addDir('Livestream','http://www.pinoy-ako.re/category/livestream',6,'')
-        addDir('Uncategorized','http://www.pinoy-ako.re/category/uncategorized',6,'')
+        addDir('Livestream','http://www.pinoy-ako.ws/category/livestream',6,'')
+        addDir('Uncategorized','http://www.pinoy-ako.ws/category/uncategorized',6,'')
         ###addDir('TV5 Old Shows','http://www.pinoy-ako.info/tv-show-replay/94-tv-guide/59771-watch-old-tv5-kapatid-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         ###addDir('TV Specials','http://www.pinoy-ako.info/tv-show-replay/tv-specials.html',5,'http://img857.imageshack.us/img857/8424/tvspecials.jpg')
         ###addLink('ABS-CBN live','rtmp://tko.og.abscbn.streamguys.com:1935/abs/_definst_/abs live=true',11,'')
@@ -85,7 +91,7 @@ def INDEXlamb(url):
 			for pageurl,pagenum in pagelist:
 				addDir('page '+ pagenum.replace("&raquo;",">>").replace("&rsaquo;",">"),pageurl,13,'')
 def INDEX(itemnum):
-        link = GetContent("http://www.pinoy-ako.re/")
+        link = GetContent("http://www.pinoy-ako.ws/")
         try:
             link=link.encode("UTF-8")
         except: pass
@@ -121,7 +127,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.pinoy-ako.re/?s='+ searchText +'&ordering=newest&searchphrase=all&limit=20'
+        url = 'http://www.pinoy-ako.ws/?s='+ searchText +'&ordering=newest&searchphrase=all&limit=20'
         INDEX2(url)
 
 
@@ -180,7 +186,7 @@ def GetVideoLinkslamb(url):
         mirrorcnt = 0
         partcnt=0
         for frmvid in frmsrc1:
-			if(frmvid.find("http") >-1 and frmvid.find("lambingantv")==-1 ):
+			if(frmvid.find("//") >-1 and frmvid.find("lambingantv")==-1 ):
 				vname = frmvid.replace("http://","").replace("https://","").split(".")
 				mirrorcnt=mirrorcnt+1
 				if(vname[1].find("/") > -1):
@@ -1121,6 +1127,10 @@ def GA(group,name):
             
 def APP_LAUNCH():
         versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
+        if versionNumber > 13:
+			logname="kodi.log"
+        else:
+			logname="xbmc.log"
         if versionNumber < 12:
             if xbmc.getCondVisibility('system.platform.osx'):
                 if xbmc.getCondVisibility('system.platform.atv2'):
@@ -1131,19 +1141,19 @@ def APP_LAUNCH():
                 log_path = '/var/mobile/Library/Preferences'
             elif xbmc.getCondVisibility('system.platform.windows'):
                 log_path = xbmc.translatePath('special://home')
-                log = os.path.join(log_path, 'xbmc.log')
+                log = os.path.join(log_path, logname)
                 logfile = open(log, 'r').read()
             elif xbmc.getCondVisibility('system.platform.linux'):
                 log_path = xbmc.translatePath('special://home/temp')
             else:
                 log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         elif versionNumber > 11:
             print '======================= more than ===================='
             log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         else:
@@ -1184,6 +1194,7 @@ def APP_LAUNCH():
                 send_request_to_google_analytics(utm_track)
             except:
                 print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
+				
 checkGA()
 
 def addLink(name,url,mode,iconimage):

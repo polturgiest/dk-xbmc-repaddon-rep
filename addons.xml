@@ -91,11 +91,12 @@
 
 <addon
   id="plugin.video.azdrama"
-  version="1.0.18.1"
+  version="1.0.19"
   name="azdrama.net"
   provider-name="Dknight">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
+		<import addon="script.module.beautifulsoup" version="3.0.8"/>
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
@@ -616,12 +617,13 @@
 
 <addon
   id="plugin.video.pinoy_ako"
-  version="1.0.18"
+  version="1.0.19"
   name="pinoy_ako"
   provider-name="Dknight">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
 		<import addon="script.module.simplejson" />
+		<import addon="script.module.beautifulsoup" version="3.0.8"/>
 		<import addon="script.module.urlresolver"  version="0.0.1"/>
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
