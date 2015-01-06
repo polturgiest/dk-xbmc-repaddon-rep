@@ -1093,6 +1093,8 @@ def SEARCH(url,type):
                 searchText = keyb.getText()
         ShowCollection = GetJSON(url,"","")
         for Media in ShowCollection:
+			if(Media["description"] is None):
+				Media["description"]=""
 			if(Media["name"].upper().find(searchText.upper()) > -1 or Media["description"].upper().find(searchText.upper()) > -1):
 				addDirContext(Media["name"].encode("UTF-8"),str(Media["id"]),8,'http://www.dramago.com/images/series/big/'+str(Media["id"])+'.jpg',Media["description"],type)
 		
