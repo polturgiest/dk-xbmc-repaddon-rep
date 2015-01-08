@@ -91,7 +91,7 @@
 
 <addon
   id="plugin.video.azdrama"
-  version="1.0.19"
+  version="1.0.20"
   name="azdrama.net"
   provider-name="Dknight">
   <requires>
@@ -193,6 +193,28 @@
   <extension point="xbmc.addon.metadata">
     <summary>DKEvents</summary>
     <description>Watch some events I might find</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon
+  id="plugin.video.drama24h"
+  version="1.0.0"
+  name="drama24h"
+  provider-name="Dknight">
+  <requires>
+        <import addon="xbmc.python" version="2.1.0" optional="true" />
+		<import addon="script.module.beautifulsoup" version="3.0.8"/>
+		<import addon="script.module.simplejson" />
+		<import addon="script.module.t0mm0.common" version="1.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>drama24h</summary>
+    <description>Watch drama24h (Chinese)Videos</description>
     <platform>all</platform>
   </extension>
 </addon>
