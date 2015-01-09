@@ -40,7 +40,6 @@ def HOME():
         #addDir('ABS-CBN Episode List','http://www.pinoy-ako.ws/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('ABS-CBN by Shows','http://www.lambingan.tk/category/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('GMA 7 shows on lambingan','http://www.lambingan.tk/category/Gma7/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
-        addDir('TV5 shows on lambingan','http://www.lambingan.tk/category/tv5/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('GMA 7 Episode List','http://www.pinoy-ako.ws/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('GMA 7 by Shows','11',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')

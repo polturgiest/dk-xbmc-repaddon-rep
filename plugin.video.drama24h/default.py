@@ -344,6 +344,11 @@ def SensenGetVideo(url):
 			vname=vlink.split("/")[2] 
 			if(vlink.find("/ADS/") ==-1):
 				addLink(vname+" mirror " +str(ctr),vlink,3,"")
+        vidlist = re.compile('<embed [^>]*FlashVars=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
+        for item in vidlist:
+			vidlist = re.compile('proxy.link=(.+?)&').findall(item)
+			vname=vidlist[0].split("/")[2] 
+			addLink(vname,vidlist[0],3,"")
 
 def GetJSON(url,data,referr):
     #opener = urllib2.build_opener()
@@ -1239,8 +1244,16 @@ def Episodes(url):
         soup = BeautifulSoup(newlink)
         vidcontent=soup.findAll('div', {"class" :"post-entry"})
         for item in vidcontent[0].findAll('h5'):
-			vlink = item.a['href'].encode('utf-8', 'ignore')
-			vname=item.a.contents[0].encode('utf-8', 'ignore')
+			if(item.span==None):
+				currentitem=item.a
+			else:
+				currentitem=item.span.a
+			vlink = currentitem['href'].encode('utf-8', 'ignore')
+			if(currentitem.span==None):
+				vname=currentitem.contents[0].encode('utf-8', 'ignore')
+			else:
+				vname=currentitem.span.contents[0].encode('utf-8', 'ignore')
+			
 			addDir(vname,vlink,32,"")
 
 
