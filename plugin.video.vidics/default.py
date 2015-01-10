@@ -8,6 +8,10 @@ import xbmcaddon,xbmcplugin,xbmcgui
 import json
 import urlresolver
 import time,datetime
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulStoneSoup
+from BeautifulSoup import SoupStrainer
+
 from xml.dom.minidom import Document
 from t0mm0.common.addon import Addon
 import commands
@@ -396,12 +400,14 @@ def List4Days():
 def Mirrors(url,name):
   link = GetContent(url)
   link=''.join(link.splitlines()).replace('\'','"')
-  mirmatch=re.compile('<div class="movie_link(.+?)">(.+?)</tr>').findall(link)
-  for vhost,vcontent in mirmatch:
-         quality =re.compile('<h4>(.+?)</h4>').findall(vcontent)
-         linkinfo =re.compile('<a href="(.+?)" target="_blank" rel="nofollow">(.+?)</a>').findall(vcontent)
-         if(linkinfo[0][1].lower() in playablehost):
-              addLink(linkinfo[0][1],strdomain+linkinfo[0][0],3,"",name)
+  soup = BeautifulSoup(link)
+  listcontent=soup.findAll('a',{"href":re.compile("/Link/")})
+  for item in listcontent:
+			vname=item.contents[0]
+			vurl=item["href"]
+			if(str(vname).split('.')[0].lower() in playablehost):
+				addLink(vname,strdomain+vurl,3,"",name)
+
 
 def add_contextsearchmenu(title, video_type):
     title=urllib.quote(title)
@@ -481,8 +487,8 @@ def ParseVideoLink(url,name,movieinfo):
             link = ''.join(link.splitlines()).replace('\'','"')
     # end 1channel code
     print redirlink
-    try:
-    #if True:
+    #try:
+    if True:
 
         if (redirlink.find("youtube") > -1):
                 vidmatch=re.compile('(youtu\.be\/|youtube-nocookie\.com\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|user)\/))([^\?&"\'>]+)').findall(redirlink)
@@ -1039,7 +1045,7 @@ def ParseVideoLink(url,name,movieinfo):
                 paccked= re.compile('<script type=(?:"|\')text/javascript(?:"|\')>(eval\(function\(p,a,c,k,e,d\).*?)</script>').findall(pcontent)
                 if(len(paccked) > 0):
                       pcontent=jsunpack.unpack(paccked[0].replace('"','\''))
-                media_url = re.compile("sources:\s*\[\{file:\s*'(.+?)'\}\]").findall(pcontent)[0]
+                media_url = re.compile('sources:\s*\[\{file:\s*"(.+?)"\}\]').findall(pcontent)[0]
                 finalcontent=GetContent(media_url)
                 finalcontent=''.join(finalcontent.splitlines()).replace('\'','"')
                 dmlink=re.compile('<meta [^>]*base=["\']?([^>^"^\']+)["\']?[^>]*>').findall(finalcontent)
@@ -1211,7 +1217,7 @@ def ParseVideoLink(url,name,movieinfo):
                 print "inresolver=" + redirlink
                 if source:
                         vidlink = source.resolve()
-    except:
+    #except:
                 if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
                         redir = redirlink.split("/file/")
                         redirlink = redir[0] +"/file/" + redir[1].upper()
