@@ -93,21 +93,22 @@ def RemoveHTML(inputstring):
     TAG_RE = re.compile(r'<[^>]+>')
     return TAG_RE.sub('', inputstring)
 	
-def GetContent(url, useProxy=False):
+def GetContent2(url, useProxy=False):
     if useProxy==True:
         return GetContent2(url, useProxy)
     hostn= urlparse.urlparse(url).hostname
     conn = httplib.HTTPConnection(host=hostn,timeout=30)
     req = url.replace(url.split(hostn)[0]+hostn,'')
+    headers = {"User-Agent":"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)"} 
     try:
-        conn.request('GET',req)
+        conn.request('GET',req,headers)
     except:
         print 'echec de connexion'
     content = conn.getresponse().read()
     conn.close()
     return content
 	
-def GetContent2(url, useProxy=False):
+def GetContent(url, useProxy=False):
     strresult=""
     response=None
     if useProxy==True:
@@ -144,7 +145,7 @@ def write2srt(url, fname):
 
 def json2srt(url, fname):
 
-    data = json.load(urllib2.urlopen(url))['subtitles']
+    data = json.loads(GetContent(url))['subtitles']
 
     def conv(t):
         return '%02d:%02d:%02d,%03d' % (
@@ -226,6 +227,7 @@ def ListGenres(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
+        print link
         vidcontent=re.compile('<ul class="thumb-grid">(.+?)</ul>').findall(link)
         vidlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vidcontent[0])
         transtext=""
@@ -567,7 +569,7 @@ def SEARCHByID():
 def GetVideoInfo(vidid):
     infourl=sign_request(vidid,".json")
     print infourl
-    data = json.load(urllib2.urlopen(infourl))
+    data = json.loads(GetContent(infourl))
     return data
     
 def expires():
@@ -608,13 +610,13 @@ def getVidQuality(vidid,name,filename,checkvideo):
           vidurl=proxyurl.replace("*url*",urllib.quote_plus(sign_request(vidid,"/streams.json")))
   else:
           vidurl = sign_request(vidid,"/streams.json")
-  data = json.load(urllib2.urlopen(vidurl))
+  data = json.loads(GetContent(vidurl))
   if(len(data) == 0):
           if(useProxy):
                 vidurl=proxyurl.replace("*url*",urllib.quote_plus(sign_request(vidid+"v","/streams")))
           else:
                 vidurl = sign_request(vidid+"v","/streams")
-          data = json.load(urllib2.urlopen(vidurl))
+          data = json.loads(GetContent(vidurl))
   langcode=checkLanguage(vidid)
   strQual=""
   strprot=""
