@@ -37,10 +37,10 @@ strdomain ="http://www.viki.com"
 enableProxy= ADDON.getSetting('enableProxy')
 enableTrans= (ADDON.getSetting('enableTrans')=="true")
 translanguage=ADDON.getSetting('translang')
-reg_list = ["https://losangeles-s02-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1", 
-            "https://bucharest-s05-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1",
-            "https://frankfurt-s02-i01-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1", 
-            "https://london-s01-i15-traffic.cyberghostvpn.com/go/browse.php?u=*url*&b=1"]
+reg_list = ["https://us-free-proxy.cyberghostvpn.com/go/browse.php?uu=*url*&b=7", 
+            "https://ro-free-proxy.cyberghostvpn.com/go/browse.php?u=*url*&b=7",
+            "https://de-free-proxy.cyberghostvpn.com/go/browse.php?u=*url*&b=7", 
+            "https://gb-free-proxy.cyberghostvpn.com/go/browse.php?u=*url*&b=7"]
 proxyurl = reg_list[int(ADDON.getSetting('region'))]
 
 class Translator:
@@ -227,7 +227,6 @@ def ListGenres(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-        print link
         vidcontent=re.compile('<ul class="thumb-grid">(.+?)</ul>').findall(link)
         vidlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vidcontent[0])
         transtext=""
@@ -314,6 +313,7 @@ def UpdatedVideos(url,name):
                vcontent=re.compile('<ul class="medias medias-block medias-wide mbl btz"(.+?)</ul>').findall(link)
         if(len(vcontent) ==0):
                vcontent=re.compile('Recently Added\s*</a>\s*</li>\s*</ul>(.+?)</ul>').findall(link)
+   
         vidlist=re.compile('<li [^>]*(.+?)</li>').findall(vcontent[0])
         mode=7
         transtext=""
@@ -331,9 +331,9 @@ def UpdatedVideos(url,name):
 			namelist=transtext.split("|")
 
         for licontent in vidlist:
-            vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json"').findall(licontent)
+            vid=re.compile('data-tooltip-src="/container_languages_tooltips/(.+?).json').findall(licontent)
             if(len(vid)==0):
-                    vid=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json"').findall(licontent)
+                    vid=re.compile('data-tooltip-src="/video_languages_tooltips/(.+?).json').findall(licontent)
             if(len(vid)>0):
                     vid=vid[0]
                     vurl,vname=re.compile('<h2 class="gamma mts">\s*<a href="(.+?)">(.+?)</a>\s*</h2>').findall(licontent)[0]
