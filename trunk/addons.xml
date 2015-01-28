@@ -470,7 +470,7 @@
 
 <addon
   id="plugin.video.KhmerTv"
-  version="1.0.17"
+  version="1.0.18"
   name="KhmerTv"
   provider-name="Dknight">
   <requires>
