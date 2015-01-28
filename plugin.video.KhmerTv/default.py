@@ -193,13 +193,22 @@ def initDatabase():
     db.close()
 
 def GetContent(url):
+    strresult=""
+    response=None
     try:
-       net = Net()
-       second_response = net.http_GET(url)
-       return second_response.content
-    except:	
-       d = xbmcgui.Dialog()
-       d.ok(url,"Can't Connect to site",'Try again in a moment')
+        if(response!=None):
+           connection.close()
+        req = urllib2.Request(url)
+        req.add_unredirected_header('User-Agent', 'Mozilla/5.0 (iPad; CPU OS 8_1_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B435')
+        #req.add_unredirected_header('Host', 'music.khmergadget.com')
+        response = urllib2.urlopen(req)
+        strresult=response.read()
+        response.close()
+    except Exception, e:
+       print str(e)+" |" + url
+       if(response!=None):
+           connection.close()
+    return strresult
 
 def GetArtist(url,name):
         dialog = xbmcgui.DialogProgress()
@@ -569,6 +578,7 @@ except:
 sysarg=str(sys.argv[1]) 
 
 if mode==None:
+        print GetContent("http://music.khmergadget.com/Linker_SKU_KHMERSONG.aspx")
         GA("GetChannels",name)
         GetXMLChannel()
 elif mode==2:

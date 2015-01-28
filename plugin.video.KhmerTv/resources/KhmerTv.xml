@@ -10,7 +10,7 @@
     </item>
 	<item>
       <title>CTN 2</title>
-      <link>http://laxlive01.malimarcdn.com/khorigin00/_definst_/ctn.stream/playlist.m3u8 live=true</link>
+      <link>http://laxlive01.malimarcdn.com/khorigin00/_definst_/ctn.stream/playlist.m3u8 live=false</link>
       <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
     </item>
 	<item>
