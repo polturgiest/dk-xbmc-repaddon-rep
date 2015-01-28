@@ -7,6 +7,10 @@ import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 from xml.dom.minidom import Document
 import datetime
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import SoupStrainer
+try: import simplejson as json
+except ImportError: import json
 
 ADDON = __settings__ = xbmcaddon.Addon(id='plugin.video.KhmerTv')
 home = __settings__.getAddonInfo('path')
@@ -193,22 +197,13 @@ def initDatabase():
     db.close()
 
 def GetContent(url):
-    strresult=""
-    response=None
     try:
-        if(response!=None):
-           connection.close()
-        req = urllib2.Request(url)
-        req.add_unredirected_header('User-Agent', 'Mozilla/5.0 (iPad; CPU OS 8_1_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B435')
-        #req.add_unredirected_header('Host', 'music.khmergadget.com')
-        response = urllib2.urlopen(req)
-        strresult=response.read()
-        response.close()
-    except Exception, e:
-       print str(e)+" |" + url
-       if(response!=None):
-           connection.close()
-    return strresult
+       net = Net()
+       second_response = net.http_GET(url)
+       return second_response.content
+    except:	
+       d = xbmcgui.Dialog()
+       d.ok(url,"Can't Connect to site",'Try again in a moment')
 
 def GetArtist(url,name):
         dialog = xbmcgui.DialogProgress()
@@ -293,6 +288,14 @@ def SearchXml(SearchText):
         (mName,mNumber,vyear)=match[i]
         addDir(SearchText+mName,mNumber,6,"")
 		
+def Resolver(url):
+		vidlink=""
+		try:
+			if(url.find("stmg.net.kh") > -1):
+				data = json.loads(GetContent(url))
+				vidlink=data["url"]
+		except: pass
+		return vidlink
 def ParseXml(tagname):
         f = open(filename, "r")
         text = f.read()
@@ -306,6 +309,8 @@ def ParseXml(tagname):
                                 vname=itemXML.getElementsByTagName('title')[0].childNodes[0].data.strip()
                                 vurl=itemXML.getElementsByTagName('link')[0].childNodes[0].data.strip()
                                 vimg=itemXML.getElementsByTagName('thumbnail')[0].childNodes[0].data.strip()
+                                if(len(itemXML.getElementsByTagName('resolve')) > 0):
+									vurl=Resolver(itemXML.getElementsByTagName('link')[0].childNodes[0].data.strip())
                                 addLink(vname,vurl,3,vimg)
 	
 def GetXMLChannel():
@@ -578,7 +583,6 @@ except:
 sysarg=str(sys.argv[1]) 
 
 if mode==None:
-        print GetContent("http://music.khmergadget.com/Linker_SKU_KHMERSONG.aspx")
         GA("GetChannels",name)
         GetXMLChannel()
 elif mode==2:
