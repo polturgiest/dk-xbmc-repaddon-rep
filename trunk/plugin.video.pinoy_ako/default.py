@@ -207,72 +207,83 @@ def GetVideoLinkslamb(url):
 				vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
 				addLink(vname,frmvid2,3,"")
 def GetVideoLinks(url):
+        if(url[-1:]=="/"):
+			url=url[:-1]
         link = GetContent(url)
         link = ''.join(link.splitlines()).replace('\'','"')
         try:
             link=link.encode("UTF-8")
         except: pass
-        vidcontent=re.compile('<div class="entry-content clearfix">(.+?)<div class="tags">').findall(link)
-        tabvids=re.compile('<div class="(blitzer|tabbertab|jwts_tabber|smoothness)">(.+?)</div>').findall(vidcontent[0])
-        singlevids=re.compile('<p style="text-align:(.+?)<div class=').findall(vidcontent[0])
-        singledivs=re.compile('<div style="text-align:\s*center;">(.+?)</div>').findall(vidcontent[0])
-        #singleiframe=re.compile('<div style="text-align:\s*center;">(.+?)</div>').findall(vidcontent[0])
-        singlevids.extend(singledivs)
+        print url
+        soup = BeautifulSoup(link)
+        vidcontent=soup.findAll('div', {"id" :"content"})[0]
+        tabvids=re.compile('<div class="(blitzer|tabbertab|jwts_tabber|smoothness)">(.+?)</div>').findall(str(vidcontent))
         mirrorcnt = 0
-        for spancontent in singlevids:
-                if (spancontent.find("blitzer") == -1 and spancontent.find("tabbertab") == -1 ):
-                        mirrorcnt=mirrorcnt+1
-                        partcnt=0
-                        embsrc=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(spancontent.lower())
-                        for embvid in embsrc:
-                                arr = embvid.replace("http://","").replace("https://","").split(".")
-                                if(arr[1].find("/") > -1):
-                                      vname=arr[0]
-                                else:
-                                      vname=arr[1]
-                                fileext = arr[len(arr)-1]
-                                if fileext.lower() !="swf":
-                                        partcnt=partcnt+1
-                                        if(len(embsrc) == 1):
-                                               vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
-                                        else:
-                                               vname="mirror "+str(mirrorcnt)+" "+ vname + " part " + str(partcnt)
-                                        addLink(vname,embvid,3,"")
-                        embsrc=re.compile('<embed[^>]*flashvars=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(spancontent.replace(" ",""))
-                        for embvid in embsrc:
-                                embvid=embvid.replace("file=","")
-                                vname = embvid.replace("http://","").replace("https://","").split(".")
-                                if(vname[1].find("/") > -1):
-                                      vname=vname[0]
-                                else:
-                                      vname=vname[1]
-                                partcnt=partcnt+1
-                                if(len(embsrc) == 1):
-                                      vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
-                                else:
-                                      vname="mirror "+str(mirrorcnt)+" "+ vname + " part " + str(partcnt)
-                                if(embvid.find("youtubetune") > -1  or embvid.find("youtubereloaded") > -1):
-                                      #print urllib.unquote_plus(embvid).replace("&amp;http://","http://")
-                                      embvid1=urllib.unquote_plus(embvid).replace("&amp;http://","http://").split("&")[0]
-                                      GetXmlPlaylist(embvid1, "mirror "+str(mirrorcnt))
-                                else:
-                                      addLink(vname,embvid,3,"")
-                        frmsrc1=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(spancontent)
-                        for frmvid in frmsrc1:
-                                vname = frmvid.replace("http://","").replace("https://","").split(".")
-                                if(vname[1].find("/") > -1):
-                                      vname=vname[0]
-                                else:
-                                      vname=vname[1]
-                                partcnt=partcnt+1
-                                if(len(frmsrc1) == 1):
-                                      vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
-                                else:
-                                      vname="mirror "+str(mirrorcnt)+" "+ vname + " part " + str(partcnt)
+        partcnt=0
+        embsrc=vidcontent.findAll('embed')
+        tmpname=""
+        for item in embsrc:
+			mirrorcnt=mirrorcnt+1
+			arr = item["src"].replace("http://","").replace("https://","").split(".")
+			embvid=item["src"]
 
-                                addLink(vname,frmvid,3,"")
-                        if partcnt==0:
-                                mirrorcnt=mirrorcnt-1
+			if(arr[1].find("/") > -1):
+				  vname=arr[0]
+			else:
+				  vname=arr[1]
+			if(tmpname!=vname):
+				partcnt=0
+			tmpname=vname
+			fileext = arr[len(arr)-1]
+			if fileext.lower() !="swf":
+					partcnt=partcnt+1
+					if(len(embsrc) == 1):
+						   vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+					else:
+						   vname=vname="mirror "+str(mirrorcnt)+" "+vname + " part " + str(partcnt)
+					addLink(vname,embvid,3,"")
+			if(item.has_key("flashvars")):
+				embvid=item["flashvars"].replace("file=","")
+				vname = embvid.replace("http://","").replace("https://","").split(".")
+				if(vname[1].find("/") > -1):
+					  vname=vname[0]
+				else:
+					  vname=vname[1]
+				partcnt=partcnt+1
+				if(len(embsrc) == 1):
+					  vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+				else:
+					  vname="mirror "+str(mirrorcnt)+" "+ vname + " part " + str(partcnt)
+				if(embvid.find("youtubetune") > -1  or embvid.find("youtubereloaded") > -1):
+					  #print urllib.unquote_plus(embvid).replace("&amp;http://","http://")
+					  embvid1=urllib.unquote_plus(embvid).replace("&amp;http://","http://").split("&")[0]
+					  GetXmlPlaylist(embvid1, "mirror "+str(mirrorcnt))
+				else:
+					  addLink(vname,embvid,3,"")
+
+			if partcnt==0:
+					mirrorcnt=mirrorcnt-1
+        frmsrc1=vidcontent.findAll('iframe')
+        for frameitem in frmsrc1:
+			mirrorcnt=mirrorcnt+1
+			vname = frameitem["src"].replace("http://","").replace("https://","").split(".")
+			if(vname[1].find("/") > -1):
+				  vname=vname[0]
+			else:
+				  vname=vname[1]
+			if(tmpname!=vname):
+				partcnt=0
+			tmpname=vname
+			partcnt=partcnt+1
+			if(len(frmsrc1) == 1):
+				  vname="mirror "+str(mirrorcnt)+" "+ vname + " full "
+			else:
+				  vname=vname="mirror "+str(mirrorcnt)+" "+vname + " part " + str(partcnt)
+
+			addLink(vname,frameitem["src"],3,"")
+			if partcnt==0:
+					mirrorcnt=mirrorcnt-1
+
         for tmp, divcotent in tabvids:
                 mirrorcnt=mirrorcnt+1
                 embsrc=re.compile('<embed [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>', re.IGNORECASE).findall(divcotent)
