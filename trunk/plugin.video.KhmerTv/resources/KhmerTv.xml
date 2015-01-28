@@ -10,8 +10,15 @@
     </item>
 	<item>
       <title>CTN 2</title>
-      <link>http://laxlive01.malimarcdn.com/khorigin00/_definst_/ctn.stream/playlist.m3u8 live=false</link>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=f942ece95cb181ee4111c9921737b575&amp;nns_video_type=1&amp;nns_media_id=f4bb36746f145be94deb9c17d0965f74&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
       <thumbnail>http://www.ctn.com.kh/images/CTNinstall.png</thumbnail>
+      <resolve>true</resolve>
+    </item>
+	<item>
+      <title>MyTV</title>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=00d0bfe34121cd8a998a4bf7fffd2c19&amp;nns_video_type=1&amp;nns_media_id=a89cdd8c6279eb0b584627e0f571a698&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
+      <thumbnail>http://mytv.com.kh/wp-content/themes/theme1765/images/logo1.png</thumbnail>
+      <resolve>true</resolve>
     </item>
 	<item>
       <title>KhipTV</title>
@@ -30,6 +37,18 @@
       <thumbnail>http://khiptv.com/images_tv/TV.png</thumbnail>
     </item>
     <item>
+      <title>CNC</title>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=305c725d29f8e7b9684e09e9d463669e&amp;nns_video_type=1&amp;nns_media_id=51cb3efed11a0094944cc78c7f950fdd&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
+      <thumbnail>http://cnc.com.kh/images/logo.png</thumbnail>
+      <resolve>true</resolve>
+    </item>
+    <item>
+      <title>NTV</title>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=e72a42883ca4461c22b396c248cdb3c9&amp;nns_video_type=1&amp;nns_media_id=f1d34949aa405f5ff7bf9be51c9c48eb&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
+      <thumbnail>http://www.ntvcambodia.com/logo.png</thumbnail>
+      <resolve>true</resolve>
+    </item>
+    <item>
       <title>TV9</title>
       <link>http://laxlive01.malimarcdn.com/khorigin00/_definst_/tv9.stream/playlist.m3u8</link>
       <thumbnail>http://khiptv.com/images_tv/TV9.png</thumbnail>
@@ -41,15 +60,16 @@
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
     </item>
 	<item>
+      <title>TV3 Asia</title>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=0d8da678381c04c2bc7c21754e44bb31&amp;nns_video_type=1&amp;nns_media_id=5bcadf7aa74a2e06d6a1ff8dbc278efb&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
+      <thumbnail>http://www.tv3-asia.com/wp-content/themes/tvsan/twentytwelve/images/logo.png</thumbnail>
+	  <resolve>true</resolve>
+    </item>
+	<item>
       <title>TV3</title>
       <link>http://live.khmer.be:1935/live/TV3/playlist.m3u8</link>
       <thumbnail>
       http://khiptv.com/images_tv/Bayon_Replay.png</thumbnail>
-    </item>
-	<item>
-      <title>CTV8</title>
-      <link>http://liveplay3.malimarcdn.com/hdliveedge00/ctv8hd.stream/playlist.m3u8?token=ctv8hd.stream-1415504557000-7-12778982cf0467e3e984ed898b4a7000</link>
-      <thumbnail>https://aseaniptv2.s3.amazonaws.com/images/channel/429/image/sd_tv81HDHD.jpg</thumbnail>
     </item>
 	<item>
       <title>DMusic</title>
@@ -58,13 +78,15 @@
     </item>
 	<item>
       <title>ETV</title>
-      <link>rtmp://72.52.104.21:1935/live/TVKL playpath=TVKL swfUrl=http://www.khiptv.com/Player.swf pageUrl=http://relax.khmer24h.net/channels-national-tv-16.aspx live=true</link>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=f7d0d8935e3b8483e5b315fc2f54c4be&amp;nns_video_type=1&amp;nns_media_id=19446ec121a1fac407ecd1459467ba5c&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
       <thumbnail>https://aseaniptv2.s3.amazonaws.com/images/channel/428/image/etvHD.jpg</thumbnail>
+      <resolve>true</resolve>
     </item>
 	<item>
       <title>Hangmeas</title>
-      <link>http://199.189.108.12/FHM live=true</link>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=0264fb03fa31bb849ba82c1f3ab22ce6&amp;nns_video_type=1&amp;nns_media_id=21488d9895e5bffde928ec9384fcc9f2&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
       <thumbnail>http://khmer.be/images/tv/hangmeas-100x70.jpg</thumbnail>
+      <resolve>true</resolve>
     </item>
     <item>
       <title>Sea TV</title>
@@ -115,8 +137,9 @@
     </item>
     <item>
       <title>Apsara</title>
-      <link>http://199.189.108.12/FAPSARA/playlist.m3u8</link>
+      <link>http://mobile.interface.stmg.net.kh/nn_cms/nn_cms_view/mgtv/n3_a_a.php?nns_tag=29&amp;nns_func=apply_play_video&amp;nns_video_id=07b506429e01034350f1f7508043ba17&amp;nns_video_type=1&amp;nns_media_id=5c6a5dc8dc903af99b7eb41b020b40e6&amp;nns_media_assets_id=phone_live_v1&amp;nns_category_id=1000001&amp;nns_video_index=0&amp;nns_user_id=APhone123&amp;nns_output_type=json</link>
       <thumbnail>http://khiptv.com/images_tv/APSARA.JPG</thumbnail>
+	  <resolve>true</resolve>
     </item>
     <item>
       <title>2KPTV</title>
