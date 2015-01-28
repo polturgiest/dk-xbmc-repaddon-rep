@@ -30,7 +30,7 @@ strdomain ='http://www.pinoy-ako.ws/'
 def HOME():
         addDir('Search','http://www.pinoy-ako.ws',8,'')
         addDir('Latest Videos','http://www.pinoy-ako.ws',7,'')
-        addDir('Pinoy Movies','http://www.lambingan.tk/category/pinoy-movies',13,'')
+        addDir('Pinoy Movies','http://www.lambingan.to/category/pinoy-movies',13,'')
         ###addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
         #addDir('Pinoy Box Office','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         #addDir('Cinema One','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
@@ -38,8 +38,8 @@ def HOME():
         addDir('Sports by category','52',2,'')
         ###addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
         #addDir('ABS-CBN Episode List','http://www.pinoy-ako.ws/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('ABS-CBN by Shows','http://www.lambingan.tk/category/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('GMA 7 shows on lambingan','http://www.lambingan.tk/category/Gma7/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        addDir('ABS-CBN by Shows','http://www.lambingan.to/category/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        addDir('GMA 7 shows on lambingan','http://www.lambingan.to/category/Gma7/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('GMA 7 Episode List','http://www.pinoy-ako.ws/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('GMA 7 by Shows','11',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
@@ -67,28 +67,14 @@ def INDEXlamb(url):
         try:
             link=link.encode("UTF-8")
         except: pass
-        newlink = ''.join(link.splitlines()).replace('\t','')
-        vidcontent=re.compile('<div class="review-box-container">(.+?)<div class="clear"></div><div class="clear"></div>').findall(newlink)
-        tblecontent=re.compile('<div class="post-thumbnail">(.+?)</div>').findall(vidcontent[0])
-        for vcontent in tblecontent:
-                (vlink,imgcontent)=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vcontent)[0]
-                vimg=re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
-                if(len(vimg)>0):
-					vimg=vimg[0]
-                else:
-					vimg=""
-                vname=re.compile('<img [^>]*alt=["\']?([^>^"^\']+)["\']?[^>]*>').findall(imgcontent)
-                if(len(vname)>0):
-					vname=vname[0]
-                try:
-                    vname=vname.encode("UTF-8")
-                except: pass
-                addDir(vname.replace("&amp;","&").replace("&#8211;","-").replace("&#8217;","'"),vlink.replace("&amp;amp;","&amp;"),14,vimg)
-        pagenavcontent=re.compile("<div class='wp-pagenavi cat-navi'>(.+?)</div>").findall(newlink)
-        if(len(pagenavcontent)>0):
-			pagelist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagenavcontent[0])
-			for pageurl,pagenum in pagelist:
-				addDir('page '+ pagenum.replace("&raquo;",">>").replace("&rsaquo;",">"),pageurl,13,'')
+        soup = BeautifulSoup(link)
+        vidcontent=soup.findAll('div', {"class" : "review-box-container"})[0]
+        for item in vidcontent.findAll('div', {"class" :"post-thumbnail"}):
+			vname=item.a["title"].encode('utf-8','ignore')
+			vurl=item.a["href"]
+			vimg=item.a.img["src"]
+			addDir(vname.replace("&amp;","&").replace("&#8211;","-").replace("&#8217;","'"),vurl.replace("&amp;amp;","&amp;"),14,vimg)
+
 def INDEX(itemnum):
         link = GetContent("http://www.pinoy-ako.ws/")
         try:
