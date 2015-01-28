@@ -74,7 +74,11 @@ def INDEXlamb(url):
 			vurl=item.a["href"]
 			vimg=item.a.img["src"]
 			addDir(vname.replace("&amp;","&").replace("&#8211;","-").replace("&#8217;","'"),vurl.replace("&amp;amp;","&amp;"),14,vimg)
-
+        navcontent=soup.findAll('div', {"class" : "wp-pagenavi cat-navi"})
+        if(len(navcontent) > 0):
+			for item in navcontent[0].findAll('a'):
+					addDir("Page " + item.contents[0].replace("&raquo;",">>").replace("&laquo;","<<").replace("&rsaquo;","next"),item["href"],13,"")
+					
 def INDEX(itemnum):
         link = GetContent("http://www.pinoy-ako.ws/")
         try:
