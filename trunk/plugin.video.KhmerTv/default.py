@@ -289,8 +289,10 @@ def SearchXml(SearchText):
         addDir(SearchText+mName,mNumber,6,"")
 		
 def Resolver(url):
-		vidlink=""
+		vidlink=url
 		try:
+			line1 = "Please Wait!  Loading selected video."
+			xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%("",line1,3000,""))
 			if(url.find("stmg.net.kh") > -1):
 				data = json.loads(GetContent(url))
 				vidlink=data["url"]
@@ -309,8 +311,8 @@ def ParseXml(tagname):
                                 vname=itemXML.getElementsByTagName('title')[0].childNodes[0].data.strip()
                                 vurl=itemXML.getElementsByTagName('link')[0].childNodes[0].data.strip()
                                 vimg=itemXML.getElementsByTagName('thumbnail')[0].childNodes[0].data.strip()
-                                if(len(itemXML.getElementsByTagName('resolve')) > 0):
-									vurl=Resolver(itemXML.getElementsByTagName('link')[0].childNodes[0].data.strip())
+                                #if(len(itemXML.getElementsByTagName('resolve')) > 0):
+								#	vurl=Resolver(itemXML.getElementsByTagName('link')[0].childNodes[0].data.strip())
                                 addLink(vname,vurl,3,vimg)
 	
 def GetXMLChannel():
@@ -589,7 +591,7 @@ elif mode==2:
         ParseXml(name) 
 elif mode==3:
         GA("PlayVideo",name)
-        playVideo(url)
+        playVideo(Resolver(url))
 elif mode==4:
         ListArtistType()
 elif mode==5:
