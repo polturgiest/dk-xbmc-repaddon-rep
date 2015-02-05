@@ -350,8 +350,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <language>en</language>
-    <summary lang="en">India4movie addon scrapes movies from www.india4movie.com</summary>
+    <summary >India4movie addon scrapes movies from www.india4movie.com</summary>
     <description>www.india4movie.com provides movies in the following categories: Dubbed, Pakistani, Hindi, Hollywood, Malayalam, Marathi, Punjabi, Tamil, Telegu</description>
   </extension>
 </addon>
