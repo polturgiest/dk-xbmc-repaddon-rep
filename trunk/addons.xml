@@ -113,7 +113,7 @@
 
 <addon
   id="plugin.video.bharatmovies"
-  version="1.0.0"
+  version="1.0.1"
   name="bharatmovies"
   provider-name="Dknight">
   <requires>
@@ -513,7 +513,7 @@
 
 <addon
   id="plugin.video.movierulz"
-  version="1.0.4"
+  version="1.0.5"
   name="movierulz"
   provider-name="Dknight">
   <requires>
@@ -685,7 +685,7 @@
 
 <addon
   id="plugin.video.sominaltv"
-  version="0.9.0"
+  version="0.9.1"
   name="sominaltv"
   provider-name="Dknight">
   <requires>
