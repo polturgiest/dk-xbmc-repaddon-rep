@@ -11,19 +11,15 @@ from BeautifulSoup import SoupStrainer
 try: import simplejson as json
 except ImportError: import json
 import cgi
+import CommonFunctions
 import datetime
-
+common = CommonFunctions
+common.plugin = "plugin.video.bharatmovies"
 
 import time
 ADDON = xbmcaddon.Addon(id='plugin.video.bharatmovies')
-if ADDON.getSetting('ga_visitor')=='':
-    from random import randint
-    ADDON.setSetting('ga_visitor',str(randint(0, 0x7fffffff)))
-    
-PATH = "bharatmovies"  #<---- PLUGIN NAME MINUS THE "plugin.video"          
-UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
-VERSION = "1.0.0" #<---- PLUGIN VERSION
 
+    
 AZ_DIRECTORIES = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Z']
 strdomain ='http://www.bharatmovies.com/'
 
@@ -153,107 +149,24 @@ def GetMenu(url):
 			addDir(str(item.a.contents[0]).strip(),link,5,"")
 
 
-def log(description, level=0):
-    print description
-
-def fetchPage(params={}):
-    get = params.get
-    link = get("link")
-    ret_obj = {}
-    if get("post_data"):
-        log("called for : " + repr(params['link']))
-    else:
-        log("called for : " + repr(params))
-
-    if not link or int(get("error", "0")) > 2:
-        log("giving up")
-        ret_obj["status"] = 500
-        return ret_obj
-
-    if get("post_data"):
-        if get("hide_post_data"):
-            log("Posting data", 2)
-        else:
-            log("Posting data: " + urllib.urlencode(get("post_data")), 2)
-
-        request = urllib2.Request(link, urllib.urlencode(get("post_data")))
-        request.add_header('Content-Type', 'application/x-www-form-urlencoded')
-    else:
-        log("Got request", 2)
-        request = urllib2.Request(link)
-
-    if get("headers"):
-        for head in get("headers"):
-            request.add_header(head[0], head[1])
-
-    request.add_header('User-Agent', "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1")
-
-    if get("cookie"):
-        request.add_header('Cookie', get("cookie"))
-
-    if get("refering"):
-        request.add_header('Referer', get("refering"))
-
-    try:
-        log("connecting to server...", 1)
-
-        con = urllib2.urlopen(request)
-        ret_obj["header"] = con.info()
-        ret_obj["new_url"] = con.geturl()
-        if get("no-content", "false") == u"false" or get("no-content", "false") == "false":
-            inputdata = con.read()
-            #data_type = chardet.detect(inputdata)
-            #inputdata = inputdata.decode(data_type["encoding"])
-            ret_obj["content"] = inputdata.decode("utf-8")
-
-        con.close()
-
-        log("Done")
-        ret_obj["status"] = 200
-        return ret_obj
-
-    except urllib2.HTTPError, e:
-        err = str(e)
-        log("HTTPError : " + err)
-        log("HTTPError - Headers: " + str(e.headers) + " - Content: " + e.fp.read())
-
-        params["error"] = str(int(get("error", "0")) + 1)
-        ret = fetchPage(params)
-
-        if not "content" in ret and e.fp:
-            ret["content"] = e.fp.read()
-            return ret
-
-        ret_obj["status"] = 500
-        return ret_obj
-
-    except urllib2.URLError, e:
-        err = str(e)
-        log("URLError : " + err)
-
-        time.sleep(3)
-        params["error"] = str(int(get("error", "0")) + 1)
-        ret_obj = fetchPage(params)
-        return ret_obj
-		
-def getVimeoUrl(videoid,currentdomain=""):
-        result = fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
+def getVimeoUrl(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": strdomain})
         collection = {}
         if result["status"] == 200:
             html = result["content"]
             html = html[html.find(',a={'):]
             html = html[:html.find('}};') + 2]
-            html = html.replace(",a={", '{')
+            html = html.replace(",a={", '{') 
             try:
                   collection = json.loads(html)
                   codec=collection["request"]["files"]["codecs"][0]
                   filecol = collection["request"]["files"][codec]
                   return filecol["sd"]["url"]
             except:
-                  return getVimeoVideourl(videoid,currentdomain)
-
-def scrapeVideoInfo(videoid,currentdomain):
-        result = fetchPage({"link": "http://player.vimeo.com/video/%s?title=0&byline=0&portrait=0" % videoid,"refering": currentdomain})
+                  return getVimeoVideourl(videoid)
+				  
+def scrapeVideoInfo(videoid):
+        result = common.fetchPage({"link": "http://player.vimeo.com/video/%s" % videoid,"refering": strdomain})
         collection = {}
         if result["status"] == 200:
             html = result["content"]
@@ -263,8 +176,8 @@ def scrapeVideoInfo(videoid,currentdomain):
             collection = json.loads(html)
         return collection
 
-def getVideoInfo(videoid,currentdomain):
-
+def getVideoInfo(videoid):
+        common.log("")
         collection = scrapeVideoInfo(videoid)
 
         video = {}
@@ -273,7 +186,7 @@ def getVideoInfo(videoid,currentdomain):
             title = collection["config"]["video"]["title"]
             if len(title) == 0:
                 title = "No Title"
-            #title = common.replaceHTMLCodes(title)
+            title = common.replaceHTMLCodes(title)
             video['Title'] = title
             video['Duration'] = collection["config"]["video"]["duration"]
             video['thumbnail'] = collection["config"]["video"]["thumbnail"]
@@ -287,38 +200,38 @@ def getVideoInfo(videoid,currentdomain):
 
 
         if len(video) == 0:
-            log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
+            common.log("- Couldn't parse API output, Vimeo doesn't seem to know this video id?")
             video = {}
             video["apierror"] = ""
             return (video, 303)
 
-        log("Done")
+        common.log("Done")
         return (video, 200)
 
-def getVimeoVideourl(videoid,currentdomain):
-
-        (video, status) = getVideoInfo(videoid,currentdomain)
+def getVimeoVideourl(videoid):
+        common.log("")
+        
+        (video, status) = getVideoInfo(videoid)
 
 
         urlstream="http://player.vimeo.com/play_redirect?clip_id=%s&sig=%s&time=%s&quality=%s&codecs=H264,VP8,VP6&type=moogaloop_local&embed_location="
         get = video.get
         if not video:
             # we need a scrape the homepage fallback when the api doesn't want to give us the URL
-            log("getVideoObject failed because of missing video from getVideoInfo")
+            common.log("getVideoObject failed because of missing video from getVideoInfo")
             return ""
 
         quality = "sd"
-
+        
         if ('apierror' not in video):
             video_url =  urlstream % (get("videoid"), video['request_signature'], video['request_signature_expires'], quality)
-            result = fetchPage({"link": video_url, "no-content": "true"})
+            result = common.fetchPage({"link": video_url, "no-content": "true"})
             video['video_url'] = result["new_url"]
-
-            log("Done")
-            return video['video_url']
+            common.log("Done")
+            return video['video_url'] 
         else:
-            log("Got apierror: " + video['apierror'])
-            return ""			
+            common.log("Got apierror: " + video['apierror'])
+            return ""
 			
 def SEARCH():
     try:
@@ -745,172 +658,6 @@ def getYoutube(videoid):
                         links[key] = url
                 highResoVid=selectVideoQuality(links)
                 return highResoVid    
-
-def parseDate(dateString):
-    try:
-        return datetime.datetime.fromtimestamp(time.mktime(time.strptime(dateString.encode('utf-8', 'replace'), "%Y-%m-%d %H:%M:%S")))
-    except:
-        return datetime.datetime.today() - datetime.timedelta(days = 1) #force update
-
-
-def checkGA():
-
-    secsInHour = 60 * 60
-    threshold  = 2 * secsInHour
-
-    now   = datetime.datetime.today()
-    prev  = parseDate(ADDON.getSetting('ga_time'))
-    delta = now - prev
-    nDays = delta.days
-    nSecs = delta.seconds
-
-    doUpdate = (nDays > 0) or (nSecs > threshold)
-    if not doUpdate:
-        return
-
-    ADDON.setSetting('ga_time', str(now).split('.')[0])
-    APP_LAUNCH()    
-    
-                    
-def send_request_to_google_analytics(utm_url):
-    ua='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
-    import urllib2
-    try:
-        req = urllib2.Request(utm_url, None,
-                                    {'User-Agent':ua}
-                                     )
-        response = urllib2.urlopen(req).read()
-    except:
-        print ("GA fail: %s" % utm_url)         
-    return response
-       
-def GA(group,name):
-        try:
-            try:
-                from hashlib import md5
-            except:
-                from md5 import md5
-            from random import randint
-            import time
-            from urllib import unquote, quote
-            from os import environ
-            from hashlib import sha1
-            VISITOR = ADDON.getSetting('ga_visitor')
-            utm_gif_location = "http://www.google-analytics.com/__utm.gif"
-            if not group=="None":
-                    utm_track = utm_gif_location + "?" + \
-                            "utmwv=" + VERSION + \
-                            "&utmn=" + str(randint(0, 0x7fffffff)) + \
-                            "&utmt=" + "event" + \
-                            "&utme="+ quote("5("+PATH+"*"+group+"*"+name+")")+\
-                            "&utmp=" + quote(PATH) + \
-                            "&utmac=" + UATRACK + \
-                            "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR,VISITOR,"2"])
-                    try:
-                        print "============================ POSTING TRACK EVENT ============================"
-                        send_request_to_google_analytics(utm_track)
-                    except:
-                        print "============================  CANNOT POST TRACK EVENT ============================" 
-            if name=="None":
-                    utm_url = utm_gif_location + "?" + \
-                            "utmwv=" + VERSION + \
-                            "&utmn=" + str(randint(0, 0x7fffffff)) + \
-                            "&utmp=" + quote(PATH) + \
-                            "&utmac=" + UATRACK + \
-                            "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR, VISITOR,"2"])
-            else:
-                if group=="None":
-                       utm_url = utm_gif_location + "?" + \
-                                "utmwv=" + VERSION + \
-                                "&utmn=" + str(randint(0, 0x7fffffff)) + \
-                                "&utmp=" + quote(PATH+"/"+name) + \
-                                "&utmac=" + UATRACK + \
-                                "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR, VISITOR,"2"])
-                else:
-                       utm_url = utm_gif_location + "?" + \
-                                "utmwv=" + VERSION + \
-                                "&utmn=" + str(randint(0, 0x7fffffff)) + \
-                                "&utmp=" + quote(PATH+"/"+group+"/"+name) + \
-                                "&utmac=" + UATRACK + \
-                                "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR, VISITOR,"2"])
-                                
-            print "============================ POSTING ANALYTICS ============================"
-            send_request_to_google_analytics(utm_url)
-            
-        except:
-            print "================  CANNOT POST TO ANALYTICS  ================" 
-            
-            
-def APP_LAUNCH():
-        versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
-        if versionNumber > 13:
-			logname="kodi.log"
-        else:
-			logname="xbmc.log"
-        if versionNumber < 12:
-            if xbmc.getCondVisibility('system.platform.osx'):
-                if xbmc.getCondVisibility('system.platform.atv2'):
-                    log_path = '/var/mobile/Library/Preferences'
-                else:
-                    log_path = os.path.join(os.path.expanduser('~'), 'Library/Logs')
-            elif xbmc.getCondVisibility('system.platform.ios'):
-                log_path = '/var/mobile/Library/Preferences'
-            elif xbmc.getCondVisibility('system.platform.windows'):
-                log_path = xbmc.translatePath('special://home')
-                log = os.path.join(log_path, logname)
-                logfile = open(log, 'r').read()
-            elif xbmc.getCondVisibility('system.platform.linux'):
-                log_path = xbmc.translatePath('special://home/temp')
-            else:
-                log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, logname)
-            logfile = open(log, 'r').read()
-            match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
-        elif versionNumber > 11:
-            print '======================= more than ===================='
-            log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, logname)
-            logfile = open(log, 'r').read()
-            match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
-        else:
-            logfile='Starting XBMC (Unknown Git:.+?Platform: Unknown. Built.+?'
-            match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
-        print '==========================   '+PATH+' '+VERSION+'  =========================='
-        try:
-            from hashlib import md5
-        except:
-            from md5 import md5
-        from random import randint
-        import time
-        from urllib import unquote, quote
-        from os import environ
-        from hashlib import sha1
-        import platform
-        VISITOR = ADDON.getSetting('ga_visitor')
-        for build, PLATFORM in match:
-            if re.search('12',build[0:2],re.IGNORECASE): 
-                build="Frodo" 
-            if re.search('11',build[0:2],re.IGNORECASE): 
-                build="Eden" 
-            if re.search('13',build[0:2],re.IGNORECASE): 
-                build="Gotham" 
-            print build
-            print PLATFORM
-            utm_gif_location = "http://www.google-analytics.com/__utm.gif"
-            utm_track = utm_gif_location + "?" + \
-                    "utmwv=" + VERSION + \
-                    "&utmn=" + str(randint(0, 0x7fffffff)) + \
-                    "&utmt=" + "event" + \
-                    "&utme="+ quote("5(APP LAUNCH*"+build+"*"+PLATFORM+")")+\
-                    "&utmp=" + quote(PATH) + \
-                    "&utmac=" + UATRACK + \
-                    "&utmcc=__utma=%s" % ".".join(["1", VISITOR, VISITOR, VISITOR,VISITOR,"2"])
-            try:
-                print "============================ POSTING APP LAUNCH TRACK EVENT ============================"
-                send_request_to_google_analytics(utm_track)
-            except:
-                print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
-checkGA()
 
 def addLink(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
