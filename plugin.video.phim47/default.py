@@ -715,6 +715,7 @@ def loadVideos(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
+        print url
         match=re.compile('flashvars="fmt_list=(.+?)">').findall(link)
         if(len(match)>0):
               newlink=urllib.unquote_plus(re.compile('fmt_stream_map=(.+?)&').findall(match[0])[0]).split("|")[-1]
@@ -897,6 +898,10 @@ def GA(group,name):
             
 def APP_LAUNCH():
         versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
+        if versionNumber > 13:
+			logname="kodi.log"
+        else:
+			logname="xbmc.log"
         if versionNumber < 12:
             if xbmc.getCondVisibility('system.platform.osx'):
                 if xbmc.getCondVisibility('system.platform.atv2'):
@@ -907,19 +912,19 @@ def APP_LAUNCH():
                 log_path = '/var/mobile/Library/Preferences'
             elif xbmc.getCondVisibility('system.platform.windows'):
                 log_path = xbmc.translatePath('special://home')
-                log = os.path.join(log_path, 'xbmc.log')
+                log = os.path.join(log_path, logname)
                 logfile = open(log, 'r').read()
             elif xbmc.getCondVisibility('system.platform.linux'):
                 log_path = xbmc.translatePath('special://home/temp')
             else:
                 log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         elif versionNumber > 11:
             print '======================= more than ===================='
             log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         else:
