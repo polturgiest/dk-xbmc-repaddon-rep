@@ -35,19 +35,22 @@ def __init__(self):
     playlist=sys.modules["__main__"].playlist
 def HOME():
         addDir('Search',homeLink,4,'http://www.superphim.com/image/logo4.jpg')
-        link = GetContentMob("http://www.phimmobile.com/categories.php")
+        link = GetContentMob("http://www.phimmobile.com/")
         try:
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile('<li class="child">(.+?)</ul>').findall(newlink)
         soup = BeautifulSoup(newlink)
-        for item in soup.findAll('div', {"class" : re.compile('menu*')}):
-			vname=item.a["title"]
-			vlink=viddomain+item.a["href"]
-			if(item["class"].find("menu1a") == -1):
-				vname="--- "+ RemoveHTML(vname).strip()
-			addDir(vname,vlink,2,'')
+        for item in soup.findAll('div', {"class" : "glist"}):
+			for submenu in item.findAll('a'):
+				if(len(submenu.contents) == 1 and submenu.has_key("class")!=True ):
+					vname=RemoveHTML(str(submenu.contents[0])).strip()
+					try:
+						vname =vname.encode("UTF-8")
+					except: pass
+					vlink=viddomain+submenu["href"]
+					addDir(vname,vlink,2,'')
 			
 def INDEX(url):
     #try:
@@ -57,21 +60,28 @@ def INDEX(url):
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         soup = BeautifulSoup(newlink)
-        for item in soup.findAll('div', {"id" : "makers"}):
-			vlink=homeLink+item.a["href"].replace("./","/")
+        for item in soup.findAll('a', {"class" : "content-items"}):
+			vlink=viddomain+item["href"].replace("./","/")
 			vimg=""
 			vname=""
-			if(item.a.img!=None):
-				vimg=homeLink+item.a.img["src"].strip().replace(" ","%20")
-				vname=item.a.img["alt"]
-				addDir(vname.encode('utf-8', 'ignore'),vlink,7,vimg)
-        for item in soup.findAll('a', {"class" : "pagelink"}):
-			vlink=viddomain+'/'+item["href"]+'&sa=Search'
-			if(item.b!=None):
-				vname=item.b.font.contents[0]
-			else:
-				vname=item.contents[0].encode('utf-8', 'ignore')
-			addDir("Page "+vname.strip(),vlink,2,'')
+			if(item.img!=None):
+				vimg=viddomain+item.img["src"].strip().replace(" ","%20")
+				vname=item.img["alt"]
+				try:
+						vname =vname.encode("UTF-8")
+				except: pass
+				addDir(vname,vlink,7,vimg)
+        navcontent = soup.findAll('ul', {"class" : "pagination"})
+        if(len(navcontent) > 0):
+			for item in navcontent[0].findAll('li'):
+				if(item.a!=None):
+					vname=item.a.contents[0]
+					print item.a
+					try:
+						vname =vname.encode("UTF-8")
+					except: pass
+					vlink=viddomain+'/'+item.a["href"]+'&sa=Search'
+				addDir("Page "+vname.strip(),vlink,2,'')
     #except: pass
 
 	
@@ -91,31 +101,31 @@ def SEARCH():
     except: pass
 
 def getVidPage(url,name):
-  contentlink = GetContent(url)
+  contentlink = GetContentMob(url)
+  print url
   contentlink = ''.join(contentlink.splitlines()).replace('\'','"')
   try:
             contentlink =contentlink.encode("UTF-8")
   except: pass
-  mlink=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*><img src="/image/watch_new.png"></a>').findall(contentlink)
-  return mlink[0]
+  soup = BeautifulSoup(contentlink)
+  serverlist=soup.findAll('a', {"class" : "fnDesktopSwitch button desktop-btn"})
+  return   viddomain+serverlist[0]["href"]
   
 def Mirrors(url,name):
-        link = GetContent(url)
+        link = GetContentMob(getVidPage(url,name))
         try:
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
+        print newlink
         soup = BeautifulSoup(newlink)
-        serverlist=soup.findAll('td', {"class" : "movieepisode"})
-        for epserver in serverlist:
-			if(len(serverlist)<2):
-				for item in epserver.findAll('a'):
-					vlink=homeLink+item["href"]
-					vname=item.b.contents[0]
-					addLink(vname,vlink,3,"","")
-			elif(epserver.a!=None):
-				servername=epserver.strong.contents[0]
-				addDir(servername,url,5,"")
+        serverlist=soup.findAll('select', {"id" : "film_link"})
+        print serverlist
+        for epserver in serverlist[0].findAll('option'):
+			vlink=viddomain+epserver["value"]
+			vname=epserver.contents[0]
+			addLink(vname,vlink,3,"","")
+
         
 			
 def MirrorsMob(vidid,name):
@@ -266,6 +276,20 @@ def playVideo(videoType,videoId):
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
 
+def loadvideosMOB(url):
+		link=GetContentMob(url)
+		try:
+			link =link.encode("UTF-8")
+		except: pass
+		newlink = ''.join(link.splitlines()).replace('\t','')
+		soup = BeautifulSoup(newlink)
+		mobivid=soup.findAll('source')
+		if(len(mobivid)> 0):
+			vidlink=viddomain+mobivid[0]["src"]
+			playVideo("direct",vidlink) 
+		else:
+			xbmc.executebuiltin("XBMC.Notification(Please Wait!,Can't find video)")
+			
 def loadVideos(url,name):
         #try:
            GA("LoadVideo",name)
@@ -666,6 +690,10 @@ def GA(group,name):
             
 def APP_LAUNCH():
         versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
+        if versionNumber > 13:
+			logname="kodi.log"
+        else:
+			logname="xbmc.log"
         if versionNumber < 12:
             if xbmc.getCondVisibility('system.platform.osx'):
                 if xbmc.getCondVisibility('system.platform.atv2'):
@@ -676,19 +704,19 @@ def APP_LAUNCH():
                 log_path = '/var/mobile/Library/Preferences'
             elif xbmc.getCondVisibility('system.platform.windows'):
                 log_path = xbmc.translatePath('special://home')
-                log = os.path.join(log_path, 'xbmc.log')
+                log = os.path.join(log_path, logname)
                 logfile = open(log, 'r').read()
             elif xbmc.getCondVisibility('system.platform.linux'):
                 log_path = xbmc.translatePath('special://home/temp')
             else:
                 log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         elif versionNumber > 11:
             print '======================= more than ===================='
             log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         else:
@@ -729,6 +757,7 @@ def APP_LAUNCH():
                 send_request_to_google_analytics(utm_track)
             except:
                 print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
+				
 checkGA()
 #-----------------------------------------------------Decode Methods------------------------------------------------------------------------------------
 
@@ -1103,7 +1132,7 @@ elif mode==2:
         GA("INDEX",name)
         INDEX(url)
 elif mode==3:
-        loadVideos(url,mirrorname)
+        loadvideosMOB(url)
 elif mode==4:
         SEARCH()
 elif mode==5:
@@ -1112,7 +1141,7 @@ elif mode==5:
 elif mode==6:
        SearchResults(url)
 elif mode==7:
-       MirrorsMob(url,name)
+       Mirrors(url,name)
 elif mode==8:
         MirrorsThe(name,url)
 elif mode==9:

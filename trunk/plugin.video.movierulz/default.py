@@ -1690,7 +1690,6 @@ sysarg=str(sys.argv[1])
 if mode==None or url==None or len(url)<1:
         HOME()
 elif mode==2:
-        GA("MainMenu",name)
         GetMenu(url)
 elif mode==3:
         #sysarg="-1"

@@ -736,7 +736,6 @@ if mode==None or url==None or len(url)<1:
 elif mode==2:
         #d = xbmcgui.Dialog()
         #d.ok('mode 2',str(url),' ingore errors lol')
-        GA("MainMenu",name)
         GetMenu(url)
 elif mode==3:
         #sysarg="-1"
