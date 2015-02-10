@@ -425,7 +425,7 @@
 
 <addon
   id="plugin.video.KhmerAvenue"
-  version="1.0.31"
+  version="1.0.32"
   name="KhmerAvenue"
   provider-name="Dknight">
   <requires>
@@ -639,7 +639,7 @@
 
 <addon
   id="plugin.video.PhumiKhmer"
-  version="1.0.25"
+  version="1.0.26"
   name="PhumiKhmer"
   provider-name="Dknight">
   <requires>
