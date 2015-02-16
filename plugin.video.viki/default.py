@@ -307,7 +307,6 @@ def UpdatedVideos(url,name):
         try:
             link =link.encode("UTF-8")
         except: pass
-
         vcontent=re.compile('<ul class="medias medias-block medias-wide mbx(.+?)</ul>').findall(link)
         if(len(vcontent) ==0):
                vcontent=re.compile('<ul class="medias medias-block medias-wide mbl btz"(.+?)</ul>').findall(link)
@@ -355,14 +354,13 @@ def UpdatedVideos(url,name):
                     else:
                         vlink = strdomain+"/related_videos?container_id="+vid+"&page=1&type=episodes"
                         mode=7
-                    print vname
                     addDir(vname.replace("&amp;","&").replace("&#39;","'").replace("&#x27;","'"),vlink,mode,urllib.unquote_plus(vimg))
                     ctr=ctr+1
-        pagelist=re.compile('<div class="pagination">(.+?)</div>').findall(link)
+        pagelist=re.compile('<div class="pagination" data-block-track="paginator">(.+?)</div>').findall(link)
         if(len(pagelist) > 0):
                 navlist=re.compile('<a [^>]*href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(pagelist[0])
                 for purl,pname in navlist:
-                    addDir("page " + pname,strdomain+purl,8,"")
+                    addDir("page " + pname.replace("&rarr;",">").replace("&larr;","<"),strdomain+purl,8,"")
 
 def getContainerID(url):
         link = GetContent(url)
