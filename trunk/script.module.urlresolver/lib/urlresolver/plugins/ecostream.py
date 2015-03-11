@@ -20,17 +20,21 @@ from t0mm0.common.net import Net
 from urlresolver.plugnplay.interfaces import UrlResolver
 from urlresolver.plugnplay.interfaces import PluginSettings
 from urlresolver.plugnplay import Plugin
-import urllib2
+import urllib2, os
 from urlresolver import common
 
 # Custom imports
 import re
 
-
+#SET ERROR_LOGO# THANKS TO VOINAGE, BSTRDMKR, ELDORADO
+error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class EcostreamResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "ecostream"
+    domains = [ "ecostream.tv" ]
+    profile_path = common.profile_path
+    cookie_file = os.path.join(profile_path, 'ecostream.cookies')
 
     def __init__(self):
         p = self.get_setting('priority') or 100
@@ -40,44 +44,56 @@ class EcostreamResolver(Plugin, UrlResolver, PluginSettings):
 
 
     def get_media_url(self, host, media_id):
-        # emulate click on button "Start Stream" (ss=1)
-        web_url = self.get_url(host, media_id) + "?ss=1"
-
+        web_url = self.get_url(host, media_id)
         try:
             html = self.net.http_GET(web_url).content
+            if re.search('>File not found!<',html):
+                msg = 'File Not Found or removed'
+                common.addon.show_small_popup(title='[B][COLOR white]ECOSTREAM[/COLOR][/B]', msg='[COLOR red]%s[/COLOR]'
+                % msg, delay=5000, image=error_logo)
+                return self.unresolvable(code = 1, msg = msg)
+            self.net.save_cookies(self.cookie_file)
+            
+            web_url = 'http://www.ecostream.tv/js/ecos.js'
+            js = self.net.http_GET(web_url).content
+            r = re.search("\$\.post\('([^']+)'[^;]+'#auth'\).html\(''\)", js)
+            if not r:
+                raise Exception ('Posturl not found')
+            post_url = r.group(1)
+            r = re.search('data\("tpm",([^\)]+)\);', js)
+            if not r:
+                raise Exception ('Postparameterparts not found')
+            post_param_parts = r.group(1).split('+')
+            found_parts = []
+            for part in post_param_parts:
+                pattern = "%s='([^']+)'" % part.strip()
+                r = re.search(pattern, html)
+                if not r:
+                    raise Exception ('Formvaluepart not found')            
+                found_parts.append(r.group(1))
+            tpm = ''.join(found_parts)            
+            # emulate click on button "Start Stream"
+            postHeader = ({'Referer':web_url, 'X-Requested-With':'XMLHttpRequest'})
+            web_url = 'http://www.ecostream.tv' + post_url
+            self.net.set_cookies(self.cookie_file)
+            html = self.net.http_POST(web_url,{'id':media_id, 'tpm':tpm}, headers = postHeader).content
+            sPattern = '"url":"([^"]+)"'
+            r = re.search(sPattern, html)
+            if not r:
+                raise Exception ('Unable to resolve Ecostream link. Filelink not found.')
+            sLinkToFile = 'http://www.ecostream.tv'+r.group(1)
+            return urllib2.unquote(sLinkToFile)
+
         except urllib2.URLError, e:
             common.addon.log_error(self.name + ': got http error %d fetching %s' %
                                     (e.code, web_url))
-            return False
-
-        # get vars
-        sPattern = "var t=setTimeout\(\"lc\('([^']+)','([^']+)','([^']+)','([^']+)'\)"
-        r = re.findall(sPattern, html)
-        if r:
-            for aEntry in r:
-                sS = str(aEntry[0])
-                sK = str(aEntry[1])
-                sT = str(aEntry[2])
-                sKey = str(aEntry[3])
-
-                # send vars and retrieve stream url
-                sNextUrl = 'http://www.ecostream.tv/object.php?s='+sS+'&k='+sK+'&t='+sT+'&key='+sKey
-
-                try:
-                    html = self.net.http_GET(sNextUrl).content
-                except urllib2.URLError, e:
-                    common.addon.log_error(self.name + ': got http error %d fetching %s' %
-                                            (e.code, sNextUrl))
-                    return False
-
-                sPattern = '<param name="flashvars" value="file=(.*?)&'
-                r = re.search(sPattern, html)
-                if r:
-                    sLinkToFile = r.group(1)
-                    return sLinkToFile
-
-
-        return False
+            common.addon.show_small_popup('Error','Http error: '+str(e), 8000, error_logo)
+            return self.unresolvable(code=3, msg='Exception: %s' % e)
+        except Exception, e:
+            common.addon.log('**** Ecostream Error occured: %s' % e)
+            common.addon.show_small_popup(title='[B][COLOR white]ECOSTREAM[/COLOR][/B]', msg='[COLOR red]%s[/COLOR]'
+            % e, delay=5000, image=error_logo)
+            return self.unresolvable(code=0, msg='Exception: %s' % e)
 
 
     def get_url(self, host, media_id):
@@ -92,4 +108,5 @@ class EcostreamResolver(Plugin, UrlResolver, PluginSettings):
 
 
     def valid_url(self, url, host):
+        if self.get_setting('enabled') == 'false': return False
         return re.match(self.pattern, url) or self.name in host

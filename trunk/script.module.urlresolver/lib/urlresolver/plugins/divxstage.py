@@ -20,71 +20,62 @@ from t0mm0.common.net import Net
 from urlresolver.plugnplay.interfaces import UrlResolver
 from urlresolver.plugnplay.interfaces import PluginSettings
 from urlresolver.plugnplay import Plugin
-import re
-import urllib2
+import re, urllib2, os
 from urlresolver import common
+from lib import unwise
 
 class DivxstageResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "divxstage"
+    domains = ["divxstage.eu", "divxstage.net", "divxstage.to", "cloudtime.to"]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
         self.priority = int(p)
         self.net = Net()
 
-
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
         try:
             html = self.net.http_GET(web_url).content
-        except urllib2.URLError, e:
-            common.addon.log_error('Divxstage: got http error %d fetching %s' %
-                                   (e.code, web_url))
-            return False
-
-        r = re.search('<param name="src" value="(.+?)"', html)
-        if r:
-            stream_url = r.group(1)
-        else:
-            message ='Divxstage: 1st attempt at finding the stream_url failed'
-            common.addon.log_debug(message)
-            r = re.search('flashvars.filekey="(.+)"', html)
+            r = re.search('<param name="src" value="(.+?)"', html)
             if r:
-                file_key = r.group(1)
-                player_url = 'http://'+host+'/api/player.api.php?user=undefined&key='+file_key+'&pass=undefined&codes=1&file='+media_id
-                try:
-                    html = self.net.http_GET(player_url).content
-                except urllib2.URLError, e:
-                    common.addon.log_error('Divxstage: got http error %d fetching %s' %
-                                        (e.code, web_url))
-                    return False
+                stream_url = r.group(1)
+            else:
+                html = unwise.unwise_process(html)
+                filekey = unwise.resolve_var(html, "flashvars.filekey")
+                
+                player_url = 'http://www.cloudtime.to/api/player.api.php?user=undefined&key='+filekey+'&pass=undefined&codes=1&file='+media_id
+                html = self.net.http_GET(player_url).content
                 r = re.search('url=(.+?)&', html)
                 if r:
                     stream_url = r.group(1)
                 else:
-                    message ='Divxstage: attempt at finding the stream_url failed'
-                    common.addon.log_debug(message)
-                    return False
-            else:
-                message ='Divxstage: attempt at finding the filekey failed'
-                common.addon.log_debug(message)
-                return False
-        return stream_url
-
+                    raise Exception ('File Not Found or removed')
+                
+            return stream_url
+        except urllib2.URLError, e:
+            common.addon.log_error(self.name + ': got http error %d fetching %s' %
+                                   (e.code, web_url))
+            return self.unresolvable(code=3, msg=e)
+        except Exception, e:
+            common.addon.log_error('**** Divxstage Error occured: %s' % e)
+            return self.unresolvable(code=0, msg=e)
 
     def get_url(self, host, media_id):
         return 'http://www.divxstage.eu/video/%s' % media_id
-        
-        
+
     def get_host_and_id(self, url):
-        r = re.search('//(.+?)/video/([0-9A-Za-z]+)', url)
+        r = re.search('//(.+?)/(?:video/([0-9a-z]+)|embed.php\?v=([^\?&]+))', url)
         if r:
-            return r.groups()
+            if 'embed' in r.group(1):
+                return r.group(1),r.group(3)
+            else:
+                return r.group(1),r.group(2)
         else:
             return False
 
-
     def valid_url(self, url, host):
-        return re.match('http://(www.)?divxstage.eu/' +
-                        'video/[0-9A-Za-z]+', url) or 'divxstage' in host
+        if self.get_setting('enabled') == 'false': return False
+        #http://embed.divxstage.eu/embed.php?v=8da26363e05fd&width=746&height=388&c=000
+        return (re.match('http://(?:www.|embed.)?(?:divxstage\.(?:eu|net|to)|cloudtime\.to)/', url) or 'divxstage' in host)
