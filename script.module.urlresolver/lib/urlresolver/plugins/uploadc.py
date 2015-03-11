@@ -15,66 +15,62 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 from t0mm0.common.net import Net
 from urlresolver.plugnplay.interfaces import UrlResolver
 from urlresolver.plugnplay.interfaces import PluginSettings
 from urlresolver.plugnplay import Plugin
-import urllib2
+import urllib2, re, os
 from urlresolver import common
 from lib import jsunpack
 
-# Custom imports
-import re
-
+#SET ERROR_LOGO# THANKS TO VOINAGE, BSTRDMKR, ELDORADO
+error_logo = os.path.join(common.addon_path, 'resources', 'images', 'redx.png')
 
 class UploadcResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
     name = "uploadc"
+    domains = [ "uploadc.com" ]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
         self.priority = int(p)
         self.net = Net()
-        self.pattern = 'http://((?:www.)?uploadc.com)/([0-9a-zA-Z]+)'
+        # modified by mscreations. uploadc now needs the filename after the media id so make sure we match that
+        self.pattern = 'http://((?:www.)?uploadc.com)/([0-9a-zA-Z]+/[0-9a-zA-Z/._]+)'
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-
+        
         #get html
         try:
             html = self.net.http_GET(web_url).content
-        except urllib2.URLError, e:
-            common.addon.log_error(self.name + ': got http error %d fetching %s' %
-                                    (e.code, api_url))
 
-        #send all form values
-        sPattern = '<input.*?name="([^"]+)".*?value=([^>]+)>'
-        r = re.findall(sPattern, html)
-        data = {}
-        if r:
-            for match in r:
-                name = match[0]
-                value = match[1].replace('"','')
-                data[name] = value
+            data = {}
+            r = re.findall(r'type="hidden" name="(.+?)" value="(.+?)"', html)
+            if r:
+                for name, value in r:
+                    data[name] = value
+                data['referer'] = web_url 
+            else:
+                raise Exception('Cannot find data values')
 
             html = self.net.http_POST(web_url, data).content
-        else:
-            common.addon.log_error(self.name + ': no fields found')
-            return False
-
-        # get url from packed javascript
-        r = re.findall("<script type='text/javascript'>eval.*?return p}" +
-            "\((.*?)\)\s*</script>", html, re.DOTALL + re.IGNORECASE)
-        if r:
-            sJavascript = r[1]
-            sUnpacked = jsunpack.unpack(sJavascript)
-            sPattern = '<param name="src"0="(.*?)"'
-            r = re.search(sPattern, sUnpacked)
-            if r:
-                return r.group(1)
-
-        return False
+            
+            for match in re.finditer('(eval\(function.*?)</script>', html, re.DOTALL):
+                js_data =  jsunpack.unpack(match.group(1))
+                r = re.search('src="([^"]+)', js_data)
+                if r:
+                    stream_url = r.group(1) + '|referer=' + web_url
+                    return stream_url
+                    
+            raise Exception ('File Not Found or removed')
+        except urllib2.URLError, e:
+            common.addon.log_error(self.name + ': got http error %d fetching %s' %
+                                   (e.code, web_url))
+            return self.unresolvable(code=3, msg=e)
+        except Exception, e:
+            common.addon.log('**** Uploadc Error occured: %s' % e)
+            return self.unresolvable(code=0, msg=e)
 
     def get_url(self, host, media_id):
             return 'http://www.uploadc.com/%s' % (media_id)
@@ -86,6 +82,6 @@ class UploadcResolver(Plugin, UrlResolver, PluginSettings):
         else:
             return False
 
-
     def valid_url(self, url, host):
+        if self.get_setting('enabled') == 'false': return False
         return re.match(self.pattern, url) or self.name in host

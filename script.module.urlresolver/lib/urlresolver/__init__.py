@@ -21,24 +21,30 @@ For most cases you probably want to use :func:`urlresolver.resolve` or
 :func:`urlresolver.choose_source`.
 
 .. seealso::
-	
-	:class:`HostedMediaFile`
+    
+    :class:`HostedMediaFile`
 
 
 '''
 
-import os
+import os,xml.dom.minidom
 import common
 import plugnplay
 from types import HostedMediaFile
-from plugnplay.interfaces import UrlResolver
+from plugnplay.interfaces import UrlResolver,UrlWrapper
 from plugnplay.interfaces import PluginSettings
 from plugnplay.interfaces import SiteAuth
 import xbmcgui
 
 #load all available plugins
+common.addon.log('Initializing URLResolver version: %s' % common.addon_version)
 plugnplay.set_plugin_dirs(common.plugins_path)
-plugnplay.load_plugins()
+
+MAX_SETTINGS = 75
+
+def lazy_plugin_scan():
+    if not UrlResolver.implementors():
+        plugnplay.scan_plugins(UrlWrapper)
 
 def resolve(web_url):
     '''
@@ -58,9 +64,9 @@ def resolve(web_url):
     the URL, it passes the ``web_url`` to the plugin and returns the direct URL 
     to the media file, or ``False`` if it was not possible to resolve.
     
-	.. seealso::
-		
-		:class:`HostedMediaFile`
+    .. seealso::
+        
+        :class:`HostedMediaFile`
 
     Args:
         web_url (str): A URL to a web page associated with a piece of media
@@ -70,6 +76,7 @@ def resolve(web_url):
         If the ``web_url`` could be resolved, a string containing the direct 
         URL to the media file, if not, returns ``False``.    
     '''
+    lazy_plugin_scan()
     source = HostedMediaFile(url=web_url)
     return source.resolve()
 
@@ -90,6 +97,7 @@ def filter_source_list(source_list):
         resolved by a resolver plugin removed.
     
     '''
+    lazy_plugin_scan()
     return [source for source in source_list if source]
 
 
@@ -104,12 +112,12 @@ def choose_source(sources):
     
         sources = [HostedMediaFile(url='http://youtu.be/VIDEOID', title='Youtube [verified] (20 views)'),
                    HostedMediaFile(url='http://putlocker.com/file/VIDEOID', title='Putlocker (3 views)')]
-		source = urlresolver.choose_source(sources)
-		if source:
-			stream_url = source.resolve()
-			addon.resolve_url(stream_url)
-		else:
-			addon.resolve_url(False)
+        source = urlresolver.choose_source(sources)
+        if source:
+            stream_url = source.resolve()
+            addon.resolve_url(stream_url)
+        else:
+            addon.resolve_url(False)
 
     Args:
         sources (list): A list of :class:`HostedMediaFile` representing web 
@@ -120,6 +128,7 @@ def choose_source(sources):
         cancelled or none of the :class:`HostedMediaFile` are resolvable.    
         
     '''
+    lazy_plugin_scan()
     #get rid of sources with no resolver plugin
     sources = filter_source_list(sources)
     
@@ -158,35 +167,64 @@ def display_settings():
         All changes made to these setting by the user are global and will 
         affect any addon that uses :mod:`urlresolver` and its plugins.
     '''
+    lazy_plugin_scan()
+    plugnplay.load_plugins()
     _update_settings_xml()
     common.addon.show_settings()
-        
-        
+
 def _update_settings_xml():
     '''
     This function writes a new ``resources/settings.xml`` file which contains
     all settings for this addon and its plugins.
     '''
+    lazy_plugin_scan()
+    plugnplay.load_plugins()
+    
     try:
-        try:
-            os.makedirs(os.path.dirname(common.settings_file))
-        except OSError:
-            pass
+        os.makedirs(os.path.dirname(common.settings_file))
+    except OSError:
+        pass
 
-        f = open(common.settings_file, 'w')
-        try:
+    xml_text = "<settings>"
+    for imp in sorted(PluginSettings.implementors(),key=lambda x:x.name.upper()):
+        xml_text += '<setting label="' + imp.name + '" type="lsep"/>'
+        xml_text += imp.get_settings_xml()
+    xml_text += "</settings>"
+    
+    try:
+        with open(common.settings_file, 'w') as f:
             f.write('<?xml version="1.0" encoding="utf-8" standalone="yes"?>\n')
-            f.write('<settings>\n')    
-            for imp in PluginSettings.implementors():
-                f.write('<category label="%s">\n' % imp.name)
-                f.write(imp.get_settings_xml())
-                f.write('</category>\n')
-            f.write('</settings>')
-        finally:
-            f.close
+            f.write("<settings>\n")
+            f.write("<category label=\"URLResolver\">\n")
+            f.write("\t<setting default=\"true\" ")
+            f.write("id=\"allow_universal\" ")
+            f.write("label=\"Enable Universal Resolvers\" type=\"bool\"/>\n")
+            f.write("\t<setting default=\"0.0.0\" ")
+            f.write("id=\"addon_version\" visible=\"false\" ")
+            f.write("label=\"URLResolver version\" type=\"text\"/>\n")
+            f.write("</category>\n")
+            f.write('<category label="Resolvers 1">\n')
+
+            i=0
+            cat_count = 2
+            settings_xml = xml.dom.minidom.parseString(xml_text)
+            elements = settings_xml.getElementsByTagName('setting')
+            for element in elements:
+                if i>MAX_SETTINGS and element.getAttribute('type')=='lsep':
+                    f.write('</category>\n')
+                    f.write('<category label="Resolvers %s">\n' % (cat_count))
+                    cat_count += 1
+                    i=0
+                    
+                element.writexml(f, indent='\t', newl='\n')
+                i += 1
+            f.write('</category>\n')
+            f.write('</settings>\n')
     except IOError:
         common.addon.log_error('error writing ' + common.settings_file)
 
-
-#make sure settings.xml is up to date
-_update_settings_xml()
+#Update settings.xml if newer plugin version
+if common.addon.get_setting('addon_version') != common.addon.get_version():
+    common.addon.log_notice("Update settings from %s to %s " % (common.addon.get_setting('addon_version'), common.addon.get_version()))
+    _update_settings_xml()
+    common.addon.addon.setSetting('addon_version', common.addon.get_version())
