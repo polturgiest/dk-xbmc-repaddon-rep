@@ -380,7 +380,7 @@
 
 <addon
   id="plugin.video.kenh88"
-  version="1.0.9"
+  version="1.0.10"
   name="kenh88.com"
   provider-name="Dknight">
   <requires>
@@ -813,11 +813,12 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.11"
+  version="1.0.12"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true"/>
+		<import addon="script.module.beautifulsoup" version="3.0.8"/>
 		<import addon="script.module.simplejson" />
 		<import addon="script.module.t0mm0.common" version="1.1.0"/>
   </requires>
