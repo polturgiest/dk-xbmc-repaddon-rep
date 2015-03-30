@@ -125,7 +125,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://yeuphim.net/movie-list.php?str='+ searchText
+        url = 'http://phimstar.com/tim-kiem/'+ searchText+'/'
         INDEX(url)
     except: pass
 
@@ -178,7 +178,7 @@ def MirrorsThe(name,url):
         for vLinkName in mirrors:
             addDir(vLinkName.encode("utf-8"),url,10,'')
 def Episodes2(url,name):
-    try:
+    #try:
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
         match=re.compile('>Phim Hong Kong<(.+?)</table>').findall(newlink)
@@ -187,9 +187,9 @@ def Episodes2(url,name):
         if(len(match1) >= 1):
                 for mcontent in match1:
                     vLink, vLinkName=mcontent
-                    addLink("part - "+ vLinkName.strip().encode("utf-8"),homeLink+vLink,3,'',name)
+                    addLink("part - "+ vLinkName.strip().encode("utf-8"),"http://www.thegioiphim.eu/"+vLink,3,'',name)
 
-    except: pass
+    #except: pass
 
 
 def Episodes(url,name):
@@ -329,25 +329,28 @@ def loadVideos(url,name):
            try:
                    link =link.encode("UTF-8")
            except: pass
-           newlink = ''.join(link.splitlines()).replace('\t','')
-           match=re.compile("'file', '(.+?)'").findall(newlink)
+           link = ''.join(link.splitlines()).replace('\t','')
+           match=re.compile("'file', '(.+?)'").findall(link)
            if(len(match) > 0):
                    if name.lower().find("dailymotion") != -1:
                            newlink=Geturl(match[0])
                    elif name.lower().find("youtube") != -1:
                            newlink="https://www.youtube.com/watch?v="+Geturl(match[0])
            else:
-                   match=re.compile('<embed.+?src="(.+?)".+?').findall(newlink)
+                   match=re.compile('<embed.+?src="(.+?)".+?').findall(link)
                    if(len(match) > 0):
                            newlink=match[0]+"&dk"
                    else:
-                           match=re.compile("phim10\*(.+?)'").findall(newlink)
+                           match=re.compile("phim10\*(.+?)'").findall(link)
                            if(len(match) > 0):
                                  newlink=decrypt(match[0])
                            else:
-								match=re.compile("\{fPomPlayer\((.+?)\)").findall(newlink)
+								match=re.compile("\{fPomPlayer\((.+?)\)").findall(link)
 								if(len(match) > 0):
 									match=re.compile("'(.+?)'").findall(match[0])
+									newlink=match[0]
+								else:
+									match=re.compile("proxy.link=(.+?)&").findall(link)
 									newlink=match[0]
            print newlink
            if (newlink.find("dailymotion") > -1):
