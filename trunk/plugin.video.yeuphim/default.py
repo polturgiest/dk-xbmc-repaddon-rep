@@ -9,6 +9,8 @@ import base64
 import xbmc
 try: import simplejson as json
 except ImportError: import json
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import SoupStrainer
 import cgi
 import datetime
 
@@ -28,46 +30,74 @@ Nk = 6;
 Nr = 12;
 def __init__(self):
     self.playlist=sys.modules["__main__"].playlist
+	
+homeLink="http://phimstar.com"
+
 def HOME():
         addDir('Search','http://www.khmeravenue.com/',4,'http://yeuphim.net/images/logo.png')
         addDir('Hong Kong Series','http://www.thegioiphim.eu/',9,'http://www.thegioiphim.eu/images/logo.png')
-        addDir('Japanese Series','http://yeuphim.net/movie-list.php?cat=78',2,'http://img.yeuphim.net/movie/thumb1/507147552_913437197.jpg')
-        addDir('Korean Series','http://yeuphim.net/movie-list.php?cat=15',2,'http://img.yeuphim.net/movie/thumb1/307768252_968871912.jpg')
-        addDir('Chinese Series','http://yeuphim.net/movie-list.php?cat=48',2,'http://img.yeuphim.net/movie/thumb1/209454570_431578655.jpg')
-        addDir('Vietnamese Videos','http://yeuphim.net/movie-list.php?cat=16',2,'http://img.yeuphim.net/movie/thumb2/704748494_531915959.jpg')
-        addDir('Vietnamese Comedy','http://yeuphim.net/movie-list.php?cat=17',2,'http://img.yeuphim.net/movie/thumb2/704748494_531915959.jpg')
-        addDir('Ca Nhac','http://yeuphim.net/movie-list.php?cat=18',2,'http://img.yeuphim.net/movie/thumb2/704748494_531915959.jpg')
-        addDir('Phong su - Thoi Su','http://yeuphim.net/movie-list.php?cat=50',2,'http://img.yeuphim.net/movie/thumb2/704748494_531915959.jpg')
-        addDir('Cooking videos','http://yeuphim.net/movie-list.php?cat=51',2,'http://img.yeuphim.net/movie/thumb1/132693411_509434860.jpg')
-        addDir('Children videos','http://yeuphim.net/movie-list.php?cat=52',2,'http://img.yeuphim.net/movie/thumb1/182738444.jpg')
-        addDir('Martial arts Videos','http://www.yeuphim.net/movie-list.php?cat=34',2,'http://img.yeuphim.net/movie/thumb1/209454570_431578655.jpg')
-        addDir('Chinese Action Films','http://www.yeuphim.net/movie-list.php?cat=20',2,'http://img.yeuphim.net/movie/thumb1/209454570_431578655.jpg')
-        addDir('Chinese comedy','http://www.yeuphim.net/movie-list.php?cat=10',2,'http://img.yeuphim.net/movie/thumb1/396886694_103442932.jpg')
-        addDir('Chinese Thrillers','http://www.yeuphim.net/movie-list.php?cat=27',2,'http://img.yeuphim.net/movie/thumb1/17036753_144339987.jpg')
-        addDir('Chinese Drama','http://www.yeuphim.net/movie-list.php?cat=21',2,'http://img.yeuphim.net/movie/thumb1/209454570_431578655.jpg')
-        addDir('Korean Action Films','http://www.yeuphim.net/movie-list.php?cat=44',2,'http://img.yeuphim.net/movie/thumb1/482396024_696771407.jpg')
-        addDir('Korean comedy','http://www.yeuphim.net/movie-list.php?cat=45',2,'http://img.yeuphim.net/movie/thumb1/213708507_361790076.jpg')
-        addDir('Korean Thrillers','http://www.yeuphim.net/movie-list.php?cat=46',2,'http://img.yeuphim.net/movie/thumb1/779188987_784611752.jpg')
-        addDir('Korean Drama','http://www.yeuphim.net/movie-list.php?cat=47',2,'http://img.yeuphim.net/movie/thumb1/307768252_968871912.jpg')
-        addDir('Animated videos','http://www.yeuphim.net/movie-list.php?cat=38',2,'http://img.yeuphim.net/movie/thumb1/939681617_855027886.jpg')
-        addDir('Music Videos','http://www.yeuphim.net/movie-list.php?cat=39',2,'http://img.yeuphim.net/movie/thumb1/779388677.jpg')
-        addDir('Funny Clips','http://www.yeuphim.net/movie-list.php?cat=40',2,'http://img.yeuphim.net/movie/thumb1/363.jpg')
+        link = GetContent(homeLink)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        match=re.compile('<li class="child">(.+?)</ul>').findall(newlink)
+        soup = BeautifulSoup(newlink)
+        navcontent = soup.findAll('ul', {"id" : "mega-menu-1"})
+        if(len(navcontent) > 0):
+			for item in navcontent[0].findAll('li'):
+				for submenu in item.findAll('a'):
+						vname="--"+RemoveHTML(str(submenu.contents[0])).strip()
+						if(submenu.has_key("class")==True and submenu["class"]=="dc-mega"):
+							vname =RemoveHTML(str(submenu.contents[0])).strip()
+						try:
+							vname =vname.encode("UTF-8")
+						except: pass
+						if(submenu.has_key("class")!=True ):
+							vlink=homeLink+submenu["href"]
+						else:
+							if(submenu.has_key("class")!=True ):
+								vlink=homeLink+submenu["href"]
+							else:
+								vlink=""
+						if(vlink!=""):
+							addDir(vname,vlink,2,'')
+						elif(vname!=None):
+							addLink(vname.strip(),homeLink,0,'',"")
 
-homeLink="http://yeuphim.net/"
+def RemoveHTML(inputstring):
+    TAG_RE = re.compile(r'<[^>]+>')
+    return TAG_RE.sub('', inputstring)
+	
+
 def INDEX(url):
-    try:
+        if(CheckRedirect(url)):
+                INDEXes("http://www.thegioiphim.eu/")
         link = GetContent(url)
         newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<a title="(.+?)" href="(.+?)"><img src="(.+?)" width="100" border="0" class="thumb"></a>').findall(newlink)
-        for vcontent in match:
-            (vname,vurl, vimage)=vcontent
-            addDir(vname.encode("utf-8"),homeLink+vurl,7,vimage)
-        pagecontent=re.compile('<!-- newest video end -->(.+?)<!-- ads -->').findall(newlink)
-        match5=re.compile('<span class="pagenum"><a href="(.+?)">(.+?)</a></span>').findall(pagecontent[1])
-        for vpage in match5:
-            (vurl,vname)=vpage
-            addDir("page: " + vname.encode("utf-8"),vurl,2,"")
-    except: pass
+        soup = BeautifulSoup(newlink)
+        vidcontent = soup.findAll('ul', {"class" : "list-movie"})
+        if(len(vidcontent) > 0):
+			for item in vidcontent[0].findAll('a'):
+					vname =item["title"]
+					vlink=homeLink+item["href"]
+					vimage=""
+					divimage=item.findAll('div', {"class" : "movie-thumbnail"})
+					if(len(divimage)>0):
+						stylecontent =divimage[0]["style"]
+						vimage=homeLink+re.compile('background:url\((.+?)\)').findall(stylecontent)[0]
+					addDir(vname.encode("utf-8"),vlink,7,vimage)
+        navcontent = soup.findAll('ul', {"id" : "_pagination"})
+        if(len(navcontent) > 0):
+			for item in navcontent[0].findAll('a'):
+				if(item.has_key("class")==True and item.has_key("href")==True and item["class"]!="disable"):
+					vname=item.contents[0]
+					vurl=item["href"]
+					addDir("page: " + vname.replace("&gt;",">>").replace("&lt;","<<").encode("utf-8"),vurl,2,"")
+        #for vpage in match5:
+        #    (vurl,vname)=vpage
+        #    
+    #except: pass
 
 def INDEXes(url):
     try:
@@ -111,21 +141,33 @@ def SearchResults(url):
             startlen=re.compile("<strongclass='on'>(.+?)</strong>").findall(newlink)
             url=url.replace("/page/"+startlen[0]+"/","/page/"+ str(int(startlen[0])+1)+"/")
             addDir("Next >>",url,6,"")
-
+			
+def getVidPage(url):
+  contentlink = GetContent(url)
+  contentlink = ''.join(contentlink.splitlines()).replace('\'','"')
+  try:
+            contentlink =contentlink.encode("UTF-8")
+  except: pass
+  soup = BeautifulSoup(contentlink)
+  serverlist=soup.findAll('a', {"id" : "btn-film-watch"})
+  return   homeLink+serverlist[0]["href"]
+  
 def Mirrors(url,name):
-    try:
+    #try:
         if(CheckRedirect(url)):
                 MirrorsThe(name,url)
         else:
-                link = GetContent(url)
-                newlink = ''.join(link.splitlines()).replace('\t','')
-                match=re.compile('<b>Episode list </b>(.+?)</table>').findall(newlink)
-                mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">(.+?)</div>').findall(match[0])
-                if(len(mirrors) >= 1):
-                        for vLinkName in mirrors:
-                            addDir(vLinkName.encode("utf-8"),url,5,'')
+			url=getVidPage(url)
+			print url
+			link = GetContent(url)
+			newlink = ''.join(link.splitlines()).replace('\t','')
+			soup = BeautifulSoup(newlink)
+			vidcontent = soup.findAll('div', {"class" : "server clearfix server-group"})
+			for item in vidcontent:
+					vLinkName=item["data-servername"]
+					addDir(vLinkName.encode("utf-8",'ignore'),url,5,'')
 
-    except: pass
+    #except: pass
 	
 def MirrorsThe(name,url):
     link = GetContent(url)
@@ -151,20 +193,22 @@ def Episodes2(url,name):
 
 
 def Episodes(url,name):
-    try:
-        link = GetContent(url)
-        newlink = ''.join(link.splitlines()).replace('\t','')
-        match=re.compile('<b>Episode list </b>(.+?)</table>').findall(newlink)
-        mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">'+ name +'(.+?)<div style="margin: 10px 0px 5px 0px">').findall(match[0])
-        if(len(mirrors) == 0):
-            mirrors=re.compile('<div style="margin: 10px 0px 5px 0px">'+ name +'(.+?)<!-- Mirror').findall(match[0])
-        match1=re.compile('<a href="(.+?)"><strong class="moviered">(.+?)</strong></a>').findall(mirrors[0])
-        if(len(match1) >= 1):
-                for mcontent in match1:
-                    vLink, vLinkName=mcontent
-                    addLink("part - "+ vLinkName.strip().encode("utf-8"),homeLink+vLink,3,'',name)
+    #try:
+			link = GetContent(url)
+			newlink = ''.join(link.splitlines()).replace('\t','')
+			soup = BeautifulSoup(newlink)
+			vidcontent = soup.findAll('div', {"class" : "server clearfix server-group"})
+			for item in vidcontent:
+					vLinkName=item["data-servername"].encode("utf-8",'ignore')
+					if(vLinkName==name):
+						episodelist=item.findAll('a', id=re.compile('btn-episode-*'))
+						for episodeitem in episodelist:
+							vLinkName=episodeitem["title"]
+							vurl=homeLink+episodeitem["href"]
+							addLink(vLinkName.strip().encode("utf-8",'ignore'),vurl,3,'',name)
+                    
 
-    except: pass
+    #except: pass
 
 def Geturl(strToken):
         for i in range(20):
@@ -178,7 +222,7 @@ def CheckRedirect(url):
     try:
        net = Net()
        second_response = net.http_GET(url)
-       return (second_response.get_url().find("www.thegioiphim.eu") > 0)
+       return (second_response.get_url().find("thegioiphim.eu") > 0)
     except:
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
@@ -252,11 +296,36 @@ def playVideo(videoType,videoId):
     else:
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
-
+		
+def getDailyMotionUrl(id):
+    maxVideoQuality="720p"
+    content = GetContent("http://www.dailymotion.com/embed/video/"+id)
+    if content.find('"statusCode":410') > 0 or content.find('"statusCode":403') > 0:
+        xbmc.executebuiltin('XBMC.Notification(Info:, (DailyMotion)!,5000)')
+        return ""
+    else:
+        matchFullHD = re.compile('"stream_h264_hd1080_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHD = re.compile('"stream_h264_hd_url":"(.+?)"', re.DOTALL).findall(content)
+        matchHQ = re.compile('"stream_h264_hq_url":"(.+?)"', re.DOTALL).findall(content)
+        matchSD = re.compile('"stream_h264_url":"(.+?)"', re.DOTALL).findall(content)
+        matchLD = re.compile('"stream_h264_ld_url":"(.+?)"', re.DOTALL).findall(content)
+        url = ""
+        if matchFullHD and maxVideoQuality == "1080p":
+            url = urllib.unquote_plus(matchFullHD[0]).replace("\\", "")
+        elif matchHD and (maxVideoQuality == "720p" or maxVideoQuality == "1080p"):
+            url = urllib.unquote_plus(matchHD[0]).replace("\\", "")
+        elif matchHQ:
+            url = urllib.unquote_plus(matchHQ[0]).replace("\\", "")
+        elif matchSD:
+            url = urllib.unquote_plus(matchSD[0]).replace("\\", "")
+        elif matchLD:
+            url = urllib.unquote_plus(matchLD[0]).replace("\\", "")
+        return url
+		
 def loadVideos(url,name):
         #try:
            GA("LoadVideo",name)
-           link=PostContent(url)
+           link=GetContent(url)
            try:
                    link =link.encode("UTF-8")
            except: pass
@@ -272,30 +341,26 @@ def loadVideos(url,name):
                    if(len(match) > 0):
                            newlink=match[0]+"&dk"
                    else:
-                           match=re.compile("proxy.link=phim10\*(.+?)&").findall(newlink)
+                           match=re.compile("phim10\*(.+?)'").findall(newlink)
                            if(len(match) > 0):
                                  newlink=decrypt(match[0])
+                           else:
+								match=re.compile("\{fPomPlayer\((.+?)\)").findall(newlink)
+								if(len(match) > 0):
+									match=re.compile("'(.+?)'").findall(match[0])
+									newlink=match[0]
            print newlink
            if (newlink.find("dailymotion") > -1):
-                match=re.compile('http://www.dailymotion.com/swf/(.+?)&dk').findall(newlink)
+                match=re.compile('http://www.dailymotion.com/embed/video/(.+?)\?').findall(newlink)
                 if(len(match) == 0):
-                        link = newlink
-                else:
-                        link = 'http://www.dailymotion.com/video/'+str(match[0])
-                req = urllib2.Request(link)
-                req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-                response = urllib2.urlopen(req)
-                link=response.read()
-                response.close()
-                vidmatch=re.compile('<param name="flashvars" [^>]*value=["\']?([^>^"^\']+)["\']?[^>]*>').findall(link)
-                newseqeunce = urllib.unquote(vidmatch[0]).decode('utf8').replace('\\/','/')
-                #print 'in dailymontion:' + str(newseqeunce)
-                imgSrc=re.compile('"videoPreviewURL":"(.+?)"').findall(newseqeunce)
-                if(len(imgSrc[0]) == 0):
-                	imgSrc=re.compile('/jpeg" href="(.+?)"').findall(link)
-                dm_low=re.compile('"video_url":"(.+?)",').findall(newseqeunce)
-                dm_high=re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
-                playVideo('dailymontion',urllib2.unquote(dm_low[0]).decode("utf8"))
+                        match=re.compile('http://www.dailymotion.com/video/(.+?)&dk;').findall(newlink+"&dk;")
+                if(len(match) == 0):
+                        match=re.compile('http://www.dailymotion.com/swf/(.+?)\?').findall(newlink)
+                if(len(match) == 0):
+                	match=re.compile('www.dailymotion.com/embed/video/(.+?)\?').findall(newlink.replace("$","?"))
+                print match
+                vidlink=getDailyMotionUrl(match[0])
+                playVideo('dailymontion',vidlink)
            elif (newlink.find("docs.google.com") > -1):
                 vidcontent = postContent("http://javaplugin.org/WL/grp2/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",strDomain)
                 if(len(vidcontent.strip())==0):
@@ -306,7 +371,7 @@ def loadVideos(url,name):
                         vidlink=re.compile('url=(.+?)\u00').findall(vidparam)
                         playVideo("direct",vidlink[0])
            elif(newlink.find("picasaweb.google") > 0):
-                 vidcontent=postContent("http://phim10.com/player2n/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+                 vidcontent=postContent("http://www.phim10.com/player4new/plugins4/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
                  vidid=vidlink=re.compile('#(.+?)&').findall(newlink+"&")
                  if(len(vidid)>0):
 					vidmatch=re.compile('feedPreload:(.+?)}}},').findall(vidcontent)[0]+"}}"
@@ -322,11 +387,12 @@ def loadVideos(url,name):
 									vidlink=currententry["media"]["content"][0]["url"]
 									break
                  else:
-						vidmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?),"type":"video/mpeg4"\}').findall(vidcontent)
-						hdmatch=re.compile('"application/x-shockwave-flash"\},\{"url":"(.+?)",(.+?),(.+?)').findall(vidmatch[-1][2])
-						if(len(hdmatch) > 0):
-							vidmatch=hdmatch
-						vidlink=vidmatch[-1][0]
+
+						vidmatch=re.compile('"content":\[(.+?)\]').findall(vidcontent)[0]
+						data = json.loads("[" + vidmatch +"]")
+						for contentitem in data:
+							if(contentitem["type"]=="video/mpeg4"):
+								vidlink=contentitem["url"]
                  playVideo("direct",vidlink)
            elif (newlink.find("video.google.com") > -1):
                 match=re.compile('http://video.google.com/videoplay.+?docid=(.+?)&.+?').findall(newlink)
