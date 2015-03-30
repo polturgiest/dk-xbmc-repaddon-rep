@@ -325,6 +325,7 @@ def getDailyMotionUrl(id):
 def loadVideos(url,name):
         #try:
            GA("LoadVideo",name)
+           print url
            link=GetContent(url)
            try:
                    link =link.encode("UTF-8")
