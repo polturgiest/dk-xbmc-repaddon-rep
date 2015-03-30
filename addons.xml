@@ -813,7 +813,7 @@
 
 <addon
   id="plugin.video.yeuphim"
-  version="1.0.12"
+  version="1.0.13"
   name="yeuphim.net"
   provider-name="Dknight">
   <requires>
