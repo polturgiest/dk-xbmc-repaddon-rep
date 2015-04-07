@@ -29,24 +29,24 @@ VERSION = "1.0.9" #<---- PLUGIN VERSION
 strdomain ='http://www.pinoy-ako.ws/'
 def HOME():
         addDir('Search','http://www.pinoy-ako.ws',8,'')
-        addDir('Latest Videos','http://www.pinoy-ako.ws',7,'')
+        addDir('Latest Videos','http://www.pinoy-ako.ws',6,'')
         addDir('Pinoy Movies','http://www.lambingan.to/category/pinoy-movies',13,'')
         ###addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
         #addDir('Pinoy Box Office','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         #addDir('Cinema One','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
-        addDir('Sports','http://www.pinoy-ako.ws/category/sports',6,'')
-        addDir('Sports by category','52',2,'')
+        addDir('Sports','http://www.pinoy-ako.ws/sports/',6,'')
+        #addDir('Sports by category','52',2,'')
         ###addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
         #addDir('ABS-CBN Episode List','http://www.pinoy-ako.ws/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('ABS-CBN by Shows','http://www.lambingan.to/category/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
         addDir('GMA 7 shows on lambingan','http://www.lambingan.to/category/Gma7/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
-        addDir('GMA 7 Episode List','http://www.pinoy-ako.ws/category/gma-7',6,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
-        addDir('GMA 7 by Shows','11',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        addDir('Kapuso','http://www.pinoy-ako.ws/kapuso/',6,'')
+        addDir('Viral Videos','http://www.pinoy-ako.ws/viral/',6,'')
         ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('TV5 Episode List','http://www.pinoy-ako.ws/category/tv-5',6,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
-        addDir('TV5 by Shows','60',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
+        addDir('Pinoy Recipes','http://www.pinoy-ako.ws/pinoy-recipes/',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         addDir('Livestream','http://www.pinoy-ako.ws/category/livestream',6,'')
-        addDir('Uncategorized','http://www.pinoy-ako.ws/category/uncategorized',6,'')
+        addDir('Trending','http://www.pinoy-ako.ws/trending/',6,'')
         ###addDir('TV5 Old Shows','http://www.pinoy-ako.info/tv-show-replay/94-tv-guide/59771-watch-old-tv5-kapatid-tv-shows.html',2,'http://img29.imageshack.us/img29/2499/tv5tvshows.jpg')
         ###addDir('TV Specials','http://www.pinoy-ako.info/tv-show-replay/tv-specials.html',5,'http://img857.imageshack.us/img857/8424/tvspecials.jpg')
         ###addLink('ABS-CBN live','rtmp://tko.og.abscbn.streamguys.com:1935/abs/_definst_/abs live=true',11,'')
@@ -100,11 +100,11 @@ def INDEX2(url):
             vimg=""
             vimgc=re.compile('<img src="(.+?)" alt="(.+?)".+?').findall(moviecontent)
             if(len(vimgc) > 0):
-                    (vtmp,vimg)=vimgc[0]
+                    (vimg,vtmp)=vimgc[0]
             vurlc=re.compile('<a href="(.+?)" rel="bookmark">(.+?)</a>').findall(moviecontent)
             if(len(vurlc) > 0):
                     (vurl,vname)=vurlc[0]
-                    addDir(vname.replace("&#8211;","-").replace("&#8217;","'"),vurl,4,vimg)
+                    addDir(vname.replace("&#8211;","-").replace("&#8217;","'"),vurl,4,vimg.replace("http://","//").replace("//","http://"))
         pagenavcontent=re.compile("<div class='wp-pagenavi'>(.+?)</div>").findall(link)
         if(len(pagenavcontent)>0):
 			pagelist=re.compile('<a class="(page larger|nextpostslink|last)" href="(.+?)">(.+?)</a>').findall(pagenavcontent[0])
@@ -392,6 +392,7 @@ def GetContent2(url):
     return content
 	
 def GetContent(url):
+    print url
     try:
        net = Net()
        second_response = net.http_GET(url)
