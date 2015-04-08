@@ -332,7 +332,10 @@ def SensenGetVideo(url):
         vidcontent=soup.findAll('ul', {"class" : "contentlist"})
         for item in vidcontent[0].findAll('li'):
 			if(item.span!=None):
-				vname=item.span.contents[0].encode('utf-8', 'ignore')
+				if(len(item.span.contents)>0):
+					vname=item.span.contents[0].encode('utf-8', 'ignore')
+				else:
+					vname="Play Full"
 				vlink=url
 			else:
 				vname=item.a.contents[0].encode('utf-8', 'ignore')
