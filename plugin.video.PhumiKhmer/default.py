@@ -509,7 +509,7 @@ def loadVideos(url,name):
                 d.ok('Not Implemented','Sorry 4Shared links',' not implemented yet')		
            elif (newlink.find("docs.google.com") > -1):  
                 vidcontent = GetContent(newlink)
-                html = vidcontent.decode('utf8')
+                html = vidcontent.encode("utf-8","ignore")
                 stream_map = re.compile('fmt_stream_map","(.+?)"').findall(html)[0].replace("\/", "/")
                 formatArray = stream_map.split(',')
                 for formatContent in formatArray:
