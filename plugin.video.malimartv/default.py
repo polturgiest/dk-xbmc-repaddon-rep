@@ -307,7 +307,10 @@ def ParseVideoLink(url,name,movieinfo):
     win.setProperty('1ch.playing.episode', str(4))
     # end 1channel code
     redirlink=url
-    vidlink=data["episodes"]["stream_url"]
+    if(data.has_key("episodes")):
+		vidlink=data["episodes"]["stream_url"]
+    if(data.has_key("channels")):
+		vidlink=data["channels"]["stream_url"]
     dialog.close()
     return vidlink
 
@@ -322,6 +325,9 @@ def ListShows(url):
 			elif(item["href"].find("/dashboards/") > -1):
 				vlink = "https://malimar.tv/grids.json?dashboard="+item["id"]
 				mode=4
+			elif(item["href"].find("/channels/") > -1):
+				vlink =item["href"].replace(item["id"]+"?grid=",item["id"]+".json?grid=")
+				mode=3
 			else:
 				vlink = "https://malimar.tv/thumbnails.json?container="+item["id"]
 				mode=18
@@ -332,6 +338,8 @@ def ListShows(url):
 			if(item["id"]!="Adult18"):
 				if(mode==8):
 					addDirContext(vname,vlink,mode,vimg,vplot,"tvshow")
+				elif(mode==3):
+					addLink(vname,vlink,mode,vimg)
 				else:
 					addDir(vname,vlink,mode,vimg,vplot)
 
