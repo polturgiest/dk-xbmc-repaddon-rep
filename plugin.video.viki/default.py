@@ -595,7 +595,7 @@ def SearchVideoresults(url,searchtext=""):
 				vid=vid.split("-")[0]
 				containerid=item["data-resource-id"]
 				typeitem =item.findAll('p')[0]
-				if(typeitem.a["href"].find("/tv/") == -1):
+				if(typeitem.a == None  or typeitem.a["href"].find("/tv/") == -1):
 					vlink=vid
 					mode=4
 				else:
