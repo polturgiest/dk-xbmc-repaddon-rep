@@ -23,9 +23,9 @@ PATH = "PhumiKhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.4" #<---- PLUGIN VERSION
 
-strdomain ='http://www.phumikhmer7.com/'
+strdomain ='http://www.phumikhmer8.com/'
 def HOME():
-        addDir('Search','http://www.dramakhmer.com/search/label/Khmer%20Movies?&max-results=18',4,'')
+        addDir('Search',strdomain+'search/label/Khmer%20Movies?&max-results=18',4,'')
         GetMenu(strdomain)
 
 			
@@ -44,7 +44,7 @@ def GetMenu(url):
 					vname="---"+str(item.a.contents[0]).strip()
 				else:
 					vname=str(item.a.contents[0]).strip()
-				if(vname.strip().find("</i>") == -1):
+				if(vname.strip().find("</i>") == -1 and vname.strip().find("Top Rate") == -1 and link.find(strdomain) ==-1):
 					addDir(vname,strdomain+link+"&PageNo=1",2,"")
 				
 def Shows():
@@ -140,14 +140,11 @@ def getVimeoUrl(videoid,currentdomain=""):
         collection = {}
         if result["status"] == 200:
             html = result["content"]
-            html = html[html.find(',a={'):]
-            html = html[:html.find('}};') + 2]
-            html = html.replace(",a={", '{')
+            html = html[html.find('var a=')+6:]
+            html = html[:html.find(';if(a.request)')]
             try:
                   collection = json.loads(html)
-                  codec=collection["request"]["files"]["codecs"][0]
-                  filecol = collection["request"]["files"][codec]
-                  return filecol["sd"]["url"]
+                  return collection["request"]["files"]["h264"]["sd"]["url"]
             except:
                   return getVimeoVideourl(videoid,currentdomain)
 
@@ -226,7 +223,7 @@ def SEARCH():
         #searchText = '01'
         if (keyb.isConfirmed()):
                 searchText = urllib.quote_plus(keyb.getText())
-        url = 'http://www.phumi-kh.com/search?q='+searchText
+        url = strdomain+'search?q='+searchText
         INDEX(url)
     except: pass
 	
@@ -267,7 +264,7 @@ def INDEX(url):
 
 def buildNextPage(pagenum,label):
 	pagecount=str((int(pagenum) - 1) * 18)
-	url="http://www.phumi-kh.com/feeds/posts/summary/-/"+label+"?start-index="+pagecount+"&max-results=1&alt=json-in-script&callback=finddatepost"
+	url=strdomain+"feeds/posts/summary/-/"+label+"?start-index="+pagecount+"&max-results=1&alt=json-in-script&callback=finddatepost"
 	link = GetContent(url)
 	try:
 		link =link.encode("UTF-8")
@@ -275,7 +272,7 @@ def buildNextPage(pagenum,label):
 	match=re.compile('"published":\{"\$t":"(.+?)"\}').findall(link)
 	if(len(match)>0):
 		tsvalue=urllib.quote_plus(match[0][0:19]+match[0][23:29])
-		newurl="http://www.phumi-kh.com/search/label/"+label+"?updated-max="+tsvalue+"&max-results=18#PageNo="+pagenum
+		newurl=strdomain+"search/label/"+label+"?updated-max="+tsvalue+"&max-results=18#PageNo="+pagenum
 	else:
 		newurl=""
 	return newurl
@@ -413,16 +410,28 @@ def ParseSeparate(vcontent,namesearch,urlsearch):
                 return True
         return False
 					
-def GetContent2(url):
-    conn = httplib.HTTPConnection(host="moviekhmer.com",timeout=30)
-    req = url
-    try:
-        conn.request('GET',req)
-        content = conn.getresponse().read()
-    except:
-        print 'echec de connexion'
-    conn.close()
-    return content
+def GetContent2(url,referr, cj):
+    if cj is None:
+        cj = cookielib.LWPCookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    opener.addheaders = [(
+        'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+        ('Accept-Encoding', 'gzip, deflate'),
+        ('Referer', referr),
+        ('Content-Type', 'application/x-www-form-urlencoded'),
+        ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+        ('Connection', 'keep-alive'),
+        ('Accept-Language', 'en-us,en;q=0.5'),
+        ('Pragma', 'no-cache')]
+    usock = opener.open(url)
+    if usock.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO.StringIO(usock.read())
+        f = gzip.GzipFile(fileobj=buf)
+        response = f.read()
+    else:
+        response = usock.read()
+    usock.close()
+    return (cj, response)
 	
 def GetContent(url):
     try:
@@ -480,6 +489,34 @@ def playVideo(videoType,videoId):
     else:
         xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(videoId)
+		
+def GetDirVideoUrl(url, cj):
+    if cj is None:
+        cj = cookielib.LWPCookieJar()
+
+    class MyHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
+
+        def http_error_302(self, req, fp, code, msg, headers):
+            self.video_url = headers['Location']
+            return urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
+
+        http_error_301 = http_error_303 = http_error_307 = http_error_302
+
+    redirhndler = MyHTTPRedirectHandler()
+
+    opener = urllib2.build_opener(redirhndler, urllib2.HTTPCookieProcessor(cj))
+    opener.addheaders = [(
+        'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+        ('Accept-Encoding', 'gzip, deflate'),
+        ('Referer', url),
+        ('Content-Type', 'application/x-www-form-urlencoded'),
+        ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
+        ('Connection', 'keep-alive'),
+        ('Accept-Language', 'en-us,en;q=0.5'),
+        ('Pragma', 'no-cache')]
+    # urllib2.install_opener(opener)
+    usock = opener.open(url)
+    return redirhndler.video_url
 	
 def loadVideos(url,name):
         #try:
@@ -510,12 +547,22 @@ def loadVideos(url,name):
            elif (newlink.find("docs.google.com") > -1):  
                 vidcontent = GetContent(newlink)
                 html = vidcontent.encode("utf-8","ignore")
-                stream_map = re.compile('fmt_stream_map","(.+?)"').findall(html)[0].replace("\/", "/")
-                formatArray = stream_map.split(',')
-                for formatContent in formatArray:
-                     formatContentInfo = formatContent.split('|')
-                     qual = formatContentInfo[0]
-                     url = (formatContentInfo[1]).decode('unicode-escape')
+                stream_map = re.compile('fmt_stream_map","(.+?)"').findall(html)
+                if(len(stream_map) > 0):
+					formatArray = stream_map[0].replace("\/", "/").split(',')
+					for formatContent in formatArray:
+						 formatContentInfo = formatContent.split('|')
+						 qual = formatContentInfo[0]
+						 url = (formatContentInfo[1]).decode('unicode-escape')
+                else:
+						docid=re.compile('/d/(.+?)/preview').findall(newlink)[0]
+						cj = cookielib.LWPCookieJar()
+						newlink1="https://docs.google.com/uc?export=download&id="+docid  
+						(cj,vidcontent) = GetContent2(newlink1,newlink, cj)
+						soup = BeautifulSoup(vidcontent)
+						downloadlink=soup.findAll('a', {"id" : "uc-download-link"})[0]
+						newlink2 ="https://docs.google.com" + downloadlink["href"]
+						url=GetDirVideoUrl(newlink2,cj) 
                 playVideo("direct",url)
            elif (newlink.find("vimeo") > -1):
                 idmatch =re.compile("http://player.vimeo.com/video/([^\?&\"\'>]+)").findall(newlink)

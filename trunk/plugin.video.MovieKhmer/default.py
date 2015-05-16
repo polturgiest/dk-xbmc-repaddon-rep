@@ -123,14 +123,11 @@ def getVimeoUrl(videoid,currentdomain=""):
         collection = {}
         if result["status"] == 200:
             html = result["content"]
-            html = html[html.find(',a={'):]
-            html = html[:html.find('}};') + 2]
-            html = html.replace(",a={", '{')
+            html = html[html.find('var a=')+6:]
+            html = html[:html.find(';if(a.request)')]
             try:
                   collection = json.loads(html)
-                  codec=collection["request"]["files"]["codecs"][0]
-                  filecol = collection["request"]["files"][codec]
-                  return filecol["sd"]["url"]
+                  return collection["request"]["files"]["h264"]["sd"]["url"]
             except:
                   return getVimeoVideourl(videoid,currentdomain)
 
