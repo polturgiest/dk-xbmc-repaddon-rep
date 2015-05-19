@@ -23,20 +23,40 @@ showadult = __settings__.getSetting('use-adult') == 'true'
 strdomain ="https://malimar.tv"
 AZ_DIRECTORIES = ['0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Z']
 net = Net()
+authtoken=__settings__.getSetting('authcode') 
+strLoginurl = "https://malimar.tv/sessions.json"
 
-		
-def GetContent(url):
+def GetInput(strMessage, headtxt, ishidden):
+    keyboard = xbmc.Keyboard("", strMessage, ishidden)
+    keyboard.setHeading(headtxt)  # optional
+    keyboard.doModal()
+    inputText = ""
+    if keyboard.isConfirmed():
+        inputText = keyboard.getText()
+    del keyboard
+    return inputText
+	
+
+def postContent(url,data,authvalue):
     opener = urllib2.build_opener()
-    opener.addheaders = [('Accept','application/json, text/plain, */*'),
+    if authvalue != None:
+		authval='Basic ' + authvalue
+    else:
+		authval='Bearer ' + authtoken
+    print authval
+    headerdic= [('Accept','application/json, text/plain, */*'),
                          ('Accept-Encoding','gzip, deflate'),
-                         ('Referer', url),
+                         ('Referer', "https://malimar.tv/sign_in"),
                          ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1'),
                          ('Connection','keep-alive'),
                          ('Accept-Language','en-us,en;q=0.5'),
                          ('Host','malimar.tv'),
-						 ('API-VERSION','v1')]
-    usock=opener.open(url)
-    print usock.info().get('Content-Encoding')
+                         ('Content-Length','2'),
+                         ('Content-Type','application/json;charset=UTF-8'),
+						 ('API-VERSION','v1'),
+						 ('Authorization',authval)]
+    opener.addheaders=headerdic
+    usock=opener.open(url,data)
     if usock.info().get('Content-Encoding') == 'gzip':
         buf = StringIO.StringIO(usock.read())
         f = gzip.GzipFile(fileobj=buf)
@@ -45,7 +65,53 @@ def GetContent(url):
         response = usock.read()
     usock.close()
     return response
+	
+def GetContent(url, authvalue=None):
+    opener = urllib2.build_opener()
+    if authvalue != None:
+		authval='Basic ' + authvalue
+    else:
+		authval='Bearer ' + authtoken
+    headerdic= [('Accept','application/json, text/plain, */*'),
+                         ('Accept-Encoding','gzip, deflate'),
+                         ('Referer', url),
+                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1'),
+                         ('Connection','keep-alive'),
+                         ('Accept-Language','en-us,en;q=0.5'),
+                         ('Host','malimar.tv'),
+						 ('API-VERSION','v1'),
+						 ('Authorization',authval)]
+    opener.addheaders=headerdic
+    try:
+		usock=opener.open(url)
+		print usock.info().get('Content-Encoding')
+		if usock.info().get('Content-Encoding') == 'gzip':
+			buf = StringIO.StringIO(usock.read())
+			f = gzip.GzipFile(fileobj=buf)
+			response = f.read()
+		else:
+			response = usock.read()
+		usock.close()
+    except urllib2.HTTPError, error_code:
+			if error_code.code == 401: 
+				d = xbmcgui.Dialog()
+				d.ok("Expired Session","Your session has expired",'Please Login again')
+				GetLoginToken()
+    return response
+	
+def GetLoginToken():
+    strUsername = GetInput("Please enter your username", "Username", False)
+    if strUsername is not None and strUsername != "":
+        strpwd = urllib.quote_plus(GetInput("Please enter your password", "Password", True))
+        respon = postContent(strLoginurl,"",(strUsername+":"+strpwd).encode('base-64'))
+        print respon
+        data = json.loads(respon)
+        __settings__.setSetting('authcode',data["sessions"]["id"])
+        return data["sessions"]["id"]
 
+if authtoken=="":
+	authtoken=GetLoginToken()
+	
 try:
 
     DB_NAME = 	 ADDON.getSetting('db_name')
@@ -170,6 +236,7 @@ def DeleteFav(name,url):
 def HOME():
         #addDir('Search Dramas','http://malimartv.se/',10,'')
         #addDir('Search Movies','http://malimartv.se/',9,'')
+        addDir('Login','tvshow',31,'')
         addDir('Your Favorites','tvshow',25,'')
         ListShows("https://malimar.tv/thumbnails.json?container=Premium_View_CF")
         GetGrid("https://malimar.tv/grids.json?dashboard=Home")
@@ -362,26 +429,7 @@ def SEARCH(url,type):
 			ListShows(url)
 		
 
-def postContent(url,data,referr):
-    opener = urllib2.build_opener()
-    opener.addheaders = [('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
-                         ('Accept-Encoding','gzip, deflate'),
-                         ('Referer', referr),
-                         ('Content-Type', 'application/x-www-form-urlencoded'),
-                         ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0'),
-                         ('Connection','keep-alive'),
-                         ('Accept-Language','en-us,en;q=0.5'),
-                         ('Pragma','no-cache'),
-                         ('Host','player.phim47.com')]
-    usock=opener.open(url,data)
-    if usock.info().get('Content-Encoding') == 'gzip':
-        buf = StringIO.StringIO(usock.read())
-        f = gzip.GzipFile(fileobj=buf)
-        response = f.read()
-    else:
-        response = usock.read()
-    usock.close()
-    return response
+
 
 
 
@@ -549,7 +597,7 @@ elif mode==28:
 elif mode==30:
 		MovieIndex(url)
 elif mode==31:
-		SensenEpisode(url)
+		GetLoginToken(authtoken)
 elif mode==32:
 		GetVideo(url)
 elif mode==33:
