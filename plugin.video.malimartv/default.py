@@ -236,7 +236,7 @@ def DeleteFav(name,url):
 def HOME():
         #addDir('Search Dramas','http://malimartv.se/',10,'')
         #addDir('Search Movies','http://malimartv.se/',9,'')
-        addDir('Login','tvshow',31,'')
+        addLink('Login','tvshow',31,'')
         addDir('Your Favorites','tvshow',25,'')
         ListShows("https://malimar.tv/thumbnails.json?container=Premium_View_CF")
         GetGrid("https://malimar.tv/grids.json?dashboard=Home")
@@ -597,7 +597,7 @@ elif mode==28:
 elif mode==30:
 		MovieIndex(url)
 elif mode==31:
-		GetLoginToken(authtoken)
+		GetLoginToken()
 elif mode==32:
 		GetVideo(url)
 elif mode==33:
