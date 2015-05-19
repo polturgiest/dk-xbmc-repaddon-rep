@@ -264,8 +264,13 @@ def SensenGetVideo(url):
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
         soup = BeautifulSoup(newlink)
+        ctr=0
         for item in soup.findAll('source'):
-			vname=item["data-res"]
+			ctr=ctr+1
+			if(item.has_key('value')):
+				vname=item["data-res"]
+			else:
+				vname="mirror " + str(ctr)
 			vlink=item["src"]
 			addLink(vname,vlink,3,"","direct")
         ctr=0

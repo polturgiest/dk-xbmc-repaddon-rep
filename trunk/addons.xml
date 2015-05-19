@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
+<addon id="plugin.program.sitetosite"
+       version="0.0.1" name="sitetosite"
+       provider-name="Dknight">
+  <requires>
+  	<import addon="script.module.t0mm0.common" />
+  	<import addon="script.module.axel.downloader" optional="true" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+  	<provides>video audio executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Site to Site Backup</summary>
+    <description>Backup videos to your cloud storage account</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.animecrazy"
        name="Anime Crazy"
        version="1.0.18"
@@ -242,7 +259,7 @@
 
 <addon
   id="plugin.video.dramago"
-  version="1.0.4"
+  version="1.0.5"
   name="DramaGo"
   provider-name="Dknight">
   <requires>
