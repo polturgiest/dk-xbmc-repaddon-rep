@@ -5,7 +5,10 @@
        provider-name="Dknight">
   <requires>
   	<import addon="script.module.t0mm0.common" />
+	<import addon="script.module.simplejson" />
   	<import addon="script.module.axel.downloader" optional="true" />
+	<import addon="script.module.beautifulsoup" version="3.0.8"/>
+	<import addon="script.module.requests" version="2.4.3" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
   	<provides>video audio executable</provides>
@@ -549,7 +552,7 @@
 
 <addon
   id="plugin.video.MovieKhmer"
-  version="1.0.24"
+  version="1.0.25"
   name="MovieKhmer"
   provider-name="Dknight">
   <requires>

@@ -21,7 +21,7 @@ PATH = "moviekhmer"  #<---- PLUGIN NAME MINUS THE "plugin.video"
 UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER   
 VERSION = "1.0.8" #<---- PLUGIN VERSION
 
-strdomain ='http://www.allnob.com/'
+strdomain ='http://lakhoan.com/'
 def HOME():
         #addDir('Khmer Comedy',strdomain+'category/khmer/khmer-comedy/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
         #addDir('Khmer Movies',strdomain+'category/khmer/',2,strdomain+'wp-content/uploads/2012/04/Khmer-Movie-Korng-Kam-Korng-Keo-180x135.jpg')
@@ -123,7 +123,7 @@ def getVimeoUrl(videoid,currentdomain=""):
         collection = {}
         if result["status"] == 200:
             html = result["content"]
-            html = html[html.find('var a=')+6:]
+            html = html[html.find('function(b,g){var a=')+20:]
             html = html[:html.find(';if(a.request)')]
             try:
                   collection = json.loads(html)
