@@ -20,11 +20,11 @@ home = __settings__.getAddonInfo('path')
 datapath = xbmc.translatePath(os.path.join(home, 'resources', ''))
 showadult = __settings__.getSetting('use-adult') == 'true'
 
-strdomain ="https://malimar.tv"
+strdomain ="https://www.malimar.tv/"
 AZ_DIRECTORIES = ['0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Z']
 net = Net()
 authtoken=__settings__.getSetting('authcode') 
-strLoginurl = "https://malimar.tv/sessions.json"
+strLoginurl = "https://www.malimar.tv/sessions.json"
 
 def GetInput(strMessage, headtxt, ishidden):
     keyboard = xbmc.Keyboard("", strMessage, ishidden)
@@ -42,11 +42,10 @@ def postContent(url,data,authvalue):
     if authvalue != None:
 		authval='Basic ' + authvalue
     else:
-		authval='Bearer ' + authtoken
-    print authval
+		authval='Bearer ' + __settings__.getSetting('authcode') 
     headerdic= [('Accept','application/json, text/plain, */*'),
                          ('Accept-Encoding','gzip, deflate'),
-                         ('Referer', "https://malimar.tv/sign_in"),
+                         ('Referer', "https://www.malimar.tv/sign_in"),
                          ('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1'),
                          ('Connection','keep-alive'),
                          ('Accept-Language','en-us,en;q=0.5'),
@@ -69,9 +68,10 @@ def postContent(url,data,authvalue):
 def GetContent(url, authvalue=None):
     opener = urllib2.build_opener()
     if authvalue != None:
-		authval='Basic ' + authvalue
+		authval='Bearer ' + authvalue
     else:
-		authval='Bearer ' + authtoken
+		authval='Bearer ' + __settings__.getSetting('authcode') 
+    print url
     headerdic= [('Accept','application/json, text/plain, */*'),
                          ('Accept-Encoding','gzip, deflate'),
                          ('Referer', url),
@@ -104,7 +104,6 @@ def GetLoginToken():
     if strUsername is not None and strUsername != "":
         strpwd = urllib.quote_plus(GetInput("Please enter your password", "Password", True))
         respon = postContent(strLoginurl,"",(strUsername+":"+strpwd).encode('base-64'))
-        print respon
         data = json.loads(respon)
         __settings__.setSetting('authcode',data["sessions"]["id"])
         return data["sessions"]["id"]
@@ -233,21 +232,27 @@ def DeleteFav(name,url):
     db.commit()
     db.close()
 		
-def HOME():
+def HOME(authtoken):
         #addDir('Search Dramas','http://malimartv.se/',10,'')
         #addDir('Search Movies','http://malimartv.se/',9,'')
         addLink('Login','tvshow',31,'')
         addDir('Your Favorites','tvshow',25,'')
-        ListShows("https://malimar.tv/thumbnails.json?container=Premium_View_CF")
-        GetGrid("https://malimar.tv/grids.json?dashboard=Home")
-        if(showadult==True):
-			addDir('Adult +18','https://malimar.tv/grids.json?dashboard=Adult18',4,'')
+        try:
+			ListShows(strdomain+"thumbnails.json?container=Premium_View_CF")
+			GetGrid(strdomain+"grids.json?dashboard=Home")
+			if(showadult==True):
+				addDir('Adult +18',strdomain+'grids.json?dashboard=Adult18',4,'')
+        except:
+			ListShows(strdomain+"thumbnails.json?container=Premium_View_CF")
+			GetGrid(strdomain+"grids.json?dashboard=Home")
+			if(showadult==True):
+				addDir('Adult +18',strdomain+'grids.json?dashboard=Adult18',4,'')
 
 def GetGrid(url):
 		resp=GetContent(url)
 		data = json.loads(resp)
 		for item in data["grids"]:
-			link = "https://malimar.tv/thumbnails.json?container="+item["id"]
+			link = strdomain+"thumbnails.json?container="+item["id"]
 			vname=item["title"]
 			if(item["id"]!="Premium_View_CF"):
 				addDir(vname,link,18,"")
@@ -387,16 +392,16 @@ def ListShows(url):
 		for item in data["thumbnails"]:
 			
 			if(item["href"].find("/shows/") > -1):
-				vlink = "https://malimar.tv/episodes.json?show="+item["id"]
+				vlink = strdomain+"episodes.json?show="+item["id"]
 				mode=8
 			elif(item["href"].find("/dashboards/") > -1):
-				vlink = "https://malimar.tv/grids.json?dashboard="+item["id"]
+				vlink = strdomain+"grids.json?dashboard="+item["id"]
 				mode=4
 			elif(item["href"].find("/channels/") > -1):
 				vlink =item["href"].replace(item["id"]+"?grid=",item["id"]+".json?grid=")
 				mode=3
 			else:
-				vlink = "https://malimar.tv/thumbnails.json?container="+item["id"]
+				vlink = strdomain+"thumbnails.json?container="+item["id"]
 				mode=18
 			vimg=item["cover_image"]["hd"]
 			vname=item["title"]
@@ -567,7 +572,7 @@ sysarg=str(sys.argv[1])
 print "currentmode" + str(mode)
 
 if mode==None or url==None or len(url)<1:
-        HOME()
+        HOME(authtoken)
 elif mode==3:
         playVideo(url,name,movieinfo)
 elif mode==4:
