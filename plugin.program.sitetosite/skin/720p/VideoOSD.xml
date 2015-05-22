@@ -157,14 +157,14 @@
 				<onright>207</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
-				<onclick>XBMC.RunPlugin(plugin://plugin.program.sitetosite/?mode=backuptocloud)</onclick>
+				<onclick>XBMC.RunPlugin(plugin://plugin.program.sitetosite/?mode=backupoffline)</onclick>
 			</control>
 			<control type="button" id="207">
 				<posx>385</posx>
 				<posy>0</posy>
 				<width>55</width>
 				<height>55</height>
-				<label>AxelPlay</label>
+				<label>CloudBackup</label>
 				<font>-</font>
 				<texturefocus>OSDPlayFO.png</texturefocus>
 				<texturenofocus>OSDPlayNF.png</texturenofocus>
@@ -172,7 +172,7 @@
 				<onright>250</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
-				<onclick>XBMC.RunPlugin(plugin://plugin.program.sendtoaxel/?mode=AxelPlay)</onclick>
+				<onclick>XBMC.RunPlugin(plugin://plugin.program.sitetosite/?mode=backuptocloud)</onclick>
 			</control>
 		</control>
 
