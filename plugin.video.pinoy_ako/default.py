@@ -27,10 +27,11 @@ UATRACK="UA-40129315-1" #<---- GOOGLE ANALYTICS UA NUMBER
 VERSION = "1.0.9" #<---- PLUGIN VERSION
 
 strdomain ='http://www.pinoy-ako.ws/'
+strdomain2="http://www.lambingan.ru/"
 def HOME():
         addDir('Search','http://www.pinoy-ako.ws',8,'')
         addDir('Latest Videos','http://www.pinoy-ako.ws',6,'')
-        addDir('Pinoy Movies','http://www.lambingan.to/category/pinoy-movies',13,'')
+        addDir('Pinoy Movies',strdomain2+'/category/pinoy-movies',13,'')
         ###addDir('Foreign Films','http://www.pinoy-ako.info/movies/foreign-films-uploaded.html',6,'')
         #addDir('Pinoy Box Office','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
         #addDir('Cinema One','http://www.pinoy-ako.info/movies/pinoy-box-office.html',6,'')
@@ -38,8 +39,8 @@ def HOME():
         #addDir('Sports by category','52',2,'')
         ###addDir('All TV Shows','http://www.pinoy-ako.info/tv-show-replay.html',10,'')
         #addDir('ABS-CBN Episode List','http://www.pinoy-ako.ws/category/abs-cbn',6,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('ABS-CBN by Shows','http://www.lambingan.to/category/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
-        addDir('GMA 7 shows on lambingan','http://www.lambingan.to/category/Gma7/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
+        addDir('ABS-CBN by Shows',strdomain2+'/category/abs-cbn/',13,'http://img687.imageshack.us/img687/5412/abscbntvshows.jpg')
+        addDir('GMA 7 shows on lambingan',strdomain2+'/category/Gma7/',13,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
         addDir('Kapuso','http://www.pinoy-ako.ws/kapuso/',6,'')
         addDir('Viral Videos','http://www.pinoy-ako.ws/viral/',6,'')
         ###addDir('GMA 7 Old Shows','http://www.pinoy-ako.info/index.php?option=com_content&view=article&id=11671:watch-old-gma-7-kapuso-tv-shows',2,'http://img198.imageshack.us/img198/7536/gmatvshows.jpg')
@@ -94,21 +95,28 @@ def INDEX2(url):
         link = GetContent(url)
         link=link.encode("UTF-8")
         link = ''.join(link.splitlines()).replace('\t','')
-        vidcontent=re.compile('<div id="content".+?>(.+?)<div id="primary"').findall(link)
-        movielist=re.compile('<li class="post.+?">(.+?)</li>').findall(vidcontent[0])
-        for moviecontent in movielist:
-            vimg=""
-            vimgc=re.compile('<img src="(.+?)" alt="(.+?)".+?').findall(moviecontent)
-            if(len(vimgc) > 0):
-                    (vimg,vtmp)=vimgc[0]
-            vurlc=re.compile('<a href="(.+?)" rel="bookmark">(.+?)</a>').findall(moviecontent)
-            if(len(vurlc) > 0):
-                    (vurl,vname)=vurlc[0]
-                    addDir(vname.replace("&#8211;","-").replace("&#8217;","'"),vurl,4,vimg.replace("http://","//").replace("//","http://"))
-        pagenavcontent=re.compile("<div class='wp-pagenavi'>(.+?)</div>").findall(link)
+        soup = BeautifulSoup(link)
+        vidcontent=soup.findAll('div', {"id" : "content"})[0]
+        for item in vidcontent.findAll('li'):
+			if(item.div==None and item.h3==None):
+				continue
+			linkobj= item.div.a
+			vimg=""
+			if(linkobj.img !=None ):
+				vimg=linkobj.img["src"]
+				vname=linkobj.img["title"]
+				vurl=linkobj["href"]
+			else:
+				linkobj=item.h3.a
+				vname=linkobj.contents[0].encode("utf-8","ignore")
+				vurl=linkobj["href"]
+			vname=vname.encode("utf-8","ignore")
+			addDir(vname.replace("&#8211;","-").replace("&#8217;","'"),vurl,4,vimg.replace("http://","//").replace("//","http://"))
+        pagenavcontent=soup.findAll('div', {"class" : "wp-pagenavi"})
         if(len(pagenavcontent)>0):
-			pagelist=re.compile('<a class="(page larger|nextpostslink|last)" href="(.+?)">(.+?)</a>').findall(pagenavcontent[0])
-			for classtype,pageurl,pagenum in pagelist:
+			for item in pagenavcontent[0].findAll('a'):
+				pagenum=item.contents[0]
+				pageurl=item["href"]
 				addDir('page '+ pagenum.replace("&raquo;",">>"),pageurl,6,'')
 def SEARCH():
         keyb = xbmc.Keyboard('', 'Enter search text')
