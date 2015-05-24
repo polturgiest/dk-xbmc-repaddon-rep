@@ -25,7 +25,6 @@ axelusename= ADDON.getSetting('axel-usename')
 url_login = "https://accounts.google.com/ServiceLogin"
 url_auth = "https://accounts.google.com/ServiceLoginAuth"
 ballloonauth="http://ballloon.com/auth/google"
-getfolderinfo = "http://ballloon.com/api/box?method=getFolders&path=%2F&folderId="
 service_list = ["googleDrive", "box", "oneDrive", "dropbox"]
 defaultservice=service_list[int(ADDON.getSetting('cloudservice'))]
 
@@ -208,9 +207,10 @@ def BackuptoBallloon(html,destination):
 	postparam = {}
 	if(len(folderdic) <2):
 		session = SessionGoogle(url_login, url_auth, strUsername, strpwd)
-		folderinfo=session.get(getfolderinfo)
+		folderinfo=session.get("http://ballloon.com/api/"+destination+"?method=getFolders&path=%2F&folderId=")
 		folderdic=json.loads(folderinfo)
-		postparam["cusFolderPath"]="/%s/" % folderdic[0]["name"]
+		if(folderdic[0].has_key('name')):
+			postparam["cusFolderPath"]="/%s/" % folderdic[0]["name"]
 		postparam["cusFolderId"]=folderdic[0]["id"]
 		postparam["cusIds"]="#**ballloon-sep**#%s" % folderdic[0]["id"]
 	else:
@@ -225,7 +225,6 @@ def BackuptoBallloon(html,destination):
 	postparam["butttonId"]=filedic["id"]
 	postparam["type"]=filedic["mimeType"]
 	postparam["flag"]="a"
-	print postparam 
 	return postparam
 
 #oneDrive

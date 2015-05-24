@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.program.sitetosite"
-       version="0.0.1" name="sitetosite"
+       version="0.0.2" name="sitetosite"
        provider-name="Dknight">
   <requires>
   	<import addon="script.module.t0mm0.common" />
