@@ -257,6 +257,24 @@ def startStreambackup(destination="googleDrive"):
 		else:
 			session.post("http://ballloon.com/api/ballloons/new",postparam)
 
+def Home():
+	addDir('Backup Queue','test',"viewQueue",'')
+
+def ViewQueue():
+	session = SessionGoogle(url_login, url_auth, strUsername, strpwd)
+	html=session.get("http://ballloon.com/categories/departures")
+	soup = BeautifulSoup(html).findAll('div', {"id" : "history-list"})
+	for item in soup[0].findAll('div', {"class":re.compile('list-row status-*')}):
+		vfile=item.findAll('div', {"class" : "cell-title arrived-title"})
+		if(len(vfile)>0 ):
+			vfile=vfile[0].contents[0]
+			vstatus=item.findAll('div', {"class" : "cell-status"})[0].contents[0]
+			vcloudservice=item.findAll('div', {"class" : "cell-destination"})[0].a.contents[0]
+			varrivetime=item.findAll('div', {"class" : "cell-time time-date"})[0].contents[0]
+		displaytext=("[COLOR green]Filename:[/COLOR]%s     [COLOR green]Status[/COLOR]:%s     [COLOR green]Backup Time[/COLOR]:%s     [COLOR green]Cloud Service[/COLOR]:%s" %(vfile,vstatus,varrivetime,vcloudservice))
+		if(displaytext.find("{{fileName}}") == -1 and displaytext.find("[COLOR green]Filename:[/COLOR][]") == -1):
+			addLink(displaytext,"","delete","")
+		
 def startDownload():
 	p=xbmc.Player()
 	if(p.isPlayingVideo()==True or p.isPlaying()==True):
@@ -289,7 +307,23 @@ def DoDownloader(url,destfile="",destpath="",useResolver=False):
 		else: 
 			download_id=axelhelper.download(link,connections=AxelConnections,dest_path=destpath); 
 
-	
+def addLink(name,url,mode,iconimage):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="", infoLabels={ "Title": name } )
+        contextMenuItems = []
+        liz.addContextMenuItems(contextMenuItems, replaceItems=True)
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
+        return ok
+		
+def addDir(name,url,mode,iconimage):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="", infoLabels={ "Title": name } )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+		
 def get_params():
         param=[]
         paramstring=sys.argv[2]
@@ -329,7 +363,10 @@ try:
 except:
     pass
 	
-if mode == "backuptocloud":
+sysarg=str(sys.argv[1]) 
+if mode == None:
+	Home()
+elif mode == "backuptocloud":
     startStreambackup()
 elif mode == "backuptogdrive":
     startStreambackup("googleDrive")
@@ -341,3 +378,6 @@ elif mode == "backuptodropbox":
     startStreambackup("dropbox")
 elif mode == "backupoffline":
     startDownload()
+elif mode == "viewQueue":
+    ViewQueue()
+xbmcplugin.endOfDirectory(int(sysarg))
