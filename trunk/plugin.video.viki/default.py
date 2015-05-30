@@ -181,12 +181,12 @@ def HOME(translator):
 
         addDir(staticlist[1],'search',12,'')
         addDir(staticlist[2],'search',16,'')
-        addDir(staticlist[3],'http://www.viki.com/explore?sort=latest&country=id',2,'')
+        addDir(staticlist[3],'http://www.viki.com/explore?sort=latest&country=indonesia',2,'')
         addDir(staticlist[4],'http://www.viki.com/explore?sort=latest&type=series',8,'')
         addDir(staticlist[5],'http://www.viki.com/explore?sort=latest&type=movie',8,'')
         addDir(staticlist[6],'http://www.viki.com/explore?sort=latest&type=clip',8,'')
         if(enableTrans==False):
-               addDir(staticlist[7],'http://www.viki.com/explore?sort=latest&country=id',10,'')
+               addDir(staticlist[7],'http://www.viki.com/explore?sort=latest&country=indonesia',10,'')
 def LangOption():
         addDir('Show All Languages','All',10,'')
 
