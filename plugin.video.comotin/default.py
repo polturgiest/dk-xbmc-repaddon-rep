@@ -11,7 +11,9 @@ import xbmc
 import json
 import datetime
 import cgi
-
+from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulStoneSoup
+from BeautifulSoup import SoupStrainer
 
 
 ADDON = xbmcaddon.Addon(id='plugin.video.comotin')
@@ -40,12 +42,30 @@ def RemoveHTML(inputstring):
     return TAG_RE.sub('', inputstring)
 	
 def HOME():
-        addDir("Indonesian Videos","http://www.comotin.com/feeds/posts/default/-/indonesia?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
-        addDir("Barat/Hollywood","http://www.comotin.com/feeds/posts/default/-/barat?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
-        addDir("Asian","http://www.comotin.com/feeds/posts/default/-/asia?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
-        addDir("Other","http://www.comotin.com/feeds/posts/default/-/global?max-results=100&orderby=published&alt=json-in-script&callback=1",2,'')
-        addDir("Live TV","http://www.comotin.com",5,'')
-
+        GetMenu("http://www.comotin.com/")
+		
+def GetMenu(url):
+        link = GetContent(url)
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        menuhead = SoupStrainer('nav', {"id" : "navigation"})
+        soup = BeautifulStoneSoup(newlink, parseOnlyThese=menuhead,convertEntities=BeautifulSoup.XML_ENTITIES)
+        for item in soup.findAll('li'):
+			mode=8
+			if(item.parent.name=="div"):
+				mode=2
+			if(item.a.has_key("href")):
+				link = item.a['href'].encode('utf-8', 'ignore')
+				if(item["class"].find("menu-item-has-children")==-1):
+					vname="---"+str(item.a.contents[0]).strip()
+				else:
+					vname=str(item.a.contents[0]).strip()
+				if(vname.strip().find("Home") == -1 and vname.strip().find("Privacy Policy") == -1 and vname.strip().find("Advertising") == -1 and vname.strip().find("TV ONLINE") == -1):
+					addDir(vname,link,mode,"")
+				if(vname.strip().find("TV ONLINE") > -1):
+					addDir(vname,link,9,"")
 def SearchXml(SearchText):
     if os.path.isfile(filename)==False:
         BuildXMl()
@@ -76,30 +96,75 @@ def ParseXml(tagname):
                                 addLink(vname,vurl,6,vimg,"")
 	
 
-				
-def INDEX(url):
+def Episode(url):
         link = GetContent(url)
         link = ''.join(link.splitlines())
         try:
             link =link.encode("UTF-8")
         except: pass
-        pagedata=link.replace("// API callback1(","").replace("});","}")#.replace("\u003E","").replace("\u003C","").replace("\u0026","").decode('utf-8')
-        pagedata=json.loads(pagedata)
-        vidlist = re.compile('<div class="film_short">(.+?)</a></div>\s*</div>').findall(link)
-        for videocotent in pagedata["feed"]["entry"]:
-            vimg= re.compile('<img [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(videocotent["content"]["$t"])[0]
-            vname= videocotent["title"]["$t"]
-            vurl=re.compile('proxy.link=(.+?)&').findall(videocotent["content"]["$t"])
-            vsuburl=""
-            if(len(vurl)==0):
-                vurl=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(videocotent["content"]["$t"])
-            if(len(vurl)==0):
-                vurl=re.compile("str='(.+?)';\s*document.write").findall(videocotent["content"]["$t"])
-            vsub=re.compile('captions.file=(.+?)&').findall(videocotent["content"]["$t"])
-            if(len(vsub)>0):
-				vsuburl=vsub[0]
-            if(len(vurl)>0):
-				addLinkSub(vname.encode('utf-8', 'ignore'),vurl[0],3,"",vsuburl)
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        #menuhead = SoupStrainer('article', {"id" : "article"})
+        soup = BeautifulSoup(newlink)
+        episodelist=soup.findAll('ul',{"class":"partlar"})
+        if(len(episodelist)>0):
+			for epiitem in episodelist[0].findAll('a'):
+				vname =epiitem.contents[0]
+				vimg=""
+				if(epiitem.has_key("href")):
+					vlink =epiitem["href"]
+					addLinkSub(vname.encode('utf-8', 'ignore'),vlink,3,vimg,"")
+				else:
+					addLinkSub(vname.encode('utf-8', 'ignore'),url,3,vimg,"")
+def LoadLive(url):
+			xbmc.executebuiltin("XBMC.Notification(PLease Wait!, Loading video link into XBMC Media Player,5000)")
+			link = GetContent(url)
+			link = ''.join(link.splitlines())
+			try:
+				link =link.encode("UTF-8")
+			except: pass
+			newlink = ''.join(link.splitlines()).replace('\t','')
+			#menuhead = SoupStrainer('article', {"id" : "article"})
+			soup = BeautifulSoup(newlink)
+			episodelist=soup.findAll('iframe')
+			livelink = GetContent(episodelist[0]["src"])
+			playerlist=json.loads(re.compile('setup\((.+?)\);').findall(livelink)[0])
+			playVideo(playerlist["file"],"")
+ 
+def LiveIndex(url):
+        link = GetContent(url)
+        link = ''.join(link.splitlines())
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        soup = BeautifulSoup(newlink)
+        for imgitem in soup.findAll('figure'):
+			vimg=imgitem.img["src"]
+			vurl=imgitem.previousSibling.a["href"]
+			vname=imgitem.img["alt"]
+			addLinkSub(vname.encode('utf-8', 'ignore'),vurl,10,vimg,"")
+			
+def INDEX(url,type):
+        link = GetContent(url)
+        link = ''.join(link.splitlines())
+        try:
+            link =link.encode("UTF-8")
+        except: pass
+        newlink = ''.join(link.splitlines()).replace('\t','')
+        #menuhead = SoupStrainer('article', {"id" : "article"})
+        soup = BeautifulSoup(newlink)
+        for imgitem in soup.findAll('figure'):
+			vname =imgitem.parent["title"]
+			vimg=imgitem.img["src"]
+			vlink =imgitem.parent["href"]
+			if(type=="tv"):
+				addDir(vname.encode('utf-8', 'ignore'),vlink,7,vimg)
+			else:
+				addLinkSub(vname.encode('utf-8', 'ignore'),vlink,3,vimg,"")
+        navigation = soup.findAll('div', {"class" : "paGination"})
+        if(len(navigation)>0):
+			for item in navigation[0].findAll('a'):
+				addDir("page " +(str(item.contents[0])).replace("&laquo;","<<").replace("&raquo;",">>"),item["href"],2,"")
 
 
 
@@ -605,14 +670,22 @@ def loadVideos(url,name,suburl):
 			newlink=urllib.unquote_plus(url.replace("@","%"))
 			newlink=re.compile('<iframe [^>]*src=["\']?([^>^"^\']+)["\']?[^>]*>').findall(newlink)[0]
         else:
-			newlink=url
+			urlcontent=GetContent(url)
+			newlink=re.compile('proxy.link=(.+?)&').findall(urlcontent)[0]
         print newlink
         if(newlink.find("cyworld.vn") > 0):
             vidcontent=GetContent(newlink)
             vidmatch=re.compile('<meta property="og:video" content="(.+?)" />').findall(vidcontent)
             vidlink=vidmatch[0]
             playVideo(vidlink,suburl)
+        elif(newlink.find("plus.google") > 0):
+				print "in plus"
+				vidcontent=postContent("http://www.ganoolmovie.com/wp-content/plugins/gkplugins-for-wordpres/player/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
+				newplusurl =re.compile('<meta property="og:url" [^>]*content=["\']?([^>^"^\']+)["\']?[^>]*>').findall(vidcontent)[0]
+				vidcontent=postContent("http://www.ganoolmovie.com/wp-content/plugins/gkplugins-for-wordpres/player/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newplusurl)+"&isslverify=true",homeLink)
+				print vidcontent
         elif(newlink.find("picasaweb.google") > 0):
+                 print "in picasa"
                  vidcontent=postContent("http://www.cdn.comotin.com/www/plugins/plugins_player.php","iagent=Mozilla%2F5%2E0%20%28Windows%3B%20U%3B%20Windows%20NT%206%2E1%3B%20en%2DUS%3B%20rv%3A1%2E9%2E2%2E8%29%20Gecko%2F20100722%20Firefox%2F3%2E6%2E8&ihttpheader=true&url="+urllib.quote_plus(newlink)+"&isslverify=true",homeLink)
 				 
                  vidid=vidlink=re.compile('picasaweb.google.com/(.+?)/').findall(newlink+"&")
@@ -796,6 +869,10 @@ def GA(group,name):
             
 def APP_LAUNCH():
         versionNumber = int(xbmc.getInfoLabel("System.BuildVersion" )[0:2])
+        if versionNumber > 13:
+			logname="kodi.log"
+        else:
+			logname="xbmc.log"
         if versionNumber < 12:
             if xbmc.getCondVisibility('system.platform.osx'):
                 if xbmc.getCondVisibility('system.platform.atv2'):
@@ -806,19 +883,19 @@ def APP_LAUNCH():
                 log_path = '/var/mobile/Library/Preferences'
             elif xbmc.getCondVisibility('system.platform.windows'):
                 log_path = xbmc.translatePath('special://home')
-                log = os.path.join(log_path, 'xbmc.log')
+                log = os.path.join(log_path, logname)
                 logfile = open(log, 'r').read()
             elif xbmc.getCondVisibility('system.platform.linux'):
                 log_path = xbmc.translatePath('special://home/temp')
             else:
                 log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         elif versionNumber > 11:
             print '======================= more than ===================='
             log_path = xbmc.translatePath('special://logpath')
-            log = os.path.join(log_path, 'xbmc.log')
+            log = os.path.join(log_path, logname)
             logfile = open(log, 'r').read()
             match=re.compile('Starting XBMC \((.+?) Git:.+?Platform: (.+?)\. Built.+?').findall(logfile)
         else:
@@ -859,6 +936,7 @@ def APP_LAUNCH():
                 send_request_to_google_analytics(utm_track)
             except:
                 print "============================  CANNOT POST APP LAUNCH TRACK EVENT ============================" 
+				
 checkGA()
 
 def addLink(name,url,mode,iconimage,mirrorname):
@@ -950,8 +1028,8 @@ if mode==None or url==None or len(url)<1:
 
         HOME()
 elif mode==2:
-        GA("INDEX",name)
-        INDEX(url)
+        GA("TV INDEX",name)
+        INDEX(url,"tv")
 elif mode==3:
         loadVideos(url,mirrorname,subtitleurl)
 elif mode==5:
@@ -959,4 +1037,14 @@ elif mode==5:
 elif mode==6:
         GA("PlayVideo",name)
         playVideo(url,"")
+elif mode==7:
+		Episode(url)
+elif mode==8:
+        GA("MOVIE INDEX",name)
+        INDEX(url,"movie")
+elif mode==9:
+        GA("LIVE INDEX",name)
+        LiveIndex(url)
+elif mode==10:
+        LoadLive(url)
 xbmcplugin.endOfDirectory(int(sysarg))
